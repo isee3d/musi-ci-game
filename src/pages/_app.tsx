@@ -1,7 +1,6 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { Provider } from 'jotai'
 
 import { api } from "~/utils/api";
 
@@ -12,11 +11,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <Provider>
-      <SessionProvider session={session}>
-    <Component {...pageProps} />
-      </SessionProvider>
-    </Provider>
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
   );
 };
 

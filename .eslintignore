@@ -2,5 +2,3 @@ dist
 node_modules
 .output
 .next
-.next.config.js
-.src/env.mjs
