@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "mikestead.dotenv",
+        "bradlc.vscode-tailwindcss",
+        "PKief.material-icon-theme",
+        "moalamri.inline-fold",
+        "huddleboards.youtrack-issues",
+        "christian-kohler.path-intellisense",
+        "steoates.autoimport",
+        "planbcoding.vscode-react-refactor",
+        "dsznajder.es7-react-js-snippets",
+    ],
+    "unwantedRecommendations": [
+        "esbenp.prettier-vscode",
+    ]
+}

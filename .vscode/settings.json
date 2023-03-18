@@ -1,0 +1,73 @@
+{
+  "prettier.enable": false,
+  // Github Copilot settings
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": false,
+    "env": false
+  },
+  // Editor settings DX
+  "editor.wordWrap": "on",
+  "editor.snippetSuggestions": "top",
+  "editor.suggestSelection": "first",
+  "editor.renderWhitespace": "selection",
+  "editor.smoothScrolling": true,
+  "editor.stickyScroll.enabled": true,
+  "editor.suggest.preview": true,
+  "editor.suggest.showStatusBar": true,
+  "editor.cursorBlinking": "phase",
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.autoClosingOvertype": "always",
+  "editor.autoClosingDelete": "always",
+  "editor.autoIndent": "full",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "addMissingImports": true
+  },
+  // Getting used to this one, don't know if I like it yet
+  "editor.cursorSmoothCaretAnimation": "on",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  // Minimap settings
+  "editor.minimap.enabled": true,
+  "editor.minimap.renderCharacters": false,
+  "editor.minimap.maxColumn": 200,
+  "editor.minimap.showSlider": "always",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  // Breadcrumbs settings
+  "breadcrumbs.enabled": true,
+  "breadcrumbs.filePath": "on",
+  "breadcrumbs.symbolPath": "on",
+  // Typescript and javascript settings
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 750,
+  // Workbench settings
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.closeOnFileDelete": true,
+  "workbench.editor.highlightModifiedTabs": true,
+  // Tailwind CSS
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.configFile": ".nuxt/tailwind.config.cjs",
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.validate": true,
+  "tailwindCSS.suggestions": true,
+  "tailwindCSS.hovers": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

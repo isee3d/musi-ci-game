@@ -1,0 +1,25 @@
+{
+    "Create Vue3 component": {
+    "scope": "vue",
+    "prefix": "vue-3-comp",
+    "body": [
+        "<script setup lang=\"ts\">",
+        "   $1",
+        "</script>",
+        "",
+        "<template>",
+        "  <div>",
+        "   $0",
+        "  </div>",
+        "</template>",
+        ""
+    ],
+    "description": "Create a new component"
+    }
+}
+
+// https://code.visualstudio.com/docs/editor/userdefinedsnippets
+
+// Create a file in your .vscode folder named: snippets.code-snippets
+
+// This is an example for a clean Vue 3 component
