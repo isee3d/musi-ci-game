@@ -5,7 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
-const Home: NextPage = () => {
+const Login: NextPage = () => {
     const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
     return (
@@ -31,6 +31,12 @@ const Home: NextPage = () => {
                             Log hier in om te starten
                         </p>
                         <AuthShowcase />
+                        <Link
+                            className="mt-7 flex max-w-xs  flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                            href="/progress"
+                        >
+                            <h3 className="text-2xl font-bold">Ga naar levels pagina</h3>
+                        </Link>
                     </div>
                 </div>
             </main>
@@ -38,7 +44,7 @@ const Home: NextPage = () => {
     );
 };
 
-export default Home;
+export default Login;
 
 const AuthShowcase: React.FC = () => {
     const { data: sessionData } = useSession();
