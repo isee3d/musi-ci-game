@@ -16,7 +16,7 @@ const Level: NextPage = () => {
         <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
             <div className="container mx-auto flex  flex-col items-center justify-center rounded-2xl border-4 border-white">
                 {/* Title */ }
-                <h1 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight text-white ">
+                <h1 className="w-full border-b-2 py-3 text-center text-3xl font-extrabold tracking-tight text-white ">
                     { level }
                 </h1>
                 {/* List of buttons MAKE IT A COMPONENT, for now "spelen, luisteren and uitdaging" keep these dynamic from database */ }
