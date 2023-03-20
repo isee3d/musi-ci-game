@@ -75,12 +75,12 @@ const Mode: NextPage = () => {
                                 {/* Fragment content here */ }
                             </FragmentCard>
                             {/* Play and stop button */ }
-                            <div className="flex justify-around">
+                            <div className="flex justify-around sm:flex sm:flex-col">
                                 <Link
-                                    className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                                    className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
                                     href="/login"
                                 >
-                                    <h3 className="text-center text-2xl font-bold">Play knop</h3>
+                                    <h3 className="text-center text-xl font-bold">Play knop</h3>
                                 </Link>
                                 <Link
                                     className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
