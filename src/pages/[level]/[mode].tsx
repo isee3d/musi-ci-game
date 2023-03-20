@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from 'next/router'
+import { FragmentCard } from "~/components/fragmentCard";
 
 const Mode: NextPage = () => {
     const router = useRouter();
@@ -19,14 +20,29 @@ const Mode: NextPage = () => {
             </h1>
             <div className="container mx-auto flex  flex-col items-center justify-center rounded-2xl border-4 border-white">
                 {/* Title */ }
-                <h2 className="w-full border-b-2 py-3 text-center text-3xl font-extrabold tracking-tight text-white ">
-                    { mode }
-                </h2>
+                <div className="mb-4 flex w-full justify-around border-b-2">
+                    <h2 className=" grow py-3 text-center text-3xl font-extrabold tracking-tight text-white ">
+                        { mode }
+                    </h2>
+                    <h2 className=" grow bg-gray-400 py-3 text-center text-3xl font-extrabold tracking-tight text-white ">
+                        Spelen
+                    </h2>
+                    <h2 className="  grow bg-gray-400 py-3 text-center text-3xl font-extrabold text-white ">
+                        Uitdaging
+                    </h2>
+                </div>
+                <h3 className="pt-4 text-center text-2xl font-extrabold tracking-tight text-white">
+                    Kijk en luister
+                </h3>
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
-                    <h3 className="text-center text-2xl font-extrabold tracking-tight text-white">
-                        Kijk en luister
-                    </h3>
-                    {/* Place Fragment components dynamically here */ }
+                    {/* Fragments here */ }
+                    <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
+                        {/* Fragment content here */ }
+                    </FragmentCard>
+                    <FragmentCard onClick={ () => console.log('clicked') } color={ 'wrong' } >
+                        {/* Fragment content here */ }
+                    </FragmentCard>
+                    {/* Play and stop button */ }
                     <div className="flex justify-around">
                         <Link
                             className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "

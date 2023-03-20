@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Level from "~/components/level";
 
 const Progress: NextPage = () => {
     return (<>
@@ -15,20 +16,21 @@ const Progress: NextPage = () => {
                 <h1 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight text-white ">
                     Voortgang Musi-CI
                 </h1>
-                {/* List of available levels */ }
-                <div className="flex flex-col items-center justify-between">
-                    {/* Place the level component here and fill it with data... */ }
+                <div className=" flex w-full flex-col justify-between space-y-8 pl-8 pr-36">
+                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
                 </div>
-                {/* Ga verder button, maar denk ik niet nodig */ }
                 <Link
                     className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                    href="/login"
+                    href="/modeSelect/myLevel"
                 >
                     <h3 className="text-2xl font-bold">Ga verder</h3>
                 </Link>
             </div>
         </main>
-    </>)
+    </>);
 };
 
 export default Progress;

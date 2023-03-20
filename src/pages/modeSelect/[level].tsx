@@ -23,19 +23,19 @@ const Level: NextPage = () => {
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
                     <Link
                         className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/login"
+                        href="/level-1/luisteren"
                     >
                         <h3 className="text-center text-2xl font-bold">Luisteren</h3>
                     </Link>
                     <Link
                         className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/login"
+                        href="/level-1/spelen"
                     >
                         <h3 className="text-center text-2xl font-bold">Spelen</h3>
                     </Link>
                     <Link
                         className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/login"
+                        href="/level-1/uitdaging"
                     >
                         <h3 className="text-center text-2xl font-bold">Uitdaging</h3>
                     </Link>

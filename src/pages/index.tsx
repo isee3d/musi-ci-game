@@ -5,7 +5,7 @@ import Link from "next/link";
 const Welcome: NextPage = () => {
   return (<>
     <Head>
-      <title>Voortgang Musi-CI</title>
+      <title>Welkom Musi-CI</title>
       <meta name="description" content="Voortgang levels" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
@@ -14,6 +14,9 @@ const Welcome: NextPage = () => {
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
           Welcome!
         </h1>
+        <h3 className="text-xl font-extrabold text-white">
+          De subtitle hier
+        </h3>
         <Link
           className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
           href="/login"
