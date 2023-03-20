@@ -14,6 +14,7 @@ const config = {
    *
    * @see https://github.com/vercel/next.js/issues/41980
    */
+  transpilePackages: ['jotai-devtools'],
   i18n: {
     locales: ["en"],
     defaultLocale: "en",

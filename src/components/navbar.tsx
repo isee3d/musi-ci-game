@@ -49,15 +49,15 @@ const NavMenu: React.FC = () => {
                 className={ `${isOpen ? "block" : "hidden"
                     } block w-full grow lg:flex lg:w-auto lg:items-center` }
             >
-                <div className="text-sm lg:grow">
+                <div className="text-sm lg:grow lg:space-x-4">
                     <Link
-                        className="mt-4 mr-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/"
                     >
                         Manage users
                     </Link>
                     <Link
-                        className="mt-4 mr-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/about"
                     >
                         manage fragments
