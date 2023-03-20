@@ -1,19 +1,33 @@
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from 'next/image'
 
 const Welcome: NextPage = () => {
+  // const { data: session } = useSession();
+
+  // if (!session) {
+  //   // Handle unauthenticated state, e.g. render a SignIn component
+  //   return <h2>Hello world! this is protected route now hehe</h2>;
+  // }
   return (<>
     <Head>
       <title>Welkom Musi-CI</title>
       <meta name="description" content="Voortgang levels" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+    <main className="bg-my_bg_image flex min-h-screen flex-col items-center justify-center">
       <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
           Welcome!
         </h1>
+        {/* <Image
+          src="/images/piano_img.jpg"
+          alt="My Image"
+          width={ 500 }
+          height={ 500 }
+        /> */}
         <h3 className="text-xl font-extrabold text-white">
           De subtitle hier
         </h3>
