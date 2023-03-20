@@ -17,17 +17,11 @@ const Welcome: NextPage = () => {
       <meta name="description" content="Voortgang levels" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <main className="bg-my_bg_image flex min-h-screen flex-col items-center justify-center">
+    <main className=" bg-my_bg_image flex grow flex-col items-center justify-center">
       <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
           Welcome!
         </h1>
-        {/* <Image
-          src="/images/piano_img.jpg"
-          alt="My Image"
-          width={ 500 }
-          height={ 500 }
-        /> */}
         <h3 className="text-xl font-extrabold text-white">
           De subtitle hier
         </h3>

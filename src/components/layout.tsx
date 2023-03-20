@@ -24,9 +24,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     } }
                 />
             </Head>
-            <NavMenu />
-            { children }
-            <Footer/>
+            <div className=" flex min-h-screen flex-col overflow-y-hidden">
+                <NavMenu />
+                { children }
+                <Footer />
+            </div>
         </>
     );
 };

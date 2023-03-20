@@ -39,7 +39,7 @@ const Mode: NextPage = () => {
             <meta name="description" content="Level name here" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+        <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
             <h1 className="mb-10 py-3 text-center text-8xl font-extrabold tracking-tight text-white ">
                 { level }
             </h1>
