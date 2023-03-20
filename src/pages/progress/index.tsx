@@ -16,18 +16,38 @@ const Progress: NextPage = () => {
                 <h1 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight text-white ">
                     Voortgang Musi-CI
                 </h1>
-                <div className=" flex w-full flex-col justify-between space-y-8 pl-8 pr-36">
-                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
-                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
-                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
-                    <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                <div className=" flex w-full flex-col justify-between space-y-8 pl-8">
+                    <Link
+                        className="flex rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                        href="/modeSelect/myLevel"
+                    >
+                        <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    </Link>
+                    <Link
+                        className="w-full rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                        href="/modeSelect/myLevel"
+                    >
+                        <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    </Link>
+                    <Link
+                        className="flex rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                        href="/modeSelect/myLevel"
+                    >
+                        <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    </Link>
+                    <Link
+                        className="flex rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                        href="/modeSelect/myLevel"
+                    >
+                        <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    </Link>
+                    <Link
+                        className="flex rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                        href="/modeSelect/myLevel"
+                    >
+                        <Level key={ "5" } number={ 5 } name={ "test" } score={ 999 } borderColor="green" />
+                    </Link>
                 </div>
-                <Link
-                    className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                    href="/modeSelect/myLevel"
-                >
-                    <h3 className="text-2xl font-bold">Ga verder</h3>
-                </Link>
             </div>
         </main>
     </>);
