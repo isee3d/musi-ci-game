@@ -64,7 +64,7 @@ const NavMenu: React.FC = () => {
                     </Link>
                     <Link
                         className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
-                        href="/contact"
+                        href="/manage/levels"
                     >
                         Manage levels
                     </Link>
