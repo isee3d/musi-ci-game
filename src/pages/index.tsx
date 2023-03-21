@@ -26,7 +26,7 @@ const Welcome: NextPage = () => {
           De subtitle hier
         </h3>
         <Link
-          className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+          className="flex max-w-xs flex-col gap-4 rounded bg-gray-600 p-4 hover:bg-gray-800 dark:text-white "
           href="/login"
         >
           <h3 className="text-2xl font-bold">Aan de slag</h3>

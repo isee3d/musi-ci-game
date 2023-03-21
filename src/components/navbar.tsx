@@ -9,14 +9,14 @@ const NavMenu: React.FC = () => {
     };
 
     return (
-        <nav className="flex flex-wrap items-center justify-between bg-[#2e026d] p-6">
-            <div className="mr-6 flex shrink-0 items-center text-white">
+        <nav className="flex flex-wrap items-center justify-between bg-white p-6 dark:bg-gray-900">
+            <div className="mr-6 flex shrink-0 items-center dark:text-white">
                 <span className="text-xl font-bold">Logo</span>
             </div>
             <div className="block lg:hidden">
                 <button
                     onClick={ toggleMenu }
-                    className="flex items-center rounded border border-white px-3 py-2 text-white hover:border-gray-200 hover:text-gray-200"
+                    className="flex items-center rounded border border-white px-3 py-2 hover:border-gray-200 hover:text-gray-200 dark:text-white"
                 >
                     { isOpen ? (
                         <svg
@@ -49,27 +49,27 @@ const NavMenu: React.FC = () => {
                 className={ `${isOpen ? "block" : "hidden"
                     } block w-full grow lg:flex lg:w-auto lg:items-center` }
             >
-                <div className="text-sm lg:grow lg:space-x-4">
+                <div className="flex justify-end pr-12 text-sm lg:grow lg:space-x-7">
                     <Link
-                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
                         href="/"
                     >
                         Manage users
                     </Link>
                     <Link
-                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
                         href="/manage/fragments"
                     >
                         manage fragments
                     </Link>
                     <Link
-                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
                         href="/manage/levels"
                     >
                         Manage levels
                     </Link>
                     <Link
-                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
+                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
                         href="/contact"
                     >
                         Manage results
