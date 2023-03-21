@@ -48,13 +48,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    id                  String    @id @default(cuid())
+    name                String?
+    email               String?   @unique
+    emailVerified       DateTime?
+    image               String?
+    accounts            Account[]
+    sessions            Session[]
+    practiceResults     PracticeResult[]
+    sceneResults        SceneResult[]
+    levelResults        LevelResult[]
 }
 
 model VerificationToken {
@@ -63,4 +66,118 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Level {
+  id                     String        @id @default(cuid())
+  name                   String
+  enablePractice         Boolean
+  bpm                    Int
+  description            String
+  fragmentVisibleCount   Int
+  duration               Int
+  correctAnswers         Int
+  cooldownTime           Int
+  fragments              LevelFragment[]
+}
+
+
+model LevelFragment {
+  level           Level    @relation(fields: [levelId], references: [id])
+  levelId         String
+  fragment        Fragment @relation(fields: [fragmentId], references: [id])
+  fragmentId      String
+
+  @@id([levelId, fragmentId])
+}
+
+
+model Fragment {
+  id                String   @id @default(cuid())
+  name              String
+  description       String
+  notes             NoteFragment[]
+  levels            LevelFragment[]
+  practiceResults   PracticeFragment[]
+  sceneResults      SceneFragment[]
+  levelResults      LevelResultFragment[]
+}
+
+
+model Note {
+  id        String   @id @default(cuid())
+  note      String
+  velocity  Int
+  time      Int
+  dur       Int
+  fragments   NoteFragment[]
+}
+
+model NoteFragment {
+  note        Note                 @relation(fields: [noteId], references: [id])
+  noteId      String
+  fragment    Fragment             @relation(fields: [fragmentId], references: [id])
+  fragmentId  String
+
+  @@id([noteId, fragmentId])
+}
+
+
+model LevelResultFragment {
+  levelResult     LevelResult    @relation(fields: [levelResultId], references: [id])
+  levelResultId   String
+  fragment        Fragment       @relation(fields: [fragmentId], references: [id])
+  fragmentId      String
+
+  @@id([levelResultId, fragmentId])
+}
+
+
+model PracticeFragment {
+  practiceResult    PracticeResult @relation(fields: [practiceResultId], references: [id])
+  practiceResultId  String
+  fragment          Fragment       @relation(fields: [fragmentId], references: [id])
+  fragmentId        String
+
+  @@id([practiceResultId, fragmentId])
+}
+
+
+model SceneFragment {
+  sceneResult     SceneResult    @relation(fields: [sceneResultId], references: [id])
+  sceneResultId   String
+  fragment        Fragment       @relation(fields: [fragmentId], references: [id])
+  fragmentId      String
+
+  @@id([sceneResultId, fragmentId])
+}
+
+
+model LevelResult {
+  id              String              @id @default(cuid())
+  userId          String
+  date            DateTime
+  fragments       LevelResultFragment[]
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+model PracticeResult {
+  id              String              @id @default(cuid())
+  userId          String
+  date            DateTime
+  fragments       PracticeFragment[]
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+model SceneResult {
+  id              String              @id @default(cuid())
+  userId          String
+  date            DateTime
+  correct         Boolean
+  transposed      Int
+  fragments       SceneFragment[]
+  levelId         String
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
