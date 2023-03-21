@@ -1,183 +1,166 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id                  String    @id @default(cuid())
-    name                String?
-    email               String?   @unique
-    emailVerified       DateTime?
-    image               String?
-    accounts            Account[]
-    sessions            Session[]
-    practiceResults     PracticeResult[]
-    sceneResults        SceneResult[]
-    levelResults        LevelResult[]
+  id              String           @id @default(cuid())
+  name            String?
+  email           String?          @unique
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  levelResults    LevelResult[]
+  practiceResults PracticeResult[]
+  sceneResults    SceneResult[]
+  sessions        Session[]
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
 
 model Level {
-  id                     String        @id @default(cuid())
-  name                   String
-  enablePractice         Boolean
-  bpm                    Int
-  description            String
-  fragmentVisibleCount   Int
-  duration               Int
-  correctAnswers         Int
-  cooldownTime           Int
-  fragments              LevelFragment[]
+  id                   String          @id @default(cuid())
+  name                 String
+  enablePractice       Boolean
+  bpm                  Int
+  description          String
+  fragmentVisibleCount Int
+  duration             Int
+  correctAnswers       Int
+  cooldownTime         Int
+  fragments            LevelFragment[]
 }
 
-
 model LevelFragment {
-  level           Level    @relation(fields: [levelId], references: [id])
-  levelId         String
-  fragment        Fragment @relation(fields: [fragmentId], references: [id])
-  fragmentId      String
+  levelId    String
+  fragmentId String
+  fragment   Fragment @relation(fields: [fragmentId], references: [id])
+  level      Level    @relation(fields: [levelId], references: [id])
 
   @@id([levelId, fragmentId])
 }
 
-
 model Fragment {
-  id                String   @id @default(cuid())
-  name              String
-  description       String
-  notes             NoteFragment[]
-  levels            LevelFragment[]
-  practiceResults   PracticeFragment[]
-  sceneResults      SceneFragment[]
-  levelResults      LevelResultFragment[]
+  id              String                @id @default(cuid())
+  name            String
+  description     String
+  levels          LevelFragment[]
+  levelResults    LevelResultFragment[]
+  notes           NoteFragment[]
+  practiceResults PracticeFragment[]
+  sceneResults    SceneFragment[]
 }
 
-
 model Note {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   note      String
   velocity  Int
   time      Int
   dur       Int
-  fragments   NoteFragment[]
+  fragments NoteFragment[]
 }
 
 model NoteFragment {
-  note        Note                 @relation(fields: [noteId], references: [id])
-  noteId      String
-  fragment    Fragment             @relation(fields: [fragmentId], references: [id])
-  fragmentId  String
+  noteId     String
+  fragmentId String
+  fragment   Fragment @relation(fields: [fragmentId], references: [id])
+  note       Note     @relation(fields: [noteId], references: [id])
 
   @@id([noteId, fragmentId])
 }
 
-
 model LevelResultFragment {
-  levelResult     LevelResult    @relation(fields: [levelResultId], references: [id])
-  levelResultId   String
-  fragment        Fragment       @relation(fields: [fragmentId], references: [id])
-  fragmentId      String
+  levelResultId String
+  fragmentId    String
+  fragment      Fragment    @relation(fields: [fragmentId], references: [id])
+  levelResult   LevelResult @relation(fields: [levelResultId], references: [id])
 
   @@id([levelResultId, fragmentId])
 }
 
-
 model PracticeFragment {
-  practiceResult    PracticeResult @relation(fields: [practiceResultId], references: [id])
-  practiceResultId  String
-  fragment          Fragment       @relation(fields: [fragmentId], references: [id])
-  fragmentId        String
+  practiceResultId String
+  fragmentId       String
+  fragment         Fragment       @relation(fields: [fragmentId], references: [id])
+  practiceResult   PracticeResult @relation(fields: [practiceResultId], references: [id])
 
   @@id([practiceResultId, fragmentId])
 }
 
-
 model SceneFragment {
-  sceneResult     SceneResult    @relation(fields: [sceneResultId], references: [id])
-  sceneResultId   String
-  fragment        Fragment       @relation(fields: [fragmentId], references: [id])
-  fragmentId      String
+  sceneResultId String
+  fragmentId    String
+  fragment      Fragment    @relation(fields: [fragmentId], references: [id])
+  sceneResult   SceneResult @relation(fields: [sceneResultId], references: [id])
 
   @@id([sceneResultId, fragmentId])
 }
 
-
 model LevelResult {
-  id              String              @id @default(cuid())
-  userId          String
-  date            DateTime
-  fragments       LevelResultFragment[]
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String                @id @default(cuid())
+  userId    String
+  date      DateTime
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fragments LevelResultFragment[]
 }
-
 
 model PracticeResult {
-  id              String              @id @default(cuid())
-  userId          String
-  date            DateTime
-  fragments       PracticeFragment[]
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String             @id @default(cuid())
+  userId    String
+  date      DateTime
+  fragments PracticeFragment[]
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model SceneResult {
-  id              String              @id @default(cuid())
-  userId          String
-  date            DateTime
-  correct         Boolean
-  transposed      Int
-  fragments       SceneFragment[]
-  levelId         String
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String          @id @default(cuid())
+  userId     String
+  date       DateTime
+  correct    Boolean
+  transposed Int
+  levelId    String
+  fragments  SceneFragment[]
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
