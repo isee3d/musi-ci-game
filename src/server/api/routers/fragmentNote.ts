@@ -10,7 +10,7 @@ import {
 
 
 export const fragmentNoteRouter = createTRPCRouter({
-  createNote: publicProcedure.input(NoteSchema).mutation(async ({ ctx, input }) => {
+  createNote: publicProcedure.input(NoteSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
     const { note, velocity, time, dur } = input;
 
     return await ctx.prisma.note.create({
@@ -18,11 +18,22 @@ export const fragmentNoteRouter = createTRPCRouter({
     });
   }),
 
+  deleteNote: publicProcedure.input(NoteSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
+    const { id } = input;
+    return await ctx.prisma.note.delete({
+      where: { id },
+    });
+  }),
+
+  updateNote: publicProcedure.input(NoteSchema).mutation(async ({ ctx, input }) => {
+    const { id, note, velocity, time, dur } = input;
+    return await ctx.prisma.note.update({
+      where: { id },
+      data: { note, velocity, time, dur },
+    });
+  }),
+
   getAllNotes: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.note.findMany();
   }),
-
-  //   getSecretMessage: protectedProcedure.query(() => {
-  //     return "you can now see this secret message!";
-  //   }),
 });

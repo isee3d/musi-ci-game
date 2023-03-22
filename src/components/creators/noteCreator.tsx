@@ -38,7 +38,7 @@ const NoteCreator: React.FC = () => {
       dur: length,
     }
     createNote.mutate(newNote);
-    addNewNote(newNote);           
+    addNewNote(newNote);
   };
 
   return (

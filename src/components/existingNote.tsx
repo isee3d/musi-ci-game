@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { api } from '~/utils/api';
 
 interface NoteProps {
     note: string;
     velocity: number;
     time: string;
     dur: number;
+    id: string;
 }
 
-const ExistingNote: React.FC<NoteProps> = ({ note, velocity, time, dur }) => {
+const ExistingNote: React.FC<NoteProps> = ({ id, note, velocity, time, dur }) => {
+    const deleteNote = api.fragmentNote.deleteNote.useMutation();
+    const updateNote = api.fragmentNote.updateNote.useMutation();
+
     const [noteValue, setNoteValue] = useState<string>(note);
     const [startTimeValue, setStartTimeValue] = useState<string>(time);
     const [lengthValue, setLengthValue] = useState<number>(dur);
@@ -45,18 +50,19 @@ const ExistingNote: React.FC<NoteProps> = ({ note, velocity, time, dur }) => {
         setVolumeValue(isNaN(value) ? 0 : value);
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onDeleteNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        const noteToRemove = {
-            note: noteValue,
-            velocity: volumeValue,
-            time: startTimeValue,
-            dur: lengthValue,
-        }
+        deleteNote.mutate({ id });
+    };
+
+    const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        if (hasChanged)
+            updateNote.mutate({ id, note: noteValue, velocity: volumeValue, time: startTimeValue, dur: lengthValue });
     };
 
     return (
-        <form onSubmit={ handleSubmit } className="m-2 flex w-full items-start space-x-4 rounded-lg shadow-md">
+        <div className="m-2 flex w-full items-start space-x-4 rounded-lg shadow-md">
             <div>
                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Noot</label>
                 <input type="text" placeholder="C4" value={ noteValue } onChange={ handleNoteChange } className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" required />
@@ -77,10 +83,13 @@ const ExistingNote: React.FC<NoteProps> = ({ note, velocity, time, dur }) => {
                 <input type="number" placeholder="John" value={ volumeValue } onChange={ handleVolumeChange } className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" required />
             </div>
 
-            <button type='submit' className='mt-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20'>
+            <button onClick={ onDeleteNote } className='mt-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20'>
                 Remove
             </button>
-        </form>
+            <button onClick={ onUpdateNote } className='mt-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20'>
+                Update
+            </button>
+        </div>
     );
 };
 

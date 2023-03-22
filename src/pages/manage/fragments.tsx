@@ -50,6 +50,7 @@ const manageFragments: NextPage = () => {
                     { notes.data?.map((note) => (
                         <ExistingNote
                             key={ note.id }
+                            id={ note.id }
                             note={ note.note }
                             velocity={ note.velocity }
                             time={ note.time }
