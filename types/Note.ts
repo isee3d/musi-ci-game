@@ -1,9 +1,9 @@
 export interface Note {
-  id: string;
+  id?: string;
   note: string;
   velocity: number;
   /** start of note in Ticks */
-  time: number;
+  time: string;
   /** duration in Ticks */
   dur: number;
 }

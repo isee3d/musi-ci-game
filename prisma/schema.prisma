@@ -97,7 +97,7 @@ model Note {
   id        String         @id @default(cuid())
   note      String
   velocity  Int
-  time      Int
+  time      String
   dur       Int
   fragments NoteFragment[]
 }
