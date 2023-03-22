@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Note } from 'types/Note';
 import { useNoteStore } from '~/stores/useNotesStore';
 import { api } from "~/utils/api";
 import { NoteSchema } from "prisma/generated/zod";
@@ -32,15 +31,14 @@ const NoteCreator: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newNote: Note = {
+    const newNote = {
       note: note,
       velocity: volume,
       time: startTime,
       dur: length,
     }
-    createNote.mutate(NoteSchema.parse(newNote));
-
-    addNewNote(newNote);
+    createNote.mutate(newNote);
+    addNewNote(newNote);           
   };
 
   return (
