@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { NoteSchema } from "prisma/generated/zod";
 
 import {
@@ -7,31 +6,20 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-// TODO:
-
-// 1. Add route for create note
-// 1. Add route for create fragment?
+// TODO Make procedures protected
 
 
 export const fragmentNoteRouter = createTRPCRouter({
-  createNote: publicProcedure.input(NoteSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { note, velocity, time, dur } = input;
+  createNote: publicProcedure.input(NoteSchema).mutation(async ({ ctx, input }) => {
+    const { note, velocity, time, dur } = input;
 
-      const createdNote = await ctx.prisma.note.create({
-        data: {
-          note,
-          time,
-          velocity,
-          dur,
-        },
-      });
+    return await ctx.prisma.note.create({
+      data: { note, time, velocity, dur },
+    });
+  }),
 
-      return createdNote;
-    }),
-
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+  getAllNotes: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.note.findMany();
   }),
 
   //   getSecretMessage: protectedProcedure.query(() => {

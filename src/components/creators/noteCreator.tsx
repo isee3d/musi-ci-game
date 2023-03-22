@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { Note } from 'types/Note';
 import { useNoteStore } from '~/stores/useNotesStore';
 import { api } from "~/utils/api";
+import { NoteSchema } from "prisma/generated/zod";
 
-interface NoteCreatorProps {
-}
-
-const NoteCreator: React.FC<NoteCreatorProps> = () => {
+const NoteCreator: React.FC = () => {
   const { addNewNote } = useNoteStore();
   const createNote = api.fragmentNote.createNote.useMutation();
   const [note, setNote] = useState<string>('');
@@ -40,11 +38,10 @@ const NoteCreator: React.FC<NoteCreatorProps> = () => {
       time: startTime,
       dur: length,
     }
-    createNote.mutate(newNote);
+    createNote.mutate(NoteSchema.parse(newNote));
 
     addNewNote(newNote);
   };
-
 
   return (
     <form onSubmit={ handleSubmit } className="m-2 flex w-full items-start space-x-4 rounded-lg shadow-md">
