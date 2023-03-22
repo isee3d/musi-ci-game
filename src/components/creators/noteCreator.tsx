@@ -1,11 +1,14 @@
+import { Note } from '@prisma/client';
 import React, { useState } from 'react';
 import { useNoteStore } from '~/stores/useNotesStore';
 import { api } from "~/utils/api";
-import { NoteSchema } from "prisma/generated/zod";
 
 const NoteCreator: React.FC = () => {
   const { addNewNote } = useNoteStore();
-  const createNote = api.fragmentNote.createNote.useMutation();
+  const createNote = api.fragmentNote.createNote.useMutation(
+    { onSuccess: (note: Note) => addNewNote(note) }
+  );
+  
   const [note, setNote] = useState<string>('');
   const [startTime, setStartTime] = useState<string>('');
   const [length, setLength] = useState<number>(0);
@@ -38,7 +41,6 @@ const NoteCreator: React.FC = () => {
       dur: length,
     }
     createNote.mutate(newNote);
-    addNewNote(newNote);
   };
 
   return (
