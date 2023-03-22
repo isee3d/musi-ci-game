@@ -44,9 +44,13 @@
 // module.exports = config;
 {
   "root": true,
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "extends": [
     "next/core-web-vitals",
-    "plugin:tailwindcss/recommended"
+    "plugin:tailwindcss/recommended",
+    "plugin:@typescript-eslint/recommended",
   ],
   "rules": {
     "max-len": [

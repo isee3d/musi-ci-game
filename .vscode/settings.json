@@ -26,6 +26,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.codeActionsOnSave": {
+    "eslint.format.enable": true,
     "source.fixAll.eslint": true,
     "addMissingImports": true,
   },
@@ -73,6 +74,9 @@
   "typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }

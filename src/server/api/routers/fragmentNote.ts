@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { NoteSchema } from "prisma/generated/zod";
 
 import {
   createTRPCRouter,
@@ -13,16 +14,7 @@ import {
 
 
 export const fragmentNoteRouter = createTRPCRouter({
-    createNote: publicProcedure
-    .input(
-      z.object({
-         id: z.string().optional(),
-         note: z.string(),
-         velocity: z.number(),
-         time: z.string(),
-         dur: z.number(),
-      })
-    )
+  createNote: publicProcedure.input(NoteSchema)
     .mutation(async ({ ctx, input }) => {
       const { note, velocity, time, dur } = input;
 
@@ -42,7 +34,7 @@ export const fragmentNoteRouter = createTRPCRouter({
     return ctx.prisma.example.findMany();
   }),
 
-//   getSecretMessage: protectedProcedure.query(() => {
-//     return "you can now see this secret message!";
-//   }),
+  //   getSecretMessage: protectedProcedure.query(() => {
+  //     return "you can now see this secret message!";
+  //   }),
 });
