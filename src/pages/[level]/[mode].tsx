@@ -3,7 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from 'next/router'
 import { useEffect, useState } from "react";
-import { FragmentCard } from "~/components/fragmentCard";
+import AnimationPlayer from "~/components/fragment/animationPlayer";
+import { FragmentCard } from "~/components/fragment/fragmentCard";
 
 const Mode: NextPage = () => {
     const router = useRouter();
@@ -60,20 +61,22 @@ const Mode: NextPage = () => {
                     Kijk en luister
                 </h3>
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
-                    { !isStarted && (
+                    {/* { !isStarted && (
                         <button className="rounded border p-2 text-5xl font-extrabold text-white" onClick={ () => setIsStarted(true) }>start</button>
                     ) }
                     { isStarted && countdown > 1 && <div className="text-center text-5xl font-extrabold text-white">{ countdown - 1 }</div> }
-                    { isStarted && countdown === 1 && <div className="text-center text-5xl font-extrabold text-white">GO!</div> }
-                    { isStarted && countdown === 0 && (
+                    { isStarted && countdown === 1 && <div className="text-center text-5xl font-extrabold text-white">GO!
+                    </div> } */}
+                    {/* { isStarted && countdown === 0 && ( */ }
+                    { true && (
                         <div>
                             {/* Fragments here */ }
                             <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
-                                {/* Fragment content here */ }
+                                <AnimationPlayer width={ 200 } height={ 100 } />
                             </FragmentCard>
-                            <FragmentCard onClick={ () => console.log('clicked') } color={ 'wrong' } >
-                                {/* Fragment content here */ }
-                            </FragmentCard>
+                            {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'wrong' } > */ }
+                            {/* Fragment content here */ }
+                            {/* </FragmentCard> */ }
                             {/* Play and stop button */ }
                             <div className="flex justify-around sm:flex sm:flex-col">
                                 <Link

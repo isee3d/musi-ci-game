@@ -20,7 +20,7 @@ const NoteCreator: React.FC = () => {
     mode: 'onBlur',
   });
 
-  const onSubmit: SubmitHandler<Note> = (data) => console.log(data)//createNote.mutate(data);
+  const onSubmit: SubmitHandler<Note> = (data) => createNote.mutate(data);
 
   return (
     <form onSubmit={ handleSubmit(onSubmit) }
