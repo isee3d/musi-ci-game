@@ -1,11 +1,14 @@
-import { type NextPage } from "next";
+import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
-const Level: NextPage = () => {
-    const router = useRouter();
-    const { level } = router.query;
+const Level: NextPage<{ level: string }> = ({ level }) => {
+// const Level: NextPage = () => {
+    // const router = useRouter();
+    // const { level } = router.query;
+    // get the rest of the level data here using trpc
 
     return (<>
         <Head>
@@ -43,6 +46,25 @@ const Level: NextPage = () => {
             </div>
         </main>
     </>)
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    const ssg = generateSSGHelper();
+    const level = context.params?.level;
+
+    if (typeof level !== "string") throw new Error("No Level");
+
+    // await ssg.   Do the prefetch of the level data here
+    return {
+        props: {
+            trpcState: ssg.dehydrate(),
+            level,
+        },
+    };
+};
+
+export const getStaticPaths = () => {
+    return { paths: [], fallback: "blocking" };
 };
 
 export default Level;
