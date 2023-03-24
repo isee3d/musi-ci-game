@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '~/utils/api';
+import { api, RouterOutputs } from '~/utils/api';
 
-interface NoteProps {
-    note: string;
-    velocity: number;
-    time: string;
-    dur: number;
-    id: string;
-}
-
-const ExistingNote: React.FC<NoteProps> = ({ id, note, velocity, time, dur }) => {
+type NoteFromRoute = RouterOutputs["fragmentNote"]["getAllNotes"][number]
+const ExistingNote: React.FC<NoteFromRoute> = ({ id, note, velocity, time, dur }) => {
     const ctx = api.useContext();
 
     const deleteNote = api.fragmentNote.deleteNote.useMutation();
