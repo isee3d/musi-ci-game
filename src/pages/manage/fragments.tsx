@@ -5,7 +5,7 @@ import ExistingNote from "~/components/existingNote";
 import { api } from "~/utils/api";
 
 const manageFragments: NextPage = () => {
-    const notes = api.fragmentNote.getAllNotes.useQuery();
+    const { data: notes } = api.fragmentNote.getAllNotes.useQuery();
 
     return (
         <>
@@ -47,7 +47,7 @@ const manageFragments: NextPage = () => {
                         </div>
                     </div>
                     {/* get all notes... */ }
-                    { notes.data?.map((note) => (
+                    { notes?.map((note) => (
                         <ExistingNote
                             key={ note.id }
                             id={ note.id }
@@ -62,7 +62,8 @@ const manageFragments: NextPage = () => {
                             Noten toevoegen of verwijderen
                         </h3>
                         <NoteCreator />
-                        <button className="m-4 w-40 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 ">
+                        <button
+                            className="m-4 w-40 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 ">
                             Toevoegen
                         </button>
                     </div>

@@ -1,14 +1,19 @@
 {
-  "name": "my-t3-app",
+  "name": "musi-ci-web-game",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.8.0",
+    "pnpm": "7.27.0"
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "db-seed": "prisma db seed"
+    "db-seed": "prisma db seed",
+    "typecheck": "tsc --noEmit"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -28,6 +33,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.7",
+    "react-hot-toast": "^2.4.0",
     "superjson": "1.9.1",
     "zod": "^3.20.6",
     "zustand": "^4.3.6"

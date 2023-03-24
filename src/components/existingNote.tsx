@@ -10,6 +10,8 @@ interface NoteProps {
 }
 
 const ExistingNote: React.FC<NoteProps> = ({ id, note, velocity, time, dur }) => {
+    const ctx = api.useContext();
+
     const deleteNote = api.fragmentNote.deleteNote.useMutation();
     const updateNote = api.fragmentNote.updateNote.useMutation();
 
@@ -53,6 +55,7 @@ const ExistingNote: React.FC<NoteProps> = ({ id, note, velocity, time, dur }) =>
     const onDeleteNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         deleteNote.mutate({ id });
+        ctx.fragmentNote.getAllNotes.invalidate();
     };
 
     const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

@@ -1,5 +1,6 @@
 import { NoteSchema } from "prisma/generated/zod";
 
+
 import {
   createTRPCRouter,
   publicProcedure,
@@ -33,7 +34,7 @@ export const fragmentNoteRouter = createTRPCRouter({
     });
   }),
 
-  getAllNotes: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.note.findMany();
+  getAllNotes: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.note.findMany();
   }),
 });
