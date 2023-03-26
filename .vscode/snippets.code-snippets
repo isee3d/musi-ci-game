@@ -1,21 +1,44 @@
 {
-    "Create Vue3 component": {
-    "scope": "vue",
-    "prefix": "vue-3-comp",
-    "body": [
-        "<script setup lang=\"ts\">",
-        "   $1",
-        "</script>",
-        "",
-        "<template>",
-        "  <div>",
-        "   $0",
-        "  </div>",
-        "</template>",
-        ""
-    ],
-    "description": "Create a new component"
-    }
+    "Next.js Page File": {
+        "prefix": "nextpage",
+        "body": [
+            "import Head from 'next/head';",
+            "import { type NextPage } from 'next';",
+            "",
+            "const $1: NextPage = () => {",
+            "  return (",
+            "    <>",
+            "      <Head>",
+            "        <title>$2</title>",
+            "        <meta name='description' content='$3' />",
+            "        <link rel='icon' href='/favicon.ico' />",
+            "      </Head>",
+            "      <main>",
+            "      </main>",
+            "    </>",
+            "  );",
+            "};",
+            "",
+            "export default $1;"
+        ],
+        "description": "Create a Next.js page component"
+    },
+    "Next.js component": {
+        "prefix": "rfc",
+        "body": [
+            "import React from 'react';",
+            "",
+            "const $1: React.FC = () => {",
+            "  return (",
+            "    <>",
+            "    </>",
+            "  );",
+            "};",
+            "",
+            "export default $1;"
+        ],
+        "description": "Create a Next.js component"
+    },
 }
 
 // https://code.visualstudio.com/docs/editor/userdefinedsnippets
