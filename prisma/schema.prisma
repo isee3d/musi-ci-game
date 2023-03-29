@@ -13,12 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -45,19 +39,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id              String           @id @default(cuid())
-  name            String?
-  email           String?          @unique
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  levelResults    LevelResult[]
-  practiceResults PracticeResult[]
-  sceneResults    SceneResult[]
-  sessions        Session[]
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -66,107 +47,152 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Level {
-  id                   String          @id @default(cuid())
-  name                 String
-  enablePractice       Boolean
-  bpm                  Int
-  description          String
-  fragmentVisibleCount Int
-  duration             Int
-  correctAnswers       Int
-  cooldownTime         Int
-  fragments            LevelFragment[]
+model User {
+  id                String           @id @default(cuid())
+  name              String?
+  email             String?          @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+
+  // Own defined fields
+  id_restGehoor     String
+  restGehoor        RestGehoor?       @relation(fields: [id_restGehoor], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  id_TypeCI         String
+  typeCI            TypeCI?           @relation(fields: [id_TypeCI], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  id_Role           String
+  role              Role             @relation(fields: [id_Role], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  id_Team           String?
+  team              Team?            @relation(fields: [id_Team], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  levelResults       LevelResult[]
+
+  hadTraining       Boolean?         @default(false)
+  experience        Int?             @default(0)
+  processor         String?
+  entreeVragenLijst String?
+  createdAt         DateTime         @default(now())
 }
 
-model LevelFragment {
-  levelId    String
-  fragmentId String
-  fragment   Fragment @relation(fields: [fragmentId], references: [id])
-  level      Level    @relation(fields: [levelId], references: [id])
+model RestGehoor {
+  id                String      @id @default(cuid())
+  users             User[]
 
-  @@id([levelId, fragmentId])
+  reated_at        DateTime
+  restGehoor        Int
+}
+
+model TypeCI {
+  id                String      @id @default(cuid())
+  users             User[]
+
+  ciName            String    @unique
+  merk              String
+}
+
+model Role {
+  id                  String         @id @default(cuid())
+  users               User[]
+
+  name                String         @unique
+}
+
+model Kliniek {
+  id                  String         @id @default(cuid())
+  team                Team[]
+
+  name                String        @unique
+}
+
+model Team {
+  id                String         @id @default(cuid())
+  id_Kliniek        String
+  kliniek           Kliniek        @relation(fields: [id_Kliniek], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  users             User[]
+  game              Game[]
+
+  name              String
+  description       String
+}
+
+model Game {
+  id                String         @id @default(cuid())
+  teams             Team[]
+  levels           Level[]
+
+  name              String
+}
+
+model Level {
+  id                String         @id @default(cuid())
+  id_Game           String
+  game              Game      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fragments         Fragment[]
+  gameModes         GameMode[]
+  id_levelResult    String
+  levelResult       LevelResult   @relation(fields: [id_levelResult], references: [id])
+
+  name              String
+  BPM               Int
+  description       Int
+  correctAnswers    Int
+  cooldownTime      Int
+  fragmentToShow    Int
 }
 
 model Fragment {
-  id              String                @id @default(cuid())
-  name            String
-  description     String
-  levels          LevelFragment[]
-  levelResults    LevelResultFragment[]
-  notes           NoteFragment[]
-  practiceResults PracticeFragment[]
-  sceneResults    SceneFragment[]
+  id                String         @id @default(cuid())
+  description       String
+  notes             Note[]
+  levels           Level[]
+
+  name              String
 }
 
 model Note {
-  id        String         @id @default(cuid())
-  note      String
-  velocity  Int
-  time      String
-  dur       Int
-  fragments NoteFragment[]
+  id                 String         @id @default(cuid())
+  id_Fragment       String
+  fragment          Fragment      @relation(fields: [id_Fragment], references: [id] , onDelete: Cascade, onUpdate: Cascade)
+
+  name              String
+  time              Int
+  duration          Int
+  speed             Int
 }
 
-model NoteFragment {
-  noteId     String
-  fragmentId String
-  fragment   Fragment @relation(fields: [fragmentId], references: [id])
-  note       Note     @relation(fields: [noteId], references: [id])
+model GameMode {
+  id                 String         @id @default(cuid())
+  levels            Level[]
+  id_levelResult    String
+  levelResult       LevelResult   @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([noteId, fragmentId])
-}
-
-model LevelResultFragment {
-  levelResultId String
-  fragmentId    String
-  fragment      Fragment    @relation(fields: [fragmentId], references: [id])
-  levelResult   LevelResult @relation(fields: [levelResultId], references: [id])
-
-  @@id([levelResultId, fragmentId])
-}
-
-model PracticeFragment {
-  practiceResultId String
-  fragmentId       String
-  fragment         Fragment       @relation(fields: [fragmentId], references: [id])
-  practiceResult   PracticeResult @relation(fields: [practiceResultId], references: [id])
-
-  @@id([practiceResultId, fragmentId])
-}
-
-model SceneFragment {
-  sceneResultId String
-  fragmentId    String
-  fragment      Fragment    @relation(fields: [fragmentId], references: [id])
-  sceneResult   SceneResult @relation(fields: [sceneResultId], references: [id])
-
-  @@id([sceneResultId, fragmentId])
+  name               String
 }
 
 model LevelResult {
-  id        String                @id @default(cuid())
-  userId    String
-  date      DateTime
-  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fragments LevelResultFragment[]
+   id                 String         @id @default(cuid())
+   id_User             String
+   user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   gameModes         GameMode[]
+   levels            Level[]
+   levelResultFragmentAnswers LevelResultFragmentAnswer[]
+
+    playDate           DateTime
+    startTime          DateTime
+    endTime            DateTime
+    timesListenedAgain Int
+    transposed         Int
+    reactionTime       Int
 }
 
-model PracticeResult {
-  id        String             @id @default(cuid())
-  userId    String
-  date      DateTime
-  fragments PracticeFragment[]
-  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+model LevelResultFragmentAnswer {
+   id                 String         @id @default(cuid())
+   id_LevelResult      String
+   levelResult         LevelResult    @relation(fields: [id_LevelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-model SceneResult {
-  id         String          @id @default(cuid())
-  userId     String
-  date       DateTime
-  correct    Boolean
-  transposed Int
-  levelId    String
-  fragments  SceneFragment[]
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+   answeredCorrectly  Boolean
 }
