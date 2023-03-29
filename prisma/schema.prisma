@@ -57,16 +57,16 @@ model User {
   sessions          Session[]
 
   // Own defined fields
-  id_restGehoor     String
+  id_restGehoor     Int?
   restGehoor        RestGehoor?       @relation(fields: [id_restGehoor], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  id_TypeCI         String
+  id_TypeCI         Int?
   typeCI            TypeCI?           @relation(fields: [id_TypeCI], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  id_Role           String
-  role              Role             @relation(fields: [id_Role], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_Role           Int?
+  role              Role?             @relation(fields: [id_Role], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  id_Team           String?
+  id_Team           Int?
   team              Team?            @relation(fields: [id_Team], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   levelResults       LevelResult[]
@@ -79,48 +79,48 @@ model User {
 }
 
 model RestGehoor {
-  id                String      @id @default(cuid())
-  users             User[]
+  id                Int      @id @default(autoincrement())
+  user             User[]
 
-  reated_at        DateTime
+  created_at        DateTime        @default(now())
   restGehoor        Int
 }
 
 model TypeCI {
-  id                String      @id @default(cuid())
-  users             User[]
+  id                Int      @id @default(autoincrement())
+  user             User[]
 
   ciName            String    @unique
   merk              String
 }
 
 model Role {
-  id                  String         @id @default(cuid())
+  id                  Int         @id @default(autoincrement())
   users               User[]
 
   name                String         @unique
 }
 
 model Kliniek {
-  id                  String         @id @default(cuid())
+  id                  Int        @id @default(autoincrement())
   team                Team[]
 
   name                String        @unique
 }
 
 model Team {
-  id                String         @id @default(cuid())
-  id_Kliniek        String
-  kliniek           Kliniek        @relation(fields: [id_Kliniek], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                Int         @id @default(autoincrement())
+  id_Kliniek        Int?
+  kliniek           Kliniek?        @relation(fields: [id_Kliniek], references: [id], onDelete: Cascade, onUpdate: Cascade)
   users             User[]
   game              Game[]
 
   name              String
-  description       String
+  description       String?
 }
 
 model Game {
-  id                String         @id @default(cuid())
+  id                Int         @id @default(autoincrement())
   teams             Team[]
   levels           Level[]
 
@@ -128,34 +128,34 @@ model Game {
 }
 
 model Level {
-  id                String         @id @default(cuid())
-  id_Game           String
+  id                Int         @id @default(autoincrement())
+  id_Game           Int
   game              Game      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fragments         Fragment[]
   gameModes         GameMode[]
-  id_levelResult    String
-  levelResult       LevelResult   @relation(fields: [id_levelResult], references: [id])
+  id_levelResult    Int?
+  levelResult       LevelResult?  @relation(fields: [id_levelResult], references: [id])
 
   name              String
+  description       String?
   BPM               Int
-  description       Int
   correctAnswers    Int
   cooldownTime      Int
   fragmentToShow    Int
 }
 
 model Fragment {
-  id                String         @id @default(cuid())
-  description       String
+  id                Int         @id @default(autoincrement())
   notes             Note[]
-  levels           Level[]
+  level           Level[]
 
   name              String
+  description       String?
 }
 
 model Note {
-  id                 String         @id @default(cuid())
-  id_Fragment       String
+  id                 Int         @id @default(autoincrement())
+  id_Fragment       Int
   fragment          Fragment      @relation(fields: [id_Fragment], references: [id] , onDelete: Cascade, onUpdate: Cascade)
 
   name              String
@@ -165,16 +165,16 @@ model Note {
 }
 
 model GameMode {
-  id                 String         @id @default(cuid())
+  id                 Int         @id @default(autoincrement())
   levels            Level[]
-  id_levelResult    String
-  levelResult       LevelResult   @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_levelResult    Int?
+  levelResult       LevelResult?   @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   name               String
 }
 
 model LevelResult {
-   id                 String         @id @default(cuid())
+   id                 Int         @id @default(autoincrement())
    id_User             String
    user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
    gameModes         GameMode[]
@@ -190,8 +190,8 @@ model LevelResult {
 }
 
 model LevelResultFragmentAnswer {
-   id                 String         @id @default(cuid())
-   id_LevelResult      String
+   id                 Int         @id @default(autoincrement())
+   id_LevelResult      Int
    levelResult         LevelResult    @relation(fields: [id_LevelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
    answeredCorrectly  Boolean
