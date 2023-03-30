@@ -1,11 +1,11 @@
-import { Note } from 'types/Note';
 import { create } from 'zustand';
-import { api } from "~/utils/api";
 import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { Note } from '@prisma/client';
 
 type NoteState = {
   notes: Note[];
   addNewNote: (newNote: Note) => void;
+  resetNotes: () => void;
 };
 
 export const useNoteStore = create<NoteState>((set) => ({
@@ -15,6 +15,7 @@ export const useNoteStore = create<NoteState>((set) => ({
       set((state) => ({ notes: [...state.notes, newNote] }));
     // }
   },
+  resetNotes: () => set({ notes: [] }),
 }))
 
 if (process.env.NODE_ENV === 'development') {

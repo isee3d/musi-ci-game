@@ -3,12 +3,11 @@ import { api, RouterOutputs } from '~/utils/api';
 
 type NoteFromRoute = RouterOutputs["fragmentNote"]["getAllNotes"][number]
 export const ExistingNote = (props: NoteFromRoute) => {
-    console.log(props)
     const { id, id_Fragment, name, time, duration, speed } = props;
     const ctx = api.useContext();
 
-    const deleteNote = api.fragmentNote.deleteNote.useMutation();
-    const updateNote = api.fragmentNote.updateNote.useMutation();
+    // const deleteNote = api.fragmentNote.deleteNote.useMutation();
+    // const updateNote = api.fragmentNote.updateNote.useMutation();
 
     const [noteValue, setNoteValue] = useState<string>(name);
     const [startTimeValue, setStartTimeValue] = useState<number>(time);
@@ -49,21 +48,21 @@ export const ExistingNote = (props: NoteFromRoute) => {
 
     const onDeleteNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        deleteNote.mutate({ id });
-        ctx.fragmentNote.getAllNotes.invalidate();
+        // deleteNote.mutate({ id });
+        // ctx.fragmentNote.getAllNotes.invalidate();
     };
 
     const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        if (hasChanged)
-            updateNote.mutate({
-                id,
-                id_Fragment,
-                name: noteValue,
-                speed: volumeValue,
-                time: startTimeValue,
-                duration: lengthValue
-            });
+        // if (hasChanged)
+            // updateNote.mutate({
+            //     id,
+            //     id_Fragment,
+            //     name: noteValue,
+            //     speed: volumeValue,
+            //     time: startTimeValue,
+            //     duration: lengthValue
+            // });
     };
 
     return (

@@ -1,4 +1,4 @@
-import { NoteSchema } from "prisma/generated/zod";
+import { FragmentSchema, NoteSchema } from "prisma/generated/zod";
 
 
 import {
@@ -32,6 +32,30 @@ export const fragmentNoteRouter = createTRPCRouter({
     return await ctx.prisma.note.update({
       where: { id },
       data: { name, speed, time, duration },
+    });
+  }),
+
+  createFragment: publicProcedure.input(FragmentSchema.omit({ id: true }))
+  .mutation(async ({ ctx, input }) => {
+    const { name, description} = input;
+
+    return await ctx.prisma.fragment.create({
+      data: { name, description },
+    });
+  }),
+
+  deleteFragment: publicProcedure.input(FragmentSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
+    const { id } = input;
+    return await ctx.prisma.fragment.delete({
+      where: { id },
+    });
+  }),
+
+  updateFragment: publicProcedure.input(FragmentSchema).mutation(async ({ ctx, input }) => {
+    const { id, name, description } = input;
+    return await ctx.prisma.fragment.update({
+      where: { id },
+      data: { name, description },
     });
   }),
 
