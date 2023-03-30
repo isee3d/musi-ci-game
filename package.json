@@ -9,11 +9,13 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "dev-o": "pnpm run open-browser && next dev",
     "postinstall": "pnpx prisma generate",
     "lint": "next lint",
     "start": "next start",
     "db-seed": "prisma db seed",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "open-browser": "start http://localhost:3000"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
