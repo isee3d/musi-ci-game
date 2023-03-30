@@ -10,6 +10,27 @@ async function main() {
     },
   });
 
+  // // Create teams
+  const team1 = await prisma.team.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      name: 'Team A',
+      description: 'First team',
+    },
+  });
+
+  const team2 = await prisma.team.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      id: 2,
+      name: 'Team B',
+      description: 'Second team',
+    },
+  });
+
   const trainerRole = await prisma.role.upsert({
     where: { name: 'trainer' },
     update: {},
@@ -59,26 +80,7 @@ async function main() {
     },
   });
 
-  // // Create teams
-  const team1 = await prisma.team.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      name: 'Team A',
-      description: 'First team',
-    },
-  });
 
-  const team2 = await prisma.team.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      id: 2,
-      name: 'Team B',
-      description: 'Second team',
-    },
-  });
 
   // create restgehoor
   const restgehoor1 = await prisma.restGehoor.upsert({
@@ -155,6 +157,7 @@ async function main() {
     create: {
       id: 1,
       name: 'Game 1',
+      teams: { connect: { id: 1 } },
     },
   })
 
