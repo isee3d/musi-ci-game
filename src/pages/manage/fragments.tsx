@@ -26,8 +26,7 @@ const ManageFragments: NextPage = () => {
             toast.error("Failed to upload new fragment! Please try again.");
         }
     });
-    const methods = useForm<Fragment>({ mode: 'onBlur'});
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = methods;
+    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur'});
 
     const validationRules = {
         name: { required: 'Note is required.' },
@@ -53,7 +52,6 @@ const ManageFragments: NextPage = () => {
                     Fragment maken
                 </h1>
                 <div className="container mx-auto flex flex-col items-center justify-center rounded-2xl border-4 border-white ">
-                    <FormProvider { ...methods } >
                         <form onSubmit={ handleSubmit(onSubmit) }>
                             <div className="grid w-full gap-6 md:grid-cols-2">
                                 <div>
@@ -89,8 +87,8 @@ const ManageFragments: NextPage = () => {
                             {/* Noten toevoegen */ }
                             <button
                                 type='submit'
-                                disabled={ !isValid }
-                                className={ `m-2 min-w-[50vh] rounded-xl bg-white/10 text-white  ${isValid ? 'bg-green-500 hover:bg-white/20 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
+                                disabled={ !isValid && notes.length > 0 }
+                            className={ `m-2 min-w-[50vh] rounded-xl text-white  ${(isValid && notes.length > 0) ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
                             >
                                 <h3 className="text-center text-2xl font-bold">Fragment opslaan</h3>
                             </button>
@@ -101,7 +99,6 @@ const ManageFragments: NextPage = () => {
                             </h3>
                             <NoteCreator />
                         </div>
-                    </FormProvider>
                 </div>
             </main>
         </>
