@@ -11,11 +11,12 @@ import {
 
 
 export const fragmentNoteRouter = createTRPCRouter({
-  createNote: publicProcedure.input(NoteSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
-    const { note, velocity, time, dur } = input;
+  createNote: publicProcedure.input(NoteSchema.omit({ id: true }))
+  .mutation(async ({ ctx, input }) => {
+    const { name, speed, time, duration, id_Fragment } = input;
 
     return await ctx.prisma.note.create({
-      data: { note, time, velocity, dur },
+      data: { name, time, speed, duration, id_Fragment },
     });
   }),
 
@@ -27,10 +28,10 @@ export const fragmentNoteRouter = createTRPCRouter({
   }),
 
   updateNote: publicProcedure.input(NoteSchema).mutation(async ({ ctx, input }) => {
-    const { id, note, velocity, time, dur } = input;
+    const { id, name, speed, time, duration } = input;
     return await ctx.prisma.note.update({
       where: { id },
-      data: { note, velocity, time, dur },
+      data: { name, speed, time, duration },
     });
   }),
 

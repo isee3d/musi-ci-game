@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import NoteCreator from "~/components/creators/noteCreator";
-import ExistingNote from "~/components/existingNote";
+import { ExistingNote } from "~/components/existingNote";
 import { api } from "~/utils/api";
 
 const manageFragments: NextPage = () => {
@@ -48,13 +48,7 @@ const manageFragments: NextPage = () => {
                     </div>
                     {/* get all notes... */ }
                     { notes?.map((note) => (
-                        <ExistingNote
-                            key={ note.id }
-                            id={ note.id }
-                            note={ note.note }
-                            velocity={ note.velocity }
-                            time={ note.time }
-                            dur={ note.dur } />
+                        <ExistingNote {...note} key={ note.id } />
                     )) }
                     {/* Noten toevoegen */ }
                     <div className="mt-4 flex flex-col space-y-3 border-4 pt-1 shadow-xl shadow-fuchsia-500">

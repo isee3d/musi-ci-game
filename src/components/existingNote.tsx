@@ -2,29 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { api, RouterOutputs } from '~/utils/api';
 
 type NoteFromRoute = RouterOutputs["fragmentNote"]["getAllNotes"][number]
-const ExistingNote: React.FC<NoteFromRoute> = ({ id, note, velocity, time, dur }) => {
+export const ExistingNote = (props: NoteFromRoute) => {
+    console.log(props)
+    const { id, id_Fragment, name, time, duration, speed } = props;
     const ctx = api.useContext();
 
     const deleteNote = api.fragmentNote.deleteNote.useMutation();
     const updateNote = api.fragmentNote.updateNote.useMutation();
 
-    const [noteValue, setNoteValue] = useState<string>(note);
-    const [startTimeValue, setStartTimeValue] = useState<string>(time);
-    const [lengthValue, setLengthValue] = useState<number>(dur);
-    const [volumeValue, setVolumeValue] = useState<number>(velocity);
+    const [noteValue, setNoteValue] = useState<string>(name);
+    const [startTimeValue, setStartTimeValue] = useState<number>(time);
+    const [lengthValue, setLengthValue] = useState<number>(duration);
+    const [volumeValue, setVolumeValue] = useState<number>(speed);
 
     const [hasChanged, setHasChanged] = useState<boolean>(false);
 
     useEffect(() => {
         // Check if the input values are different from the props values
-        const noteChanged = noteValue !== note;
+        const noteChanged = noteValue !== name;
         const startTimeChanged = startTimeValue !== time;
-        const lengthChanged = lengthValue !== dur;
-        const volumeChanged = volumeValue !== velocity;
+        const lengthChanged = lengthValue !== duration;
+        const volumeChanged = volumeValue !== speed;
 
         // Set the hasChanged flag if any input value has changed
         setHasChanged(noteChanged || startTimeChanged || lengthChanged || volumeChanged);
-    }, [note, noteValue, time, startTimeValue, dur, lengthValue, velocity, volumeValue]);
+    }, [name, noteValue, time, startTimeValue, duration, lengthValue, speed, volumeValue]);
 
 
     const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +34,7 @@ const ExistingNote: React.FC<NoteFromRoute> = ({ id, note, velocity, time, dur }
     };
 
     const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setStartTimeValue(e.target.value);
+        setStartTimeValue(parseInt(e.target.value));
     };
 
     const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +56,14 @@ const ExistingNote: React.FC<NoteFromRoute> = ({ id, note, velocity, time, dur }
     const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         if (hasChanged)
-            updateNote.mutate({ id, note: noteValue, velocity: volumeValue, time: startTimeValue, dur: lengthValue });
+            updateNote.mutate({
+                id,
+                id_Fragment,
+                name: noteValue,
+                speed: volumeValue,
+                time: startTimeValue,
+                duration: lengthValue
+            });
     };
 
     return (
@@ -88,5 +97,3 @@ const ExistingNote: React.FC<NoteFromRoute> = ({ id, note, velocity, time, dur }
         </div>
     );
 };
-
-export default ExistingNote;
