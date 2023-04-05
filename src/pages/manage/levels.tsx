@@ -15,8 +15,7 @@ const manageLevels: NextPage = () => {
                 <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
                     Levels beheren
                 </h1>
-                <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 border-white p-4 shadow ">
-                    {/* list of created levels */ }
+                <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 border-white p-4 shadow ">   
                     <form>
                         <div className="grid w-full gap-6 md:grid-cols-1">
                             <div>
@@ -35,10 +34,6 @@ const manageLevels: NextPage = () => {
                                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Het aantal goede antwoord voor een level is gehaald</label>
                                 <input type="text" id="first_name" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="bijv: 10" required />
                             </div>
-                            <div className="flex items-center">
-                                <input type="checkbox" value="" className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600" />
-                                <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Begin level met oefenen</label>
-                            </div>
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Aantal Zichtbare fragmenten in Scene</label>
                                 <input type="text" id="first_name" className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="bijv: 2" required />
@@ -48,14 +43,8 @@ const manageLevels: NextPage = () => {
                         <h3 className="my-2 text-xl text-white">
                             Fragmenten
                         </h3>
+                        {/* Show available fragments here... */}
 
-                        <div className=" flex flex-col space-y-3 rounded border-2 pt-1 shadow">
-                            {/* List of fragments here */ }
-                            <NoteCreator />
-                            <button className="m-4 w-1/3 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 ">
-                                Fragmenten toevoegen of verwijderen
-                            </button>
-                        </div>
                     </form>
                     <button
                         className="m-2 w-full rounded bg-white/10 p-3 text-white hover:bg-white/20 "
