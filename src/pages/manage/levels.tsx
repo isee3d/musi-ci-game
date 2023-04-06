@@ -40,6 +40,7 @@ const ManageLevels: NextPage = () => {
     const onSubmit: SubmitHandler<Level> = (data) => {
         addLevel({ ...data, fragments: addedFragments.map(f => f.id) });
         toast.success("Level created!")
+        setAddedFragments([]);
         reset();
     }
 
