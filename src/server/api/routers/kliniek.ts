@@ -1,4 +1,4 @@
-import { KliniekSchema } from "prisma/generated/zod";
+import { KliniekSchema, KliniekOptionalDefaultsSchema } from "prisma/generated/zod";
 
 import {
     createTRPCRouter,
@@ -8,7 +8,7 @@ import {
 
 export const kliniekRouter = createTRPCRouter({
     createKliniek: publicProcedure
-        .input(KliniekSchema.omit({ id: true }))
+        .input(KliniekOptionalDefaultsSchema)
         .mutation(async ({ ctx, input }) => {
             return await ctx.prisma.kliniek.create({
                 data: input,

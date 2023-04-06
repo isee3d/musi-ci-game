@@ -1,4 +1,4 @@
-import { TypeCISchema } from "prisma/generated/zod";
+import { TypeCISchema, TypeCIOptionalDefaultsSchema } from "prisma/generated/zod";
 
 import {
     createTRPCRouter,
@@ -8,7 +8,7 @@ import {
 
 export const typeCIRouter = createTRPCRouter({
     createTypeCI: publicProcedure
-        .input(TypeCISchema.omit({ id: true }))
+        .input(TypeCIOptionalDefaultsSchema)
         .mutation(async ({ ctx, input }) => {
             return await ctx.prisma.typeCI.create({
                 data: input,

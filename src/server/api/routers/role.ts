@@ -1,4 +1,4 @@
-import { RoleSchema } from "prisma/generated/zod";
+import { RoleSchema, RoleOptionalDefaultsSchema } from "prisma/generated/zod";
 
 import {
     createTRPCRouter,
@@ -8,7 +8,7 @@ import {
 
 export const roleRouter = createTRPCRouter({
     createRole: publicProcedure
-        .input(RoleSchema.omit({ id: true }))
+        .input(RoleOptionalDefaultsSchema)
         .mutation(async ({ ctx, input }) => {
             return await ctx.prisma.role.create({
                 data: input,

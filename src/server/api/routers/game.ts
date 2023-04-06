@@ -1,4 +1,4 @@
-import { GameSchema } from "prisma/generated/zod";
+import { GameSchema, GameModeOptionalDefaultsSchema } from "prisma/generated/zod";
 
 import {
     createTRPCRouter,
@@ -8,7 +8,7 @@ import {
 
 export const gameRouter = createTRPCRouter({
     createGame: publicProcedure
-        .input(GameSchema.omit({ id: true }))
+        .input(GameModeOptionalDefaultsSchema)
         .mutation(async ({ ctx, input }) => {
             return await ctx.prisma.game.create({
                 data: input,

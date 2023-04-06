@@ -1,4 +1,4 @@
-import { TeamSchema } from "prisma/generated/zod";
+import { TeamSchema, TeamOptionalDefaultsSchema } from "prisma/generated/zod";
 
 import {
     createTRPCRouter,
@@ -8,7 +8,7 @@ import {
 
 export const teamRouter = createTRPCRouter({
     createTeam: publicProcedure
-        .input(TeamSchema.omit({ id: true }))
+        .input(TeamOptionalDefaultsSchema)
         .mutation(async ({ ctx, input }) => {
             return await ctx.prisma.team.create({
                 data: input,
