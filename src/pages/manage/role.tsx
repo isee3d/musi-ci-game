@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
 
 const validationRules = {
-    name: { required: 'Note is required.' },
+    name: { required: 'Role is required.' },
 };
 
 const ManageRole: NextPage = () => {
