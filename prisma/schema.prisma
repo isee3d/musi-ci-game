@@ -2,6 +2,9 @@
 
 generator zod {
   provider = "zod-prisma-types"
+  createRelationValuesTypes        = true
+  createOptionalDefaultValuesTypes = true
+  writeNullishInModelTypes         = true
 }
 
 generator client {
@@ -129,8 +132,8 @@ model Game {
 
 model Level {
   id                Int         @id @default(autoincrement())
-  id_Game           Int
-  game              Game      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_Game           Int?
+  game              Game?      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fragments         Fragment[]
   gameModes         GameMode[]
   id_levelResult    Int?
@@ -140,7 +143,7 @@ model Level {
   description       String?
   BPM               Int
   correctAnswers    Int
-  cooldownTime      Int
+  cooldownTime      Int?
   fragmentToShow    Int
 }
 

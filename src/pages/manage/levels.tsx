@@ -1,6 +1,7 @@
 import { Fragment, Level } from "@prisma/client";
 import { NextPage } from "next";
 import Head from "next/head";
+import { FragmentOptionalDefaultsWithRelations, FragmentWithRelations } from "prisma/generated/zod";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -30,14 +31,15 @@ const validationRules = {
     },
 };
 
-const manageLevels: NextPage = () => {
+const ManageLevels: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Level>({ mode: 'onBlur' });
     const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
+    const { mutate: addLevel } = api.level.createLevel.useMutation();
     const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
 
     const onSubmit: SubmitHandler<Level> = (data) => {
-        toast.success("Note created!")
-        // mutate(data);
+        addLevel({ ...data, fragments: addedFragments.map(f => f.id) });
+        toast.success("Level created!")
         reset();
     }
 
@@ -53,12 +55,12 @@ const manageLevels: NextPage = () => {
     const fragmentsfromDBList = fragmentQuery.data?.map(fragment => {
         if (addedFragments.find(f => f.id === fragment.id)) return null;
         return (
-            <li key={ fragment.id } className="flex justify-between items-center">
-                <label className="mb-2 block text-sm font-medium text-gray-900 p-4 text-center dark:text-white">{ fragment.name }</label>
+            <li key={ fragment.id } className="flex items-center justify-between">
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ fragment.name }</label>
                 <button
                     type="button"
-                    className="text-white font-bold rounded p-4 bg-red-500 active:bg-red-800"
-                    onClick={ (e) => onAddFragmentButtonClick(fragment) }>
+                    className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
+                    onClick={ () => onAddFragmentButtonClick(fragment) }>
                     Add
                 </button>
             </li>
@@ -67,12 +69,12 @@ const manageLevels: NextPage = () => {
 
     const addedFragmentsList = addedFragments.map((fragment) => {
         return (
-            <li key={ fragment.id } className="flex justify-between items-center">
-                <label className="mb-2 block text-sm font-medium text-gray-900 p-4 text-center dark:text-white">{ fragment.name }</label>
+            <li key={ fragment.id } className="flex items-center justify-between">
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ fragment.name }</label>
                 <button
                     type="button"
-                    className="text-white font-bold rounded p-4 bg-red-500 active:bg-red-800"
-                    onClick={ (e) => onRemoveFragmentButtonClick(fragment) }>
+                    className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
+                    onClick={ () => onRemoveFragmentButtonClick(fragment) }>
                     Remove
                 </button>
             </li>
@@ -156,7 +158,6 @@ const manageLevels: NextPage = () => {
                             <ul>
                                 { addedFragmentsList }
                             </ul>
-                            {/* Added Fragments */ }
                             <h3 className="my-2 text-xl text-white">
                                 Fragmenten toevoegen
                             </h3>
@@ -164,18 +165,19 @@ const manageLevels: NextPage = () => {
                                 { fragmentsfromDBList }
                             </ul>
                         </div>
+                        <button
+                            type="submit"
+                            disabled={ !isValid }
+                            className={ `mt-4 rounded-xl p-4 text-white ${isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
+                        >
+                            <h3 className="text-center text-2xl font-bold">Nieuw level opslaan</h3>
+                        </button>
                     </form>
-                    <button
-                        type="submit"
-                        disabled={ !isValid }
-                        className={ `mt-4 rounded-xl p-4 text-white ${isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
-                    >
-                        <h3 className="text-center text-2xl font-bold">Nieuw level opslaan</h3>
-                    </button>
+
                 </div>
             </main>
         </>
     );
 };
 
-export default manageLevels;
+export default ManageLevels;

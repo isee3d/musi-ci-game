@@ -1,4 +1,5 @@
-import { LevelSchema } from "prisma/generated/zod";
+import { LevelOptionalDefaultsSchema, LevelSchema } from "prisma/generated/zod";
+import { z } from "zod";
 
 import {
     createTRPCRouter,
@@ -8,10 +9,17 @@ import {
 
 export const levelRouter = createTRPCRouter({
     createLevel: publicProcedure
-        .input(LevelSchema.omit({ id: true }))
+        .input(LevelOptionalDefaultsSchema.extend({fragments: z.array(z.number().int())}))
         .mutation(async ({ ctx, input }) => {
+            const { fragments, ...newInput } = input;
+
             return await ctx.prisma.level.create({
-                data: input,
+                data: {
+                    ...newInput,
+                    fragments: {
+                        connect: fragments.map((id) => ({ id })),
+                    },
+                }
             });
         }),
 
