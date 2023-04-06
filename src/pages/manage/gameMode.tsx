@@ -11,13 +11,20 @@ const validationRules = {
 
 const ManageGameMode: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<GameMode>({ mode: 'onBlur' });
-    const { mutate: addGameMode } = api.gameMode.createGameMode.useMutation();
+    const ctx = api.useContext();
+    const { mutate: addGameMode } = api.gameMode.createGameMode.useMutation({
+        onSuccess: () => {
+            ctx.gameMode.getAllGameModes.invalidate();
+        },
+    });
+    const gameModeQuery = api.gameMode.getAllGameModes.useQuery();
 
     const onSubmit: SubmitHandler<GameMode> = (data) => {
-        addGameMode(data);
-        toast.success("GameMode created!")
+        const exists = gameModeQuery.data?.find((gameMode) => gameMode.name === data.name);
+        const toastMessage = exists ? "GameMode already exists!" : "GameMode created!";
+        exists ? toast.error(toastMessage) : (addGameMode(data), toast.success(toastMessage));
         reset();
-    }
+    };
 
   return (
     <>

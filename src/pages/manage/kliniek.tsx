@@ -22,7 +22,6 @@ const ManageKliniek: NextPage = () => {
     const onSubmit: SubmitHandler<Kliniek> = (data) => {
         const exists = kliniekQuery.data?.find((kliniek) => kliniek.name === data.name);
         const toastMessage = exists ? "Kliniek already exists!" : "Kliniek created!";
-
         exists ? toast.error(toastMessage) : (addKliniek(data), toast.success(toastMessage));
         reset();
     };
@@ -31,7 +30,7 @@ const ManageKliniek: NextPage = () => {
         <>
             <Head>
                 <title></title>
-                <meta name='description' content='manage gamemode' />
+                <meta name='description' content='manage kliniek' />
                 <link rel='icon' href='/favicon.ico' />
             </Head>
             <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
