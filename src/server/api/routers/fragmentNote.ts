@@ -12,13 +12,13 @@ import {
 
 export const fragmentNoteRouter = createTRPCRouter({
   createNote: publicProcedure.input(NoteSchema.omit({ id: true }))
-  .mutation(async ({ ctx, input }) => {
-    const { name, speed, time, duration, id_Fragment } = input;
+    .mutation(async ({ ctx, input }) => {
+      const { name, speed, time, duration, id_Fragment } = input;
 
-    return await ctx.prisma.note.create({
-      data: { name, time, speed, duration, id_Fragment },
-    });
-  }),
+      return await ctx.prisma.note.create({
+        data: { name, time, speed, duration, id_Fragment },
+      });
+    }),
 
   deleteNote: publicProcedure.input(NoteSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
     const { id } = input;
@@ -36,12 +36,16 @@ export const fragmentNoteRouter = createTRPCRouter({
   }),
 
   createFragment: publicProcedure.input(FragmentSchema.omit({ id: true }))
-  .mutation(async ({ ctx, input }) => {
-    const { name, description} = input;
+    .mutation(async ({ ctx, input }) => {
+      const { name, description } = input;
 
-    return await ctx.prisma.fragment.create({
-      data: { name, description },
-    });
+      return await ctx.prisma.fragment.create({
+        data: { name, description },
+      });
+    }),
+
+  getAllFragments: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.fragment.findMany();
   }),
 
   deleteFragment: publicProcedure.input(FragmentSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {

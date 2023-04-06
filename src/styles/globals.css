@@ -10,4 +10,18 @@
 }
 
 /* Disable lastpass icon from appearing */
-div[data-lastpass-icon-root] { display: none }
+input.lp-ignore + div[data-lastpass-icon-root] {
+
+display: none !important;
+
+}
+div.css-1obar3y {
+  display: none!important;
+}
+
+input.noLastPassStyle {
+    background-image:none !important;
+    background-attachment:none !important;
+    padding-right:0 !important;
+    border:1px solid #ABADB3 !important;
+}
