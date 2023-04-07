@@ -29,6 +29,7 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 ## TO DO's
 
+- [x] Add Google Auth
 - [ ] Add google login user to a team
 - [ ] Get the games of a team for this user
 - [ ] Add Games page before levels page
