@@ -2,10 +2,10 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { generateServerSideHelper } from "~/server/helpers/ssgHelper";
 
 const Level: NextPage<{ level: string }> = ({ level }) => {
-// const Level: NextPage = () => {
+    // const Level: NextPage = () => {
     // const router = useRouter();
     // const { level } = router.query;
     // get the rest of the level data here using trpc
@@ -49,7 +49,7 @@ const Level: NextPage<{ level: string }> = ({ level }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const ssg = generateSSGHelper();
+    const ssg = generateServerSideHelper();
     const level = context.params?.level;
 
     if (typeof level !== "string") throw new Error("No Level");

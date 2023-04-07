@@ -93,7 +93,7 @@ model TypeCI {
   id                Int      @id @default(autoincrement())
   user             User[]
 
-  ciName            String    @unique
+  name            String    @unique
   merk              String
 }
 

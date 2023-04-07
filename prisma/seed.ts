@@ -109,7 +109,7 @@ async function main() {
     create: {
       id: 1,
       user: { connect: { id: '1' } },
-      ciName: 'Type CI 1',
+      name: 'Type CI 1',
       merk: 'Merk 1',
     },
   })

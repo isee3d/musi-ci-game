@@ -40,7 +40,7 @@ export const TeamScalarFieldEnumSchema = z.enum(['id','id_Kliniek','name','descr
 
 export const TransactionIsolationLevelSchema = z.enum(['Serializable']);
 
-export const TypeCIScalarFieldEnumSchema = z.enum(['id','ciName','merk']);
+export const TypeCIScalarFieldEnumSchema = z.enum(['id','name','merk']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','id_restGehoor','id_TypeCI','id_Role','id_Team','hadTraining','experience','processor','entreeVragenLijst','createdAt']);
 
@@ -312,7 +312,7 @@ export const RestGehoorOptionalDefaultsWithRelationsSchema: z.ZodType<RestGehoor
 
 export const TypeCISchema = z.object({
   id: z.number().int(),
-  ciName: z.string(),
+  name: z.string(),
   merk: z.string(),
 })
 
@@ -1047,7 +1047,7 @@ export const TypeCICountOutputTypeSelectSchema: z.ZodType<Prisma.TypeCICountOutp
 
 export const TypeCISelectSchema: z.ZodType<Prisma.TypeCISelect> = z.object({
   id: z.boolean().optional(),
-  ciName: z.boolean().optional(),
+  name: z.boolean().optional(),
   merk: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => TypeCICountOutputTypeArgsSchema)]).optional(),
@@ -1673,26 +1673,26 @@ export const TypeCIWhereInputSchema: z.ZodType<Prisma.TypeCIWhereInput> = z.obje
   OR: z.lazy(() => TypeCIWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => TypeCIWhereInputSchema),z.lazy(() => TypeCIWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  ciName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   merk: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   user: z.lazy(() => UserListRelationFilterSchema).optional()
 }).strict();
 
 export const TypeCIOrderByWithRelationInputSchema: z.ZodType<Prisma.TypeCIOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  ciName: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
   merk: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const TypeCIWhereUniqueInputSchema: z.ZodType<Prisma.TypeCIWhereUniqueInput> = z.object({
   id: z.number().int().optional(),
-  ciName: z.string().optional()
+  name: z.string().optional()
 }).strict();
 
 export const TypeCIOrderByWithAggregationInputSchema: z.ZodType<Prisma.TypeCIOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  ciName: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
   merk: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => TypeCICountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => TypeCIAvgOrderByAggregateInputSchema).optional(),
@@ -1706,7 +1706,7 @@ export const TypeCIScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.TypeCI
   OR: z.lazy(() => TypeCIScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => TypeCIScalarWhereWithAggregatesInputSchema),z.lazy(() => TypeCIScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  ciName: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   merk: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -2512,39 +2512,39 @@ export const RestGehoorUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RestGeho
 }).strict();
 
 export const TypeCICreateInputSchema: z.ZodType<Prisma.TypeCICreateInput> = z.object({
-  ciName: z.string(),
+  name: z.string(),
   merk: z.string(),
   user: z.lazy(() => UserCreateNestedManyWithoutTypeCIInputSchema).optional()
 }).strict();
 
 export const TypeCIUncheckedCreateInputSchema: z.ZodType<Prisma.TypeCIUncheckedCreateInput> = z.object({
   id: z.number().int().optional(),
-  ciName: z.string(),
+  name: z.string(),
   merk: z.string(),
   user: z.lazy(() => UserUncheckedCreateNestedManyWithoutTypeCIInputSchema).optional()
 }).strict();
 
 export const TypeCIUpdateInputSchema: z.ZodType<Prisma.TypeCIUpdateInput> = z.object({
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateManyWithoutTypeCINestedInputSchema).optional()
 }).strict();
 
 export const TypeCIUncheckedUpdateInputSchema: z.ZodType<Prisma.TypeCIUncheckedUpdateInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUncheckedUpdateManyWithoutTypeCINestedInputSchema).optional()
 }).strict();
 
 export const TypeCIUpdateManyMutationInputSchema: z.ZodType<Prisma.TypeCIUpdateManyMutationInput> = z.object({
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TypeCIUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TypeCIUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3448,7 +3448,7 @@ export const IntWithAggregatesFilterSchema: z.ZodType<Prisma.IntWithAggregatesFi
 
 export const TypeCICountOrderByAggregateInputSchema: z.ZodType<Prisma.TypeCICountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  ciName: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
   merk: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3458,13 +3458,13 @@ export const TypeCIAvgOrderByAggregateInputSchema: z.ZodType<Prisma.TypeCIAvgOrd
 
 export const TypeCIMaxOrderByAggregateInputSchema: z.ZodType<Prisma.TypeCIMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  ciName: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
   merk: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const TypeCIMinOrderByAggregateInputSchema: z.ZodType<Prisma.TypeCIMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  ciName: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
   merk: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -5319,13 +5319,13 @@ export const RestGehoorCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.R
 }).strict();
 
 export const TypeCICreateWithoutUserInputSchema: z.ZodType<Prisma.TypeCICreateWithoutUserInput> = z.object({
-  ciName: z.string(),
+  name: z.string(),
   merk: z.string()
 }).strict();
 
 export const TypeCIUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.TypeCIUncheckedCreateWithoutUserInput> = z.object({
   id: z.number().optional(),
-  ciName: z.string(),
+  name: z.string(),
   merk: z.string()
 }).strict();
 
@@ -5480,13 +5480,13 @@ export const TypeCIUpsertWithoutUserInputSchema: z.ZodType<Prisma.TypeCIUpsertWi
 }).strict();
 
 export const TypeCIUpdateWithoutUserInputSchema: z.ZodType<Prisma.TypeCIUpdateWithoutUserInput> = z.object({
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TypeCIUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.TypeCIUncheckedUpdateWithoutUserInput> = z.object({
   id: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  ciName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 

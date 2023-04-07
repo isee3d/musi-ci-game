@@ -5,9 +5,9 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragment/animationPlayer";
 import { FragmentCard } from "~/components/fragment/fragmentCard";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { generateServerSideHelper } from "~/server/helpers/ssgHelper";
 
-const Mode: NextPage<{level: string, mode: string}> = ({level, mode}) => {
+const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     // const Mode: NextPage = () => {
     // const router = useRouter();
     // const { level, mode } = router.query;
@@ -103,7 +103,7 @@ const Mode: NextPage<{level: string, mode: string}> = ({level, mode}) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const ssg = generateSSGHelper();
+    const ssg = generateServerSideHelper();
     const mode = context.params?.mode;
     const level = context.params?.level;
 
