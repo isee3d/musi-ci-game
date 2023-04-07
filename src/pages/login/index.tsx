@@ -2,12 +2,9 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { api } from "~/utils/api";
 
 const Login: NextPage = () => {
-    const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
     return (
         <>
             <Head>
@@ -27,7 +24,6 @@ const Login: NextPage = () => {
                     </div>
                     <div className="flex flex-col items-center gap-2">
                         <p className="text-2xl text-white">
-                            {/* { hello.data ? hello.data.greeting : "Loading tRPC query..." } */ }
                             Log hier in om te starten
                         </p>
                         <AuthShowcase />

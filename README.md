@@ -26,3 +26,23 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+## TO DO's
+
+- [ ] Add google login user to a team
+- [ ] Get the games of a team for this user
+- [ ] Add Games page before levels page
+- [ ] Retrieve the levels of the selected game
+- [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
+- [ ] Improve Note + fragment creation into one prisma transaction
+
+- [ ] Build the level Item logic so:
+
+- [ ] Create sound
+- [ ] Create pixi animation for the sound
+- [ ] Add user select functionality
+- [ ] Save User clicked and correlating data to DB
+- [ ] Add luisteren logic
+- [ ] Add spelen logic
+- [ ] Add uitdaging logic
+
