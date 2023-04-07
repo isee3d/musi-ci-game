@@ -134,19 +134,19 @@ async function main() {
   })
 
   const spelenGameMode = await prisma.gameMode.upsert({
-    where: { id: 1 },
+    where: { id: 2 },
     update: {},
     create: {
-      id: 1,
+      id: 2,
       name: 'Spelen',
     },
   })
 
   const UitdagingGameMode = await prisma.gameMode.upsert({
-    where: { id: 1 },
+    where: { id: 3 },
     update: {},
     create: {
-      id: 1,
+      id: 3,
       name: 'Uitdaging',
     },
   })

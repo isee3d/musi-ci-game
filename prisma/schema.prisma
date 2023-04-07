@@ -127,7 +127,8 @@ model Game {
   teams             Team[]
   levels           Level[]
 
-  name              String
+  name              String     @unique
+  description       String?
 }
 
 model Level {
