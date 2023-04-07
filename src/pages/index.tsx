@@ -17,7 +17,8 @@ const Welcome: NextPage = () => {
       <meta name="description" content="Voortgang levels" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <main className=" bg-my_bg_image flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
+    <main className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
+      <Image src="/images/piano_img.jpg" fill className="-z-50" alt="Logo" />
       <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
           Welcome!

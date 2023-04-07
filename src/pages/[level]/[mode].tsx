@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragment/animationPlayer";
 import { FragmentCard } from "~/components/fragment/fragmentCard";
-import { generateServerSideHelper } from "~/server/helpers/ssgHelper";
+import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     // const Mode: NextPage = () => {

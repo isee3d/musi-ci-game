@@ -2,7 +2,7 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { generateServerSideHelper } from "~/server/helpers/ssgHelper";
+import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 
 const Level: NextPage<{ level: string }> = ({ level }) => {
     // const Level: NextPage = () => {

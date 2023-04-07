@@ -7,9 +7,6 @@ const config = {
       colors: {
         textGreen: '#00FF00',
       },
-      backgroundImage: {
-        'my_bg_image' : "url('/images/piano_img.jpg')",
-      }
     },
   },
   plugins: [require("tailwindcss-debug-screens")],
