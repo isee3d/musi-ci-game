@@ -36,7 +36,7 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [ ] Retrieve the levels of the selected game
 - [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
 - [x] Improve Note + fragment creation into one prisma transaction
-- [ ] Use UseState instead of Zustand
+- [x] Use UseState instead of Zustand
 - [ ] Set prettier tailwind back (optional)
 
  Build the level Item logic so:
