@@ -1,6 +1,7 @@
-import { Fragment } from "@prisma/client";
+import { Fragment, Note } from "@prisma/client";
 import { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NoteCreator from "~/components/creators/noteCreator";
@@ -15,6 +16,7 @@ const validationRules = {
 
 const ManageFragments: NextPage = () => {
     const { notes, resetNotes } = useNoteStore();
+    const [newNotes, setNewNotes] = useState<Note[]>([]);
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur' });
     const { mutate } = api.fragmentNote.createFragment.useMutation({
         onSuccess: () => {
@@ -74,8 +76,8 @@ const ManageFragments: NextPage = () => {
                             </div>
                         </div>
                         {/* get all notes... */ }
-                        { notes?.map((note) => (
-                            <ExistingNote { ...note } key={ note.id } />
+                        { newNotes?.map((note) => (
+                            <ExistingNote key={ note.id + Math.random() * 58 } { ...note } />
                         )) }
                         {/* Noten toevoegen */ }
                         <button
@@ -90,7 +92,7 @@ const ManageFragments: NextPage = () => {
                         <h3 className="text-2xl text-white">
                             Noten toevoegen of verwijderen
                         </h3>
-                        <NoteCreator />
+                        <NoteCreator setNewNotes={ setNewNotes } />
                     </div>
                 </div>
             </main>

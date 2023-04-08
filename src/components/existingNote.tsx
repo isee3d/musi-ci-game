@@ -1,13 +1,9 @@
+import { Note } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
 import { api, RouterOutputs } from '~/utils/api';
 
-type NoteFromRoute = RouterOutputs["fragmentNote"]["getAllNotes"][number]
-export const ExistingNote = (props: NoteFromRoute) => {
-    const { id, id_Fragment, name, time, duration, speed } = props;
-    const ctx = api.useContext();
-
-    // const deleteNote = api.fragmentNote.deleteNote.useMutation();
-    // const updateNote = api.fragmentNote.updateNote.useMutation();
+export const ExistingNote = (props: Note) => {
+    const { id, name, time, duration, speed } = props;
 
     const [noteValue, setNoteValue] = useState<string>(name);
     const [startTimeValue, setStartTimeValue] = useState<number>(time);
@@ -55,14 +51,14 @@ export const ExistingNote = (props: NoteFromRoute) => {
     const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         // if (hasChanged)
-            // updateNote.mutate({
-            //     id,
-            //     id_Fragment,
-            //     name: noteValue,
-            //     speed: volumeValue,
-            //     time: startTimeValue,
-            //     duration: lengthValue
-            // });
+        // updateNote.mutate({
+        //     id,
+        //     id_Fragment,
+        //     name: noteValue,
+        //     speed: volumeValue,
+        //     time: startTimeValue,
+        //     duration: lengthValue
+        // });
     };
 
     return (

@@ -3,6 +3,7 @@ import { useNoteStore } from '~/stores/useNotesStore';
 import { api } from "~/utils/api";
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import React, { Dispatch, SetStateAction } from 'react';
 
 const validationRules = {
   name: { required: 'Note is required.' },
@@ -11,7 +12,7 @@ const validationRules = {
     pattern: { value: /^[0-9]+$/, message: 'Duration must be a number.' },
     min: { value: 0, message: 'Duration must be higher than 0' },
     setValueAs: (value: any) => parseInt(value),
-   },
+  },
   duration: {
     required: 'Note length is required.',
     pattern: { value: /^[0-9]+$/, message: 'Duration must be a number.' },
@@ -26,21 +27,8 @@ const validationRules = {
   },
 };
 
-const NoteCreator: React.FC = () => {
-  // const ctx = api.useContext();
-
-  const { addNewNote } = useNoteStore();
-  // const { mutate, isLoading: isCreatingNote } = api.fragmentNote.createNote.useMutation(
-  //   {
-  //     onSuccess: (note: Note) => {
-  //       ctx.fragmentNote.getAllNotes.invalidate();
-  //       toast.success("Note created!");
-  //       addNewNote(note)
-  //     },
-  //     onError: () => {
-  //       toast.error("Failed to post! Please try again later.");
-  //     }
-  //   });
+const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<Note[]>> }> = ({ setNewNotes }) => {
+  // const { addNewNote } = useNoteStore();
 
   const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Note>({
     mode: 'onBlur',
@@ -48,8 +36,8 @@ const NoteCreator: React.FC = () => {
 
   const onSubmit: SubmitHandler<Note> = (data) => {
     toast.success("Note created!")
-    addNewNote(data);
-    // mutate(data);
+    // addNewNote(data);
+    setNewNotes((prev) => [...prev, data]);
     reset();
   }
 
