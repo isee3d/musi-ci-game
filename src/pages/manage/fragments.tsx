@@ -1,31 +1,29 @@
 import { Fragment } from "@prisma/client";
 import { NextPage } from "next";
 import Head from "next/head";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NoteCreator from "~/components/creators/noteCreator";
 import { ExistingNote } from "~/components/existingNote";
 import { useNoteStore } from "~/stores/useNotesStore";
 import { api } from "~/utils/api";
 
+const validationRules = {
+    name: { required: 'Note is required.' },
+    description: { required: 'Description is required.' },
+};
+
 const ManageFragments: NextPage = () => {
-    const ctx = api.useContext();
     const { notes, resetNotes } = useNoteStore();
-    // const { mutate: createNote } = api.fragmentNote.createNote.useMutation();
+    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur' });
     const { mutate } = api.fragmentNote.createFragment.useMutation({
-        onSuccess: (data) => {
+        onSuccess: () => {
             toast.success("Fragment created!");
         },
         onError: () => {
             toast.error("Failed to upload new fragment! Please try again.");
         }
     });
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur' });
-
-    const validationRules = {
-        name: { required: 'Note is required.' },
-        description: { required: 'Description is required.' },
-    };
 
     const onSubmit: SubmitHandler<Fragment> = (data) => {
         mutate({ ...data, notes });
@@ -33,7 +31,6 @@ const ManageFragments: NextPage = () => {
         reset();
     }
 
-    // const { data: notes } = api.fragmentNote.getAllNotes.useQuery();
     return (
         <>
             <Head>

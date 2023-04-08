@@ -8,6 +8,7 @@ import { kliniekRouter } from "~/server/api/routers/kliniek";
 import { roleRouter } from "~/server/api/routers/role";
 import { teamRouter } from "~/server/api/routers/team";
 import { typeCIRouter } from "~/server/api/routers/typeCI";
+import { usersRouter } from "~/server/api/routers/users";
 
 /**
  * This is the primary router for your server.
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   role: roleRouter,
   team: teamRouter,
   typeCI: typeCIRouter,
+  user: usersRouter,
 });
 
 // export type definition of API

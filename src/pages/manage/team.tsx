@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { type NextPage } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Game, GameMode, Kliniek, Team } from '@prisma/client';
+import { Game, GameMode, Kliniek, Team, User } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
 
@@ -13,6 +13,13 @@ const validationRules = {
 const ManageTeam: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Team>({ mode: 'onBlur' });
     const teamQuery = api.team.getAllTeams.useQuery();
+    const getUsersWithoutTeamQuery = api.user.getAllUsersWithoutTeam.useQuery();
+    const { mutate: setUserToTeam } = api.user.setUserToTeam.useMutation({
+        onSuccess: () => {
+            toast.success("User added to team!");
+            ctx.user.getAllUsersWithoutTeam.invalidate();
+        },
+    });
     const ctx = api.useContext();
     const { mutate: addTeam } = api.team.createTeam.useMutation(
         {
@@ -21,6 +28,38 @@ const ManageTeam: NextPage = () => {
             }
         }
     );
+
+    const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
+        return (
+            <li key={ user.id } className="flex items-center justify-between">
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">
+                    { user.name }
+                </label>
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">
+                    { user.id_Team ? user.id_Team : 'Geen team' }
+                </label>
+                <div className="relative w-full lg:max-w-sm">
+                    <select
+                        value={ teamQuery.data?.[0]?.id }
+                        onChange={ (e) => { setUserToTeam({ userId: user.id, teamId: parseInt(e.target.value) }); } }
+                        className="w-full appearance-none rounded-md border bg-white p-2.5 text-gray-500 shadow-sm outline-none focus:border-indigo-600">
+                        { teamQuery.data?.map((team: Team) => {
+                            return (
+                                <option
+                                    key={ team.id }
+                                    value={ team.id }
+                                >
+                                    { team.name }
+                                </option>
+                            );
+                        })
+                        }
+                    </select>
+                </div>
+            </li>
+        );
+    });
+
 
     const onSubmit: SubmitHandler<Team> = (data) => {
         const exists = teamQuery.data?.find((team) => team.name === data.name);
@@ -74,9 +113,17 @@ const ManageTeam: NextPage = () => {
                         >
                             <h3 className="text-center text-2xl font-bold">Nieuwe team opslaan</h3>
                         </button>
+
+                        <h3 className="my-2 text-xl text-white">
+                            User toevoegen aan team
+                        </h3>
+
                     </form>
 
                 </div>
+                <ul>
+                    { usersWithoutTeamList }
+                </ul>
             </main>
         </>
     );
