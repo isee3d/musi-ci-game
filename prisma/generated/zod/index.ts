@@ -96,7 +96,7 @@ export const AccountWithRelationsSchema: z.ZodType<AccountWithRelations> = Accou
 //------------------------------------------------------
 
 export type AccountOptionalDefaultsRelations = {
-  user: UserOptionalDefaultsRelations;
+  user: UserOptionalDefaultsWithRelations;
 };
 
 export type AccountOptionalDefaultsWithRelations = z.infer<typeof AccountOptionalDefaultsSchema> & AccountOptionalDefaultsRelations
@@ -144,7 +144,7 @@ export const SessionWithRelationsSchema: z.ZodType<SessionWithRelations> = Sessi
 //------------------------------------------------------
 
 export type SessionOptionalDefaultsRelations = {
-  user: UserOptionalDefaultsRelations;
+  user: UserOptionalDefaultsWithRelations;
 };
 
 export type SessionOptionalDefaultsWithRelations = z.infer<typeof SessionOptionalDefaultsSchema> & SessionOptionalDefaultsRelations
@@ -237,13 +237,13 @@ export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.
 //------------------------------------------------------
 
 export type UserOptionalDefaultsRelations = {
-  accounts: AccountOptionalDefaultsRelations[];
-  sessions: SessionOptionalDefaultsRelations[];
-  restGehoor?: RestGehoorOptionalDefaultsRelations | null;
-  typeCI?: TypeCIOptionalDefaultsRelations | null;
-  role?: RoleOptionalDefaultsRelations | null;
-  team?: TeamOptionalDefaultsRelations | null;
-  levelResults: LevelResultOptionalDefaultsRelations[];
+  accounts: AccountOptionalDefaultsWithRelations[];
+  sessions: SessionOptionalDefaultsWithRelations[];
+  restGehoor?: RestGehoorOptionalDefaultsWithRelations | null;
+  typeCI?: TypeCIOptionalDefaultsWithRelations | null;
+  role?: RoleOptionalDefaultsWithRelations | null;
+  team?: TeamOptionalDefaultsWithRelations | null;
+  levelResults: LevelResultOptionalDefaultsWithRelations[];
 };
 
 export type UserOptionalDefaultsWithRelations = z.infer<typeof UserOptionalDefaultsSchema> & UserOptionalDefaultsRelations
@@ -297,7 +297,7 @@ export const RestGehoorWithRelationsSchema: z.ZodType<RestGehoorWithRelations> =
 //------------------------------------------------------
 
 export type RestGehoorOptionalDefaultsRelations = {
-  user: UserOptionalDefaultsRelations[];
+  user: UserOptionalDefaultsWithRelations[];
 };
 
 export type RestGehoorOptionalDefaultsWithRelations = z.infer<typeof RestGehoorOptionalDefaultsSchema> & RestGehoorOptionalDefaultsRelations
@@ -344,7 +344,7 @@ export const TypeCIWithRelationsSchema: z.ZodType<TypeCIWithRelations> = TypeCIS
 //------------------------------------------------------
 
 export type TypeCIOptionalDefaultsRelations = {
-  user: UserOptionalDefaultsRelations[];
+  user: UserOptionalDefaultsWithRelations[];
 };
 
 export type TypeCIOptionalDefaultsWithRelations = z.infer<typeof TypeCIOptionalDefaultsSchema> & TypeCIOptionalDefaultsRelations
@@ -390,7 +390,7 @@ export const RoleWithRelationsSchema: z.ZodType<RoleWithRelations> = RoleSchema.
 //------------------------------------------------------
 
 export type RoleOptionalDefaultsRelations = {
-  users: UserOptionalDefaultsRelations[];
+  users: UserOptionalDefaultsWithRelations[];
 };
 
 export type RoleOptionalDefaultsWithRelations = z.infer<typeof RoleOptionalDefaultsSchema> & RoleOptionalDefaultsRelations
@@ -436,7 +436,7 @@ export const KliniekWithRelationsSchema: z.ZodType<KliniekWithRelations> = Klini
 //------------------------------------------------------
 
 export type KliniekOptionalDefaultsRelations = {
-  team: TeamOptionalDefaultsRelations[];
+  team: TeamOptionalDefaultsWithRelations[];
 };
 
 export type KliniekOptionalDefaultsWithRelations = z.infer<typeof KliniekOptionalDefaultsSchema> & KliniekOptionalDefaultsRelations
@@ -488,9 +488,9 @@ export const TeamWithRelationsSchema: z.ZodType<TeamWithRelations> = TeamSchema.
 //------------------------------------------------------
 
 export type TeamOptionalDefaultsRelations = {
-  kliniek?: KliniekOptionalDefaultsRelations | null;
-  users: UserOptionalDefaultsRelations[];
-  game: GameOptionalDefaultsRelations[];
+  kliniek?: KliniekOptionalDefaultsWithRelations | null;
+  users: UserOptionalDefaultsWithRelations[];
+  game: GameOptionalDefaultsWithRelations[];
 };
 
 export type TeamOptionalDefaultsWithRelations = z.infer<typeof TeamOptionalDefaultsSchema> & TeamOptionalDefaultsRelations
@@ -541,8 +541,8 @@ export const GameWithRelationsSchema: z.ZodType<GameWithRelations> = GameSchema.
 //------------------------------------------------------
 
 export type GameOptionalDefaultsRelations = {
-  teams: TeamOptionalDefaultsRelations[];
-  levels: LevelOptionalDefaultsRelations[];
+  teams: TeamOptionalDefaultsWithRelations[];
+  levels: LevelOptionalDefaultsWithRelations[];
 };
 
 export type GameOptionalDefaultsWithRelations = z.infer<typeof GameOptionalDefaultsSchema> & GameOptionalDefaultsRelations
@@ -602,10 +602,10 @@ export const LevelWithRelationsSchema: z.ZodType<LevelWithRelations> = LevelSche
 //------------------------------------------------------
 
 export type LevelOptionalDefaultsRelations = {
-  game?: GameOptionalDefaultsRelations | null;
-  fragments: FragmentOptionalDefaultsRelations[];
-  gameModes: GameModeOptionalDefaultsRelations[];
-  levelResult?: LevelResultOptionalDefaultsRelations | null;
+  game?: GameOptionalDefaultsWithRelations | null;
+  fragments: FragmentOptionalDefaultsWithRelations[];
+  gameModes: GameModeOptionalDefaultsWithRelations[];
+  levelResult?: LevelResultOptionalDefaultsWithRelations | null;
 };
 
 export type LevelOptionalDefaultsWithRelations = z.infer<typeof LevelOptionalDefaultsSchema> & LevelOptionalDefaultsRelations
@@ -657,8 +657,8 @@ export const FragmentWithRelationsSchema: z.ZodType<FragmentWithRelations> = Fra
 //------------------------------------------------------
 
 export type FragmentOptionalDefaultsRelations = {
-  notes: NoteOptionalDefaultsRelations[];
-  level: LevelOptionalDefaultsRelations[];
+  notes: NoteOptionalDefaultsWithRelations[];
+  level: LevelOptionalDefaultsWithRelations[];
 };
 
 export type FragmentOptionalDefaultsWithRelations = z.infer<typeof FragmentOptionalDefaultsSchema> & FragmentOptionalDefaultsRelations
@@ -709,7 +709,7 @@ export const NoteWithRelationsSchema: z.ZodType<NoteWithRelations> = NoteSchema.
 //------------------------------------------------------
 
 export type NoteOptionalDefaultsRelations = {
-  fragment: FragmentOptionalDefaultsRelations;
+  fragment: FragmentOptionalDefaultsWithRelations;
 };
 
 export type NoteOptionalDefaultsWithRelations = z.infer<typeof NoteOptionalDefaultsSchema> & NoteOptionalDefaultsRelations
@@ -758,8 +758,8 @@ export const GameModeWithRelationsSchema: z.ZodType<GameModeWithRelations> = Gam
 //------------------------------------------------------
 
 export type GameModeOptionalDefaultsRelations = {
-  levels: LevelOptionalDefaultsRelations[];
-  levelResult?: LevelResultOptionalDefaultsRelations | null;
+  levels: LevelOptionalDefaultsWithRelations[];
+  levelResult?: LevelResultOptionalDefaultsWithRelations | null;
 };
 
 export type GameModeOptionalDefaultsWithRelations = z.infer<typeof GameModeOptionalDefaultsSchema> & GameModeOptionalDefaultsRelations
@@ -818,10 +818,10 @@ export const LevelResultWithRelationsSchema: z.ZodType<LevelResultWithRelations>
 //------------------------------------------------------
 
 export type LevelResultOptionalDefaultsRelations = {
-  user: UserOptionalDefaultsRelations;
-  gameModes: GameModeOptionalDefaultsRelations[];
-  levels: LevelOptionalDefaultsRelations[];
-  levelResultFragmentAnswers: LevelResultFragmentAnswerOptionalDefaultsRelations[];
+  user: UserOptionalDefaultsWithRelations;
+  gameModes: GameModeOptionalDefaultsWithRelations[];
+  levels: LevelOptionalDefaultsWithRelations[];
+  levelResultFragmentAnswers: LevelResultFragmentAnswerOptionalDefaultsWithRelations[];
 };
 
 export type LevelResultOptionalDefaultsWithRelations = z.infer<typeof LevelResultOptionalDefaultsSchema> & LevelResultOptionalDefaultsRelations
@@ -871,7 +871,7 @@ export const LevelResultFragmentAnswerWithRelationsSchema: z.ZodType<LevelResult
 //------------------------------------------------------
 
 export type LevelResultFragmentAnswerOptionalDefaultsRelations = {
-  levelResult: LevelResultOptionalDefaultsRelations;
+  levelResult: LevelResultOptionalDefaultsWithRelations;
 };
 
 export type LevelResultFragmentAnswerOptionalDefaultsWithRelations = z.infer<typeof LevelResultFragmentAnswerOptionalDefaultsSchema> & LevelResultFragmentAnswerOptionalDefaultsRelations

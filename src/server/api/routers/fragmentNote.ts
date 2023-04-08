@@ -1,4 +1,5 @@
 import { FragmentSchema, NoteSchema, NoteOptionalDefaultsSchema, FragmentOptionalDefaultsSchema } from "prisma/generated/zod";
+import { z } from "zod";
 
 
 import {
@@ -9,24 +10,15 @@ import {
 
 // TODO Make procedures protected
 
+const Note = z.object({
+  name: z.string(),
+  time: z.number(),
+  duration: z.number(),
+  speed: z.number(),
+});
+
 
 export const fragmentNoteRouter = createTRPCRouter({
-  createNote: publicProcedure.input(NoteOptionalDefaultsSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { name, speed, time, duration, id_Fragment } = input;
-
-      return await ctx.prisma.note.create({
-        data: { name, time, speed, duration, id_Fragment },
-      });
-    }),
-
-  deleteNote: publicProcedure.input(NoteSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
-    const { id } = input;
-    return await ctx.prisma.note.delete({
-      where: { id },
-    });
-  }),
-
   updateNote: publicProcedure.input(NoteSchema).mutation(async ({ ctx, input }) => {
     const { id, name, speed, time, duration } = input;
     return await ctx.prisma.note.update({
@@ -35,12 +27,17 @@ export const fragmentNoteRouter = createTRPCRouter({
     });
   }),
 
-  createFragment: publicProcedure.input(FragmentOptionalDefaultsSchema)
+  createFragment: publicProcedure.input(FragmentOptionalDefaultsSchema.extend({notes: z.array(Note)}))
     .mutation(async ({ ctx, input }) => {
-      const { name, description } = input;
+      const { notes, ...newInput } = input;
 
       return await ctx.prisma.fragment.create({
-        data: { name, description },
+        data: {
+          ...newInput,
+          notes: {
+            create: notes
+          },
+        }
       });
     }),
 
@@ -61,9 +58,5 @@ export const fragmentNoteRouter = createTRPCRouter({
       where: { id },
       data: { name, description },
     });
-  }),
-
-  getAllNotes: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.note.findMany();
   }),
 });

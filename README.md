@@ -35,9 +35,10 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [ ] Add Games page before levels page
 - [ ] Retrieve the levels of the selected game
 - [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
-- [ ] Improve Note + fragment creation into one prisma transaction
+- [x] Improve Note + fragment creation into one prisma transaction
+- [ ] Set prettier tailwind back
 
-- [ ] Build the level Item logic so:
+ Build the level Item logic so:
 
 - [ ] Create sound
 - [ ] Create pixi animation for the sound
