@@ -31,13 +31,12 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 - [x] Add Google Auth
 - [x] Add google login user to a team
-- [ ] Get the games of a team for this user
 - [ ] Add Games page before levels page
+- [ ] Get the games of a team for this user
 - [ ] Retrieve the levels of the selected game
 - [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
 - [x] Improve Note + fragment creation into one prisma transaction
 - [x] Use UseState instead of Zustand
-- [ ] Set prettier tailwind back (optional)
 
  Build the level Item logic so:
 
