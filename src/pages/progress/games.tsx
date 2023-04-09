@@ -1,14 +1,22 @@
-import { type NextPage } from "next";
+import { GetServerSideProps, type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import Game from "~/components/game";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const session = await getServerAuthSession(ctx);
+    return {
+        props: { session },
+    };
+};
 
 const UserGamesPage: NextPage = () => {
     const { data: session } = useSession();
     const gamesOfUserQuery = api.user.getGamesOfUser.useQuery({ id: session?.user.id })
-
+    console.log("role: " + session?.user.role)
     return (<>
         <Head>
             <title>User games</title>

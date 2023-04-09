@@ -42,7 +42,7 @@ export const TransactionIsolationLevelSchema = z.enum(['Serializable']);
 
 export const TypeCIScalarFieldEnumSchema = z.enum(['id','name','merk']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','id_restGehoor','id_TypeCI','id_Role','id_Team','hadTraining','experience','processor','entreeVragenLijst','createdAt']);
+export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','id_restGehoor','id_TypeCI','role','id_Team','hadTraining','experience','processor','entreeVragenLijst','createdAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires']);
 /////////////////////////////////////////
@@ -185,7 +185,7 @@ export const UserSchema = z.object({
   image: z.string().nullish(),
   id_restGehoor: z.number().int().nullish(),
   id_TypeCI: z.number().int().nullish(),
-  id_Role: z.number().int().nullish(),
+  role: z.string(),
   id_Team: z.number().int().nullish(),
   hadTraining: z.boolean(),
   experience: z.number().int(),
@@ -201,6 +201,7 @@ export type User = z.infer<typeof UserSchema>
 
 export const UserOptionalDefaultsSchema = UserSchema.merge(z.object({
   id: z.string().cuid().optional(),
+  role: z.string().optional(),
   hadTraining: z.boolean().optional(),
   experience: z.number().int().optional(),
   createdAt: z.coerce.date().optional(),
@@ -216,7 +217,6 @@ export type UserRelations = {
   sessions: SessionWithRelations[];
   restGehoor?: RestGehoorWithRelations | null;
   typeCI?: TypeCIWithRelations | null;
-  role?: RoleWithRelations | null;
   team?: TeamWithRelations | null;
   levelResults: LevelResultWithRelations[];
 };
@@ -228,7 +228,6 @@ export const UserWithRelationsSchema: z.ZodType<UserWithRelations> = UserSchema.
   sessions: z.lazy(() => SessionWithRelationsSchema).array(),
   restGehoor: z.lazy(() => RestGehoorWithRelationsSchema).nullish(),
   typeCI: z.lazy(() => TypeCIWithRelationsSchema).nullish(),
-  role: z.lazy(() => RoleWithRelationsSchema).nullish(),
   team: z.lazy(() => TeamWithRelationsSchema).nullish(),
   levelResults: z.lazy(() => LevelResultWithRelationsSchema).array(),
 }))
@@ -241,7 +240,6 @@ export type UserOptionalDefaultsRelations = {
   sessions: SessionOptionalDefaultsWithRelations[];
   restGehoor?: RestGehoorOptionalDefaultsWithRelations | null;
   typeCI?: TypeCIOptionalDefaultsWithRelations | null;
-  role?: RoleOptionalDefaultsWithRelations | null;
   team?: TeamOptionalDefaultsWithRelations | null;
   levelResults: LevelResultOptionalDefaultsWithRelations[];
 };
@@ -253,7 +251,6 @@ export const UserOptionalDefaultsWithRelationsSchema: z.ZodType<UserOptionalDefa
   sessions: z.lazy(() => SessionOptionalDefaultsWithRelationsSchema).array(),
   restGehoor: z.lazy(() => RestGehoorOptionalDefaultsWithRelationsSchema).nullish(),
   typeCI: z.lazy(() => TypeCIOptionalDefaultsWithRelationsSchema).nullish(),
-  role: z.lazy(() => RoleOptionalDefaultsWithRelationsSchema).nullish(),
   team: z.lazy(() => TeamOptionalDefaultsWithRelationsSchema).nullish(),
   levelResults: z.lazy(() => LevelResultOptionalDefaultsWithRelationsSchema).array(),
 }))
@@ -372,32 +369,6 @@ export const RoleOptionalDefaultsSchema = RoleSchema.merge(z.object({
 }))
 
 export type RoleOptionalDefaults = z.infer<typeof RoleOptionalDefaultsSchema>
-
-// ROLE RELATION SCHEMA
-//------------------------------------------------------
-
-export type RoleRelations = {
-  users: UserWithRelations[];
-};
-
-export type RoleWithRelations = z.infer<typeof RoleSchema> & RoleRelations
-
-export const RoleWithRelationsSchema: z.ZodType<RoleWithRelations> = RoleSchema.merge(z.object({
-  users: z.lazy(() => UserWithRelationsSchema).array(),
-}))
-
-// ROLE OPTIONAL DEFAULTS RELATION SCHEMA
-//------------------------------------------------------
-
-export type RoleOptionalDefaultsRelations = {
-  users: UserOptionalDefaultsWithRelations[];
-};
-
-export type RoleOptionalDefaultsWithRelations = z.infer<typeof RoleOptionalDefaultsSchema> & RoleOptionalDefaultsRelations
-
-export const RoleOptionalDefaultsWithRelationsSchema: z.ZodType<RoleOptionalDefaultsWithRelations> = RoleOptionalDefaultsSchema.merge(z.object({
-  users: z.lazy(() => UserOptionalDefaultsWithRelationsSchema).array(),
-}))
 
 /////////////////////////////////////////
 // KLINIEK SCHEMA
@@ -949,7 +920,6 @@ export const UserIncludeSchema: z.ZodType<Prisma.UserInclude> = z.object({
   sessions: z.union([z.boolean(),z.lazy(() => SessionFindManyArgsSchema)]).optional(),
   restGehoor: z.union([z.boolean(),z.lazy(() => RestGehoorArgsSchema)]).optional(),
   typeCI: z.union([z.boolean(),z.lazy(() => TypeCIArgsSchema)]).optional(),
-  role: z.union([z.boolean(),z.lazy(() => RoleArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   levelResults: z.union([z.boolean(),z.lazy(() => LevelResultFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
@@ -978,7 +948,7 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   image: z.boolean().optional(),
   id_restGehoor: z.boolean().optional(),
   id_TypeCI: z.boolean().optional(),
-  id_Role: z.boolean().optional(),
+  role: z.boolean().optional(),
   id_Team: z.boolean().optional(),
   hadTraining: z.boolean().optional(),
   experience: z.boolean().optional(),
@@ -989,7 +959,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   sessions: z.union([z.boolean(),z.lazy(() => SessionFindManyArgsSchema)]).optional(),
   restGehoor: z.union([z.boolean(),z.lazy(() => RestGehoorArgsSchema)]).optional(),
   typeCI: z.union([z.boolean(),z.lazy(() => TypeCIArgsSchema)]).optional(),
-  role: z.union([z.boolean(),z.lazy(() => RoleArgsSchema)]).optional(),
   team: z.union([z.boolean(),z.lazy(() => TeamArgsSchema)]).optional(),
   levelResults: z.union([z.boolean(),z.lazy(() => LevelResultFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UserCountOutputTypeArgsSchema)]).optional(),
@@ -1056,29 +1025,9 @@ export const TypeCISelectSchema: z.ZodType<Prisma.TypeCISelect> = z.object({
 // ROLE
 //------------------------------------------------------
 
-export const RoleIncludeSchema: z.ZodType<Prisma.RoleInclude> = z.object({
-  users: z.union([z.boolean(),z.lazy(() => UserFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => RoleCountOutputTypeArgsSchema)]).optional(),
-}).strict()
-
-export const RoleArgsSchema: z.ZodType<Prisma.RoleArgs> = z.object({
-  select: z.lazy(() => RoleSelectSchema).optional(),
-  include: z.lazy(() => RoleIncludeSchema).optional(),
-}).strict();
-
-export const RoleCountOutputTypeArgsSchema: z.ZodType<Prisma.RoleCountOutputTypeArgs> = z.object({
-  select: z.lazy(() => RoleCountOutputTypeSelectSchema).nullish(),
-}).strict();
-
-export const RoleCountOutputTypeSelectSchema: z.ZodType<Prisma.RoleCountOutputTypeSelect> = z.object({
-  users: z.boolean().optional(),
-}).strict();
-
 export const RoleSelectSchema: z.ZodType<Prisma.RoleSelect> = z.object({
   id: z.boolean().optional(),
   name: z.boolean().optional(),
-  users: z.union([z.boolean(),z.lazy(() => UserFindManyArgsSchema)]).optional(),
-  _count: z.union([z.boolean(),z.lazy(() => RoleCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 // KLINIEK
@@ -1540,7 +1489,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   image: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_restGehoor: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   id_TypeCI: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  id_Role: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  role: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_Team: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   hadTraining: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
   experience: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
@@ -1551,7 +1500,6 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   sessions: z.lazy(() => SessionListRelationFilterSchema).optional(),
   restGehoor: z.union([ z.lazy(() => RestGehoorRelationFilterSchema),z.lazy(() => RestGehoorWhereInputSchema) ]).optional().nullable(),
   typeCI: z.union([ z.lazy(() => TypeCIRelationFilterSchema),z.lazy(() => TypeCIWhereInputSchema) ]).optional().nullable(),
-  role: z.union([ z.lazy(() => RoleRelationFilterSchema),z.lazy(() => RoleWhereInputSchema) ]).optional().nullable(),
   team: z.union([ z.lazy(() => TeamRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   levelResults: z.lazy(() => LevelResultListRelationFilterSchema).optional()
 }).strict();
@@ -1564,7 +1512,7 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   image: z.lazy(() => SortOrderSchema).optional(),
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
+  role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   hadTraining: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional(),
@@ -1575,7 +1523,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   sessions: z.lazy(() => SessionOrderByRelationAggregateInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorOrderByWithRelationInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIOrderByWithRelationInputSchema).optional(),
-  role: z.lazy(() => RoleOrderByWithRelationInputSchema).optional(),
   team: z.lazy(() => TeamOrderByWithRelationInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional()
 }).strict();
@@ -1593,7 +1540,7 @@ export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderBy
   image: z.lazy(() => SortOrderSchema).optional(),
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
+  role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   hadTraining: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional(),
@@ -1618,7 +1565,7 @@ export const UserScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.UserScal
   image: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   id_restGehoor: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   id_TypeCI: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  id_Role: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
+  role: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   id_Team: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   hadTraining: z.union([ z.lazy(() => BoolNullableWithAggregatesFilterSchema),z.boolean() ]).optional().nullable(),
   experience: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
@@ -1716,13 +1663,11 @@ export const RoleWhereInputSchema: z.ZodType<Prisma.RoleWhereInput> = z.object({
   NOT: z.union([ z.lazy(() => RoleWhereInputSchema),z.lazy(() => RoleWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  users: z.lazy(() => UserListRelationFilterSchema).optional()
 }).strict();
 
 export const RoleOrderByWithRelationInputSchema: z.ZodType<Prisma.RoleOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  users: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional()
+  name: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RoleWhereUniqueInputSchema: z.ZodType<Prisma.RoleWhereUniqueInput> = z.object({
@@ -2370,6 +2315,7 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().int().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -2379,7 +2325,6 @@ export const UserCreateInputSchema: z.ZodType<Prisma.UserCreateInput> = z.object
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
@@ -2392,7 +2337,7 @@ export const UserUncheckedCreateInputSchema: z.ZodType<Prisma.UserUncheckedCreat
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().int().optional().nullable(),
   id_TypeCI: z.number().int().optional().nullable(),
-  id_Role: z.number().int().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().int().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().int().optional().nullable(),
@@ -2410,6 +2355,7 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2419,7 +2365,6 @@ export const UserUpdateInputSchema: z.ZodType<Prisma.UserUpdateInput> = z.object
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
@@ -2432,7 +2377,7 @@ export const UserUncheckedUpdateInputSchema: z.ZodType<Prisma.UserUncheckedUpdat
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2450,6 +2395,7 @@ export const UserUpdateManyMutationInputSchema: z.ZodType<Prisma.UserUpdateManyM
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2465,7 +2411,7 @@ export const UserUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserUncheckedU
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -2549,25 +2495,21 @@ export const TypeCIUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TypeCIUnchec
 }).strict();
 
 export const RoleCreateInputSchema: z.ZodType<Prisma.RoleCreateInput> = z.object({
-  name: z.string(),
-  users: z.lazy(() => UserCreateNestedManyWithoutRoleInputSchema).optional()
+  name: z.string()
 }).strict();
 
 export const RoleUncheckedCreateInputSchema: z.ZodType<Prisma.RoleUncheckedCreateInput> = z.object({
   id: z.number().int().optional(),
-  name: z.string(),
-  users: z.lazy(() => UserUncheckedCreateNestedManyWithoutRoleInputSchema).optional()
+  name: z.string()
 }).strict();
 
 export const RoleUpdateInputSchema: z.ZodType<Prisma.RoleUpdateInput> = z.object({
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  users: z.lazy(() => UserUpdateManyWithoutRoleNestedInputSchema).optional()
 }).strict();
 
 export const RoleUncheckedUpdateInputSchema: z.ZodType<Prisma.RoleUncheckedUpdateInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  users: z.lazy(() => UserUncheckedUpdateManyWithoutRoleNestedInputSchema).optional()
 }).strict();
 
 export const RoleUpdateManyMutationInputSchema: z.ZodType<Prisma.RoleUpdateManyMutationInput> = z.object({
@@ -3264,11 +3206,6 @@ export const TypeCIRelationFilterSchema: z.ZodType<Prisma.TypeCIRelationFilter> 
   isNot: z.lazy(() => TypeCIWhereInputSchema).optional().nullable()
 }).strict();
 
-export const RoleRelationFilterSchema: z.ZodType<Prisma.RoleRelationFilter> = z.object({
-  is: z.lazy(() => RoleWhereInputSchema).optional().nullable(),
-  isNot: z.lazy(() => RoleWhereInputSchema).optional().nullable()
-}).strict();
-
 export const TeamRelationFilterSchema: z.ZodType<Prisma.TeamRelationFilter> = z.object({
   is: z.lazy(() => TeamWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => TeamWhereInputSchema).optional().nullable()
@@ -3300,7 +3237,7 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
   image: z.lazy(() => SortOrderSchema).optional(),
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
+  role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   hadTraining: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional(),
@@ -3312,7 +3249,6 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
 export const UserAvgOrderByAggregateInputSchema: z.ZodType<Prisma.UserAvgOrderByAggregateInput> = z.object({
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3325,7 +3261,7 @@ export const UserMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserMaxOrderBy
   image: z.lazy(() => SortOrderSchema).optional(),
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
+  role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   hadTraining: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional(),
@@ -3342,7 +3278,7 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
   image: z.lazy(() => SortOrderSchema).optional(),
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
+  role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   hadTraining: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional(),
@@ -3354,7 +3290,6 @@ export const UserMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMinOrderBy
 export const UserSumOrderByAggregateInputSchema: z.ZodType<Prisma.UserSumOrderByAggregateInput> = z.object({
   id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
   id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  id_Role: z.lazy(() => SortOrderSchema).optional(),
   id_Team: z.lazy(() => SortOrderSchema).optional(),
   experience: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -3978,12 +3913,6 @@ export const TypeCICreateNestedOneWithoutUserInputSchema: z.ZodType<Prisma.TypeC
   connect: z.lazy(() => TypeCIWhereUniqueInputSchema).optional()
 }).strict();
 
-export const RoleCreateNestedOneWithoutUsersInputSchema: z.ZodType<Prisma.RoleCreateNestedOneWithoutUsersInput> = z.object({
-  create: z.union([ z.lazy(() => RoleCreateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedCreateWithoutUsersInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => RoleCreateOrConnectWithoutUsersInputSchema).optional(),
-  connect: z.lazy(() => RoleWhereUniqueInputSchema).optional()
-}).strict();
-
 export const TeamCreateNestedOneWithoutUsersInputSchema: z.ZodType<Prisma.TeamCreateNestedOneWithoutUsersInput> = z.object({
   create: z.union([ z.lazy(() => TeamCreateWithoutUsersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutUsersInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => TeamCreateOrConnectWithoutUsersInputSchema).optional(),
@@ -4066,16 +3995,6 @@ export const TypeCIUpdateOneWithoutUserNestedInputSchema: z.ZodType<Prisma.TypeC
   delete: z.boolean().optional(),
   connect: z.lazy(() => TypeCIWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => TypeCIUpdateWithoutUserInputSchema),z.lazy(() => TypeCIUncheckedUpdateWithoutUserInputSchema) ]).optional(),
-}).strict();
-
-export const RoleUpdateOneWithoutUsersNestedInputSchema: z.ZodType<Prisma.RoleUpdateOneWithoutUsersNestedInput> = z.object({
-  create: z.union([ z.lazy(() => RoleCreateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedCreateWithoutUsersInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => RoleCreateOrConnectWithoutUsersInputSchema).optional(),
-  upsert: z.lazy(() => RoleUpsertWithoutUsersInputSchema).optional(),
-  disconnect: z.boolean().optional(),
-  delete: z.boolean().optional(),
-  connect: z.lazy(() => RoleWhereUniqueInputSchema).optional(),
-  update: z.union([ z.lazy(() => RoleUpdateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedUpdateWithoutUsersInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUpdateOneWithoutUsersNestedInputSchema: z.ZodType<Prisma.TeamUpdateOneWithoutUsersNestedInput> = z.object({
@@ -4221,44 +4140,6 @@ export const UserUncheckedUpdateManyWithoutTypeCINestedInputSchema: z.ZodType<Pr
   connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
   update: z.union([ z.lazy(() => UserUpdateWithWhereUniqueWithoutTypeCIInputSchema),z.lazy(() => UserUpdateWithWhereUniqueWithoutTypeCIInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => UserUpdateManyWithWhereWithoutTypeCIInputSchema),z.lazy(() => UserUpdateManyWithWhereWithoutTypeCIInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-}).strict();
-
-export const UserCreateNestedManyWithoutRoleInputSchema: z.ZodType<Prisma.UserCreateNestedManyWithoutRoleInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserCreateWithoutRoleInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema),z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
-export const UserUncheckedCreateNestedManyWithoutRoleInputSchema: z.ZodType<Prisma.UserUncheckedCreateNestedManyWithoutRoleInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserCreateWithoutRoleInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema),z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
-export const UserUpdateManyWithoutRoleNestedInputSchema: z.ZodType<Prisma.UserUpdateManyWithoutRoleNestedInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserCreateWithoutRoleInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema),z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => UserUpsertWithWhereUniqueWithoutRoleInputSchema),z.lazy(() => UserUpsertWithWhereUniqueWithoutRoleInputSchema).array() ]).optional(),
-  set: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => UserUpdateWithWhereUniqueWithoutRoleInputSchema),z.lazy(() => UserUpdateWithWhereUniqueWithoutRoleInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => UserUpdateManyWithWhereWithoutRoleInputSchema),z.lazy(() => UserUpdateManyWithWhereWithoutRoleInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
-}).strict();
-
-export const UserUncheckedUpdateManyWithoutRoleNestedInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutRoleNestedInput> = z.object({
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserCreateWithoutRoleInputSchema).array(),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema),z.lazy(() => UserCreateOrConnectWithoutRoleInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => UserUpsertWithWhereUniqueWithoutRoleInputSchema),z.lazy(() => UserUpsertWithWhereUniqueWithoutRoleInputSchema).array() ]).optional(),
-  set: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => UserWhereUniqueInputSchema),z.lazy(() => UserWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => UserUpdateWithWhereUniqueWithoutRoleInputSchema),z.lazy(() => UserUpdateWithWhereUniqueWithoutRoleInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => UserUpdateManyWithWhereWithoutRoleInputSchema),z.lazy(() => UserUpdateManyWithWhereWithoutRoleInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => UserScalarWhereInputSchema),z.lazy(() => UserScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
@@ -5086,6 +4967,7 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -5094,7 +4976,6 @@ export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWi
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
@@ -5107,7 +4988,7 @@ export const UserUncheckedCreateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().optional().nullable(),
   id_TypeCI: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
@@ -5134,6 +5015,7 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5142,7 +5024,6 @@ export const UserUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.UserUpdateWi
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
@@ -5155,7 +5036,7 @@ export const UserUncheckedUpdateWithoutAccountsInputSchema: z.ZodType<Prisma.Use
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5172,6 +5053,7 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -5180,7 +5062,6 @@ export const UserCreateWithoutSessionsInputSchema: z.ZodType<Prisma.UserCreateWi
   accounts: z.lazy(() => AccountCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
@@ -5193,7 +5074,7 @@ export const UserUncheckedCreateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().optional().nullable(),
   id_TypeCI: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
@@ -5220,6 +5101,7 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5228,7 +5110,6 @@ export const UserUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.UserUpdateWi
   accounts: z.lazy(() => AccountUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
@@ -5241,7 +5122,7 @@ export const UserUncheckedUpdateWithoutSessionsInputSchema: z.ZodType<Prisma.Use
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -5332,20 +5213,6 @@ export const TypeCIUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.TypeC
 export const TypeCICreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.TypeCICreateOrConnectWithoutUserInput> = z.object({
   where: z.lazy(() => TypeCIWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TypeCICreateWithoutUserInputSchema),z.lazy(() => TypeCIUncheckedCreateWithoutUserInputSchema) ]),
-}).strict();
-
-export const RoleCreateWithoutUsersInputSchema: z.ZodType<Prisma.RoleCreateWithoutUsersInput> = z.object({
-  name: z.string()
-}).strict();
-
-export const RoleUncheckedCreateWithoutUsersInputSchema: z.ZodType<Prisma.RoleUncheckedCreateWithoutUsersInput> = z.object({
-  id: z.number().optional(),
-  name: z.string()
-}).strict();
-
-export const RoleCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.RoleCreateOrConnectWithoutUsersInput> = z.object({
-  where: z.lazy(() => RoleWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => RoleCreateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedCreateWithoutUsersInputSchema) ]),
 }).strict();
 
 export const TeamCreateWithoutUsersInputSchema: z.ZodType<Prisma.TeamCreateWithoutUsersInput> = z.object({
@@ -5490,20 +5357,6 @@ export const TypeCIUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.TypeC
   merk: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
-export const RoleUpsertWithoutUsersInputSchema: z.ZodType<Prisma.RoleUpsertWithoutUsersInput> = z.object({
-  update: z.union([ z.lazy(() => RoleUpdateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedUpdateWithoutUsersInputSchema) ]),
-  create: z.union([ z.lazy(() => RoleCreateWithoutUsersInputSchema),z.lazy(() => RoleUncheckedCreateWithoutUsersInputSchema) ]),
-}).strict();
-
-export const RoleUpdateWithoutUsersInputSchema: z.ZodType<Prisma.RoleUpdateWithoutUsersInput> = z.object({
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const RoleUncheckedUpdateWithoutUsersInputSchema: z.ZodType<Prisma.RoleUncheckedUpdateWithoutUsersInput> = z.object({
-  id: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
 export const TeamUpsertWithoutUsersInputSchema: z.ZodType<Prisma.TeamUpsertWithoutUsersInput> = z.object({
   update: z.union([ z.lazy(() => TeamUpdateWithoutUsersInputSchema),z.lazy(() => TeamUncheckedUpdateWithoutUsersInputSchema) ]),
   create: z.union([ z.lazy(() => TeamCreateWithoutUsersInputSchema),z.lazy(() => TeamUncheckedCreateWithoutUsersInputSchema) ]),
@@ -5560,6 +5413,7 @@ export const UserCreateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserCreate
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -5568,7 +5422,6 @@ export const UserCreateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserCreate
   accounts: z.lazy(() => AccountCreateNestedManyWithoutUserInputSchema).optional(),
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
@@ -5580,7 +5433,7 @@ export const UserUncheckedCreateWithoutRestGehoorInputSchema: z.ZodType<Prisma.U
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
   id_TypeCI: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
@@ -5624,7 +5477,7 @@ export const UserScalarWhereInputSchema: z.ZodType<Prisma.UserScalarWhereInput> 
   image: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_restGehoor: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   id_TypeCI: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  id_Role: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  role: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_Team: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   hadTraining: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
   experience: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
@@ -5639,6 +5492,7 @@ export const UserCreateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserCreateWith
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -5647,7 +5501,6 @@ export const UserCreateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserCreateWith
   accounts: z.lazy(() => AccountCreateNestedManyWithoutUserInputSchema).optional(),
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
@@ -5659,7 +5512,7 @@ export const UserUncheckedCreateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserU
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
@@ -5690,65 +5543,6 @@ export const UserUpdateWithWhereUniqueWithoutTypeCIInputSchema: z.ZodType<Prisma
 export const UserUpdateManyWithWhereWithoutTypeCIInputSchema: z.ZodType<Prisma.UserUpdateManyWithWhereWithoutTypeCIInput> = z.object({
   where: z.lazy(() => UserScalarWhereInputSchema),
   data: z.union([ z.lazy(() => UserUpdateManyMutationInputSchema),z.lazy(() => UserUncheckedUpdateManyWithoutUserInputSchema) ]),
-}).strict();
-
-export const UserCreateWithoutRoleInputSchema: z.ZodType<Prisma.UserCreateWithoutRoleInput> = z.object({
-  id: z.string().optional(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
-  emailVerified: z.coerce.date().optional().nullable(),
-  image: z.string().optional().nullable(),
-  hadTraining: z.boolean().optional().nullable(),
-  experience: z.number().optional().nullable(),
-  processor: z.string().optional().nullable(),
-  entreeVragenLijst: z.string().optional().nullable(),
-  createdAt: z.coerce.date().optional(),
-  accounts: z.lazy(() => AccountCreateNestedManyWithoutUserInputSchema).optional(),
-  sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
-  restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
-  typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional(),
-  levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
-}).strict();
-
-export const UserUncheckedCreateWithoutRoleInputSchema: z.ZodType<Prisma.UserUncheckedCreateWithoutRoleInput> = z.object({
-  id: z.string().optional(),
-  name: z.string().optional().nullable(),
-  email: z.string().optional().nullable(),
-  emailVerified: z.coerce.date().optional().nullable(),
-  image: z.string().optional().nullable(),
-  id_restGehoor: z.number().optional().nullable(),
-  id_TypeCI: z.number().optional().nullable(),
-  id_Team: z.number().optional().nullable(),
-  hadTraining: z.boolean().optional().nullable(),
-  experience: z.number().optional().nullable(),
-  processor: z.string().optional().nullable(),
-  entreeVragenLijst: z.string().optional().nullable(),
-  createdAt: z.coerce.date().optional(),
-  accounts: z.lazy(() => AccountUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  sessions: z.lazy(() => SessionUncheckedCreateNestedManyWithoutUserInputSchema).optional(),
-  levelResults: z.lazy(() => LevelResultUncheckedCreateNestedManyWithoutUserInputSchema).optional()
-}).strict();
-
-export const UserCreateOrConnectWithoutRoleInputSchema: z.ZodType<Prisma.UserCreateOrConnectWithoutRoleInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema) ]),
-}).strict();
-
-export const UserUpsertWithWhereUniqueWithoutRoleInputSchema: z.ZodType<Prisma.UserUpsertWithWhereUniqueWithoutRoleInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => UserUpdateWithoutRoleInputSchema),z.lazy(() => UserUncheckedUpdateWithoutRoleInputSchema) ]),
-  create: z.union([ z.lazy(() => UserCreateWithoutRoleInputSchema),z.lazy(() => UserUncheckedCreateWithoutRoleInputSchema) ]),
-}).strict();
-
-export const UserUpdateWithWhereUniqueWithoutRoleInputSchema: z.ZodType<Prisma.UserUpdateWithWhereUniqueWithoutRoleInput> = z.object({
-  where: z.lazy(() => UserWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => UserUpdateWithoutRoleInputSchema),z.lazy(() => UserUncheckedUpdateWithoutRoleInputSchema) ]),
-}).strict();
-
-export const UserUpdateManyWithWhereWithoutRoleInputSchema: z.ZodType<Prisma.UserUpdateManyWithWhereWithoutRoleInput> = z.object({
-  where: z.lazy(() => UserScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => UserUpdateManyMutationInputSchema),z.lazy(() => UserUncheckedUpdateManyWithoutUsersInputSchema) ]),
 }).strict();
 
 export const TeamCreateWithoutKliniekInputSchema: z.ZodType<Prisma.TeamCreateWithoutKliniekInput> = z.object({
@@ -5817,6 +5611,7 @@ export const UserCreateWithoutTeamInputSchema: z.ZodType<Prisma.UserCreateWithou
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -5826,7 +5621,6 @@ export const UserCreateWithoutTeamInputSchema: z.ZodType<Prisma.UserCreateWithou
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultCreateNestedManyWithoutUserInputSchema).optional()
 }).strict();
 
@@ -5838,7 +5632,7 @@ export const UserUncheckedCreateWithoutTeamInputSchema: z.ZodType<Prisma.UserUnc
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().optional().nullable(),
   id_TypeCI: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -6446,6 +6240,7 @@ export const UserCreateWithoutLevelResultsInputSchema: z.ZodType<Prisma.UserCrea
   email: z.string().optional().nullable(),
   emailVerified: z.coerce.date().optional().nullable(),
   image: z.string().optional().nullable(),
+  role: z.string().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
   processor: z.string().optional().nullable(),
@@ -6455,7 +6250,6 @@ export const UserCreateWithoutLevelResultsInputSchema: z.ZodType<Prisma.UserCrea
   sessions: z.lazy(() => SessionCreateNestedManyWithoutUserInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorCreateNestedOneWithoutUserInputSchema).optional(),
   typeCI: z.lazy(() => TypeCICreateNestedOneWithoutUserInputSchema).optional(),
-  role: z.lazy(() => RoleCreateNestedOneWithoutUsersInputSchema).optional(),
   team: z.lazy(() => TeamCreateNestedOneWithoutUsersInputSchema).optional()
 }).strict();
 
@@ -6467,7 +6261,7 @@ export const UserUncheckedCreateWithoutLevelResultsInputSchema: z.ZodType<Prisma
   image: z.string().optional().nullable(),
   id_restGehoor: z.number().optional().nullable(),
   id_TypeCI: z.number().optional().nullable(),
-  id_Role: z.number().optional().nullable(),
+  role: z.string().optional().nullable(),
   id_Team: z.number().optional().nullable(),
   hadTraining: z.boolean().optional().nullable(),
   experience: z.number().optional().nullable(),
@@ -6554,6 +6348,7 @@ export const UserUpdateWithoutLevelResultsInputSchema: z.ZodType<Prisma.UserUpda
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6563,7 +6358,6 @@ export const UserUpdateWithoutLevelResultsInputSchema: z.ZodType<Prisma.UserUpda
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional()
 }).strict();
 
@@ -6575,7 +6369,7 @@ export const UserUncheckedUpdateWithoutLevelResultsInputSchema: z.ZodType<Prisma
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6804,6 +6598,7 @@ export const UserUpdateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserUpdate
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6812,7 +6607,6 @@ export const UserUpdateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserUpdate
   accounts: z.lazy(() => AccountUpdateManyWithoutUserNestedInputSchema).optional(),
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
@@ -6824,7 +6618,7 @@ export const UserUncheckedUpdateWithoutRestGehoorInputSchema: z.ZodType<Prisma.U
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6843,7 +6637,7 @@ export const UserUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.Use
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6858,6 +6652,7 @@ export const UserUpdateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserUpdateWith
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6866,7 +6661,6 @@ export const UserUpdateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserUpdateWith
   accounts: z.lazy(() => AccountUpdateManyWithoutUserNestedInputSchema).optional(),
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
@@ -6878,7 +6672,7 @@ export const UserUncheckedUpdateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserU
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6888,60 +6682,6 @@ export const UserUncheckedUpdateWithoutTypeCIInputSchema: z.ZodType<Prisma.UserU
   accounts: z.lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
-}).strict();
-
-export const UserUpdateWithoutRoleInputSchema: z.ZodType<Prisma.UserUpdateWithoutRoleInput> = z.object({
-  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  entreeVragenLijst: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  accounts: z.lazy(() => AccountUpdateManyWithoutUserNestedInputSchema).optional(),
-  sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
-  restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
-  typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  team: z.lazy(() => TeamUpdateOneWithoutUsersNestedInputSchema).optional(),
-  levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
-}).strict();
-
-export const UserUncheckedUpdateWithoutRoleInputSchema: z.ZodType<Prisma.UserUncheckedUpdateWithoutRoleInput> = z.object({
-  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Team: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  entreeVragenLijst: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  accounts: z.lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
-  levelResults: z.lazy(() => LevelResultUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
-}).strict();
-
-export const UserUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutUsersInput> = z.object({
-  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_restGehoor: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_TypeCI: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Team: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  entreeVragenLijst: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeamUpdateWithoutKliniekInputSchema: z.ZodType<Prisma.TeamUpdateWithoutKliniekInput> = z.object({
@@ -6971,6 +6711,7 @@ export const UserUpdateWithoutTeamInputSchema: z.ZodType<Prisma.UserUpdateWithou
   email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -6980,7 +6721,6 @@ export const UserUpdateWithoutTeamInputSchema: z.ZodType<Prisma.UserUpdateWithou
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputSchema).optional(),
   restGehoor: z.lazy(() => RestGehoorUpdateOneWithoutUserNestedInputSchema).optional(),
   typeCI: z.lazy(() => TypeCIUpdateOneWithoutUserNestedInputSchema).optional(),
-  role: z.lazy(() => RoleUpdateOneWithoutUsersNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUpdateManyWithoutUserNestedInputSchema).optional()
 }).strict();
 
@@ -6992,7 +6732,7 @@ export const UserUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.UserUnc
   image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_restGehoor: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_TypeCI: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  id_Role: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   experience: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -7001,6 +6741,22 @@ export const UserUncheckedUpdateWithoutTeamInputSchema: z.ZodType<Prisma.UserUnc
   accounts: z.lazy(() => AccountUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   sessions: z.lazy(() => SessionUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   levelResults: z.lazy(() => LevelResultUncheckedUpdateManyWithoutUserNestedInputSchema).optional()
+}).strict();
+
+export const UserUncheckedUpdateManyWithoutUsersInputSchema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutUsersInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  email: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  emailVerified: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  image: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id_restGehoor: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id_TypeCI: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  role: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  hadTraining: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  experience: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  processor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  entreeVragenLijst: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const GameUpdateWithoutTeamsInputSchema: z.ZodType<Prisma.GameUpdateWithoutTeamsInput> = z.object({
@@ -7624,7 +7380,6 @@ export const TypeCIFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.TypeCIFindUniqu
 
 export const RoleFindFirstArgsSchema: z.ZodType<Prisma.RoleFindFirstArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereInputSchema.optional(),
   orderBy: z.union([ RoleOrderByWithRelationInputSchema.array(),RoleOrderByWithRelationInputSchema ]).optional(),
   cursor: RoleWhereUniqueInputSchema.optional(),
@@ -7635,7 +7390,6 @@ export const RoleFindFirstArgsSchema: z.ZodType<Prisma.RoleFindFirstArgs> = z.ob
 
 export const RoleFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RoleFindFirstOrThrowArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereInputSchema.optional(),
   orderBy: z.union([ RoleOrderByWithRelationInputSchema.array(),RoleOrderByWithRelationInputSchema ]).optional(),
   cursor: RoleWhereUniqueInputSchema.optional(),
@@ -7646,7 +7400,6 @@ export const RoleFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RoleFindFirstOrThr
 
 export const RoleFindManyArgsSchema: z.ZodType<Prisma.RoleFindManyArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereInputSchema.optional(),
   orderBy: z.union([ RoleOrderByWithRelationInputSchema.array(),RoleOrderByWithRelationInputSchema ]).optional(),
   cursor: RoleWhereUniqueInputSchema.optional(),
@@ -7674,13 +7427,11 @@ export const RoleGroupByArgsSchema: z.ZodType<Prisma.RoleGroupByArgs> = z.object
 
 export const RoleFindUniqueArgsSchema: z.ZodType<Prisma.RoleFindUniqueArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereUniqueInputSchema,
 }).strict()
 
 export const RoleFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.RoleFindUniqueOrThrowArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereUniqueInputSchema,
 }).strict()
 
@@ -8456,13 +8207,11 @@ export const TypeCIDeleteManyArgsSchema: z.ZodType<Prisma.TypeCIDeleteManyArgs> 
 
 export const RoleCreateArgsSchema: z.ZodType<Prisma.RoleCreateArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   data: z.union([ RoleCreateInputSchema,RoleUncheckedCreateInputSchema ]),
 }).strict()
 
 export const RoleUpsertArgsSchema: z.ZodType<Prisma.RoleUpsertArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereUniqueInputSchema,
   create: z.union([ RoleCreateInputSchema,RoleUncheckedCreateInputSchema ]),
   update: z.union([ RoleUpdateInputSchema,RoleUncheckedUpdateInputSchema ]),
@@ -8470,13 +8219,11 @@ export const RoleUpsertArgsSchema: z.ZodType<Prisma.RoleUpsertArgs> = z.object({
 
 export const RoleDeleteArgsSchema: z.ZodType<Prisma.RoleDeleteArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   where: RoleWhereUniqueInputSchema,
 }).strict()
 
 export const RoleUpdateArgsSchema: z.ZodType<Prisma.RoleUpdateArgs> = z.object({
   select: RoleSelectSchema.optional(),
-  include: RoleIncludeSchema.optional(),
   data: z.union([ RoleUpdateInputSchema,RoleUncheckedUpdateInputSchema ]),
   where: RoleWhereUniqueInputSchema,
 }).strict()
