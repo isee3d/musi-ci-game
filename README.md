@@ -33,10 +33,10 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Add google login user to a team
 - [x] Add Games page before levels page
 - [x] Get the games of a team for this user
-- [ ] Retrieve the levels of the selected game
-- [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
+- [x] Retrieve the levels of the selected game
 - [x] Improve Note + fragment creation into one prisma transaction
 - [x] Use UseState instead of Zustand
+- [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
 
  Build the level Item logic so:
 
