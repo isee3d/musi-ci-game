@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { UserSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
@@ -24,6 +25,25 @@ export const usersRouter = createTRPCRouter({
             },
         });
     }),
+
+    getGamesOfUser: publicProcedure.input(z.object({ id: z.string().optional() })).query(async ({ ctx, input }) => {
+        const { id } = input;
+        const userTeamGames = await ctx.prisma.user.findUnique({
+            where: { id },
+            select: {
+                team: {
+                    select: {
+                        game: true,
+                    },
+                },
+            },
+        });
+        if(!userTeamGames || !userTeamGames.team){
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'User has no team' });
+        }
+        return userTeamGames.team.game;
+    }),
+
 
     setUserToTeam: publicProcedure.input(z.object({ userId: z.string(), teamId: z.number().int() }))
         .mutation(async ({ ctx, input }) => {
