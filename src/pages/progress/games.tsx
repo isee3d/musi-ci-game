@@ -23,7 +23,7 @@ const UserGamesPage: NextPage = () => {
                 </h1>
                 <div className=" flex w-full flex-col justify-between space-y-8 pl-8">
                     { gamesOfUserQuery.data?.map((game) => (
-                        <Game key={ game.id } number={ game.id } name={ game.name } description={ game.description } borderColor="green" />
+                        <Game key={ game.id } gameId={ game.id } name={ game.name } description={ game.description || "" } borderColor="green" />
                     )) }
                     {/* <Link
                         className="w-full rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "

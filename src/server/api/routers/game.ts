@@ -1,4 +1,6 @@
+import { TRPCError } from "@trpc/server";
 import { GameSchema, GameModeOptionalDefaultsSchema } from "prisma/generated/zod";
+import { z } from "zod";
 
 import {
     createTRPCRouter,
@@ -32,5 +34,17 @@ export const gameRouter = createTRPCRouter({
         return await ctx.prisma.game.delete({
             where: { id },
         });
+    }),
+
+    getLevelsOfGame: publicProcedure.input(z.object({gameId: z.number().int()})).query(async ({ ctx, input }) => {
+        const { gameId } = input;
+        const gameLevels = await ctx.prisma.game.findUnique({
+            where: { id: gameId },
+            select: {
+                levels: true,
+            },
+        });
+        if (!gameLevels) throw new TRPCError({ code: 'NOT_FOUND', message: 'Game has no levels' });
+        return gameLevels.levels;
     }),
 });
