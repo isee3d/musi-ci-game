@@ -1,14 +1,11 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
+import { api } from "~/utils/api";
 
 const Level: NextPage<{ level: string }> = ({ level }) => {
-    // const Level: NextPage = () => {
-    // const router = useRouter();
-    // const { level } = router.query;
-    // get the rest of the level data here using trpc
+    const gameModesQuery = api.level.getGameModesOflevel.useQuery({ levelName: level })
 
     return (<>
         <Head>
@@ -24,24 +21,17 @@ const Level: NextPage<{ level: string }> = ({ level }) => {
                 </h1>
                 {/* List of buttons MAKE IT A COMPONENT, for now "spelen, luisteren and uitdaging" keep these dynamic from database */ }
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
-                    <Link
-                        className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/level-1/luisteren"
-                    >
-                        <h3 className="text-center text-2xl font-bold">Luisteren</h3>
-                    </Link>
-                    <Link
-                        className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/level-1/spelen"
-                    >
-                        <h3 className="text-center text-2xl font-bold">Spelen</h3>
-                    </Link>
-                    <Link
-                        className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                        href="/level-1/uitdaging"
-                    >
-                        <h3 className="text-center text-2xl font-bold">Uitdaging</h3>
-                    </Link>
+                    { gameModesQuery.data?.map((gameMode) => (
+                        <Link
+                            key={ gameMode.id }
+                            className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                            href="/level-1/luisteren"
+                        >
+                            <h3 className="text-center text-2xl font-bold">{gameMode.name}</h3>
+                        </Link>
+                    ))
+                    }
+
                 </div>
             </div>
         </main>

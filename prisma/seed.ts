@@ -2,13 +2,13 @@ import { RestGehoor } from './generated/zod/index';
 import { prisma } from "../src/server/db";
 
 async function main() {
-  const adminRole = await prisma.role.upsert({
-    where: { name: 'admin' },
-    update: {},
-    create: {
-      name: 'admin',
-    },
-  });
+  // const adminRole = await prisma.role.upsert({
+  //   where: { name: 'admin' },
+  //   update: {},
+  //   create: {
+  //     name: 'admin',
+  //   },
+  // });
 
   // // Create teams
   const team1 = await prisma.team.upsert({
@@ -31,21 +31,21 @@ async function main() {
     },
   });
 
-  const trainerRole = await prisma.role.upsert({
-    where: { name: 'trainer' },
-    update: {},
-    create: {
-      name: 'trainer',
-    },
-  });
+  // const trainerRole = await prisma.role.upsert({
+  //   where: { name: 'trainer' },
+  //   update: {},
+  //   create: {
+  //     name: 'trainer',
+  //   },
+  // });
 
-  const userRole = await prisma.role.upsert({
-    where: { name: 'user' },
-    update: {},
-    create: {
-      name: 'user',
-    },
-  });
+  // const userRole = await prisma.role.upsert({
+  //   where: { name: 'user' },
+  //   update: {},
+  //   create: {
+  //     name: 'user',
+  //   },
+  // });
 
   // Create users
   const user1 = await prisma.user.upsert({
@@ -54,7 +54,7 @@ async function main() {
     create: {
       id: '1',
       id_Team: 1,
-      id_Role: adminRole.id,
+      // id_Role: adminRole.id,
       name: 'John Doe',
       email: 'john.doe@example.com',
       hadTraining: true,
@@ -70,7 +70,7 @@ async function main() {
     create: {
       id: '2',
       id_Team: 2,
-      id_Role: userRole.id,
+      // id_Role: userRole.id,
       name: 'Jane Smith',
       email: 'jane.smith@example.com',
       hadTraining: false,

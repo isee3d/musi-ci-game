@@ -16,7 +16,7 @@ const Level: React.FC<LevelProps> = ({ number, name, score, borderColor }) => {
     return (
         <Link
             className="flex rounded-xl bg-white/10 p-1 text-white hover:bg-white/20 "
-            href="/modeSelect/myLevel"
+            href={`/modeSelect/${name}`}
         >
         <div className="flex w-full items-center justify-between rounded-lg shadow-md">
             <div className="flex justify-start space-x-4">

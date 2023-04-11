@@ -1,14 +1,10 @@
-import { type NextPage } from "next";
+import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import Level from "~/components/level";
+import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
-const UserLevelsPage: NextPage = () => {
-    const router = useRouter();
-    const { gameId } = router.query;
-
+const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
     const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId as string) })
 
     return (<>
@@ -24,13 +20,32 @@ const UserLevelsPage: NextPage = () => {
                     Voortgang Musi-CI
                 </h1>
                 <div className=" flex w-full flex-col justify-between space-y-8 pl-8">
-                { levelsOfGameQuery.data?.map((level) => (
-                    <Level key={ level.id } number={ level.id } name={ level.name } score={ level.BPM } borderColor="green" />
-                )) }
+                    { levelsOfGameQuery.data?.map((level) => (
+                        <Level key={ level.id } number={ level.id } name={ level.name } score={ level.BPM } borderColor="green" />
+                    )) }
                 </div>
             </div>
         </main>
     </>);
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    const ssg = generateServerSideHelper();
+    const gameId = context.params?.gameId;
+
+    if (typeof gameId !== "string") throw new Error("No gameId");
+
+    // await ssg.   Do the prefetch of the level data here
+    return {
+        props: {
+            trpcState: ssg.dehydrate(),
+            gameId,
+        },
+    };
+};
+
+export const getStaticPaths = () => {
+    return { paths: [], fallback: "blocking" };
 };
 
 export default UserLevelsPage;

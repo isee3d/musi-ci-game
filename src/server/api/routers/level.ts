@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { LevelOptionalDefaultsSchema, LevelSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
@@ -25,6 +26,23 @@ export const levelRouter = createTRPCRouter({
 
     getAllLevels: publicProcedure.query(({ ctx }) => {
         return ctx.prisma.level.findMany();
+    }),
+
+    getGameModesOflevel: publicProcedure.input(z.object({ levelName: z.string() })).query(async ({ ctx, input }) => {
+        const { levelName } = input;
+        const gameModes = await ctx.prisma.level.findFirst({
+            where: {
+                name: levelName,
+            },
+            select: {
+                gameModes: true,
+            },
+        });
+        if(!gameModes){
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no game modes' });
+        }
+        
+        return gameModes.gameModes;
     }),
 
     updateLevel: publicProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {

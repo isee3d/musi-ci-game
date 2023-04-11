@@ -1,17 +1,12 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from 'next/router'
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragment/animationPlayer";
 import { FragmentCard } from "~/components/fragment/fragmentCard";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
-    // const Mode: NextPage = () => {
-    // const router = useRouter();
-    // const { level, mode } = router.query;
-
     const [isStarted, setIsStarted] = useState(false);
 
     const [countdown, setCountdown] = useState(4);
