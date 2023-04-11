@@ -24,7 +24,7 @@ const Level: NextPage<{ level: string }> = ({ level }) => {
                         <Link
                             key={ gameMode.id }
                             className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                            href="/level-1/luisteren"
+                            href={`/${level}/${gameMode.name}`}
                         >
                             <h3 className="text-center text-2xl font-bold">{gameMode.name}</h3>
                         </Link>

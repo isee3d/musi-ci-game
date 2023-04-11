@@ -7,7 +7,7 @@ import { FragmentCard } from "~/components/fragment/fragmentCard";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
-    
+    // 
 
 
 

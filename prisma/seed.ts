@@ -170,6 +170,7 @@ async function main() {
       cooldownTime: 0,
       fragmentToShow: 2,
       game: { connect: { id: 1 } },
+      gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
     },
   })
 
