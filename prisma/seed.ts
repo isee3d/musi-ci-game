@@ -80,8 +80,6 @@ async function main() {
     },
   });
 
-
-
   // create restgehoor
   const restgehoor1 = await prisma.restGehoor.upsert({
     where: { id: 1 },
@@ -165,12 +163,12 @@ async function main() {
     where: { id: 1 },
     update: {},
     create: {
-      name: 'Level 1',
-      description: 'First level',
-      BPM: 120,
-      correctAnswers: 5,
-      cooldownTime: 10,
-      fragmentToShow: 1,
+      name: 'gelijk anders',
+      description: 'een gelijk fragment en een anders fragment',
+      BPM: 60,
+      correctAnswers: 10,
+      cooldownTime: 0,
+      fragmentToShow: 2,
       game: { connect: { id: 1 } },
     },
   })
@@ -180,22 +178,72 @@ async function main() {
     update: {},
     create: {
       id: 1,
-      name: 'Fragment 1',
-      description: 'First fragment',
+      name: 'gelijk',
+      description: 'twee gelijke noten',
       level: { connect: { id: 1 } },
     },
   })
 
-  const note1 = await prisma.note.upsert({
+  const fragment2 = await prisma.fragment.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      id: 2,
+      name: 'anders',
+      description: 'twee verschillende noten',
+      level: { connect: { id: 1 } },
+    },
+  })
+
+  const noteC4_fragment1 = await prisma.note.upsert({
     where: { id: 1 },
     update: {},
     create: {
       // id: 1,
-      name: 'Note 1',
-      time: 10,
-      duration: 5,
-      speed: 40,
+      name: 'C4',
+      time: 120,
+      duration: 120,
+      speed: 1,
       fragment: { connect: { id: 1 } },
+    },
+  })
+
+  const noteC4_v2_fragment1 = await prisma.note.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      // id: 1,
+      name: 'C4',
+      time: 0,
+      duration: 120,
+      speed: 1,
+      fragment: { connect: { id: 1 } },
+    },
+  })
+
+  const noteC4_v2_fragment2 = await prisma.note.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      // id: 1,
+      name: 'C4',
+      time: 0,
+      duration: 120,
+      speed: 1,
+      fragment: { connect: { id: 2 } },
+    },
+  })
+
+  const noteA3_fragment2 = await prisma.note.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      // id: 1,
+      name: 'A3',
+      time: 120,
+      duration: 120,
+      speed: 1,
+      fragment: { connect: { id: 2 } },
     },
   })
 

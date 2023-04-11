@@ -157,7 +157,7 @@ model Fragment {
 }
 
 model Note {
-  id                 Int         @id @default(autoincrement())
+  id                Int         @id @default(autoincrement())
   id_Fragment       Int
   fragment          Fragment      @relation(fields: [id_Fragment], references: [id] , onDelete: Cascade, onUpdate: Cascade)
 

@@ -7,8 +7,11 @@ import { FragmentCard } from "~/components/fragment/fragmentCard";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
-    const [isStarted, setIsStarted] = useState(false);
+    
 
+
+
+    const [isStarted, setIsStarted] = useState(false);
     const [countdown, setCountdown] = useState(4);
 
     useEffect(() => {
