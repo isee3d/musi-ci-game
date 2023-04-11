@@ -10,9 +10,12 @@ const NavMenu: React.FC = () => {
 
     return (
         <nav className="flex flex-wrap items-center justify-between bg-white p-6 dark:bg-gray-900">
+            <Link
+            href={"/"}>
             <div className="mr-6 flex shrink-0 items-center dark:text-white">
                 <span className="text-xl font-bold">Logo</span>
             </div>
+            </Link>
             <div className="block lg:hidden">
                 <button
                     onClick={ toggleMenu }

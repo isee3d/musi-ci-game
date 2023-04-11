@@ -19,7 +19,6 @@ const Level: NextPage<{ level: string }> = ({ level }) => {
                 <h1 className="w-full border-b-2 py-3 text-center text-3xl font-extrabold tracking-tight text-white ">
                     { level }
                 </h1>
-                {/* List of buttons MAKE IT A COMPONENT, for now "spelen, luisteren and uitdaging" keep these dynamic from database */ }
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
                     { gameModesQuery.data?.map((gameMode) => (
                         <Link
