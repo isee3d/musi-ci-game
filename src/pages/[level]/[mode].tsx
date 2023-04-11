@@ -2,8 +2,8 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import AnimationPlayer from "~/components/fragment/animationPlayer";
-import { FragmentCard } from "~/components/fragment/fragmentCard";
+import AnimationPlayer from "~/components/fragmentPlayer/animationPlayer";
+import { FragmentCard } from "~/components/fragmentPlayer/fragmentCard";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
@@ -12,28 +12,28 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level});
     console.log("data: ", JSON.stringify(fragmentsOfLevelQuery.data));
 
-    const [isStarted, setIsStarted] = useState(false);
-    const [countdown, setCountdown] = useState(4);
+    // const [isStarted, setIsStarted] = useState(false);
+    // const [countdown, setCountdown] = useState(4);
 
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout | null = null;
-        if (isStarted) {
-            intervalId = setInterval(() => {
-                setCountdown((prevCountdown) => {
-                    const newCountdown = prevCountdown - 1;
-                    if (newCountdown === 0) {
-                        clearInterval(intervalId!);
-                    }
-                    return newCountdown;
-                });
-            }, 1000);
-        }
-        return () => {
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
-        };
-    }, [isStarted]);
+    // useEffect(() => {
+    //     let intervalId: NodeJS.Timeout | null = null;
+    //     if (isStarted) {
+    //         intervalId = setInterval(() => {
+    //             setCountdown((prevCountdown) => {
+    //                 const newCountdown = prevCountdown - 1;
+    //                 if (newCountdown === 0) {
+    //                     clearInterval(intervalId!);
+    //                 }
+    //                 return newCountdown;
+    //             });
+    //         }, 1000);
+    //     }
+    //     return () => {
+    //         if (intervalId) {
+    //             clearInterval(intervalId);
+    //         }
+    //     };
+    // }, [isStarted]);
 
     return (<>
         <Head>
@@ -78,7 +78,6 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                             {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'wrong' } > */ }
                             {/* Fragment content here */ }
                             {/* </FragmentCard> */ }
-                            {/* Play and stop button */ }
                             <div className="flex justify-around sm:flex sm:flex-col">
                                 <Link
                                     className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
