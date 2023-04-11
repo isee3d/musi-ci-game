@@ -10,7 +10,7 @@ import {
 
 export const levelRouter = createTRPCRouter({
     createLevel: publicProcedure
-        .input(LevelOptionalDefaultsSchema.extend({fragments: z.array(z.number().int())}))
+        .input(LevelOptionalDefaultsSchema.extend({ fragments: z.array(z.number().int()) }))
         .mutation(async ({ ctx, input }) => {
             const { fragments, ...newInput } = input;
 
@@ -38,11 +38,35 @@ export const levelRouter = createTRPCRouter({
                 gameModes: true,
             },
         });
-        if(!gameModes){
+        if (!gameModes) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no game modes' });
         }
-        
+
         return gameModes.gameModes;
+    }),
+
+    getFragmentsOflevel: publicProcedure.input(z.object({ levelName: z.string() })).query(async ({ ctx, input }) => {
+        const { levelName } = input;
+        const fragments = await ctx.prisma.level.findFirst({
+            where: {
+                name: levelName,
+            },
+            select: {
+                fragments: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        notes: true,
+                    },
+                },
+            },
+        });
+        if (!fragments) {
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no fragments' });
+        }
+
+        return fragments.fragments;
     }),
 
     updateLevel: publicProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {

@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragment/animationPlayer";
 import { FragmentCard } from "~/components/fragment/fragmentCard";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
+import { api } from "~/utils/api";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
-    // 
-
-
+    // get the fragments of the level.
+    const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level});
+    console.log("data: ", JSON.stringify(fragmentsOfLevelQuery.data));
 
     const [isStarted, setIsStarted] = useState(false);
     const [countdown, setCountdown] = useState(4);
