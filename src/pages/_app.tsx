@@ -11,6 +11,7 @@ import Head from "next/head";
 import "~/styles/globals.css";
 import { ToneJSService } from "~/components/fragmentPlayer/audioService/ToneJSService";
 import { useEffect } from "react";
+import AudioService from "~/components/fragmentPlayer/audioService/AudioService";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -18,6 +19,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   useEffect(() => {
     ToneJSService.init();
+    AudioService.init();
   }, []);
 
   return (

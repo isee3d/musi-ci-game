@@ -43,8 +43,8 @@ export class ToneJSService {
       this.audioContext = Tone.getContext();
 
       Tone.setContext(this.audioContext);
-      // await PianoSampler.init();
-      // await SoundboardSampler.init();
+      await PianoSampler.init();
+      await SoundboardSampler.init();
     } catch (e) {
       this.hasSupport = false;
       alert('Web Audio API not supported in this browser.');

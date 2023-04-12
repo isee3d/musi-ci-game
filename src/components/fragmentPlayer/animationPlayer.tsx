@@ -64,7 +64,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
 
         app.current.ticker.add(() => {
             if (!app.current) return;
-            console.log('coming here')
+
             // delta Ticks/ms
             // ik heb BPM / 60000 = B/MS
             // TicksPerBeat (TPB) = Ticks/B || Transport.PPQ
@@ -75,22 +75,12 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
             const fragment = ToneJSService.getCurrentFragment();
 
             ellipse.clear();
-
+            console.log('coming here', status)
             if (status === 'metronome') {
                 count.current = 0;
                 timer.current = 0;
                 return;
             }
-
-            // resets to 0 if this animation does not belong to the current fragment being played in practice mode
-            // eslint-disable-next-line react/destructuring-assignment
-            // if (fragment?.id !== props.fragment.id) {
-            // if (practiceEnabled) {
-            //     count = 0;
-            //     timer = 0;
-            //     return;
-            // }
-            // }
 
             if (status === 'stopped' || !fragment) {
                 count.current = 0;
@@ -113,6 +103,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
                 const noteEnd = noteStart + Tone.Ticks(n.duration).toSeconds();
 
                 if (now >= noteStart && now <= noteEnd) {
+                    console.log('coming here22', now)
                     const yIndex = KeyboardToNote.getIndexFromNote(n.name);
                     ellipse.beginFill(0x4490e6);
                     ellipse.drawEllipse(pxPerTick * count.current, yIndex * noteHeight - 1, 11, 11);

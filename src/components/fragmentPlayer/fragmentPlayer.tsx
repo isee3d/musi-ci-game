@@ -2,6 +2,7 @@ import { Fragment } from '@prisma/client';
 import React from 'react';
 import * as Tone from 'tone';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
+import { ToneJSService } from '~/components/fragmentPlayer/audioService/ToneJSService';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
 import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
 
@@ -16,7 +17,9 @@ const fragmentPlayer: React.FC<FragmentPlayerProps> = ({
 }) => {
   return (
     <>
-    <FragmentCard color='right' onClick={async () => {await Tone.start()}}>
+    <FragmentCard color='right' onClick={async () => {
+      ToneJSService.start(fragment)
+      }}>
               <AnimationPlayer
                   fragment={ fragment }
                   width={ 200 }
