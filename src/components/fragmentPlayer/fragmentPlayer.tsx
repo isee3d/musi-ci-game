@@ -1,5 +1,6 @@
 import { Fragment } from '@prisma/client';
 import React from 'react';
+import * as Tone from 'tone';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
 import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
@@ -15,7 +16,7 @@ const fragmentPlayer: React.FC<FragmentPlayerProps> = ({
 }) => {
   return (
     <>
-    <FragmentCard color='right' onClick={() => {console.log("clicked")}}>
+    <FragmentCard color='right' onClick={async () => {await Tone.start()}}>
               <AnimationPlayer
                   fragment={ fragment }
                   width={ 200 }

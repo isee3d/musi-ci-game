@@ -9,11 +9,17 @@ import Layout from '../components/layout';
 import Head from "next/head";
 
 import "~/styles/globals.css";
+import { ToneJSService } from "~/components/fragmentPlayer/audioService/ToneJSService";
+import { useEffect } from "react";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  useEffect(() => {
+    ToneJSService.init();
+  }, []);
+
   return (
     <SessionProvider session={ session }>
       <Head>

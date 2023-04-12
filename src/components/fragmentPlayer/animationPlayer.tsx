@@ -17,44 +17,36 @@ interface AnimationPlayerProps {
 
 const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, height }) => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const [app, setApp] = useState<PIXI.Application | null>(null);
+    const app = useRef<PIXI.Application | null>(null);
     const count = useRef(0);
     const timer = useRef(0);
 
     useEffect(() => {
-        if(containerRef.current) {
-
-        const app = new PIXI.Application({
-            width,
-            height,
-            autoStart: true,
-            backgroundColor: 0xffffff,
-            view: containerRef.current.querySelector('canvas') as HTMLCanvasElement,
-            antialias: true
-        });
-        app.stage.interactive = true;
-        app.stage.scale.y = -1;
-        app.stage.position.y = app.renderer.height;
-        setApp(app);
-        // const renderer = app.renderer;
-        containerRef.current.appendChild(app.view as unknown as Node);
-        app.stage.addChild(drawNotes(fragment.notes, width, height));
-        resizeWindow();
-        window.addEventListener('resize', () => resizeWindow());
-        addAnimation(fragment.notes);
-    }
+        if (containerRef.current) {
+            const newApp = createApp({ width, height })
+            app.current = newApp;
+            // // const renderer = app.renderer;
+            containerRef.current.appendChild(app.current.view as unknown as Node);
+            // causes webgl error
+            app.current.stage.addChild(drawNotes(fragment.notes, width, height));
+            resizeWindow();
+            window.addEventListener('resize', () => resizeWindow());
+            addAnimation(fragment.notes);
+        }
+        const container = containerRef.current;
         return () => {
-            if (app) {
-                app.destroy();
-                setApp(null);
+            if (app.current && container) {
+                container.removeChild(app.current.view as unknown as Node);
+                app.current.destroy();
+                app.current = null;
             }
         };
     }, []);
 
     const addAnimation = (notes: Note[]): void => {
-        if (!app) return;
-        const h = app.view.height;
-        const w = app.view.width;
+        if (!app.current) return;
+        const h = app.current.view.height;
+        const w = app.current.view.width;
         const sceneDuration = ToneJSUtils.getFragmentDurationInTicks(notes);
         const pxPerTick = w / sceneDuration;
         const range = KeyboardToNote.octaves * 12;
@@ -67,12 +59,12 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
         line.lineStyle(2, 0xff0000, 0.8);
         line.moveTo(0, 0);
         // line.lineTo(0, h);
-        app.stage.addChild(graphics);
-        app.stage.addChild(ellipse);
+        app.current.stage.addChild(graphics);
+        app.current.stage.addChild(ellipse);
 
-        app.ticker.add(() => {
-            if (!app) return;
-
+        app.current.ticker.add(() => {
+            if (!app.current) return;
+            console.log('coming here')
             // delta Ticks/ms
             // ik heb BPM / 60000 = B/MS
             // TicksPerBeat (TPB) = Ticks/B || Transport.PPQ
@@ -93,11 +85,11 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
             // resets to 0 if this animation does not belong to the current fragment being played in practice mode
             // eslint-disable-next-line react/destructuring-assignment
             // if (fragment?.id !== props.fragment.id) {
-                // if (practiceEnabled) {
-                //     count = 0;
-                //     timer = 0;
-                //     return;
-                // }
+            // if (practiceEnabled) {
+            //     count = 0;
+            //     timer = 0;
+            //     return;
+            // }
             // }
 
             if (status === 'stopped' || !fragment) {
@@ -107,9 +99,9 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
                 return;
             }
 
-            // count += app.ticker.deltaMS;
-            timer.current += app.ticker.deltaMS;
-            count.current += app.ticker.deltaMS * dTicksMs;
+            // count += app.currentticker.deltaMS;
+            timer.current += app.current.ticker.deltaMS;
+            count.current += app.current.ticker.deltaMS * dTicksMs;
             ellipse.clear();
 
             const now = timer.current / 1000; // seconds
@@ -126,20 +118,19 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
                     ellipse.drawEllipse(pxPerTick * count.current, yIndex * noteHeight - 1, 11, 11);
                     ellipse.endFill();
                 }
-                // toneHeight
             }
         });
     };
 
     const resizeWindow = (): void => {
-        if(!app) return;
-        if(containerRef.current){
+        if (!app.current) return;
+        if (containerRef.current) {
             const { clientWidth, clientHeight } = containerRef.current;
-            app.renderer.resize(clientWidth, clientHeight);
+            app.current.renderer.resize(clientWidth, clientHeight);
         }
     };
 
-    return <div id={fragment.id.toString()} ref={ containerRef } />;
+    return <div id={ fragment.id.toString() } ref={ containerRef } />;
 };
 
 export default AnimationPlayer;

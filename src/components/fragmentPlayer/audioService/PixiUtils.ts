@@ -16,8 +16,7 @@ export const createApp = (options: PixiOptions): PIXI.Application => {
     ...options,
     autoStart: true,
     antialias: true,
-    // transparent: true,
-    forceCanvas: true,
+    backgroundAlpha: 0.5,
   });
 
   app.stage.position.y = app.renderer.height;
@@ -46,22 +45,22 @@ export const drawNotes = (notes: Note[], width: number, height: number): PIXI.Gr
 
   for (let i = 0; i < notes.length; i += 1) {
     const note = notes[i];
+    if (!note) continue;
     const tStart = Tone.Ticks(note?.time).toTicks() * pxPerTick;
     const tEnd = Tone.Ticks(note?.duration).toTicks() * pxPerTick;
     const radius = noteHeight / 2;
-    if(note){
-      const yIndex = KeyboardToNote.getIndexFromNote(note?.name);
-      notesGraphics.beginFill(color);
-      notesGraphics.drawCircle(tStart + radius, yIndex * noteHeight, radius);
-      notesGraphics.drawCircle(tEnd + tStart - radius, yIndex * noteHeight, radius);
-      notesGraphics.drawRect(
-        tStart + radius,
-        yIndex * noteHeight - radius,
-        tEnd - radius * 2,
-        noteHeight
-      );
-      notesGraphics.endFill();
-    }
+    // toneHeight
+    const yIndex = KeyboardToNote.getIndexFromNote(note.name);
+    notesGraphics.beginFill(color);
+    notesGraphics.drawCircle(tStart + radius, yIndex * noteHeight, radius);
+    notesGraphics.drawCircle(tEnd + tStart - radius, yIndex * noteHeight, radius);
+    notesGraphics.drawRect(
+      tStart + radius,
+      yIndex * noteHeight - radius,
+      tEnd - radius * 2,
+      noteHeight
+    );
+    notesGraphics.endFill();
   }
   return notesGraphics;
 };
