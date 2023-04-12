@@ -1,14 +1,13 @@
 
 import * as Tone from 'tone';
-// import { Fragment } from '../Types/Fragment';
-import ToneJSUtils from './ToneJSUtils';
-import { PianoSampler } from './PianoSampler';
-import { ToneIdPart } from '../Types/ToneIdPart';
-import { SoundboardSampler } from './SoundboardSampler';
-import { Note } from '../Types/Note';
-import AudioService from './AudioService/AudioService';
-import { ticksToMS } from './AudioService/utils/AudioServiceUtils';
-import { Fragment } from '@prisma/client';
+import { ticksToMS } from '~/components/fragmentPlayer/audioService/AudioServiceUtils';
+import AudioService from '~/components/fragmentPlayer/audioService/AudioService';
+import { SoundboardSampler } from '~/components/fragmentPlayer/audioService/SoundboardSampler';
+import { PianoSampler } from '~/components/fragmentPlayer/audioService/PianoSampler';
+import { ToneIdPart } from '~/components/fragmentPlayer/audioService/ToneIdPart';
+import ToneJSUtils from '~/components/fragmentPlayer/audioService/ToneJSUtils';
+import { Note } from '~/components/fragmentPlayer/audioService/Note';
+import { Fragment } from '~/components/fragmentPlayer/audioService/Fragment';
 
 export type ToneJSStatus = 'started' | 'stopped' | 'paused' | 'metronome';
 
@@ -28,7 +27,7 @@ export class ToneJSService {
 
   private static timeOutList: { id: string; timeout?: NodeJS.Timeout }[] = [];
 
-  static audioContext: AudioContext;
+  static audioContext: Tone.BaseContext;
 
   static getAudioTime(): number {
     return this.audioContext.currentTime;
@@ -39,9 +38,6 @@ export class ToneJSService {
   public static async init(): Promise<void> {
     Tone.Transport.loop = false;
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore support
-      // window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this.audioContext = Tone.getContext();
 
       // Tone.setContext(this.audioContext);
@@ -64,6 +60,7 @@ export class ToneJSService {
   public static metronomeCallback: (index: number) => void;
 
   static async start(fragment: Fragment): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (Tone.Transport.state === 'closed' || Tone.Transport.state === 'suspended') {
       await Tone.start();
@@ -73,7 +70,7 @@ export class ToneJSService {
 
     for (let i = 0; i < fragment.notes.length; i += 1) {
       const n = fragment.notes[i];
-
+      if(!n) continue;
       AudioService.piano.play({
         note: n.note,
         sustain: 500,
@@ -136,6 +133,7 @@ export class ToneJSService {
 
     for (let i = notes.length - 1; i >= 0; i -= 1) {
       const n = notes[i];
+      if(!n) continue;
       const t = now + Tone.Ticks(n.time).toSeconds();
 
       AudioService.soundBoard.play({

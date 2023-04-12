@@ -3,7 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragmentPlayer/animationPlayer";
+import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService/fragmentWithNotes";
 import { FragmentCard } from "~/components/fragmentPlayer/fragmentCard";
+import FragmentPlayer from "~/components/fragmentPlayer/fragmentPlayer";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
@@ -61,6 +63,10 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                 <h3 className="pt-4 text-center text-2xl font-extrabold tracking-tight text-white">
                     Kijk en luister
                 </h3>
+                { fragmentsOfLevelQuery.data && (
+                    <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
+                    )}
+
                 <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
                     {/* { !isStarted && (
                         <button className="rounded border p-2 text-5xl font-extrabold text-white" onClick={ () => setIsStarted(true) }>start</button>
@@ -69,15 +75,14 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                     { isStarted && countdown === 1 && <div className="text-center text-5xl font-extrabold text-white">GO!
                     </div> } */}
                     {/* { isStarted && countdown === 0 && ( */ }
-                    { true && (
+                    { fragmentsOfLevelQuery.data && (
                         <div>
                             {/* Fragments here */ }
-                            <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
+                            {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
                                 <AnimationPlayer width={ 200 } height={ 100 } />
-                            </FragmentCard>
-                            {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'wrong' } > */ }
-                            {/* Fragment content here */ }
-                            {/* </FragmentCard> */ }
+                            </FragmentCard> */}
+
+
                             <div className="flex justify-around sm:flex sm:flex-col">
                                 <Link
                                     className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "

@@ -1,6 +1,5 @@
 import AudioService from "~/components/fragmentPlayer/audioService/AudioService";
 
-
 export function beatLengthInMs(): number {
   return (60 * 1000) / AudioService.bpm;
 }
