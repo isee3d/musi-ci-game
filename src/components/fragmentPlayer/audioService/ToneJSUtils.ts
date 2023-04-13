@@ -6,6 +6,7 @@ import { ToneIdPart } from '~/components/fragmentPlayer/audioService/ToneIdPart'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
 
 export default class ToneJSUtils {
+  // not used
   public static snapNotes(recorded: Note[]): Note[] {
     const stepSize = Tone.Transport.PPQ;
 
@@ -26,11 +27,12 @@ export default class ToneJSUtils {
   }
 
   public static getFragmentDurationInTicks(notes: Note[]): number {
-    const lastNote = notes.sort((a, b) => b.time + b.duration - (a.time + a.duration))[0];
-    if(!lastNote) return 0;
-    return Tone.Ticks(lastNote.time + lastNote.duration).valueOf(); // TODO, get from scene.
+    if(notes.length === 0) return 0;
+    const lastNote = notes.sort((a, b) => b.time + b.duration - (a.time + a.duration))[0] as Note;
+    return Tone.Ticks(lastNote.time + lastNote.duration).valueOf();
   }
 
+  // not used
   public static fragmentToPart(fragment: FragmentWithNotes, sampler: Tone.Sampler): ToneIdPart {
     const { notes, id } = fragment;
     const partNotes = notes.map((e: any) => {
@@ -80,7 +82,7 @@ export default class ToneJSUtils {
     for (let i = 0; i < fragments.length; i += 1) {
       const fragment = { ...fragments[i] } as FragmentToPlay;
       const notes: Note[] = [];
-      for (let y = 0; y < fragment.notes.length; y += 1) {
+      for (let y = 0; y < fragment.notes.length; y++) {
         const n = { ...fragment.notes[y] } as Note;
         const note = n.name.replace(/\d/, '');
         let octave = parseInt(n.name.replace(/\D+/, ''));
@@ -89,7 +91,6 @@ export default class ToneJSUtils {
         if (index >= 12) octave += 1;
 
         const newNote = helperArray[12 + index] + octave;
-        // console.log('old note:', n.note, 'new note:', newNote, 'transposed', direction);
 
         n.name = newNote;
         notes.push(n as Note);
@@ -100,6 +101,7 @@ export default class ToneJSUtils {
     return newFragments;
   }
 
+  // Not used
   public static addMarginToNote(noteTimeInTicks: number): number {
     // const { PPQ } = Tone.Transport;
 
@@ -108,6 +110,7 @@ export default class ToneJSUtils {
     return time;
   }
 
+  // not used
   public static addTimeoutToPart = (part: ToneIdPart, callback?: () => void): ToneIdPart => {
     console.log('part add timeOut', part.id, part.timeout, part.durationInMs);
     part.timeout = setTimeout(() => {

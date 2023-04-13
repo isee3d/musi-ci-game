@@ -19,8 +19,9 @@ export interface ToneStartOptions {
   callbackAfterNote?: (fragment: Fragment, note: Note) => void;
 }
 export class ToneJSService {
+  // not used
   private static parts: ToneIdPart[] = [];
-
+  // not used
   private static metronomePart: ToneIdPart;
 
   private static status: ToneJSStatus = 'stopped';
@@ -35,6 +36,7 @@ export class ToneJSService {
     return this.audioContext.currentTime;
   }
 
+  // Move to global bool atom...
   static hasSupport: boolean;
 
   public static async init(): Promise<void> {
@@ -47,6 +49,7 @@ export class ToneJSService {
       await SoundboardSampler.init();
     } catch (e) {
       this.hasSupport = false;
+      // Other way of doing alerts maybe?
       alert('Web Audio API not supported in this browser.');
     }
   }
@@ -59,6 +62,7 @@ export class ToneJSService {
     return this.currentFragment;
   }
 
+  // not used
   public static metronomeCallback: (index: number) => void;
 
   static async start(fragment: FragmentWithNotes): Promise<void> {
@@ -94,7 +98,6 @@ export class ToneJSService {
   }
 
   public static stop(): void {
-
     this.status = 'stopped';
     this.currentFragment = undefined;
     this.timeOutList.forEach((t) => {

@@ -1,11 +1,17 @@
 import AudioService from "~/components/fragmentPlayer/audioService/AudioService";
 
+const MS_PER_MINUTE = 1000 * 60;
+
 export function beatLengthInMs(): number {
-  return (60 * 1000) / AudioService.bpm;
+  return MS_PER_MINUTE / AudioService.bpm;
 }
 
 export function ticksToMS(ticks: number): number {
-  return (ticks / AudioService.PPQ / AudioService.bpm) * 1000 * 60;
+  return (ticks / AudioService.PPQ / AudioService.bpm) * MS_PER_MINUTE;
+}
+
+export function msToTicks(ms: number): number {
+  return (ms / MS_PER_MINUTE) * AudioService.PPQ * AudioService.bpm;
 }
 
 export async function returnAudioBuffer(arrBuffer: ArrayBuffer): Promise<AudioBuffer> {

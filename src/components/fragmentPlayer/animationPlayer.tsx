@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
 import * as PIXI from 'pixijs'
 import * as Tone from 'tone';
+import React, { useEffect, useRef } from 'react';
 import { createApp, drawNotes } from '~/components/fragmentPlayer/audioService/PixiUtils';
 import ToneJSUtils from '~/components/fragmentPlayer/audioService/ToneJSUtils';
 import { KeyboardToNote } from '~/components/fragmentPlayer/audioService/Keyboard';
@@ -27,7 +27,6 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
             app.current = newApp;
             // // const renderer = app.renderer;
             containerRef.current.appendChild(app.current.view as unknown as Node);
-            // causes webgl error
             app.current.stage.addChild(drawNotes(fragment.notes, width, height));
             resizeWindow();
             window.addEventListener('resize', () => resizeWindow());
@@ -97,7 +96,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
             const now = timer.current / 1000; // seconds
 
             // get Y from note interpolation
-            for (let i = 0; i < notes.length; i += 1) {
+            for (let i = 0; i < notes.length; i++) {
                 const n = notes[i] as Note;
                 const noteStart = Tone.Ticks(n.time).toSeconds();
                 const noteEnd = noteStart + Tone.Ticks(n.duration).toSeconds();
