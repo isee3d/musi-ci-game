@@ -6,7 +6,7 @@ import Image from 'next/image';
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const Dog = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Dog), { ssr: false })
+const Dog = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Dog), { ssr: true })
 const Duck = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Duck), { ssr: false })
 const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.View), {
   ssr: false,
@@ -49,7 +49,7 @@ const Welcome: NextPage = () => {
           <View orbit className='relative h-full sm:h-48 sm:w-full'>
             <Suspense fallback={ null }>
               <Dog scale={ 2 } position={ [0, -1.6, 0] } rotation={ [0.0, -0.3, 0] } />
-              <Common color={ 'lightpink' } />
+              <Common/>
             </Suspense>
           </View>
         </div>

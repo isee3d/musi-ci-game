@@ -63,8 +63,11 @@ export function Duck(props: any) {
 
   return <primitive object={ scene } { ...props } />
 }
+
 export function Dog(props: any) {
   const { scene } = useGLTF('/dog.glb')
+
+  useFrame((state, delta) => (scene.rotation.y += delta))
 
   return <primitive object={ scene } { ...props } />
 }
