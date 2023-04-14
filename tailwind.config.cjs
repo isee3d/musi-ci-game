@@ -9,7 +9,6 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-debug-screens")],
 };
 
 module.exports = config;

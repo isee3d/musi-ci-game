@@ -14,10 +14,39 @@ const config = {
    *
    * @see https://github.com/vercel/next.js/issues/41980
    */
-  transpilePackages: ['jotai-devtools'],
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
   },
+    webpack(config, { isServer }) {
+    // audio support
+    config.module.rules.push({
+      test: /\.(ogg|mp3|wav|mpe?g)$/i,
+      exclude: config.exclude,
+      use: [
+        {
+          loader: "url-Loader",
+          options: {
+            limit: config.inlineImageLimit,
+            fallback: "file-Loader",
+            publicPath: `${config.assetPrefix}/_next/static/images/`,
+            outputPath: `${isServer ? '../' : ''}static/images/`,
+            name: '[name]-[hash].[ext]',
+            esModule: config.esModule || false,
+          },
+        },
+      ],
+    })
+
+    // shader support
+    config.module.rules.push({
+      test: /\.(glsl|vs|fs|vert|frag)$/,
+      exclude: /node_modules/,
+      use: ['raw-loader', 'glslify-loader'],
+    })
+
+    return config
+  },
 };
+
 export default config;
