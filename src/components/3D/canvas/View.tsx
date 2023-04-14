@@ -19,8 +19,8 @@ export const Common = ({ color }: CommonProps) => (
   </Suspense>
 )
 
-const View = forwardRef(({ children, orbit, className, ...props }
-  : { children: React.ReactNode, orbit: any, className: string },
+const View = forwardRef(({ children, useOrbit, className, ...props }
+  : { children: React.ReactNode, useOrbit: boolean, className: string },
    ref) => {
   const localRef: React.RefObject<any> | undefined = useRef(null)
   useImperativeHandle(ref, () => localRef.current)
@@ -31,7 +31,7 @@ const View = forwardRef(({ children, orbit, className, ...props }
       <Three>
         <ViewImpl track={ localRef }>
           { children }
-          { orbit && <OrbitControls /> }
+          { useOrbit && <OrbitControls /> }
         </ViewImpl>
       </Three>
     </>

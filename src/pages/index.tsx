@@ -46,7 +46,7 @@ const Welcome: NextPage = () => {
           Welcome!
         </h1>
         <div className='w-full text-center md:w-3/5'>
-          <View orbit className='relative h-full sm:h-48 sm:w-full'>
+          <View useOrbit className='relative h-full sm:h-48 sm:w-full'>
             <Suspense fallback={ null }>
               <Dog scale={ 2 } position={ [0, -1.6, 0] } rotation={ [0.0, -0.3, 0] } />
               <Common/>
