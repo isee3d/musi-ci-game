@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const Dog = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Dog), { ssr: true })
-const Duck = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Duck), { ssr: false })
 const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.View), {
   ssr: false,
   loading: () => (
