@@ -11,7 +11,7 @@ import { api } from "~/utils/api";
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     // get the fragments of the level.
-    const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level});
+    const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
     console.log("data: ", JSON.stringify(fragmentsOfLevelQuery.data));
 
     // const [isStarted, setIsStarted] = useState(false);
@@ -63,42 +63,39 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                 <h3 className="pt-4 text-center text-2xl font-extrabold tracking-tight text-white">
                     Kijk en luister
                 </h3>
-                { fragmentsOfLevelQuery.data && (
-                    <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
-                    )}
-
-                <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center">
-                    {/* { !isStarted && (
+                {/* { !isStarted && (
                         <button className="rounded border p-2 text-5xl font-extrabold text-white" onClick={ () => setIsStarted(true) }>start</button>
                     ) }
                     { isStarted && countdown > 1 && <div className="text-center text-5xl font-extrabold text-white">{ countdown - 1 }</div> }
                     { isStarted && countdown === 1 && <div className="text-center text-5xl font-extrabold text-white">GO!
                     </div> } */}
-                    {/* { isStarted && countdown === 0 && ( */ }
-                    { fragmentsOfLevelQuery.data && (
-                        <div>
-                            {/* Fragments here */ }
-                            {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
+                {/* { isStarted && countdown === 0 && ( */ }
+                <div className="flex w-1/2 flex-col justify-center space-y-4">
+                    {/* Fragments here */ }
+                    {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
                                 <AnimationPlayer width={ 200 } height={ 100 } />
                             </FragmentCard> */}
-
-
-                            <div className="flex justify-around sm:flex sm:flex-col">
-                                <Link
-                                    className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                                    href="/login"
-                                >
-                                    <h3 className="text-center text-xl font-bold">Play knop</h3>
-                                </Link>
-                                <Link
-                                    className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                                    href="/result"
-                                >
-                                    <h3 className="text-center text-2xl font-bold">Stop knop</h3>
-                                </Link>
-                            </div>
-                        </div>
+                    { fragmentsOfLevelQuery.data && (
+                        <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
                     ) }
+                    { fragmentsOfLevelQuery.data && (
+                        <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
+                    ) }
+
+                    <div className="flex justify-around sm:flex sm:flex-col">
+                        <Link
+                            className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                            href="/login"
+                        >
+                            <h3 className="text-center text-xl font-bold">Play knop</h3>
+                        </Link>
+                        <Link
+                            className="my-5  rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                            href="/result"
+                        >
+                            <h3 className="text-center text-2xl font-bold">Stop knop</h3>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </main>

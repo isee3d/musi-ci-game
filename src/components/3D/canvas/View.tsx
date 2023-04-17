@@ -1,7 +1,7 @@
 // 'use client'
 
 import React, { forwardRef, Suspense, useImperativeHandle, useRef } from 'react'
-import { OrbitControls, PerspectiveCamera, View as ViewImpl } from '@react-three/drei'
+import { OrbitControls, OrthographicCamera, PerspectiveCamera, View as ViewImpl } from '@react-three/drei'
 import { Three } from '~/components/3D/helpers/components/Three'
 import { ColorRepresentation } from 'three';
 
@@ -19,9 +19,30 @@ export const Common = ({ color }: CommonProps) => (
   </Suspense>
 )
 
+export const Ortho = ({ color }: CommonProps) => (
+  <Suspense fallback={ null }>
+    { color && <color attach='background' args={ [color] } /> }
+    <ambientLight intensity={ 0.5 } />
+    <pointLight position={ [20, 30, 10] } intensity={ 1 } />
+    <pointLight position={ [-10, -10, -10] } color='blue' />
+    <OrthographicCamera
+      makeDefault
+      // zoom={ 1 }
+      // top={ 200 }
+      // bottom={ -200 }
+      // left={ -200 }
+      // right={ 200 }
+      // near={ 1 }
+      // far={ 100 }
+      position={ [0, 0, 10] }
+    />
+  </Suspense>
+)
+
+
 const View = forwardRef(({ children, useOrbit, className, ...props }
-  : { children: React.ReactNode, useOrbit: boolean, className: string },
-   ref) => {
+  : { children: React.ReactNode, useOrbit: boolean, className?: string },
+  ref) => {
   const localRef: React.RefObject<any> | undefined = useRef(null)
   useImperativeHandle(ref, () => localRef.current)
 
@@ -31,7 +52,7 @@ const View = forwardRef(({ children, useOrbit, className, ...props }
       <Three>
         <ViewImpl track={ localRef }>
           { children }
-          { useOrbit && <OrbitControls /> }
+          {/* { useOrbit && <OrbitControls /> } */ }
         </ViewImpl>
       </Three>
     </>

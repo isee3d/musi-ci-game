@@ -23,26 +23,31 @@ const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => m
     </div>
   ),
 })
-const Common = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Common), { ssr: false })
+
+const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
+const Lines = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Lines), { ssr: false })
 
 interface FragmentPlayerProps {
-    fragment: FragmentWithNotes;
-    onClick?: (fragment: Fragment) => void;
+  fragment: FragmentWithNotes;
+  onClick?: (fragment: Fragment) => void;
 }
 
 const fragmentPlayer: React.FC<FragmentPlayerProps> = ({
-    fragment,
-    onClick,
+  fragment,
+  onClick,
 }) => {
   return (
     <>
-      <View useOrbit className='relative h-full sm:h-48 sm:w-full'>
-        <Suspense fallback={ null }>
-          <Dog scale={ 2 } position={ [0, -1.6, 0] } rotation={ [0.0, -0.3, 0] } />
-          <Common />
-        </Suspense>
-      </View>
-    {/* <FragmentCard color='right' onClick={async () => {
+      <div className='rounded-2xl bg-zinc-500'>
+        <View useOrbit className=' h-full sm:h-48 sm:w-full'>
+          <Suspense fallback={ null }>
+            <Lines />
+            <Ortho />
+          </Suspense>
+        </View>
+      </div>
+
+      {/* <FragmentCard color='right' onClick={async () => {
       ToneJSService.start(fragment)
       }}>
               <AnimationPlayer
