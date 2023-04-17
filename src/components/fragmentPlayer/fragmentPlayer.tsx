@@ -24,8 +24,8 @@ const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => m
   ),
 })
 
-const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
-const Lines = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Lines), { ssr: false })
+const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: true })
+const Lines = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.Lines), { ssr: true })
 
 interface FragmentPlayerProps {
   fragment: FragmentWithNotes;

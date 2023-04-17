@@ -14,6 +14,7 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
     console.log("data: ", JSON.stringify(fragmentsOfLevelQuery.data));
 
+    const x = new Array(10)
     // const [isStarted, setIsStarted] = useState(false);
     // const [countdown, setCountdown] = useState(4);
 
@@ -36,6 +37,20 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     //         }
     //     };
     // }, [isStarted]);
+
+    function renderElements() {
+        const elements = [];
+        for (let i = 0; i < 50; i++) {
+            if (fragmentsOfLevelQuery.data) {
+                elements.push(<FragmentPlayer key={ i }
+                    fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />);
+            } else {
+                elements.push(<div key={ i }>loading</div>);
+            }
+        }
+
+        return <>{ elements }</>;
+    }
 
     return (<>
         <Head>
@@ -71,16 +86,8 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                     </div> } */}
                 {/* { isStarted && countdown === 0 && ( */ }
                 <div className="flex w-1/2 flex-col justify-center space-y-4">
-                    {/* Fragments here */ }
-                    {/* <FragmentCard onClick={ () => console.log('clicked') } color={ 'right' } >
-                                <AnimationPlayer width={ 200 } height={ 100 } />
-                            </FragmentCard> */}
-                    { fragmentsOfLevelQuery.data && (
-                        <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
-                    ) }
-                    { fragmentsOfLevelQuery.data && (
-                        <FragmentPlayer fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />
-                    ) }
+
+                    { renderElements() }
 
                     <div className="flex justify-around sm:flex sm:flex-col">
                         <Link
