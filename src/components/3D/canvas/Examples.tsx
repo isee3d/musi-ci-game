@@ -80,11 +80,8 @@ interface LineProps {
 }
 
 export function FragmentLine(props: LineProps) {
-  const lineRef = useRef<any>(null);
-
   return (
     <Line
-      ref={ lineRef }
       points={ props.points }
       color={ props.color }
       lineWidth={ props.lineWidth }
@@ -102,15 +99,13 @@ interface CircleProps {
 }
 
 export function FragmentCircle(props: CircleProps) {
-  const circleRef = useRef<THREE.Mesh>(null!);
-
   const [circlePosition, setCirclePosition] = useState(new THREE.Vector3(-100, 0, 0));
 
   const material = new THREE.MeshBasicMaterial({
     color: props.color,
   });
 
-  const curve = useMemo(() => new THREE.CatmullRomCurve3(flatten(props.pointsList)), [props.pointsList]);
+  const curve = useMemo(() => new THREE.CatmullRomCurve3(flatten(props.pointsList), false, 'catmullrom', 0.2), [props.pointsList]);
 
   const yRange = useMemo(() => {
     let minY = Infinity;
@@ -135,69 +130,12 @@ export function FragmentCircle(props: CircleProps) {
   });
 
   return (
-    <>
-      <mesh position={ circlePosition } ref={ circleRef }>
+      <mesh position={ circlePosition }>
         <Circle args={ [props.radius, props.segments] } material={ material } />
       </mesh>
-    </>
   );
 }
 
 function flatten<T>(arr: T[][]): T[] {
   return ([] as T[]).concat(...arr);
-}
-
-export function Lines() {
-  const points: THREE.Vector3[] = [
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(96, 0, 0),
-  ];
-
-  const points2: THREE.Vector3[] = [
-    new THREE.Vector3(104, -90, 0),
-    new THREE.Vector3(200, -90, 0),
-  ];
-
-  const points3: THREE.Vector3[] = [
-    new THREE.Vector3(200, -10, 0),
-    new THREE.Vector3(300, -10, 0),
-  ];
-
-  const circleRef = useRef<THREE.Mesh>(null);
-
-  const circleRadius = 10;
-  const circleColor = 'red';
-  const [circlePosition, setCirclePosition] = useState(new THREE.Vector3(-100, 0, 0));
-
-  const material = new THREE.MeshBasicMaterial({
-    color: circleColor,
-  });
-
-  const curve = new THREE.CatmullRomCurve3(points.concat(points2).concat(points3), false, 'catmullrom', 0.2);
-
-
-  const yRange = useMemo(() => {
-    const minY = Math.min(points[0]!.y, points2[0]!.y, points3[0]!.y);
-    const maxY = Math.max(points[0]!.y, points2[0]!.y, points3[0]!.y);
-    return [minY, maxY];
-  }, [points, points2, points3]);
-
-  useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
-    const normalizedTime = time % 10 / 10;
-    const circlePoint = curve.getPointAt(normalizedTime);
-    const circleY = THREE.MathUtils.clamp(circlePoint.y, yRange[0]!, yRange[1]!);
-    setCirclePosition(new THREE.Vector3(circlePoint.x - 100 + circleRadius, circleY, 0));
-  });
-
-  return (
-    <>
-      <Line points={ points } color="#00FF00" lineWidth={ 8 } position={ [-100, 0, 0] } />
-      <Line points={ points2 } color="black" lineWidth={ 8 } position={ [-100, 0, 0] } />
-      <Line points={ points3 } color="blue" lineWidth={ 8 } position={ [-100, 0, 0] } />
-      <mesh position={ circlePosition } ref={ circleRef }>
-        <Circle args={ [circleRadius, 32] } material={ material } />
-      </mesh>
-    </>
-  );
 }
