@@ -45,7 +45,19 @@ const points3: THREE.Vector3[] = [
 
 const pointsArray = [points, points2, points3];
 
+function findMinMaxX(pointsArray: THREE.Vector3[][]): [number, number] {
+  let minX = Infinity;
+  let maxX = -Infinity;
 
+  for (const points of pointsArray) {
+    for (const point of points) {
+      minX = Math.min(minX, point.x);
+      maxX = Math.max(maxX, point.x);
+    }
+  }
+
+  return [minX, maxX];
+}
 
 interface FragmentPlayerProps {
   fragment: FragmentWithNotes;
@@ -58,10 +70,10 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
-  // const [x, setx] = React.useState(false);
+
   useEffect(() => {
     if (containerRef.current) {
-     resizeWindow();
+      resizeWindow();
       window.addEventListener('resize', resizeWindow);
     }
     return () => {
@@ -70,7 +82,9 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   }, []);
 
   function resizeWindow(): void {
-    setPositionZeroPoint(containerRef.current ? (containerRef.current.clientWidth / 2 * -1) : 0);
+    // setPositionZeroPoint(containerRef.current ? (containerRef.current.clientWidth / 2 * -1) : 0);
+    const minMax = findMinMaxX(pointsArray);
+    setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
   }
 
   return (
@@ -80,12 +94,12 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
           <Suspense fallback={ null }>
             { pointsArray.map((points, index) => (
               <FragmentLine
-              key={ index }
-               position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
+                key={ index }
+                position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
                 lineWidth={ 8 }
                 color={ "black" }
                 points={ points }
-                 />
+              />
             )) }
             <FragmentCircle pointsList={ pointsArray } segments={ 32 } position={ new THREE.Vector3(positionZeroPoint, 0, 0) } radius={ 10 } color={ "red" } isAnimating={ true } />
             <Ortho />

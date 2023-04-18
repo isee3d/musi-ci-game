@@ -107,29 +107,35 @@ export function FragmentCircle(props: CircleProps) {
   });
 
   const totalTime = 10;
+  const segmentTime = useRef(0);
+  const currentIndex = useRef(0);
+  const lineLength = useRef(0);
+  const normalizedTime = useRef(0);
+  const newX = useRef(0);
+  const currentY = useRef(0);
 
   useFrame(({ clock }) => {
     if (!props.isAnimating) return;
     const time = clock.getElapsedTime();
-    const segmentTime = totalTime / props.pointsList.length;
+    segmentTime.current = totalTime / props.pointsList.length;
 
     // Calculate the current index based on time and segmentTime
-    const currentIndex = Math.floor(time % totalTime / segmentTime);
+    currentIndex.current = Math.floor(time % totalTime / segmentTime.current);
 
-    // Calculate the length of the line at currentIndex
-    const lineLength = props.pointsList[currentIndex][1].x - props.pointsList[currentIndex][0].x;
+    // Calculate the length of the line at currentIndex.current
+    lineLength.current = props.pointsList[currentIndex.current][1].x - props.pointsList[currentIndex.current][0].x;
 
     // Calculate the normalizedTime for the current line segment
-    const normalizedTime = (time % segmentTime) / segmentTime;
+    normalizedTime.current = (time % segmentTime.current) / segmentTime.current;
 
     // Calculate the new x position based on the line length and normalizedTime
-    const newX = props.pointsList[currentIndex][0].x + (normalizedTime * lineLength);
+    newX.current = props.pointsList[currentIndex.current][0].x + (normalizedTime.current * lineLength.current);
 
-    // Fetch the y value from the pointsList array using the currentIndex
-    const currentY = props.pointsList[currentIndex][0].y;
+    // Fetch the y value from the pointsList array using the currentIndex.current
+    currentY.current = props.pointsList[currentIndex.current][0].y;
 
     // Set the circlePosition with the updated x and y values
-    setCirclePosition(new THREE.Vector3(newX, currentY, 0));
+    setCirclePosition(new THREE.Vector3(newX.current, currentY.current, 0));
   });
 
   return (
