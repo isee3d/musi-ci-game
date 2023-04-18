@@ -1,9 +1,8 @@
 import { Note } from '@prisma/client';
 import * as Tone from 'tone';
-import { Fragment, FragmentToPlay } from '~/components/fragmentPlayer/audioService-legacy/Fragment';
 import { baseNotes } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
 import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
+import { FragmentToPlay, FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 
 export default class ToneJSUtils {
   // not used

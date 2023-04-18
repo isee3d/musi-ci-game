@@ -3,7 +3,7 @@
 import { Circle, Plane, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { Ref, useMemo, useRef, useState } from 'react'
+import { Ref, useMemo, useRef, useState, useEffect } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
 import { useRouter } from 'next/navigation'
 
@@ -80,10 +80,21 @@ interface LineProps {
 }
 
 export function FragmentLine(props: LineProps) {
+  const [color, setColor] = useState("#000000");
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const newColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      setColor(newColor);
+    }, 16);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <Line
       points={ props.points }
-      color={ props.color }
+      color={ color as THREE.ColorRepresentation }
       lineWidth={ props.lineWidth }
       position={ props.position }
     />

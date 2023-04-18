@@ -6,7 +6,7 @@ import ToneJSUtils from '~/components/fragmentPlayer/audioService-legacy/ToneJSU
 import { KeyboardToNote } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
 import AudioService from '~/components/fragmentPlayer/audioService-legacy/AudioService';
 import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { Note } from '@prisma/client';
 
 interface AnimationPlayerProps {

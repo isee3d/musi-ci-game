@@ -7,9 +7,8 @@ import { PianoSampler } from '~/components/fragmentPlayer/audioService-legacy/Pi
 import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
 import ToneJSUtils from '~/components/fragmentPlayer/audioService-legacy/ToneJSUtils';
 // import { Note } from '~/components/fragmentPlayer/audioService/Note';
-import { Fragment } from '~/components/fragmentPlayer/audioService-legacy/Fragment';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
-import { Note } from '@prisma/client';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { Fragment, Note } from '@prisma/client';
 
 export type ToneJSStatus = 'started' | 'stopped' | 'paused' | 'metronome';
 

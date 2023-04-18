@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragmentPlayer/animationPlayer";
-import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes";
+import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { FragmentCard } from "~/components/fragmentPlayer/fragmentCard";
 import FragmentPlayer from "~/components/fragmentPlayer/fragmentPlayer";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";

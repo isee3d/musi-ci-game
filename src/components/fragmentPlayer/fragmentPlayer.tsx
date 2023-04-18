@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import * as Tone from 'tone';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
 
 const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
@@ -86,6 +86,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     const minMax = findMinMaxX(pointsArray);
     setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
   }
+
 
   return (
     <>
