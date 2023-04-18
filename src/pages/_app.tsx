@@ -8,9 +8,9 @@ import { api } from "~/utils/api";
 import Head from "next/head";
 
 import "~/styles/globals.css";
-import { ToneJSService } from "~/components/fragmentPlayer/audioService/ToneJSService";
+import { ToneJSService } from "~/components/fragmentPlayer/audioService-legacy/ToneJSService";
 import { useEffect } from "react";
-import AudioService from "~/components/fragmentPlayer/audioService/AudioService";
+import AudioService from "~/components/fragmentPlayer/audioService-legacy/AudioService";
 import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
 
@@ -31,7 +31,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <TailwindIndicator/>
+        <TailwindIndicator />
         <Toaster position="bottom-center" />
         <Component { ...pageProps } />
       </Layout>

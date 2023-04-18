@@ -1,5 +1,5 @@
-import { Note } from "~/components/fragmentPlayer/audioService/Note";
-import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService/fragmentWithNotes";
+import { Note } from "~/components/fragmentPlayer/audioService-legacy/Note";
+import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes";
 
 export interface Fragment {
   id: string;

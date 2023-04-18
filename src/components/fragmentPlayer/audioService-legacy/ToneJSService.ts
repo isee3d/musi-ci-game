@@ -1,14 +1,14 @@
 
 import * as Tone from 'tone';
-import { ticksToMS } from '~/components/fragmentPlayer/audioService/AudioServiceUtils';
-import AudioService from '~/components/fragmentPlayer/audioService/AudioService';
-import { SoundboardSampler } from '~/components/fragmentPlayer/audioService/SoundboardSampler';
-import { PianoSampler } from '~/components/fragmentPlayer/audioService/PianoSampler';
-import { ToneIdPart } from '~/components/fragmentPlayer/audioService/ToneIdPart';
-import ToneJSUtils from '~/components/fragmentPlayer/audioService/ToneJSUtils';
+import { ticksToMS } from '~/components/fragmentPlayer/audioService-legacy/AudioServiceUtils';
+import AudioService from '~/components/fragmentPlayer/audioService-legacy/AudioService';
+import { SoundboardSampler } from '~/components/fragmentPlayer/audioService-legacy/SoundboardSampler';
+import { PianoSampler } from '~/components/fragmentPlayer/audioService-legacy/PianoSampler';
+import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
+import ToneJSUtils from '~/components/fragmentPlayer/audioService-legacy/ToneJSUtils';
 // import { Note } from '~/components/fragmentPlayer/audioService/Note';
-import { Fragment } from '~/components/fragmentPlayer/audioService/Fragment';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
+import { Fragment } from '~/components/fragmentPlayer/audioService-legacy/Fragment';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
 import { Note } from '@prisma/client';
 
 export type ToneJSStatus = 'started' | 'stopped' | 'paused' | 'metronome';

@@ -1,4 +1,4 @@
-import AudioService from "~/components/fragmentPlayer/audioService/AudioService";
+import AudioService from "~/components/fragmentPlayer/audioService-legacy/AudioService";
 
 const MS_PER_MINUTE = 1000 * 60;
 

@@ -1,7 +1,7 @@
 import * as PIXI from 'pixijs';
 import * as Tone from 'tone';
 import ToneJSUtils from './ToneJSUtils';
-import { KeyboardToNote } from '~/components/fragmentPlayer/audioService/Keyboard';
+import { KeyboardToNote } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
 import { Note } from '@prisma/client';
 // import { Note } from '~/components/fragmentPlayer/audioService/Note';
 

@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AnimationPlayer from "~/components/fragmentPlayer/animationPlayer";
-import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService/fragmentWithNotes";
+import { FragmentWithNotes } from "~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes";
 import { FragmentCard } from "~/components/fragmentPlayer/fragmentCard";
 import FragmentPlayer from "~/components/fragmentPlayer/fragmentPlayer";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
@@ -40,7 +40,7 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
 
     function renderElements() {
         const elements = [];
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 1; i++) {
             if (fragmentsOfLevelQuery.data) {
                 elements.push(<FragmentPlayer key={ i }
                     fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />);

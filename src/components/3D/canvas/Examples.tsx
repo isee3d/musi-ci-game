@@ -96,6 +96,7 @@ interface CircleProps {
   position: THREE.Vector3;
   segments: number;
   pointsList: THREE.Vector3[][];
+  isAnimating: boolean;
 }
 
 export function FragmentCircle(props: CircleProps) {
@@ -105,37 +106,37 @@ export function FragmentCircle(props: CircleProps) {
     color: props.color,
   });
 
-  const curve = useMemo(() => new THREE.CatmullRomCurve3(flatten(props.pointsList), false, 'catmullrom', 0.2), [props.pointsList]);
-
-  const yRange = useMemo(() => {
-    let minY = Infinity;
-    let maxY = -Infinity;
-    props.pointsList.forEach((points) => {
-      points.forEach((point) => {
-        minY = Math.min(minY, point.y);
-        maxY = Math.max(maxY, point.y);
-      });
-    });
-    return [minY, maxY];
-  }, [props.pointsList]);
+  const totalTime = 10;
 
   useFrame(({ clock }) => {
+    if (!props.isAnimating) return;
     const time = clock.getElapsedTime();
-    const normalizedTime = time % 4 / 4;
-    const circlePoint = curve.getPointAt(normalizedTime);
-    const circleY = THREE.MathUtils.clamp(circlePoint.y, yRange[0]!, yRange[1]!);
-    setCirclePosition(
-      new THREE.Vector3(circlePoint.x + props.position.x, circleY + props.position.y, props.position.z
-      ));
+    const segmentTime = totalTime / props.pointsList.length;
+
+    // Calculate the current index based on time and segmentTime
+    const currentIndex = Math.floor(time % totalTime / segmentTime);
+
+    // Calculate the length of the line at currentIndex
+    const lineLength = props.pointsList[currentIndex][1].x - props.pointsList[currentIndex][0].x;
+
+    // Calculate the normalizedTime for the current line segment
+    const normalizedTime = (time % segmentTime) / segmentTime;
+
+    // Calculate the new x position based on the line length and normalizedTime
+    const newX = props.pointsList[currentIndex][0].x + (normalizedTime * lineLength);
+
+    // Fetch the y value from the pointsList array using the currentIndex
+    const currentY = props.pointsList[currentIndex][0].y;
+
+    // Set the circlePosition with the updated x and y values
+    setCirclePosition(new THREE.Vector3(newX, currentY, 0));
   });
 
   return (
-      <mesh position={ circlePosition }>
+      <mesh position={ circlePosition.clone().add(props.position) }>
+        {props.isAnimating &&
         <Circle args={ [props.radius, props.segments] } material={ material } />
+        }
       </mesh>
   );
-}
-
-function flatten<T>(arr: T[][]): T[] {
-  return ([] as T[]).concat(...arr);
 }

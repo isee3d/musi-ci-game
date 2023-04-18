@@ -1,12 +1,12 @@
 import * as PIXI from 'pixijs'
 import * as Tone from 'tone';
 import React, { useEffect, useRef } from 'react';
-import { createApp, drawNotes } from '~/components/fragmentPlayer/audioService/PixiUtils';
-import ToneJSUtils from '~/components/fragmentPlayer/audioService/ToneJSUtils';
-import { KeyboardToNote } from '~/components/fragmentPlayer/audioService/Keyboard';
-import AudioService from '~/components/fragmentPlayer/audioService/AudioService';
-import { ToneJSService } from '~/components/fragmentPlayer/audioService/ToneJSService';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
+import { createApp, drawNotes } from '~/components/fragmentPlayer/audioService-legacy/PixiUtils';
+import ToneJSUtils from '~/components/fragmentPlayer/audioService-legacy/ToneJSUtils';
+import { KeyboardToNote } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
+import AudioService from '~/components/fragmentPlayer/audioService-legacy/AudioService';
+import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
 import { Note } from '@prisma/client';
 
 interface AnimationPlayerProps {

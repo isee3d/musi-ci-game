@@ -1,9 +1,9 @@
 import { Note } from '@prisma/client';
 import * as Tone from 'tone';
-import { Fragment, FragmentToPlay } from '~/components/fragmentPlayer/audioService/Fragment';
-import { baseNotes } from '~/components/fragmentPlayer/audioService/Keyboard';
-import { ToneIdPart } from '~/components/fragmentPlayer/audioService/ToneIdPart';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService/fragmentWithNotes';
+import { Fragment, FragmentToPlay } from '~/components/fragmentPlayer/audioService-legacy/Fragment';
+import { baseNotes } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
+import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audioService-legacy/fragmentWithNotes';
 
 export default class ToneJSUtils {
   // not used
@@ -12,7 +12,7 @@ export default class ToneJSUtils {
 
     for (let i = 0; i < recorded.length; i += 1) {
       const note = recorded[i];
-      if(!note) continue;
+      if (!note) continue;
       const rounded = Math.round(note.time / stepSize) * stepSize;
 
       const roundedDur = Math.round(note.duration / stepSize) * stepSize;
@@ -27,7 +27,7 @@ export default class ToneJSUtils {
   }
 
   public static getFragmentDurationInTicks(notes: Note[]): number {
-    if(notes.length === 0) return 0;
+    if (notes.length === 0) return 0;
     const lastNote = notes.sort((a, b) => b.time + b.duration - (a.time + a.duration))[0] as Note;
     return Tone.Ticks(lastNote.time + lastNote.duration).valueOf();
   }

@@ -1,4 +1,4 @@
-import { returnAudioBuffer } from '~/components/fragmentPlayer/audioService/AudioServiceUtils';
+import { returnAudioBuffer } from '~/components/fragmentPlayer/audioService-legacy/AudioServiceUtils';
 import AudioService from './AudioService';
 
 
@@ -47,8 +47,8 @@ export const generateNotes = (octaves: number): string[] => {
   for (let i = 2; i < octaves + 1; i += 1) {
     // eslint-disable-next-line no-restricted-syntax
     for (let j = 0; j < baseNotes.length; j += 1) {
-       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-       // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       notes.push(`${baseNotes[j] + i}`);
     }
   }
@@ -145,12 +145,12 @@ export default class Sampler {
     if (!this.samples[note]) {
       this.samples[note] = { isPlaying: false, buffer: undefined, source: undefined };
     }
-    if(!note) return;
+    if (!note) return;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-       // @ts-ignore
+    // @ts-ignore
     this.samples[note].source = sampleSource || undefined;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-       // @ts-ignore
+    // @ts-ignore
     this.samples[note].isPlaying = true;
   }
 
@@ -194,7 +194,7 @@ export default class Sampler {
   public stop(note: string): void {
     if (!this.samples[note]) return;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-       // @ts-ignore
+    // @ts-ignore
     const { isPlaying, source } = this.samples[note];
     if (isPlaying && source) {
       source.stop();
