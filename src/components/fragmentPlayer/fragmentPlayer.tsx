@@ -76,7 +76,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     if (containerRef.current) {
       setNotePositions(getNotesPositions(fragment.notes,
         containerRef.current.clientWidth,
-        containerRef.current.clientHeight
+        containerRef.current.clientHeight, 8
         ))
         resizeWindow();
       window.addEventListener('resize', resizeWindow);
@@ -87,8 +87,8 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   }, []);
 
   function resizeWindow(): void {
-    // const minMax = findMinMaxX(notePositions);
-    const minMax = findMinMaxX(pointsArray);
+    const minMax = findMinMaxX(notePositions);
+    // const minMax = findMinMaxX(pointsArray);
     setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
   }
 

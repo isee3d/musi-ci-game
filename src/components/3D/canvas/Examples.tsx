@@ -127,23 +127,32 @@ export function FragmentCircle(props: CircleProps) {
 
   useFrame(({ clock }) => {
     if (!props.isAnimating) return;
+
     const time = clock.getElapsedTime();
     segmentTime.current = totalTime / props.pointsList.length;
 
     // Calculate the current index based on time and segmentTime
     currentIndex.current = Math.floor(time % totalTime / segmentTime.current);
 
+    const currentSegment = props.pointsList[currentIndex.current];
+
+    if (!currentSegment || currentSegment.length < 2) return;
+
+    // Type assertion to ensure TypeScript recognizes the value as defined
+    const startPoint = currentSegment[0] as { x: number; y: number };
+    const endPoint = currentSegment[1] as { x: number; y: number };
+
     // Calculate the length of the line at currentIndex.current
-    lineLength.current = props.pointsList[currentIndex.current][1].x - props.pointsList[currentIndex.current][0].x;
+    lineLength.current = endPoint.x - startPoint.x;
 
     // Calculate the normalizedTime for the current line segment
     normalizedTime.current = (time % segmentTime.current) / segmentTime.current;
 
     // Calculate the new x position based on the line length and normalizedTime
-    newX.current = props.pointsList[currentIndex.current][0].x + (normalizedTime.current * lineLength.current);
+    newX.current = startPoint.x + (normalizedTime.current * lineLength.current);
 
     // Fetch the y value from the pointsList array using the currentIndex.current
-    currentY.current = props.pointsList[currentIndex.current][0].y;
+    currentY.current = startPoint.y;
 
     // Set the circlePosition with the updated x and y values
     setCirclePosition(new THREE.Vector3(newX.current, currentY.current, 0));
