@@ -113,7 +113,14 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
                 points={ points }
               />
             )) }
-            <FragmentCircle pointsList={ notePositions } segments={ 32 } position={ new THREE.Vector3(positionZeroPoint, 0, 0) } radius={ 10 } color={ "red" } isAnimating={ true } />
+            <FragmentCircle
+              pointsList={ notePositions }
+              segments={ 32 }
+              position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
+              radius={ 10 }
+              color={ "red" }
+              totalTime={ fragment.notes.reduce((max, note) => Math.max(max, note.time + note.duration), 0) }
+              isAnimating={ true } />
             <Ortho />
           </Suspense>
         </View>

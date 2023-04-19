@@ -106,6 +106,7 @@ interface CircleProps {
   color: THREE.ColorRepresentation;
   position: THREE.Vector3;
   segments: number;
+  totalTime: number;
   pointsList: THREE.Vector3[][];
   isAnimating: boolean;
 }
@@ -117,7 +118,7 @@ export function FragmentCircle(props: CircleProps) {
     color: props.color,
   });
 
-  const totalTime = 10;
+  // const totalTime = 2;
   const segmentTime = useRef(0);
   const currentIndex = useRef(0);
   const lineLength = useRef(0);
@@ -129,10 +130,10 @@ export function FragmentCircle(props: CircleProps) {
     if (!props.isAnimating) return;
 
     const time = clock.getElapsedTime();
-    segmentTime.current = totalTime / props.pointsList.length;
+    segmentTime.current = props.totalTime / props.pointsList.length;
 
     // Calculate the current index based on time and segmentTime
-    currentIndex.current = Math.floor(time % totalTime / segmentTime.current);
+    currentIndex.current = Math.floor(time % props.totalTime / segmentTime.current);
 
     const currentSegment = props.pointsList[currentIndex.current];
 

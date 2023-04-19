@@ -1,5 +1,5 @@
 import { Note } from "@prisma/client";
-import { getFragmentDurationInSeconds, msToTicks } from "~/components/fragmentPlayer/audio/audioUtils";
+import { msToTicks } from "~/components/fragmentPlayer/audio/audioUtils";
 import { KeyboardToNote } from "~/components/fragmentPlayer/audioService-legacy/Keyboard";
 import * as THREE from 'three';
 
@@ -27,6 +27,6 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
         ];
         noteLines.push(line);
     });
-    console.log(noteLines)
+    
     return noteLines;
 }
