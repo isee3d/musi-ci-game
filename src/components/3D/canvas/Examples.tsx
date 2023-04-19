@@ -80,21 +80,21 @@ interface LineProps {
 }
 
 export function FragmentLine(props: LineProps) {
-  const [color, setColor] = useState("#000000");
+  // const [color, setColor] = useState("#000000");
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const newColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-      setColor(newColor);
-    }, 16);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     const newColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  //     setColor(newColor);
+  //   }, 16);
 
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <Line
       points={ props.points }
-      color={ color as THREE.ColorRepresentation }
+      color={ props.color as THREE.ColorRepresentation }
       lineWidth={ props.lineWidth }
       position={ props.position }
     />

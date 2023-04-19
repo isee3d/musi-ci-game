@@ -7,6 +7,7 @@ import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
+import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils';
 
 const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
 const FragmentLine = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.FragmentLine), { ssr: false })
@@ -29,8 +30,8 @@ const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => m
 })
 
 const points: THREE.Vector3[] = [
-  new THREE.Vector3(0, 0, 0),
-  new THREE.Vector3(96, 0, 0),
+  new THREE.Vector3(5, 150, 0),
+  new THREE.Vector3(11, 0, 0),
 ];
 
 const points2: THREE.Vector3[] = [
@@ -70,10 +71,14 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
-
+  const [notePositions, setNotePositions] = useState<THREE.Vector3[][]>([]);
   useEffect(() => {
     if (containerRef.current) {
-      resizeWindow();
+      setNotePositions(getNotesPositions(fragment.notes,
+        containerRef.current.clientWidth,
+        containerRef.current.clientHeight
+        ))
+        resizeWindow();
       window.addEventListener('resize', resizeWindow);
     }
     return () => {
@@ -82,18 +87,17 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   }, []);
 
   function resizeWindow(): void {
-    // setPositionZeroPoint(containerRef.current ? (containerRef.current.clientWidth / 2 * -1) : 0);
+    // const minMax = findMinMaxX(notePositions);
     const minMax = findMinMaxX(pointsArray);
     setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
   }
-
 
   return (
     <>
       <div onClick={ () => console.log(containerRef.current?.clientWidth) } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
         <View useOrbit className=' h-full sm:h-48 sm:w-full'>
           <Suspense fallback={ null }>
-            { pointsArray.map((points, index) => (
+            { notePositions.map((points, index) => (
               <FragmentLine
                 key={ index }
                 position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
@@ -102,7 +106,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
                 points={ points }
               />
             )) }
-            <FragmentCircle pointsList={ pointsArray } segments={ 32 } position={ new THREE.Vector3(positionZeroPoint, 0, 0) } radius={ 10 } color={ "red" } isAnimating={ true } />
+            <FragmentCircle pointsList={ notePositions } segments={ 32 } position={ new THREE.Vector3(positionZeroPoint, 0, 0) } radius={ 10 } color={ "red" } isAnimating={ true } />
             <Ortho />
           </Suspense>
         </View>
