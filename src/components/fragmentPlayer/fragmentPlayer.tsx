@@ -74,11 +74,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   const [notePositions, setNotePositions] = useState<THREE.Vector3[][]>([]);
   useEffect(() => {
     if (containerRef.current) {
-      setNotePositions(getNotesPositions(fragment.notes,
-        containerRef.current.clientWidth,
-        containerRef.current.clientHeight, 8
-        ))
-        resizeWindow();
+      resizeWindow();
       window.addEventListener('resize', resizeWindow);
     }
     return () => {
@@ -87,9 +83,20 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   }, []);
 
   function resizeWindow(): void {
-    const minMax = findMinMaxX(notePositions);
-    // const minMax = findMinMaxX(pointsArray);
-    setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
+    if (containerRef.current) {
+      const notePositions = getNotesPositions(
+        fragment.notes,
+        containerRef.current.clientWidth,
+        containerRef.current.clientHeight,
+        8
+      );
+
+      setNotePositions(latestNotePositions => {
+        const minMax = findMinMaxX(latestNotePositions);
+        setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
+        return notePositions;
+      });
+    }
   }
 
   return (
