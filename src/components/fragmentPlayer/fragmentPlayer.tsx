@@ -10,6 +10,7 @@ import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
 import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils';
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import { ticksToMS } from '~/components/fragmentPlayer/audio/audioUtils';
+import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 
 const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
 const FragmentLine = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.FragmentLine), { ssr: false })
@@ -90,6 +91,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
+  const [running, setRunning] = useState<boolean>(false);
   const { piano } = useAudioServiceStore();
 
   useEffect(() => {
@@ -119,20 +121,31 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     }
   }
 
-  const testSound = async () => {
-    await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
-    await piano?.play({
-      note: 'C5',
-      volume: 1,
-      sustain: 400,
-      releaseMs: 1000,
-      delay: 300,
-    });
-  }
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleStartAnimation = () => {
+    start(fragment)
+    setIsAnimating(true);
+  };
+
+  const handleAnimationComplete = () => {
+    setIsAnimating(false);
+  };
+
+  // const testSound = async () => {
+  //   await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
+  //   await piano?.play({
+  //     note: 'C5',
+  //     volume: 1,
+  //     sustain: 400,
+  //     releaseMs: 1000,
+  //     delay: 300,
+  //   });
+  // }
 
   return (
     <>
-      <div onClick={ () => testSound() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
+      <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
         <View useOrbit className=' h-full sm:h-48 sm:w-full'>
           <Suspense fallback={ null }>
             { notePositions.map((points, index) => (
@@ -151,8 +164,8 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
               radius={ 10 }
               color={ "red" }
               totalTime={0}
-              // segmentDurations={ [5, 2] }
-              isAnimating={ true } />
+              onComplete={ handleAnimationComplete }
+              isAnimating={ isAnimating } />
             <Ortho />
           </Suspense>
         </View>

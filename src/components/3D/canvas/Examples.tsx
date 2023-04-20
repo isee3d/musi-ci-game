@@ -109,20 +109,24 @@ interface CircleProps {
   segments: number;
   totalTime: number;
   pointsList: NotePositionTime[];
-  // segmentDurations: number[];
   isAnimating: boolean;
+  onStart?: () => void;
+  onComplete?: () => void;
 }
 
 export function FragmentCircle(props: CircleProps) {
   const [circlePosition, setCirclePosition] = useState(new THREE.Vector3(-100, 0, 0));
 
+  useEffect(() => {
+    if (props.isAnimating && props.onStart) {
+      props.onStart();
+    }
+  }, [props.isAnimating, props.onStart]);
+
   const material = new THREE.MeshBasicMaterial({
     color: props.color,
   });
 
-  // const totalTime = 2;
-  // const segmentTime = useRef(0);
-  // const currentIndex = useRef(0);
   const lineLength = useRef(0);
   const normalizedTime = useRef(0);
   const newX = useRef(0);
@@ -166,13 +170,21 @@ export function FragmentCircle(props: CircleProps) {
 
     // Set the circlePosition with the updated x and y values
     setCirclePosition(new THREE.Vector3(newX.current, currentY.current, 0));
+
+    console.log("segmentIndex", segmentIndex, props.pointsList.length - 1, normalizedTime.current);
+    if (segmentIndex === props.pointsList.length - 1 && newX.current >= endPoint.x) {
+      if (props.onComplete) {
+        props.onComplete();
+      }
+      return;
+    }
   });
 
   return (
-      <mesh position={ circlePosition.clone().add(props.position) }>
-        {props.isAnimating &&
+    <mesh position={ circlePosition.clone().add(props.position) }>
+      { props.isAnimating &&
         <Circle args={ [props.radius, props.segments] } material={ material } />
-        }
-      </mesh>
+      }
+    </mesh>
   );
 }

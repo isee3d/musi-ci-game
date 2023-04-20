@@ -22,7 +22,7 @@ interface SampleData {
   source?: AudioBufferSourceNode;
 }
 
-interface NotePlayOptions {
+export interface NotePlayOptions {
   note: string;
   attackMs?: number;
   sustain: number;
@@ -64,6 +64,8 @@ export default class Sampler {
   private audioBuffers: NamedAudioBuffer[] = [];
 
   private notes = generateNotes(5);
+
+  private pausedAtTime?: number;
 
   constructor(samples: SampleLoadData[]) {
     Promise.all(
@@ -190,12 +192,17 @@ export default class Sampler {
     }, delay || 0);
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  public pause(): void {
+    const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
+    if (audioContext?.state === 'running') {
+      audioContext.suspend();
+      this.pausedAtTime = getCurrentTime();
+    }
+  }
+
   public stop(note: string): void {
     if (!this.samples[note]) return;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const { isPlaying, source } = this.samples[note];
+    const { isPlaying, source } = this.samples[note] as SampleData;
     if (isPlaying && source) {
       source.stop();
     }

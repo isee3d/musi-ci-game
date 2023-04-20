@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import Sampler from '~/components/fragmentPlayer/audio/Sampler';
-import useSampler from '~/components/fragmentPlayer/audio/useSampler';
+import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 
 type AudioServiceState = {
     audioContext: AudioContext | undefined
+    activeFragment: FragmentWithNotes | undefined
     piano: Sampler | undefined
     soundBoard: Sampler | undefined
     audioTime: number
@@ -16,6 +17,7 @@ type AudioServiceState = {
 type AudioserviceAction = {
     init: () => Promise<void>;
     setAudioContext: (audioContext: AudioContext) => void;
+    setActiveFragment: (fragment: FragmentWithNotes) => void;
     getCurrentTime: () => number;
     setAudioTime: (audioTime: number) => void;
     setPiano: (piano: Sampler) => void;
@@ -34,7 +36,9 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     audioContext: undefined,
     piano: undefined,
     soundBoard: undefined,
+    activeFragment: undefined,
     setAudioContext: (audioContext: AudioContext) => set({ audioContext }),
+    setActiveFragment: (fragment: FragmentWithNotes) => set({ activeFragment: fragment }),
     setAudioTime: (audioTime: number) => set({ audioTime }),
     setPiano: (piano: Sampler) => set({ piano }),
     setSoundBoard: (soundBoard: Sampler) => set({ soundBoard }),
