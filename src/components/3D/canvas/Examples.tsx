@@ -116,12 +116,13 @@ interface CircleProps {
 
 export function FragmentCircle(props: CircleProps) {
   const [circlePosition, setCirclePosition] = useState(new THREE.Vector3(-100, 0, 0));
+  const animationStartTime = useRef<number | null>(null);
 
   useEffect(() => {
-    if (props.isAnimating && props.onStart) {
-      props.onStart();
+    if (props.isAnimating) {
+      animationStartTime.current = null; // Reset the animation start time to null
     }
-  }, [props.isAnimating, props.onStart]);
+  }, [props.isAnimating]);
 
   const material = new THREE.MeshBasicMaterial({
     color: props.color,
@@ -132,12 +133,25 @@ export function FragmentCircle(props: CircleProps) {
   const newX = useRef(0);
   const currentY = useRef(0);
 
+  const totalAnimationDuration = props.pointsList.reduce((acc, curr) => acc + curr.time, 0);
+
   useFrame(({ clock }) => {
     if (!props.isAnimating) return;
+    if (animationStartTime.current === null) {
+      animationStartTime.current = clock.getElapsedTime();
+    }
 
-    const time = clock.getElapsedTime() * 1000;
+    const time = (clock.getElapsedTime() - animationStartTime.current) * 1000 ;
+    console.log(time);
     let elapsedTime = 0;
     let segmentIndex = 0;
+
+    if (time >= animationStartTime.current + totalAnimationDuration) {
+      if (props.onComplete) {
+        props.onComplete();
+      }
+      return;
+    }
 
     // Find the appropriate segment based on the elapsedTime and segmentDurations
     while (elapsedTime + props.pointsList[segmentIndex]!.time < time) {
@@ -150,11 +164,12 @@ export function FragmentCircle(props: CircleProps) {
 
     const currentSegment = props.pointsList[segmentIndex]?.position;
 
-    if (!currentSegment || currentSegment.length < 2) return;
+    if (!currentSegment) return;
 
     // Type assertion to ensure TypeScript recognizes the value as defined
     const startPoint = currentSegment[0] as { x: number; y: number };
     const endPoint = currentSegment[1] as { x: number; y: number };
+
 
     // Calculate the length of the line at segmentIndex
     lineLength.current = endPoint.x - startPoint.x;
@@ -170,14 +185,6 @@ export function FragmentCircle(props: CircleProps) {
 
     // Set the circlePosition with the updated x and y values
     setCirclePosition(new THREE.Vector3(newX.current, currentY.current, 0));
-
-    console.log("segmentIndex", segmentIndex, props.pointsList.length - 1, normalizedTime.current);
-    if (segmentIndex === props.pointsList.length - 1 && newX.current >= endPoint.x) {
-      if (props.onComplete) {
-        props.onComplete();
-      }
-      return;
-    }
   });
 
   return (

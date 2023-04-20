@@ -30,7 +30,6 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
             time: ticksToMS(note.duration),
         }
         noteLines.push(line);
-        console.log(ticksToMS(note.duration), note.duration)
     });
 
     return noteLines;
