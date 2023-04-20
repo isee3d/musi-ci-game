@@ -1,8 +1,8 @@
-import * as Tone from 'tone';
-import { Part } from 'tone';
-import { TimeObject } from 'tone/build/esm/core/type/Units';
+// import * as Tone from 'tone';
+// import { Part } from 'tone';
+// import { TimeObject } from 'tone/build/esm/core/type/Units';
 
-export class ToneIdPart extends Tone.Part {
+export class ToneIdPart  {
   id: string;
 
   public timeout?: NodeJS.Timeout;
@@ -13,13 +13,13 @@ export class ToneIdPart extends Tone.Part {
     id: string,
     durationInMS: number,
     timeout?: NodeJS.Timeout,
-    callback?: Tone.ToneEventCallback<any> | undefined,
+    // callback?: Tone.ToneEventCallback<any> | undefined,
     value?: any[] | undefined
   ) {
-    super(callback, value);
+    // super(callback, value);
     this.id = id;
     this.timeout = timeout;
     this.durationInMs = durationInMS;
-    this.loop = false;
+    // this.loop = false;
   }
 }

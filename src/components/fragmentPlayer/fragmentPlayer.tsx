@@ -1,13 +1,15 @@
-import { Fragment } from '@prisma/client';
+import { Fragment, Note } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three'
-import * as Tone from 'tone';
+// import * as Tone from 'tone';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
 import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils';
+import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
+import { ticksToMS } from '~/components/fragmentPlayer/audio/audioUtils';
 
 const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
 const FragmentLine = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.FragmentLine), { ssr: false })
@@ -46,12 +48,12 @@ const points3: THREE.Vector3[] = [
 
 const pointsArray = [points, points2, points3];
 
-function findMinMaxX(pointsArray: THREE.Vector3[][]): [number, number] {
+function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   let minX = Infinity;
   let maxX = -Infinity;
 
   for (const points of pointsArray) {
-    for (const point of points) {
+    for (const point of points.position) {
       minX = Math.min(minX, point.x);
       maxX = Math.max(maxX, point.x);
     }
@@ -65,13 +67,31 @@ interface FragmentPlayerProps {
   onClick?: (fragment: Fragment) => void;
 }
 
+export interface NotePositionTime {
+  position: THREE.Vector3[];
+  time: number;
+}
+
+function calculateTotalTime(notes: Note[]): number {
+  if(!notes || notes.length === 0) return 0;
+  let totalTime = 0;
+  if (notes.length > 0) {
+    const firstNoteStartTime = notes[0]!.time;
+    const lastNoteEndTime = notes[notes.length - 1]!.time + notes[notes.length - 1]!.duration;
+    totalTime = ticksToMS(lastNoteEndTime - firstNoteStartTime);
+  }
+  return totalTime;
+}
+
 const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   fragment,
   onClick,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
-  const [notePositions, setNotePositions] = useState<THREE.Vector3[][]>([]);
+  const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
+  const { piano } = useAudioServiceStore();
+
   useEffect(() => {
     if (containerRef.current) {
       resizeWindow();
@@ -99,9 +119,20 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     }
   }
 
+  const testSound = async () => {
+    await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
+    await piano?.play({
+      note: 'C5',
+      volume: 1,
+      sustain: 400,
+      releaseMs: 1000,
+      delay: 300,
+    });
+  }
+
   return (
     <>
-      <div onClick={ () => console.log(containerRef.current?.clientWidth) } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
+      <div onClick={ () => testSound() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
         <View useOrbit className=' h-full sm:h-48 sm:w-full'>
           <Suspense fallback={ null }>
             { notePositions.map((points, index) => (
@@ -110,7 +141,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
                 position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
                 lineWidth={ 8 }
                 color={ "black" }
-                points={ points }
+                points={ points.position }
               />
             )) }
             <FragmentCircle
@@ -119,7 +150,8 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
               position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
               radius={ 10 }
               color={ "red" }
-              totalTime={ fragment.notes.reduce((max, note) => Math.max(max, note.time + note.duration), 0) }
+              totalTime={0}
+              // segmentDurations={ [5, 2] }
               isAnimating={ true } />
             <Ortho />
           </Suspense>

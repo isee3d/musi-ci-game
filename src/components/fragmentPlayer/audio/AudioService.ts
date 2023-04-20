@@ -42,7 +42,7 @@ export default class AudioService {
           return resolve();
         }, 1000);
       });
-    } catch (e) {       
+    } catch (e) {
       this.hasSupport = false;
       alert('Web Audio API not supported in this browser.');
     }

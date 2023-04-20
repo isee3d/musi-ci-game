@@ -1,7 +1,7 @@
 
-import * as Tone from 'tone';
-import { ticksToMS } from '~/components/fragmentPlayer/audioService-legacy/AudioServiceUtils';
-import AudioService from '~/components/fragmentPlayer/audioService-legacy/AudioService';
+// import * as Tone from 'tone';
+import { ticksToMS } from '~/components/fragmentPlayer/audio/AudioServiceUtils';
+import AudioService from '~/components/fragmentPlayer/audio/AudioService';
 import { SoundboardSampler } from '~/components/fragmentPlayer/audioService-legacy/SoundboardSampler';
 import { PianoSampler } from '~/components/fragmentPlayer/audioService-legacy/PianoSampler';
 import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
@@ -29,21 +29,21 @@ export class ToneJSService {
 
   private static timeOutList: { id: string; timeout?: NodeJS.Timeout }[] = [];
 
-  static audioContext: Tone.BaseContext;
+  // static audioContext: Tone.BaseContext;
 
-  static getAudioTime(): number {
-    return this.audioContext.currentTime;
+  static getAudioTime() {
+    // return this.audioContext.currentTime;
   }
 
   // Move to global bool atom...
   static hasSupport: boolean;
 
   public static async init(): Promise<void> {
-    Tone.Transport.loop = false;
+    // Tone.Transport.loop = false;
     try {
-      this.audioContext = Tone.getContext();
+      // this.audioContext = Tone.getContext();
 
-      Tone.setContext(this.audioContext);
+      // Tone.setContext(this.audioContext);
       await PianoSampler.init();
       await SoundboardSampler.init();
     } catch (e) {
@@ -68,7 +68,7 @@ export class ToneJSService {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (Tone.Transport.state === 'closed' || Tone.Transport.state === 'suspended') {
-      await Tone.start();
+      // await Tone.start();
     }
 
     this.status = 'started';
@@ -87,13 +87,13 @@ export class ToneJSService {
 
     this.currentFragment = fragment;
 
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        this.stop();
-        resolve();
-      }, ToneJSUtils.getFragmentDurationInMS(fragment.notes));
-      this.timeOutList.push({ id: fragment.id.toString(), timeout });
-    });
+    // return new Promise((resolve) => {
+    //   const timeout = setTimeout(() => {
+    //     this.stop();
+    //     resolve();
+    //   }, ToneJSUtils.getFragmentDurationInMS(fragment.notes));
+    //   this.timeOutList.push({ id: fragment.id.toString(), timeout });
+    // });
   }
 
   public static stop(): void {
@@ -106,24 +106,24 @@ export class ToneJSService {
   }
 
   static pause(): void {
-    Tone.Transport.pause();
+    // Tone.Transport.pause();
     this.status = 'paused';
   }
 
   static resume(): void {
-    Tone.Transport.start('+0.05');
+    // Tone.Transport.start('+0.05');
     this.status = 'started';
   }
 
   static async startMetronome(callbackOnNote: (n: number) => void): Promise<void> {
-    if (Tone.Transport.state === 'stopped') {
-      await Tone.start();
-    }
+    // if (Tone.Transport.state === 'stopped') {
+    //   await Tone.start();
+    // }
     this.currentFragment = undefined;
 
     this.status = 'metronome';
 
-    const { PPQ } = Tone.Transport;
+    // const { PPQ } = Tone.Transport;
     const notes: Note[] = [];
     // const notes: Note[] = [
     //   { time: 0, name: 'C6', speed: 0.34, duration: PPQ },
@@ -138,7 +138,7 @@ export class ToneJSService {
     for (let i = notes.length - 1; i >= 0; i -= 1) {
       const n = notes[i];
       if (!n) continue;
-      const t = now + Tone.Ticks(n.time).toSeconds();
+      // const t = now + Tone.Ticks(n.time).toSeconds();
 
       AudioService.soundBoard.play({
         note: n.name,
@@ -148,18 +148,18 @@ export class ToneJSService {
         delay: ticksToMS(n.time),
       });
 
-      Tone.Draw.schedule(() => {
-        callbackOnNote(notes.length - i - 1);
-      }, t);
+      // Tone.Draw.schedule(() => {
+      //   callbackOnNote(notes.length - i - 1);
+      // }, t);
     }
 
-    Tone.Transport.start();
+    // Tone.Transport.start();
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        this.stop();
-        resolve();
-      }, ToneJSUtils.getFragmentDurationInMS(notes));
-    });
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     this.stop();
+    //     resolve();
+    //   }, ToneJSUtils.getFragmentDurationInMS(notes));
+    // });
   }
 }

@@ -1,4 +1,4 @@
-import * as Tone from 'tone';
+// import * as Tone from 'tone';
 
 export enum Keyboard {
   BACKSPACE = 8,
@@ -130,7 +130,7 @@ export class KeyboardToNote {
 
   static currentKeys: string[] = [];
 
-  static emitter = new Tone.Emitter();
+  // static emitter = new Tone.Emitter();
 
   static init(): void {
     document.addEventListener('keydown', (e) => this.triggerAttack(e));
@@ -162,16 +162,16 @@ export class KeyboardToNote {
   }
 
   static triggerMidiNote(note: number): void {
-    const key = Tone.Midi(note).toNote();
-    this.emitter.emit('triggernote', key);
-    this.currentKeys.push(key);
+    // const key = Tone.Midi(note).toNote();
+    // this.emitter.emit('triggernote', key);
+    // this.currentKeys.push(key);
   }
 
   static releaseMidiNote(note: number): void {
-    const key = Tone.Midi(note).toNote();
+    // const key = Tone.Midi(note).toNote();
 
-    this.currentKeys = this.currentKeys.filter((x) => x !== key);
-    this.emitter.emit('triggernoteend', key);
+    // this.currentKeys = this.currentKeys.filter((x) => x !== key);
+    // this.emitter.emit('triggernoteend', key);
   }
 
   static dispose() {
@@ -187,7 +187,7 @@ export class KeyboardToNote {
     const note = this.getMappedKey(ev);
     if (!note) return;
     if (this.currentKeys.find((n) => n === note)) return;
-    this.emitter.emit('triggernote', note);
+    // this.emitter.emit('triggernote', note);
     this.currentKeys.push(note);
   }
 
@@ -195,7 +195,7 @@ export class KeyboardToNote {
     const note = this.getMappedKey(ev);
     if (!note) return;
     this.currentKeys = this.currentKeys.filter((x) => x !== note);
-    this.emitter.emit('triggernoteend', note);
+    // this.emitter.emit('triggernoteend', note);
   }
 
   static getMappedKey(ev: KeyboardEvent): string | undefined {

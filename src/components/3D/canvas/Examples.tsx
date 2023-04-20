@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import { Ref, useMemo, useRef, useState, useEffect } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
 import { useRouter } from 'next/navigation'
+import { NotePositionTime } from '~/components/fragmentPlayer/fragmentPlayer'
 
 export const Blob = ({ route = '/', ...props }) => {
   const router = useRouter()
@@ -107,7 +108,8 @@ interface CircleProps {
   position: THREE.Vector3;
   segments: number;
   totalTime: number;
-  pointsList: THREE.Vector3[][];
+  pointsList: NotePositionTime[];
+  // segmentDurations: number[];
   isAnimating: boolean;
 }
 
@@ -119,8 +121,8 @@ export function FragmentCircle(props: CircleProps) {
   });
 
   // const totalTime = 2;
-  const segmentTime = useRef(0);
-  const currentIndex = useRef(0);
+  // const segmentTime = useRef(0);
+  // const currentIndex = useRef(0);
   const lineLength = useRef(0);
   const normalizedTime = useRef(0);
   const newX = useRef(0);
@@ -129,13 +131,20 @@ export function FragmentCircle(props: CircleProps) {
   useFrame(({ clock }) => {
     if (!props.isAnimating) return;
 
-    const time = clock.getElapsedTime();
-    segmentTime.current = props.totalTime / props.pointsList.length;
+    const time = clock.getElapsedTime() * 1000;
+    let elapsedTime = 0;
+    let segmentIndex = 0;
 
-    // Calculate the current index based on time and segmentTime
-    currentIndex.current = Math.floor(time % props.totalTime / segmentTime.current);
+    // Find the appropriate segment based on the elapsedTime and segmentDurations
+    while (elapsedTime + props.pointsList[segmentIndex]!.time < time) {
+      elapsedTime += props.pointsList[segmentIndex]!.time;
+      segmentIndex = (segmentIndex + 1) % props.pointsList.length;
+    }
 
-    const currentSegment = props.pointsList[currentIndex.current];
+    // Calculate the remaining time for the current segment
+    const remainingTime = time - elapsedTime;
+
+    const currentSegment = props.pointsList[segmentIndex]?.position;
 
     if (!currentSegment || currentSegment.length < 2) return;
 
@@ -143,16 +152,16 @@ export function FragmentCircle(props: CircleProps) {
     const startPoint = currentSegment[0] as { x: number; y: number };
     const endPoint = currentSegment[1] as { x: number; y: number };
 
-    // Calculate the length of the line at currentIndex.current
+    // Calculate the length of the line at segmentIndex
     lineLength.current = endPoint.x - startPoint.x;
 
     // Calculate the normalizedTime for the current line segment
-    normalizedTime.current = (time % segmentTime.current) / segmentTime.current;
+    normalizedTime.current = remainingTime / props.pointsList[segmentIndex]!.time;
 
     // Calculate the new x position based on the line length and normalizedTime
     newX.current = startPoint.x + (normalizedTime.current * lineLength.current);
 
-    // Fetch the y value from the pointsList array using the currentIndex.current
+    // Fetch the y value from the pointsList array using the segmentIndex
     currentY.current = startPoint.y;
 
     // Set the circlePosition with the updated x and y values

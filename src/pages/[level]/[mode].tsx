@@ -43,7 +43,7 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
         for (let i = 0; i < 1; i++) {
             if (fragmentsOfLevelQuery.data) {
                 elements.push(<FragmentPlayer key={ i }
-                    fragment={ fragmentsOfLevelQuery.data[1] as FragmentWithNotes } />);
+                    fragment={ fragmentsOfLevelQuery.data[0] as FragmentWithNotes } />);
             } else {
                 elements.push(<div key={ i }>loading</div>);
             }

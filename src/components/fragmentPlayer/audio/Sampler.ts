@@ -1,5 +1,7 @@
-import { returnAudioBuffer } from '~/components/fragmentPlayer/audioService-legacy/AudioServiceUtils';
-import AudioService from './AudioService';
+// import { returnAudioBuffer } from '~/components/fragmentPlayer/audio/AudioServiceUtils';
+// import AudioService from './AudioService';
+
+import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 
 interface SampleLoadData {
@@ -77,16 +79,11 @@ export default class Sampler {
     });
   }
 
-  // public play(args: NotePlayOptions): void {
-  //   const { note } = args;
-  //   this.samples[note].play(args);
-  //   this.samples[note].isPlaying = true;
-  // }
-
   private static async getAudioBufferFromPath(
     filepath: string,
     name: string
   ): Promise<NamedAudioBuffer> {
+    const { returnAudioBuffer } = useAudioServiceStore.getState();
     const response = await fetch(filepath);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = (await returnAudioBuffer(arrayBuffer)) as NamedAudioBuffer;
@@ -155,28 +152,31 @@ export default class Sampler {
   }
 
   public async play(options: NotePlayOptions): Promise<void> {
+    const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
     if (
-      AudioService.audioContext.state === 'closed' ||
-      AudioService.audioContext.state === 'suspended'
+      audioContext?.state === 'closed' ||
+      audioContext?.state === 'suspended'
     ) {
-      await AudioService.audioContext.resume();
+      await audioContext.resume();
     }
 
     const { note, attackMs, sustain, releaseMs, volume, delay } = options;
 
     setTimeout(() => {
+      if(!audioContext) return;
+
       const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note);
 
       const playRate = this.getBufferPlaybackRate(buffer, note);
 
-      const noteEnvelope = AudioService.audioContext.createGain();
+      const noteEnvelope = audioContext.createGain() as GainNode;
 
-      const sampleSource = AudioService.audioContext.createBufferSource();
+      const sampleSource = audioContext.createBufferSource();
       sampleSource.buffer = buffer;
 
-      sampleSource.playbackRate.setValueAtTime(playRate, AudioService.getCurrentTime());
+      sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime());
 
-      const now = AudioService.getCurrentTime();
+      const now = getCurrentTime();
 
       this.updateSamples(note, sampleSource);
 
@@ -184,7 +184,7 @@ export default class Sampler {
       noteEnvelope.gain.setValueAtTime(0, now);
       noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000);
       noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000);
-      sampleSource.connect(noteEnvelope).connect(AudioService.audioContext.destination);
+      sampleSource.connect(noteEnvelope).connect(audioContext.destination);
       sampleSource.start();
       sampleSource.stop(now + sustain / 1000 + releaseMs / 1000);
     }, delay || 0);

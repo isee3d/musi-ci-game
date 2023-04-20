@@ -1,10 +1,10 @@
 import * as PIXI from 'pixijs'
-import * as Tone from 'tone';
+// import * as Tone from 'tone';
 import React, { useEffect, useRef } from 'react';
-import { createApp, drawNotes } from '~/components/fragmentPlayer/audioService-legacy/PixiUtils';
+// import { createApp, drawNotes } from '~/components/fragmentPlayer/audioService-legacy/PixiUtils';
 import ToneJSUtils from '~/components/fragmentPlayer/audioService-legacy/ToneJSUtils';
-import { KeyboardToNote } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
-import AudioService from '~/components/fragmentPlayer/audioService-legacy/AudioService';
+import { KeyboardToNote } from '~/components/fragmentPlayer/audio/Keyboard';
+import AudioService from '~/components/fragmentPlayer/audio/AudioService';
 import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { Note } from '@prisma/client';
@@ -23,11 +23,11 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
 
     useEffect(() => {
         if (containerRef.current) {
-            const newApp = createApp({ width, height })
-            app.current = newApp;
+            // const newApp = createApp({ width, height })
+            // app.current = newApp;
             // // const renderer = app.renderer;
-            containerRef.current.appendChild(app.current.view as unknown as Node);
-            app.current.stage.addChild(drawNotes(fragment.notes, width, height));
+            // containerRef.current.appendChild(app.current.view as unknown as Node);
+            // app.current.stage.addChild(drawNotes(fragment.notes, width, height));
             resizeWindow();
             window.addEventListener('resize', () => resizeWindow());
             addAnimation(fragment.notes);
@@ -47,7 +47,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
         const h = app.current.view.height;
         const w = app.current.view.width;
         const sceneDuration = ToneJSUtils.getFragmentDurationInTicks(notes);
-        const pxPerTick = w / sceneDuration;
+        // const pxPerTick = w / sceneDuration;
         const range = KeyboardToNote.octaves * 12;
         const noteHeight = h / range;
 
@@ -98,16 +98,16 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ fragment, width, heig
             // get Y from note interpolation
             for (let i = 0; i < notes.length; i++) {
                 const n = notes[i] as Note;
-                const noteStart = Tone.Ticks(n.time).toSeconds();
-                const noteEnd = noteStart + Tone.Ticks(n.duration).toSeconds();
+                // const noteStart = Tone.Ticks(n.time).toSeconds();
+                // const noteEnd = noteStart + Tone.Ticks(n.duration).toSeconds();
 
-                if (now >= noteStart && now <= noteEnd) {
-                    console.log('coming here22', now)
-                    const yIndex = KeyboardToNote.getIndexFromNote(n.name);
-                    ellipse.beginFill(0x4490e6);
-                    ellipse.drawEllipse(pxPerTick * count.current, yIndex * noteHeight - 1, 11, 11);
-                    ellipse.endFill();
-                }
+                // if (now >= noteStart && now <= noteEnd) {
+                //     console.log('coming here22', now)
+                //     const yIndex = KeyboardToNote.getIndexFromNote(n.name);
+                //     ellipse.beginFill(0x4490e6);
+                //     ellipse.drawEllipse(pxPerTick * count.current, yIndex * noteHeight - 1, 11, 11);
+                //     ellipse.endFill();
+                // }
             }
         });
     };

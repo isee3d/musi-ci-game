@@ -1,44 +1,45 @@
 import { Note } from '@prisma/client';
-import * as Tone from 'tone';
-import { baseNotes } from '~/components/fragmentPlayer/audioService-legacy/Keyboard';
+// import * as Tone from 'tone';
+import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard';
 import { ToneIdPart } from '~/components/fragmentPlayer/audioService-legacy/ToneIdPart';
 import { FragmentToPlay, FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import Sampler from '~/components/fragmentPlayer/audio/Sampler';
 
 export default class ToneJSUtils {
   // not used
-  public static snapNotes(recorded: Note[]): Note[] {
-    const stepSize = Tone.Transport.PPQ;
+  public static snapNotes(recorded: Note[]) {
+    // const stepSize = Tone.Transport.PPQ;
 
-    for (let i = 0; i < recorded.length; i += 1) {
-      const note = recorded[i];
-      if (!note) continue;
-      const rounded = Math.round(note.time / stepSize) * stepSize;
+    // for (let i = 0; i < recorded.length; i += 1) {
+    //   const note = recorded[i];
+    //   if (!note) continue;
+    //   const rounded = Math.round(note.time / stepSize) * stepSize;
 
-      const roundedDur = Math.round(note.duration / stepSize) * stepSize;
-      note.time = rounded;
-      note.duration = roundedDur || stepSize;
-    }
-    return recorded;
+    //   const roundedDur = Math.round(note.duration / stepSize) * stepSize;
+    //   note.time = rounded;
+    //   note.duration = roundedDur || stepSize;
+    // }
+    // return recorded;
   }
 
-  public static getFragmentDurationInMS(notes: Note[]): number {
-    return Tone.Ticks(ToneJSUtils.getFragmentDurationInTicks(notes)).toMilliseconds();
+  public static getFragmentDurationInMS(notes: Note[]) {
+    // return Tone.Ticks(ToneJSUtils.getFragmentDurationInTicks(notes)).toMilliseconds();
   }
 
-  public static getFragmentDurationInTicks(notes: Note[]): number {
+  public static getFragmentDurationInTicks(notes: Note[]) {
     if (notes.length === 0) return 0;
     const lastNote = notes.sort((a, b) => b.time + b.duration - (a.time + a.duration))[0] as Note;
-    return Tone.Ticks(lastNote.time + lastNote.duration).valueOf();
+    // return Tone.Ticks(lastNote.time + lastNote.duration).valueOf();
   }
 
   // not used
-  public static fragmentToPart(fragment: FragmentWithNotes, sampler: Tone.Sampler): ToneIdPart {
+  public static fragmentToPart(fragment: FragmentWithNotes, sampler: Sampler) {
     const { notes, id } = fragment;
     const partNotes = notes.map((e: any) => {
       return {
         note: e.note,
-        dur: e.dur === -1 ? '0:1' : Tone.Ticks(e.dur).toBarsBeatsSixteenths(),
-        time: Tone.Ticks(e.time).toBarsBeatsSixteenths(),
+        // dur: e.dur === -1 ? '0:1' : Tone.Ticks(e.dur).toBarsBeatsSixteenths(),
+        // time: Tone.Ticks(e.time).toBarsBeatsSixteenths(),
         velocity: e.velocity || 1,
         callback: e.callback,
       };
@@ -46,23 +47,23 @@ export default class ToneJSUtils {
 
     const duration = this.getFragmentDurationInMS(notes);
 
-    const part = new ToneIdPart(
-      id.toString(),
-      duration,
-      undefined,
-      (t, event) => {
-        // if (id !== 'metronome' && process.env.NODE_ENV === 'development') {
-        //   console.log(`note = `, event.note, t);
-        // }
-        sampler.triggerAttackRelease(event.note, event.dur, t, event.velocity);
-        if (event.callback) {
-          event.callback();
-        }
-      },
-      partNotes
-    );
+    // const part = new ToneIdPart(
+    //   id.toString(),
+    //   duration,
+    //   undefined,
+    //   (t, event) => {
+    //     // if (id !== 'metronome' && process.env.NODE_ENV === 'development') {
+    //     //   console.log(`note = `, event.note, t);
+    //     // }
+    //     // sampler.triggerAttackRelease(event.note, event.dur, t, event.velocity);
+    //     if (event.callback) {
+    //       event.callback();
+    //     }
+    //   },
+    //   // partNotes
+    // );
 
-    return part;
+    // return part;
   }
 
   /**
@@ -101,12 +102,12 @@ export default class ToneJSUtils {
   }
 
   // Not used
-  public static addMarginToNote(noteTimeInTicks: number): number {
+  public static addMarginToNote(noteTimeInTicks: number) {
     // const { PPQ } = Tone.Transport;
 
     // const time = Tone.Ticks(noteTimeInTicks + Math.ceil(PPQ / 60)).toSeconds();
-    const time = Tone.Ticks(noteTimeInTicks).toSeconds();
-    return time;
+    // const time = Tone.Ticks(noteTimeInTicks).toSeconds();
+    // return time;
   }
 
   // not used

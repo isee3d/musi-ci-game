@@ -1,7 +1,8 @@
 import { Note } from "@prisma/client";
-import { msToTicks } from "~/components/fragmentPlayer/audio/audioUtils";
-import { KeyboardToNote } from "~/components/fragmentPlayer/audioService-legacy/Keyboard";
+import { msToTicks, ticksToMS } from "~/components/fragmentPlayer/audio/audioUtils";
+import { KeyboardToNote } from "~/components/fragmentPlayer/audio/Keyboard";
 import * as THREE from 'three';
+import { NotePositionTime } from "~/components/fragmentPlayer/fragmentPlayer";
 
 export const getNotesPositions = (notes: Note[], width: number, height: number, linewidth: number) => {
     const range = KeyboardToNote.octaves * 12;
@@ -15,18 +16,22 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
     const sceneDuration = notes.reduce((max, note) => Math.max(max, note.time + note.duration), 0);
     const pxPerTick = adjustedWidth / msToTicks(sceneDuration);
 
-    const noteLines: THREE.Vector3[][] = [];
+    const noteLines: NotePositionTime[] = [];
     notes.forEach(note => {
         const startX = msToTicks(note.time) * pxPerTick;
         const endX = startX + (msToTicks(note.duration) * pxPerTick);
         const yIndex = KeyboardToNote.getIndexFromNote(note.name);
         const noteY = yIndex * noteHeight - height / 2;
-        const line: THREE.Vector3[] = [
-            new THREE.Vector3(startX, noteY, 0),
-            new THREE.Vector3(endX - linewidth, noteY, 0),
-        ];
+        const line: NotePositionTime = {
+            position: [
+                new THREE.Vector3(startX, noteY, 0),
+                new THREE.Vector3(endX - linewidth, noteY, 0),
+            ],
+            time: ticksToMS(note.duration),
+        }
         noteLines.push(line);
+        console.log(ticksToMS(note.duration), note.duration)
     });
-    
+
     return noteLines;
 }
