@@ -32,5 +32,12 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
         noteLines.push(line);
     });
 
+    noteLines.sort((a, b) => {
+        if(a.position[0] !== undefined && b.position[0] !== undefined){
+            return a.position[0]?.x - b.position[0].x;
+        }
+        return 0;
+    });
+
     return noteLines;
 }

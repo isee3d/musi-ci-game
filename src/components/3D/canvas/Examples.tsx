@@ -105,7 +105,7 @@ export function FragmentLine(props: LineProps) {
 interface CircleProps {
   radius: number;
   color: THREE.ColorRepresentation;
-  position: THREE.Vector3;
+  xCorrection: number;
   segments: number;
   totalTime: number;
   pointsList: NotePositionTime[];
@@ -115,7 +115,7 @@ interface CircleProps {
 }
 
 export function FragmentCircle(props: CircleProps) {
-  const [circlePosition, setCirclePosition] = useState(new THREE.Vector3(-100, 0, 0));
+  const circle = useRef<THREE.Mesh>(null);
   const animationStartTime = useRef<number | null>(null);
 
   useEffect(() => {
@@ -130,65 +130,70 @@ export function FragmentCircle(props: CircleProps) {
 
   const lineLength = useRef(0);
   const normalizedTime = useRef(0);
+  const segmentIndex = useRef(0);
   const newX = useRef(0);
-  const currentY = useRef(0);
+  const NewY = useRef(0);
+  const animationTimer = useRef(0);
+  const segmentTimer = useRef(0);
 
   const totalAnimationDuration = props.pointsList.reduce((acc, curr) => acc + curr.time, 0);
 
-  useFrame(({ clock }) => {
-    if (!props.isAnimating) return;
-    if (animationStartTime.current === null) {
-      animationStartTime.current = clock.getElapsedTime();
+  useFrame(({ clock }, delta) => {
+    if (!props.isAnimating) {
+      animationTimer.current = 0;
+      segmentTimer.current = 0;
+      segmentIndex.current = 0;
+      return;
     }
 
-    const time = (clock.getElapsedTime() - animationStartTime.current) * 1000 ;
-    console.log(time);
-    let elapsedTime = 0;
-    let segmentIndex = 0;
+    animationTimer.current += delta * 1000;
+    segmentTimer.current += delta * 1000;
 
-    if (time >= animationStartTime.current + totalAnimationDuration) {
+    if (animationTimer.current >= totalAnimationDuration) {
       if (props.onComplete) {
         props.onComplete();
       }
       return;
     }
 
-    // Find the appropriate segment based on the elapsedTime and segmentDurations
-    while (elapsedTime + props.pointsList[segmentIndex]!.time < time) {
-      elapsedTime += props.pointsList[segmentIndex]!.time;
-      segmentIndex = (segmentIndex + 1) % props.pointsList.length;
-    }
 
-    // Calculate the remaining time for the current segment
-    const remainingTime = time - elapsedTime;
 
-    const currentSegment = props.pointsList[segmentIndex]?.position;
-
+    const currentSegment = props.pointsList[segmentIndex.current]?.position;
     if (!currentSegment) return;
 
     // Type assertion to ensure TypeScript recognizes the value as defined
     const startPoint = currentSegment[0] as { x: number; y: number };
     const endPoint = currentSegment[1] as { x: number; y: number };
 
-
-    // Calculate the length of the line at segmentIndex
     lineLength.current = endPoint.x - startPoint.x;
 
     // Calculate the normalizedTime for the current line segment
-    normalizedTime.current = remainingTime / props.pointsList[segmentIndex]!.time;
+    normalizedTime.current = segmentTimer.current / props.pointsList[segmentIndex.current]!.time;
 
     // Calculate the new x position based on the line length and normalizedTime
     newX.current = startPoint.x + (normalizedTime.current * lineLength.current);
 
     // Fetch the y value from the pointsList array using the segmentIndex
-    currentY.current = startPoint.y;
+    NewY.current = startPoint.y;
 
     // Set the circlePosition with the updated x and y values
-    setCirclePosition(new THREE.Vector3(newX.current, currentY.current, 0));
+      circle.current?.position.set(newX.current + props.xCorrection, NewY.current, 0);
+
+    // Calculate the remaining time for the current segment
+    const currentSegmentTime = props.pointsList[segmentIndex.current]?.time as number;
+    console.log(currentSegmentTime, segmentIndex.current)
+    if (segmentTimer.current > currentSegmentTime) {
+      if (segmentIndex.current + 1 >= props.pointsList.length) {
+        segmentIndex.current = 0;
+      }
+
+      segmentIndex.current++;
+      segmentTimer.current = 0;
+    }
   });
 
   return (
-    <mesh position={ circlePosition.clone().add(props.position) }>
+    <mesh position={ circle.current?.position } ref={ circle }>
       { props.isAnimating &&
         <Circle args={ [props.radius, props.segments] } material={ material } />
       }

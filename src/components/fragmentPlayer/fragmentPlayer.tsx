@@ -73,17 +73,6 @@ export interface NotePositionTime {
   time: number;
 }
 
-function calculateTotalTime(notes: Note[]): number {
-  if(!notes || notes.length === 0) return 0;
-  let totalTime = 0;
-  if (notes.length > 0) {
-    const firstNoteStartTime = notes[0]!.time;
-    const lastNoteEndTime = notes[notes.length - 1]!.time + notes[notes.length - 1]!.duration;
-    totalTime = ticksToMS(lastNoteEndTime - firstNoteStartTime);
-  }
-  return totalTime;
-}
-
 const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   fragment,
   onClick,
@@ -160,7 +149,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
             <FragmentCircle
               pointsList={ notePositions }
               segments={ 32 }
-              position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
+              xCorrection={ positionZeroPoint }
               radius={ 10 }
               color={ "red" }
               totalTime={0}
