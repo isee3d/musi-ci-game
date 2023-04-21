@@ -107,89 +107,76 @@ interface CircleProps {
   color: THREE.ColorRepresentation;
   xCorrection: number;
   segments: number;
-  totalTime: number;
   pointsList: NotePositionTime[];
   isAnimating: boolean;
-  onStart?: () => void;
   onComplete?: () => void;
 }
 
 export function FragmentCircle(props: CircleProps) {
   const circle = useRef<THREE.Mesh>(null);
-  const animationStartTime = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (props.isAnimating) {
-      animationStartTime.current = null; // Reset the animation start time to null
-    }
-  }, [props.isAnimating]);
+  const segmentIndex = useRef(0);
+  const animationTimer = useRef(0);
+  const segmentTimer = useRef(0);
+  const currentSegment = useRef<NotePositionTime | undefined>(undefined);
 
   const material = new THREE.MeshBasicMaterial({
     color: props.color,
   });
 
-  const lineLength = useRef(0);
-  const normalizedTime = useRef(0);
-  const segmentIndex = useRef(0);
-  const newX = useRef(0);
-  const NewY = useRef(0);
-  const animationTimer = useRef(0);
-  const segmentTimer = useRef(0);
-
   const totalAnimationDuration = props.pointsList.reduce((acc, curr) => acc + curr.time, 0);
 
-  useFrame(({ clock }, delta) => {
+  const isAnimating = (): boolean => {
     if (!props.isAnimating) {
-      animationTimer.current = 0;
-      segmentTimer.current = 0;
-      segmentIndex.current = 0;
-      return;
+      [animationTimer.current, segmentTimer.current, segmentIndex.current] = [0, 0, 0];
+      return false;
     }
+    return true;
+  };
 
+  const updateTimers = (delta: number) => {
     animationTimer.current += delta * 1000;
     segmentTimer.current += delta * 1000;
+  };
 
+  const isAnimationComplete = (): boolean => {
     if (animationTimer.current >= totalAnimationDuration) {
-      if (props.onComplete) {
-        props.onComplete();
-      }
-      return;
+      props.onComplete?.();
+      return true;
     }
+    return false;
+  };
 
+  const updatePosition = () => {
+    currentSegment.current = props.pointsList[segmentIndex.current];
+    if (!currentSegment.current) return;
 
+    const startPoint = currentSegment.current.position[0] as { x: number; y: number };
+    const endPoint = currentSegment.current.position[1] as { x: number; y: number };
 
-    const currentSegment = props.pointsList[segmentIndex.current]?.position;
-    if (!currentSegment) return;
+    const noteLineLength = endPoint.x - startPoint.x;
+    const normalizedTime = segmentTimer.current / currentSegment.current.time;
 
-    // Type assertion to ensure TypeScript recognizes the value as defined
-    const startPoint = currentSegment[0] as { x: number; y: number };
-    const endPoint = currentSegment[1] as { x: number; y: number };
+    const newX = startPoint.x + (normalizedTime * noteLineLength);
+    const NewY = startPoint.y;
 
-    lineLength.current = endPoint.x - startPoint.x;
+    circle.current?.position.set(newX + props.xCorrection, NewY, 0);
+  };
 
-    // Calculate the normalizedTime for the current line segment
-    normalizedTime.current = segmentTimer.current / props.pointsList[segmentIndex.current]!.time;
-
-    // Calculate the new x position based on the line length and normalizedTime
-    newX.current = startPoint.x + (normalizedTime.current * lineLength.current);
-
-    // Fetch the y value from the pointsList array using the segmentIndex
-    NewY.current = startPoint.y;
-
-    // Set the circlePosition with the updated x and y values
-      circle.current?.position.set(newX.current + props.xCorrection, NewY.current, 0);
-
-    // Calculate the remaining time for the current segment
-    const currentSegmentTime = props.pointsList[segmentIndex.current]?.time as number;
-    console.log(currentSegmentTime, segmentIndex.current)
-    if (segmentTimer.current > currentSegmentTime) {
-      if (segmentIndex.current + 1 >= props.pointsList.length) {
-        segmentIndex.current = 0;
-      }
-
-      segmentIndex.current++;
+  const updateSegmentIndex = () => {
+    if(!currentSegment.current) return;
+    if (segmentTimer.current > currentSegment.current.time) {
       segmentTimer.current = 0;
+      segmentIndex.current = (segmentIndex.current + 1) % props.pointsList.length;
     }
+  };
+
+
+  useFrame((_, delta) => {
+    if(!isAnimating()) return;
+    if(isAnimationComplete()) return
+    updateTimers(delta);
+    updatePosition();
+    updateSegmentIndex();
   });
 
   return (

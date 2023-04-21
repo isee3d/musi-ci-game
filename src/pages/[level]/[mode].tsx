@@ -12,9 +12,6 @@ import { api } from "~/utils/api";
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     // get the fragments of the level.
     const fragmentsOfLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
-    console.log("data: ", JSON.stringify(fragmentsOfLevelQuery.data));
-
-    const x = new Array(10)
     // const [isStarted, setIsStarted] = useState(false);
     // const [countdown, setCountdown] = useState(4);
 
