@@ -125,30 +125,30 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   // }
 
   return (
-      <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
-        <View useOrbit className=' h-full sm:h-48 sm:w-full'>
-          <Suspense fallback={ null }>
-            { notePositions.map((points, index) => (
-              <FragmentLine
-                key={ index }
-                position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
-                lineWidth={ 8 }
-                color={ "black" }
-                points={ points.position }
-              />
-            )) }
-            <FragmentCircle
-              pointsList={ notePositions }
-              segments={ 32 }
-              xCorrection={ positionZeroPoint }
-              radius={ 10 }
-              color={ "red" }
-              onComplete={ handleAnimationComplete }
-              isAnimating={ isAnimating } />
-            <Ortho />
-          </Suspense>
-        </View>
-      </div>
+    <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500 '>
+      <View useOrbit className='h-48 w-full'>
+        <Suspense fallback={ null }>
+          { notePositions.map((points, index) => (
+            <FragmentLine
+              key={ index }
+              position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
+              lineWidth={ 8 }
+              color={ "black" }
+              points={ points.position }
+            />
+          )) }
+          <FragmentCircle
+            pointsList={ notePositions }
+            segments={ 32 }
+            xCorrection={ positionZeroPoint }
+            radius={ 10 }
+            color={ "red" }
+            onComplete={ handleAnimationComplete }
+            isAnimating={ isAnimating } />
+          <Ortho />
+        </Suspense>
+      </View>
+    </div>
   );
 };
 
