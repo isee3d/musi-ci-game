@@ -24,9 +24,11 @@ type AudioserviceAction = {
     setSoundBoard: (soundBoard: Sampler) => void;
     beatLengthInMs: () => number;
     ticksToMS: (ticks: number) => number;
+    msToTicks: (ms: number) => number;
     returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>;
 };
 
+const MS_PER_MINUTE = 1000 * 60;
 
 export const useAudioServiceStore = create<AudioServiceState & AudioserviceAction>((set, get) => ({
     audioTime: 0,
@@ -47,10 +49,13 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
         return audioContext?.currentTime || 0;
     },
     beatLengthInMs: () => {
-        return (60 * 1000) / get().BPM;
+        return MS_PER_MINUTE / get().BPM;
     },
     ticksToMS: (ticks: number) => {
-        return (ticks / get().PPQ / get().BPM) * 1000 * 60;
+        return (ticks / get().PPQ / get().BPM) * MS_PER_MINUTE;
+    },
+    msToTicks: (ms: number) => {
+        return (ms / MS_PER_MINUTE) * get().PPQ * get().BPM;
     },
     returnAudioBuffer: async (arrBuffer: ArrayBuffer) => {
         const audioContext = get().audioContext;

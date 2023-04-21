@@ -8,9 +8,7 @@ import { api } from "~/utils/api";
 import Head from "next/head";
 
 import "~/styles/globals.css";
-import { ToneJSService } from "~/components/fragmentPlayer/audioService-legacy/ToneJSService";
 import { useEffect } from "react";
-import AudioService from "~/components/fragmentPlayer/audio/AudioService";
 import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
@@ -22,8 +20,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    // ToneJSService.init();
-    // AudioService.init();
     // initialize the audio service
     init();
   }, []);

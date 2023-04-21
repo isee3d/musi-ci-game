@@ -1,15 +1,9 @@
-import { Fragment, Note } from '@prisma/client';
+import { Fragment } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three'
-// import * as Tone from 'tone';
-import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
-import { ToneJSService } from '~/components/fragmentPlayer/audioService-legacy/ToneJSService';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import { FragmentCard } from '~/components/fragmentPlayer/fragmentCard';
 import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils';
-import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
-import { ticksToMS } from '~/components/fragmentPlayer/audio/audioUtils';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 
 const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
@@ -32,22 +26,22 @@ const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => m
   ),
 })
 
-const points: THREE.Vector3[] = [
-  new THREE.Vector3(5, 150, 0),
-  new THREE.Vector3(11, 0, 0),
-];
+// const points: THREE.Vector3[] = [
+//   new THREE.Vector3(5, 150, 0),
+//   new THREE.Vector3(11, 0, 0),
+// ];
 
-const points2: THREE.Vector3[] = [
-  new THREE.Vector3(104, -90, 0),
-  new THREE.Vector3(200, -90, 0),
-];
+// const points2: THREE.Vector3[] = [
+//   new THREE.Vector3(104, -90, 0),
+//   new THREE.Vector3(200, -90, 0),
+// ];
 
-const points3: THREE.Vector3[] = [
-  new THREE.Vector3(200, -10, 0),
-  new THREE.Vector3(300, -10, 0),
-];
+// const points3: THREE.Vector3[] = [
+//   new THREE.Vector3(200, -10, 0),
+//   new THREE.Vector3(300, -10, 0),
+// ];
 
-const pointsArray = [points, points2, points3];
+// const pointsArray = [points, points2, points3];
 
 function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   let minX = Infinity;
@@ -77,11 +71,11 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   fragment,
   onClick,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
-  const [running, setRunning] = useState<boolean>(false);
-  const { piano } = useAudioServiceStore();
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -110,8 +104,6 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     }
   }
 
-  const [isAnimating, setIsAnimating] = useState(false);
-
   const handleStartAnimation = () => {
     start(fragment)
     setIsAnimating(true);
@@ -133,7 +125,6 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   // }
 
   return (
-    <>
       <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500'>
         <View useOrbit className=' h-full sm:h-48 sm:w-full'>
           <Suspense fallback={ null }>
@@ -152,33 +143,12 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
               xCorrection={ positionZeroPoint }
               radius={ 10 }
               color={ "red" }
-              totalTime={0}
               onComplete={ handleAnimationComplete }
               isAnimating={ isAnimating } />
             <Ortho />
           </Suspense>
         </View>
       </div>
-
-
-
-
-
-
-
-
-      {/* <FragmentCard color='right' onClick={async () => {
-      ToneJSService.start(fragment)
-      }}>
-              <AnimationPlayer
-                  fragment={ fragment }
-                  width={ 200 }
-                  height={ (window.innerHeight - 200) / 2 }
-              />
-    </FragmentCard> */}
-
-
-    </>
   );
 };
 

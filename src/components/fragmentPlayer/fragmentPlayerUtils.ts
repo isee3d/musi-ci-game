@@ -1,10 +1,11 @@
 import { Note } from "@prisma/client";
-import { msToTicks, ticksToMS } from "~/components/fragmentPlayer/audio/audioUtils";
 import { KeyboardToNote } from "~/components/fragmentPlayer/audio/Keyboard";
 import * as THREE from 'three';
 import { NotePositionTime } from "~/components/fragmentPlayer/fragmentPlayer";
+import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 export const getNotesPositions = (notes: Note[], width: number, height: number, linewidth: number) => {
+    const { msToTicks, ticksToMS } = useAudioServiceStore.getState();
     const range = KeyboardToNote.octaves * 12;
     const noteHeight = height / range;
 

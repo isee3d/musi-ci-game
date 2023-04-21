@@ -1,11 +1,12 @@
 import { Note } from "@prisma/client";
-import { ticksToMS } from "~/components/fragmentPlayer/audio/audioUtils";
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 export function start(fragment: FragmentWithNotes) {
-    const { piano, setActiveFragment } = useAudioServiceStore.getState();
+    const { piano, setActiveFragment, ticksToMS } = useAudioServiceStore.getState();
+
     if(!piano) return;
+    
     fragment.notes.forEach((note: Note) => {
         piano.play({
             note: note.name,

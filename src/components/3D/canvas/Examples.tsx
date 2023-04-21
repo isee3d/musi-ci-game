@@ -133,7 +133,7 @@ export function FragmentCircle(props: CircleProps) {
     return true;
   };
 
-  const updateTimers = (delta: number) => {
+  const updateTimers = (delta: number): void => {
     animationTimer.current += delta * 1000;
     segmentTimer.current += delta * 1000;
   };
@@ -146,7 +146,7 @@ export function FragmentCircle(props: CircleProps) {
     return false;
   };
 
-  const updatePosition = () => {
+  const updatePosition = (): void => {
     currentSegment.current = props.pointsList[segmentIndex.current];
     if (!currentSegment.current) return;
 
@@ -162,14 +162,13 @@ export function FragmentCircle(props: CircleProps) {
     circle.current?.position.set(newX + props.xCorrection, NewY, 0);
   };
 
-  const updateSegmentIndex = () => {
+  const updateSegmentIndex = (): void => {
     if(!currentSegment.current) return;
     if (segmentTimer.current > currentSegment.current.time) {
       segmentTimer.current = 0;
       segmentIndex.current = (segmentIndex.current + 1) % props.pointsList.length;
     }
   };
-
 
   useFrame((_, delta) => {
     if(!isAnimating()) return;
