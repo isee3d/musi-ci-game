@@ -11,7 +11,13 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
 
     if (notes.length === 0) return [];
 
-    const padding = width * 0.1; // 10% padding
+    // Calculate the average note index
+    const avgNoteIndex = notes.reduce((sum, note) =>
+        sum + KeyboardToNote.getIndexFromNote(note.name), 0) / notes.length;
+    const centerYCorrection = (height / 2) - (avgNoteIndex * noteHeight);
+
+    // 10% padding
+    const padding = width * 0.1;
     const adjustedWidth = width - 2 * padding;
 
     const sceneDuration = notes.reduce((max, note) => Math.max(max, note.time + note.duration), 0);
@@ -22,7 +28,7 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
         const startX = msToTicks(note.time) * pxPerTick;
         const endX = startX + (msToTicks(note.duration) * pxPerTick);
         const yIndex = KeyboardToNote.getIndexFromNote(note.name);
-        const noteY = yIndex * noteHeight - height / 2;
+        const noteY = yIndex * noteHeight - height / 2 + centerYCorrection;
         const line: NotePositionTime = {
             position: [
                 new THREE.Vector3(startX, noteY, 0),
@@ -34,7 +40,7 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
     });
 
     noteLines.sort((a, b) => {
-        if(a.position[0] !== undefined && b.position[0] !== undefined){
+        if (a.position[0] !== undefined && b.position[0] !== undefined) {
             return a.position[0]?.x - b.position[0].x;
         }
         return 0;
