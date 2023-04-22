@@ -5,7 +5,7 @@ import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
 const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
-    const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId as string) })
+    const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
 
     return (<>
         <Head>
