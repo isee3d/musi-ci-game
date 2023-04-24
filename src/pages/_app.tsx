@@ -17,12 +17,27 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const { init } = useAudioServiceStore.getState();
+  const { init: initAudio, audioContext } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    // initialize the audio service
-    init();
+    initAudio();
   }, []);
+
+
+  function handleAudiocontextChange(e: AudioContextState) {
+    if(e === "running") return
+    // TODO:
+    // display a modal to enable audio...
+    // maybe in game page, but then with a redirect...
+  }
+
+
+  useEffect(() => {
+    if(!audioContext) return;
+    audioContext.onstatechange = () => {
+        handleAudiocontextChange(audioContext.state)
+    }
+  },[])
 
   return (
     <SessionProvider session={ session }>

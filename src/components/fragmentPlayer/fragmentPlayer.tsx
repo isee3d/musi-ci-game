@@ -113,17 +113,6 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     setIsAnimating(false);
   };
 
-  // const testSound = async () => {
-  //   await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
-  //   await piano?.play({
-  //     note: 'C5',
-  //     volume: 1,
-  //     sustain: 400,
-  //     releaseMs: 1000,
-  //     delay: 300,
-  //   });
-  // }
-
   return (
     <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500 '>
       <View useOrbit className='h-48 w-full'>
