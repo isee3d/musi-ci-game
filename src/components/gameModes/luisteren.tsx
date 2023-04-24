@@ -59,7 +59,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
                 href={ `/modeSelect/${levelName}` }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >
-                <h3 className="text-center text-xl font-bold">Back to Home</h3>
+                <h3 className="text-center text-xl font-bold">Terug naar overzicht</h3>
             </Link>
         );
     }
