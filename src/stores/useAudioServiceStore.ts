@@ -17,7 +17,7 @@ type AudioServiceState = {
 type AudioserviceAction = {
     init: () => Promise<void>;
     setAudioContext: (audioContext: AudioContext) => void;
-    setActiveFragment: (fragment: FragmentWithNotes) => void;
+    setActiveFragment: (fragment: FragmentWithNotes | undefined) => void;
     getCurrentTime: () => number;
     setAudioTime: (audioTime: number) => void;
     setPiano: (piano: Sampler) => void;
@@ -40,7 +40,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     soundBoard: undefined,
     activeFragment: undefined,
     setAudioContext: (audioContext: AudioContext) => set({ audioContext }),
-    setActiveFragment: (fragment: FragmentWithNotes) => set({ activeFragment: fragment }),
+    setActiveFragment: (fragment: FragmentWithNotes | undefined) => set({ activeFragment: fragment }),
     setAudioTime: (audioTime: number) => set({ audioTime }),
     setPiano: (piano: Sampler) => set({ piano }),
     setSoundBoard: (soundBoard: Sampler) => set({ soundBoard }),

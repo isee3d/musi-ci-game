@@ -52,6 +52,7 @@ export const levelRouter = createTRPCRouter({
                 name: levelName,
             },
             select: {
+                fragmentToShow: true,
                 fragments: {
                     select: {
                         id: true,
@@ -66,7 +67,7 @@ export const levelRouter = createTRPCRouter({
             throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no fragments' });
         }
 
-        return fragments.fragments;
+        return fragments;
     }),
 
     updateLevel: publicProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {

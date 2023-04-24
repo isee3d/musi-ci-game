@@ -1,4 +1,3 @@
-import { Fragment } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three'
@@ -59,7 +58,6 @@ function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
 
 interface FragmentPlayerProps {
   fragment: FragmentWithNotes;
-  onClick?: (fragment: Fragment) => void;
 }
 
 export interface NotePositionTime {
@@ -69,7 +67,6 @@ export interface NotePositionTime {
 
 const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   fragment,
-  onClick,
 }) => {
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -114,7 +111,11 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   };
 
   return (
-    <div onClick={ () => handleStartAnimation() } ref={ containerRef } className='relative rounded-2xl bg-zinc-500 '>
+    <div
+      onClick={ () => handleStartAnimation() }
+      ref={ containerRef }
+      className='rounded-2xl bg-zinc-500 shadow shadow-slate-600 hover:bg-slate-200'
+    >
       <View useOrbit className='h-48 w-full'>
         <Suspense fallback={ null }>
           { notePositions.map((points, index) => (

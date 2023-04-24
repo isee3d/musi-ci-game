@@ -4,7 +4,6 @@ import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 export function start(fragment: FragmentWithNotes) {
     const { piano, setActiveFragment, ticksToMS } = useAudioServiceStore.getState();
-
     if(!piano) return;
 
     fragment.notes.forEach((note: Note) => {
@@ -16,8 +15,6 @@ export function start(fragment: FragmentWithNotes) {
             delay: ticksToMS(note.time),
         });
     });
-
-    setActiveFragment(fragment);
 }
 
 export const initializeSound = async () => {
