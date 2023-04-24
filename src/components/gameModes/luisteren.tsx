@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import FragmentPlayer from '~/components/fragmentPlayer/fragmentPlayer';
 
@@ -20,10 +20,7 @@ function formatTime(ms: number): string {
 const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [isPlaying, setIsPlaying] = useState(true);
-    const [time, setTime] = useState(Date.now());
-
-    // TODO:
-    //  - [ ] Add results subscreen
+    const time = useRef(Date.now());
 
     function renderFragmentPlayers() {
         return shownFragments.map((fragment) => (
@@ -37,10 +34,29 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
         setShownFragments(selectedFragments);
     }
 
+    function renderPlayingButtons() {
+        return (
+            <>
+                <button
+                    onClick={ shuffleNewFragments }
+                    className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                >
+                    <h3 className="text-center text-xl font-bold">Play knop</h3>
+                </button>
+                <button
+                    onClick={ () => setIsPlaying(false) }
+                    className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
+                >
+                    <h3 className="text-center text-xl font-bold">Stop Luisteren</h3>
+                </button>
+            </>
+        )
+    }
+
     function renderBacktoOverviewLink() {
         return (
             <Link
-                href={`/modeSelect/${levelName}`}
+                href={ `/modeSelect/${levelName}` }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >
                 <h3 className="text-center text-xl font-bold">Back to Home</h3>
@@ -49,7 +65,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
     }
 
     function showStopped() {
-        const timePlayed = Date.now() - time;
+        const timePlayed = Date.now() - time.current;
         return (
             <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>
                 You played for { formatTime(timePlayed) }
@@ -64,25 +80,9 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
             </h3>
             { isPlaying && renderFragmentPlayers() }
             { !isPlaying && showStopped() }
-            { }
             <div className=" flex justify-center space-x-5">
-                <button
-                    onClick={ shuffleNewFragments }
-                    className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-                >
-                    <h3 className="text-center text-xl font-bold">Play knop</h3>
-                </button>
-                {!isPlaying && renderBacktoOverviewLink()}
-                {
-                    isPlaying &&
-                    <button
-                        onClick={ () => setIsPlaying(false) }
-                        className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                    >
-                        <h3 className="text-center text-xl font-bold">Stop Luisteren</h3>
-                    </button>
-                }
-
+                { !isPlaying && renderBacktoOverviewLink() }
+                { isPlaying && renderPlayingButtons() }
             </div>
         </>
     );
