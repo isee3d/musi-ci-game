@@ -1,6 +1,7 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Luisteren from "~/components/gameModes/luisteren";
+import Spelen from "~/components/gameModes/spelen";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
@@ -14,8 +15,8 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
         switch (mode) {
             case 'Luisteren':
                 return <Luisteren fragmentsToShow={fragmentsToShow} fragments={fragments} levelName={level} />;
-            // case 'spelen':
-            //     return <Spelen />;
+            case 'Spelen':
+                return <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
             // case 'uitdaging':
             //     return <Uitdaging />;
             default:
