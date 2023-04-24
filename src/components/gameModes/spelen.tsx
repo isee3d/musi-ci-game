@@ -11,18 +11,19 @@ interface SpelenProps {
 }
 
 enum SpelenState {
-    Playing,
-    Countdown,
-    Idle
+    IDLE,
+    COUNTDOWN,
+    PLAYING,
+    STOPPED
 }
 
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
-    const [spelenState, setSpelenState] = useState(SpelenState.Idle);
+    const [spelenState, setSpelenState] = useState(SpelenState.IDLE);
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [countdownValue, setCountdownValue] = useState<string | number>(3);
 
     useEffect(() => {
-        if (spelenState === SpelenState.Countdown) {
+        if (spelenState === SpelenState.COUNTDOWN) {
             if (countdownValue as number > 1) {
                 const countdownTimeout = setTimeout(() => {
                     setCountdownValue(countdownValue as number - 1);
@@ -35,7 +36,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                 return () => clearTimeout(goTimeout);
             } else {
                 const playingTimeout = setTimeout(() => {
-                    setSpelenState(SpelenState.Playing);
+                    setSpelenState(SpelenState.PLAYING);
                     setCountdownValue(3);
                 }, 1000);
                 return () => clearTimeout(playingTimeout);
@@ -47,7 +48,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         return (
             <div className='flex justify-center space-x-5'>
                 <button
-                    onClick={ () => setSpelenState(SpelenState.Countdown) }
+                    onClick={ () => setSpelenState(SpelenState.COUNTDOWN) }
                     className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
                 >
                     <h3 className="text-center text-xl font-bold">Start</h3>
@@ -64,11 +65,9 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
 
     function countdownSceneScreen() {
         return (
-            <>
-                <div className="text-center text-4xl font-extrabold tracking-tight text-white">
-                    { countdownValue }
-                </div>
-            </>
+            <div className="text-center text-4xl font-extrabold tracking-tight text-white">
+                { countdownValue }
+            </div>
         )
     }
 
@@ -81,7 +80,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                     ))
                 }
                 <button
-                    onClick={ () => setSpelenState(SpelenState.Idle) }
+                    onClick={ () => setSpelenState(SpelenState.IDLE) }
                     className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
                 >
                     <h3 className="text-center text-xl font-bold">Volgende</h3>
@@ -90,20 +89,14 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         )
     }
 
-    function shuffleNewFragments() {
-        const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
-        const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
-        setShownFragments(selectedFragments);
-    }
-
     return (
         <>
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { spelenState === SpelenState.Idle && startSceneScreen() }
-            { spelenState === SpelenState.Countdown && countdownSceneScreen() }
-            { spelenState === SpelenState.Playing && renderFragmentPlayers() }
+            { spelenState === SpelenState.IDLE && startSceneScreen() }
+            { spelenState === SpelenState.COUNTDOWN && countdownSceneScreen() }
+            { spelenState === SpelenState.PLAYING && renderFragmentPlayers() }
         </>
     );
 };
