@@ -56,16 +56,18 @@ function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   return [minX, maxX];
 }
 
-interface FragmentPlayerOptions {
-  isMuted: boolean;
-  isClickable: boolean;
-  isLooping: boolean;
-
+interface AnimationPlayerOptions {
+  isClickable?: boolean;
+  isLooping?: boolean;
+  isMuted?: boolean;
+  onAnimationClicked?: (fragmentID: number) => boolean;
+  onAnimationComplete?: () => void;
 }
 
-interface FragmentPlayerProps {
-  fragment: FragmentWithNotes;
-  options?: FragmentPlayerOptions;
+interface AnimationPlayerProps {
+  animationFragment: FragmentWithNotes;
+  isAnimating: boolean;
+  options?: AnimationPlayerOptions;
 }
 
 export interface NotePositionTime {
@@ -73,14 +75,13 @@ export interface NotePositionTime {
   time: number;
 }
 
-const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
-  fragment, options
+const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
+  animationFragment, isAnimating, options
 }) => {
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
-
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [animationClickPlay, setAnimationClickPlay] = useState<boolean>(false);
+  const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -95,7 +96,7 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
   function resizeWindow(): void {
     if (containerRef.current) {
       const notePositions = getNotesPositions(
-        fragment.notes,
+        animationFragment.notes,
         containerRef.current.clientWidth,
         containerRef.current.clientHeight,
         8
@@ -109,28 +110,27 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     }
   }
 
-  function onfinshed(): void {
-    console.log('finished')
+  function handleAnimationClicked() {
+    if (options?.onAnimationClicked) {
+      options.onAnimationClicked(animationFragment.id);
+    }
+    setAnimationClickPlay(true);
   }
 
-  function onStart(): void {
-    console.log('start')
+  function handleAnimationComplete() {
+    if (options?.onAnimationComplete) {
+      options.onAnimationComplete();
+    }
+
+    setAnimationClickPlay(false);
   }
-
-  const handleStartAnimation = () => {
-    start(fragment, onStart, onfinshed)
-    setIsAnimating(true);
-  };
-
-  const handleAnimationComplete = () => {
-    setIsAnimating(false);
-  };
 
   return (
-    <div
-      onClick={ () => handleStartAnimation() }
+    <button
+      disabled={ options?.isClickable || false }
+      onClick={ () => handleAnimationClicked() }
       ref={ containerRef }
-      className='rounded-2xl bg-zinc-500 shadow shadow-slate-600 hover:bg-slate-200'
+      className={ ` rounded-2xl bg-zinc-500 shadow shadow-slate-600  ${options?.isClickable || true ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
     >
       <View useOrbit className='h-48 w-full'>
         <Suspense fallback={ null }>
@@ -150,12 +150,13 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
             radius={ 10 }
             color={ "red" }
             onComplete={ handleAnimationComplete }
-            isAnimating={ isAnimating } />
+            isAnimating={ isAnimating || animationClickPlay}
+            loop={ false } />
           <Ortho />
         </Suspense>
       </View>
-    </div>
+    </button>
   );
 };
 
-export default FragmentPlayer;
+export default AnimationPlayer;

@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { Ref, useMemo, useRef, useState, useEffect } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
 import { useRouter } from 'next/navigation'
-import { NotePositionTime } from '~/components/fragmentPlayer/fragmentPlayer'
+import { NotePositionTime } from '~/components/fragmentPlayer/animationPlayer'
 
 export const Blob = ({ route = '/', ...props }) => {
   const router = useRouter()
@@ -109,6 +109,7 @@ interface CircleProps {
   segments: number;
   pointsList: NotePositionTime[];
   isAnimating: boolean;
+  loop?: boolean;
   onComplete?: () => void;
 }
 
@@ -140,8 +141,14 @@ export function FragmentCircle(props: CircleProps) {
 
   const isAnimationComplete = (): boolean => {
     if (animationTimer.current >= totalAnimationDuration) {
-      props.onComplete?.();
-      return true;
+      if (props.loop && props.loop === true) {
+        animationTimer.current = 0;
+        segmentTimer.current = 0;
+        segmentIndex.current = 0;
+      } else {
+        props.onComplete?.();
+        return true;
+      }
     }
     return false;
   };
@@ -163,7 +170,7 @@ export function FragmentCircle(props: CircleProps) {
   };
 
   const updateSegmentIndex = (): void => {
-    if(!currentSegment.current) return;
+    if (!currentSegment.current) return;
     if (segmentTimer.current > currentSegment.current.time) {
       segmentTimer.current = 0;
       segmentIndex.current = (segmentIndex.current + 1) % props.pointsList.length;
@@ -171,8 +178,8 @@ export function FragmentCircle(props: CircleProps) {
   };
 
   useFrame((_, delta) => {
-    if(!isAnimating()) return;
-    if(isAnimationComplete()) return
+    if (!isAnimating()) return;
+    if (isAnimationComplete()) return
     updateTimers(delta);
     updatePosition();
     updateSegmentIndex();

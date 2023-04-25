@@ -213,11 +213,27 @@ export default class Sampler {
     }
   }
 
-  public stop(note: string): void {
+  public stop(note: string, onStopped?: () => void): void {
     if (!this.samples[note]) return;
     const { isPlaying, source } = this.samples[note] as SampleData;
     if (isPlaying && source) {
       source.stop();
     }
+
+    onStopped?.();
+  }
+
+  public async stopAll(onAllStopped?: () => void): Promise<void> {
+    const stopPromises = Object.keys(this.samples).map((note) => {
+      return new Promise<void>((resolve) => {
+        this.stop(note, () => {
+          resolve();
+        });
+      });
+    });
+
+    await Promise.all(stopPromises);
+
+    onAllStopped?.();
   }
 }

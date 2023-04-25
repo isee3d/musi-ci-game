@@ -26,6 +26,11 @@ export async function start(
     if(onFinishedPlaying) onFinishedPlaying();
 }
 
+export async function stopAll(onAllStopped?: () => void) {
+    const { piano } = useAudioServiceStore.getState();
+    await piano?.stopAll(onAllStopped);
+}
+
 export async function initializeSound () {
     const { piano } = useAudioServiceStore.getState();
     await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });

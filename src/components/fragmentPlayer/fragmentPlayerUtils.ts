@@ -1,7 +1,7 @@
 import { Note } from "@prisma/client";
 import { KeyboardToNote } from "~/components/fragmentPlayer/audio/Keyboard";
 import * as THREE from 'three';
-import { NotePositionTime } from "~/components/fragmentPlayer/fragmentPlayer";
+import { NotePositionTime } from "~/components/fragmentPlayer/animationPlayer";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 export const getNotesPositions = (notes: Note[], width: number, height: number, linewidth: number) => {

@@ -2,7 +2,8 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { start } from 'repl';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import FragmentPlayer from '~/components/fragmentPlayer/fragmentPlayer';
+import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
+import AudioPlayer from '~/components/fragmentPlayer/audioPlayer';
 
 interface SpelenProps {
     fragments: FragmentWithNotes[];
@@ -21,6 +22,16 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     const [spelenState, setSpelenState] = useState(SpelenState.IDLE);
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [countdownValue, setCountdownValue] = useState<string | number>(3);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+    const [activeFragment, setActiveFragment] = useState<FragmentWithNotes | undefined>(undefined);
+    const [animationPlayerEnabled, setAnimationPlayerEnabled] = useState<boolean>(false);
+
+    // TODO:
+    // - [x] play active fragment
+    // - [ ] onfinished enable animationPlayers (they can play their audio too)
+    // - [ ] on click animationPlayer, check correct
+    // - [ ] on subsequent click, play audio
 
     useEffect(() => {
         if (spelenState === SpelenState.COUNTDOWN) {
@@ -35,6 +46,10 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                 }, 1000);
                 return () => clearTimeout(goTimeout);
             } else {
+                const xTimeout = setTimeout(() => {
+                    setActiveFragment(shownFragments[0]!);
+                    setIsPlaying(true);
+                }, 5000);
                 const playingTimeout = setTimeout(() => {
                     setSpelenState(SpelenState.PLAYING);
                     setCountdownValue(3);
@@ -43,6 +58,11 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             }
         }
     }, [spelenState, countdownValue]);
+
+    function onFinishedPlaying() {
+        setAnimationPlayerEnabled(true);
+        setIsPlaying(false);
+    }
 
     function startSceneScreen() {
         return (
@@ -76,17 +96,35 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             <>
                 {
                     shownFragments.map((fragment) => (
-                        <FragmentPlayer key={ fragment.id } fragment={ fragment } />
+                        <AnimationPlayer
+                            key={ fragment.id }
+                            animationFragment={ fragment }
+                            isAnimating={ isPlaying }
+                            options={ {
+                                isClickable: animationPlayerEnabled,
+                                isMuted: false,
+                                onAnimationClicked: isCorrectFragment
+                            } } />
                     ))
                 }
                 <button
+                    disabled={ !animationPlayerEnabled }
                     onClick={ () => setSpelenState(SpelenState.IDLE) }
-                    className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                    className={
+                        `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
+                          ${animationPlayerEnabled ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
                 >
                     <h3 className="text-center text-xl font-bold">Volgende</h3>
                 </button>
             </>
         )
+    }
+
+    function isCorrectFragment(fragmentID: number) {
+        if (activeFragment?.id === fragmentID) {
+            return true;
+        }
+        return false;
     }
 
     return (
@@ -97,6 +135,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             { spelenState === SpelenState.IDLE && startSceneScreen() }
             { spelenState === SpelenState.COUNTDOWN && countdownSceneScreen() }
             { spelenState === SpelenState.PLAYING && renderFragmentPlayers() }
+            { spelenState === SpelenState.PLAYING &&
+                <AudioPlayer fragment={ activeFragment } options={ { onFinishedPlaying } } /> }
         </>
     );
 };

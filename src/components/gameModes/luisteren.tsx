@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import FragmentPlayer from '~/components/fragmentPlayer/fragmentPlayer';
+import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 
 interface LuisterenProps {
     fragmentsToShow: number;
@@ -24,7 +24,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
 
     function renderFragmentPlayers() {
         return shownFragments.map((fragment) => (
-            <FragmentPlayer key={ fragment.id } fragment={ fragment } />
+            <AnimationPlayer key={ fragment.id } animationFragment={ fragment } />
         ));
     }
 
