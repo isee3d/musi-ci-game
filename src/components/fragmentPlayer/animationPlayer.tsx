@@ -80,7 +80,6 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
 }) => {
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
-  const [animationClickPlay, setAnimationClickPlay] = useState<boolean>(false);
   const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -114,7 +113,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
     if (options?.onAnimationClicked) {
       options.onAnimationClicked(animationFragment.id);
     }
-    setAnimationClickPlay(true);
+    // setAnimationClickPlay(true);
   }
 
   function handleAnimationComplete() {
@@ -122,7 +121,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
       options.onAnimationComplete();
     }
 
-    setAnimationClickPlay(false);
+    // setAnimationClickPlay(false);
   }
 
   return (
@@ -150,7 +149,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
             radius={ 10 }
             color={ "red" }
             onComplete={ handleAnimationComplete }
-            isAnimating={ isAnimating || animationClickPlay}
+            isAnimating={ isAnimating }
             loop={ false } />
           <Ortho />
         </Suspense>

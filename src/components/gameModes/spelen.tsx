@@ -103,7 +103,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                             options={ {
                                 isClickable: animationPlayerEnabled,
                                 isMuted: false,
-                                onAnimationClicked: isCorrectFragment
+                                onAnimationClicked: isCorrectFragment,
+                                onAnimationComplete: onAnimationFinishedPlaying
                             } } />
                     ))
                 }
@@ -121,10 +122,15 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     }
 
     function isCorrectFragment(fragmentID: number) {
+        setIsPlaying(true);
         if (activeFragment?.id === fragmentID) {
             return true;
         }
         return false;
+    }
+
+    function onAnimationFinishedPlaying() {
+        setIsPlaying(false);
     }
 
     return (
