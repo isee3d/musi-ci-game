@@ -2,12 +2,18 @@ import { Note } from "@prisma/client";
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
-export function start(fragment: FragmentWithNotes) {
-    const { piano, setActiveFragment, ticksToMS } = useAudioServiceStore.getState();
-    if(!piano) return;
+export async function start(
+    fragment: FragmentWithNotes,
+    onStartPlaying?: () => void,
+    onFinishedPlaying?: () => void
+) {
+    const { piano, ticksToMS } = useAudioServiceStore.getState();
+    if (!piano) return;
 
-    fragment.notes.forEach((note: Note) => {
-        piano.play({
+    if(onStartPlaying) onStartPlaying();
+
+    const playPromises = fragment.notes.map((note: Note) => {
+        return piano.play({
             note: note.name,
             sustain: 500,
             releaseMs: ticksToMS(note.duration),
@@ -15,16 +21,19 @@ export function start(fragment: FragmentWithNotes) {
             delay: ticksToMS(note.time),
         });
     });
+
+    await Promise.all(playPromises);
+    if(onFinishedPlaying) onFinishedPlaying();
 }
 
-export const initializeSound = async () => {
+export async function initializeSound () {
     const { piano } = useAudioServiceStore.getState();
     await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
     await piano?.play({
-      note: 'C5',
-      volume: 1,
-      sustain: 400,
-      releaseMs: 1000,
-      delay: 300,
+        note: 'C5',
+        volume: 1,
+        sustain: 400,
+        releaseMs: 1000,
+        delay: 300,
     });
 }

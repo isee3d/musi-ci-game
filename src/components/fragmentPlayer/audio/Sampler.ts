@@ -154,42 +154,47 @@ export default class Sampler {
   }
 
   public async play(options: NotePlayOptions): Promise<void> {
-    const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
-    if (
-      audioContext?.state === 'closed' ||
-      audioContext?.state === 'suspended'
-    ) {
-      await audioContext.resume();
-    }
+    return new Promise(async (resolve) => {
+      const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
+      if (
+        audioContext?.state === 'closed' ||
+        audioContext?.state === 'suspended'
+      ) {
+        await audioContext.resume();
+      }
 
-    const { note, attackMs, sustain, releaseMs, volume, delay } = options;
+      const { note, attackMs, sustain, releaseMs, volume, delay } = options;
 
-    setTimeout(() => {
-      if(!audioContext) return;
+      setTimeout(() => {
+        if (!audioContext) return;
 
-      const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note);
+        const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note);
 
-      const playRate = this.getBufferPlaybackRate(buffer, note);
+        const playRate = this.getBufferPlaybackRate(buffer, note);
 
-      const noteEnvelope = audioContext.createGain() as GainNode;
+        const noteEnvelope = audioContext.createGain() as GainNode;
 
-      const sampleSource = audioContext.createBufferSource();
-      sampleSource.buffer = buffer;
+        const sampleSource = audioContext.createBufferSource();
+        sampleSource.buffer = buffer;
 
-      sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime());
+        sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime());
 
-      const now = getCurrentTime();
+        const now = getCurrentTime();
 
-      this.updateSamples(note, sampleSource);
+        this.updateSamples(note, sampleSource);
 
-      noteEnvelope.gain.cancelScheduledValues(now);
-      noteEnvelope.gain.setValueAtTime(0, now);
-      noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000);
-      noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000);
-      sampleSource.connect(noteEnvelope).connect(audioContext.destination);
-      sampleSource.start();
-      sampleSource.stop(now + sustain / 1000 + releaseMs / 1000);
-    }, delay || 0);
+        noteEnvelope.gain.cancelScheduledValues(now);
+        noteEnvelope.gain.setValueAtTime(0, now);
+        noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000);
+        noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000);
+        sampleSource.connect(noteEnvelope).connect(audioContext.destination);
+        sampleSource.start();
+        sampleSource.stop(now + sustain / 1000 + releaseMs / 1000);
+        sampleSource.onended = () => {
+          resolve();
+        };
+      }, delay || 0);
+    });
   }
 
   public pause(): void {
@@ -197,6 +202,14 @@ export default class Sampler {
     if (audioContext?.state === 'running') {
       audioContext.suspend();
       this.pausedAtTime = getCurrentTime();
+    }
+  }
+
+  public async resume(): Promise<void> {
+    const { audioContext } = useAudioServiceStore.getState();
+    if (audioContext?.state === 'suspended' && this.pausedAtTime !== undefined) {
+      await audioContext.resume();
+      this.pausedAtTime = undefined;
     }
   }
 

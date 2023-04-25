@@ -56,8 +56,16 @@ function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   return [minX, maxX];
 }
 
+interface FragmentPlayerOptions {
+  isMuted: boolean;
+  isClickable: boolean;
+  isLooping: boolean;
+
+}
+
 interface FragmentPlayerProps {
   fragment: FragmentWithNotes;
+  options?: FragmentPlayerOptions;
 }
 
 export interface NotePositionTime {
@@ -66,7 +74,7 @@ export interface NotePositionTime {
 }
 
 const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
-  fragment,
+  fragment, options
 }) => {
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -101,8 +109,16 @@ const FragmentPlayer: React.FC<FragmentPlayerProps> = ({
     }
   }
 
+  function onfinshed(): void {
+    console.log('finished')
+  }
+
+  function onStart(): void {
+    console.log('start')
+  }
+
   const handleStartAnimation = () => {
-    start(fragment)
+    start(fragment, onStart, onfinshed)
     setIsAnimating(true);
   };
 
