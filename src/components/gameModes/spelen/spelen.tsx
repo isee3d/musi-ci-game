@@ -18,12 +18,6 @@ enum SpelenState {
     STOPPED
 }
 
-    // TODO:
-    // - [x] play active fragment
-    // - [ ] onfinished enable animationPlayers (they can play their audio too)
-    // - [ ] on click animationPlayer, check correct
-    // - [ ] on subsequent click, play audio
-
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const [spelenState, setSpelenState] = useState(SpelenState.IDLE);
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
