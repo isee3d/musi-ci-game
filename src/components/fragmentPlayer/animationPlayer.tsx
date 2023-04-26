@@ -102,7 +102,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
       options.onAnimationComplete(animationFragment);
     }
   }
-  console.log('options?.isAnimating', options?.isAnimating, options?.isClickable);
+  
   return (
     <button
       disabled={ (!options?.isAnimating && !options?.isClickable) }

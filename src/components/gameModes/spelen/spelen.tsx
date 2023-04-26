@@ -1,11 +1,9 @@
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMachine } from "@xstate/react";
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
-import AudioPlayer from '~/components/fragmentPlayer/audioPlayer';
 import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine';
-import { StateValue, StateValueMap } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 
 interface SpelenProps {
@@ -14,12 +12,8 @@ interface SpelenProps {
     fragmentsToShow: number;
 }
 
-enum SpelenState {
-    IDLE,
-    COUNTDOWN,
-    PLAYING,
-    STOPPED
-}
+// TODO: Add green/red render when in the choosing state
+// TODO: shuffle the shown fragments and set a new fragment to play
 
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const [activeFragment, setActiveFragment] = useState<FragmentWithNotes | undefined>(fragments[0]);
@@ -33,27 +27,30 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         devTools: true,
     })
 
-    // onfinishedplaying => set the machine context to isanimating false and isClickable true
-
     function checkIsAnimating(fragment: FragmentWithNotes) {
-        return state.context.isAnimating || activeFragmentPlayerIndex === fragment.id;
+        if (state.context.isAnimating === undefined) {
+            return activeFragmentPlayerIndex === fragment.id;
+        }
+        return state.context.isAnimating;
     }
 
     function checkIsClickable() {
-        return state.context.isClickable || activeFragmentPlayerIndex === undefined;
+        if (state.context.isClickable === undefined) {
+            return activeFragmentPlayerIndex === undefined;
+        }
+        return state.context.isClickable;
     }
 
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-        setactiveFragmentPlayerIndex(fragment.id);
-        console.log(state.value)
         if (state.matches("playing.guessHeardFragment")) {
-            // If state is guessHeardFragment we should check if the fragment is correct and render the  red/green outline
-            // We should set the state (red/green outline) for every fragmentplayer here
+            setactiveFragmentPlayerIndex(undefined);
+            console.log("isCorrect: " + (fragment.id === activeFragment?.id))
+            // Render green/red outline for every fragmentplayer
             send("GUESSEDFRAGMENT")
             return;
         }
-        if(state.matches("playing.listenToFragments")) {
-            // If state is listenToFragments we act the same as in luisteren
+        if (state.matches("playing.listenToFragments")) {
+            setactiveFragmentPlayerIndex(fragment.id);
             if (activeFragmentPlayerIndex === undefined) {
                 start(fragment);
             }
@@ -116,17 +113,6 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             </>
         )
     }
-
-    // function isCorrectFragment(fragmentID: number) {
-    //     if (activeFragment?.id === fragmentID) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
-    // function onAnimationFinishedPlaying() {
-    //     console.log('finished playing');
-    // }
 
     return (
         <>

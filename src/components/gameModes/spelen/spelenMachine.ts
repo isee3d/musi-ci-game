@@ -5,7 +5,7 @@ export const spelenMachine = createMachine({
     initial: 'idle',
     context: {
         isClickable: undefined as boolean | undefined,
-        isAnimating: true as boolean | undefined,
+        isAnimating: undefined as boolean | undefined,
         isLooping: undefined as boolean | undefined,
     },
     schema: {
@@ -21,6 +21,7 @@ export const spelenMachine = createMachine({
     tsTypes: {} as import("./spelenMachine.typegen").Typegen0,
     states: {
         idle: {
+            entry: assign({ isClickable: false, isAnimating: true }),
             on: {
                 STARTCOUNTDOWN: 'countdown',
             },
@@ -63,13 +64,15 @@ export const spelenMachine = createMachine({
                     entry: 'onPlayingEntry',
                     on: {
                         SOUNDFINISHED: 'guessHeardFragment',
-                    }
+                    },
+                    exit: assign({ isClickable: true, isAnimating: false }),
                 },
                 guessHeardFragment: {
-                    entry: assign({isClickable: true, isAnimating: undefined}),
+                    entry: assign({isClickable: true, isAnimating: false}),
                     on: {
                         GUESSEDFRAGMENT: 'listenToFragments',
                     },
+                    exit: assign({ isClickable: undefined, isAnimating: undefined }),
                 },
                 listenToFragments: {
                     on: {
