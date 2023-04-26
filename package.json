@@ -30,6 +30,7 @@
     "@trpc/next": "^10.21.1",
     "@trpc/react-query": "^10.21.1",
     "@trpc/server": "^10.21.1",
+    "@xstate/inspect": "^0.8.0",
     "@xstate/react": "^3.2.1",
     "dayjs": "^1.11.7",
     "glsl-random": "^0.0.5",

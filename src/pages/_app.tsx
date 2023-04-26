@@ -2,6 +2,7 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import { inspect } from '@xstate/inspect';
 
 import { api } from "~/utils/api";
 
@@ -20,6 +21,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init: initAudio, audioContext } = useAudioServiceStore.getState();
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      inspect({
+        url: 'https://statecharts.io/inspect', // (default)
+        iframe: false, // (default) You can change this to true if you want to use an iframe
+      });
+    }
     initAudio();
   }, []);
 

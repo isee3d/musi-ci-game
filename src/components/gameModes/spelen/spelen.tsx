@@ -27,13 +27,10 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
 
     const [state, send] = useMachine(spelenMachine, {
         actions: {
-            onPlayingEntry: async () => await start(activeFragment, { onFinishedPlaying: setSoundFinished }),
+            onPlayingEntry: async () => await start(activeFragment, { onFinishedPlaying: () => send("SOUNDFINISHED") }),
         },
+        devTools: true,
     })
-
-    function setSoundFinished() {
-        send("SOUNDFINISHED")
-    }
 
     function startSceneScreen() {
         return (
