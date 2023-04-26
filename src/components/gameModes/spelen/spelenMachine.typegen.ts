@@ -32,7 +32,7 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO" | "finished" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | {
+    matchesStates: "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | {
         "countdown"?: "1" | "2" | "3" | "GO";
         "playing"?: "guessHeardFragment" | "initializePlaying" | "listenToFragments" | "playSound";
     };

@@ -24,6 +24,7 @@ enum SpelenState {
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const [activeFragment, setActiveFragment] = useState<FragmentWithNotes | undefined>(fragments[0]);
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
+    const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
 
     const [state, send] = useMachine(spelenMachine, {
         actions: {
@@ -31,6 +32,33 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         },
         devTools: true,
     })
+
+    // onfinishedplaying => set the machine context to isanimating false and isClickable true
+
+    function checkIsAnimating(fragment: FragmentWithNotes) {
+        return state.context.isAnimating || activeFragmentPlayerIndex === fragment.id;
+    }
+
+    function checkIsClickable() {
+        return state.context.isClickable || activeFragmentPlayerIndex === undefined;
+    }
+
+    function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
+        setactiveFragmentPlayerIndex(fragment.id);
+        console.log(state.value)
+        if (state.matches("playing.guessHeardFragment")) {
+            // If state is guessHeardFragment we should check if the fragment is correct and render the  red/green outline
+            // We should set the state (red/green outline) for every fragmentplayer here
+            send("GUESSEDFRAGMENT")
+            return;
+        }
+        if(state.matches("playing.listenToFragments")) {
+            // If state is listenToFragments we act the same as in luisteren
+            if (activeFragmentPlayerIndex === undefined) {
+                start(fragment);
+            }
+        }
+    }
 
     function startSceneScreen() {
         return (
@@ -68,20 +96,20 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                             key={ fragment.id }
                             animationFragment={ fragment }
                             options={ {
-                                isClickable: state.context.isClickable,
-                                isAnimating: state.context.isAnimating ?? false,
+                                isClickable: checkIsClickable(),
+                                isAnimating: checkIsAnimating(fragment),
                                 // isLooping: true,
-                                // onAnimationClicked: isCorrectFragment,
-                                // onAnimationComplete: onAnimationFinishedPlaying
+                                onAnimationClicked: onFragmentPlayerClicked,
+                                onAnimationComplete: () => setactiveFragmentPlayerIndex(undefined)
                             } } />
                     ))
                 }
                 <button
-                    disabled={ false }
-                    onClick={ () => send("FINISH") }
+                    disabled={ !state.matches("playing.listenToFragments") }
+                    onClick={ () => send("FINISHEDLISTENING") }
                     className={
                         `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
-                          ${false ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+                          ${state.matches("playing.listenToFragments") ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
                 >
                     <h3 className="text-center text-xl font-bold">Volgende</h3>
                 </button>
@@ -107,7 +135,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             </h3>
             { state.matches('idle') && startSceneScreen() }
             { state.matches('countdown') && countdownSceneScreen() }
-            { state.matches('playing') && renderFragmentPlayers()  }
+            { state.matches('playing') && renderFragmentPlayers() }
         </>
     );
 };
