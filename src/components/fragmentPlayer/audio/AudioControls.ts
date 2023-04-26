@@ -3,10 +3,11 @@ import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWit
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 export async function start(
-    fragment: FragmentWithNotes,
-    onStartPlaying?: () => void,
-    onFinishedPlaying?: () => void
+    fragment: FragmentWithNotes | undefined,
+    { onStartPlaying, onFinishedPlaying }: { onStartPlaying?: () => void; onFinishedPlaying?: () => void } = {}
 ) {
+    if(!fragment) return;
+
     const { piano, ticksToMS } = useAudioServiceStore.getState();
     if (!piano) return;
 

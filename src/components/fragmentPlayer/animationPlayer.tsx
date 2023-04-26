@@ -44,7 +44,7 @@ interface AnimationPlayerOptions {
   isLooping?: boolean;
   isAnimating: boolean;
   onAnimationClicked?: (fragment: FragmentWithNotes) => void;
-  onAnimationComplete?: () => void;
+  onAnimationComplete?: (fragment?: FragmentWithNotes) => void;
 }
 
 interface AnimationPlayerProps {
@@ -99,7 +99,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
 
   function handleAnimationComplete() {
     if (options?.onAnimationComplete) {
-      options.onAnimationComplete();
+      options.onAnimationComplete(animationFragment);
     }
   }
   console.log('options?.isAnimating', options?.isAnimating, options?.isClickable);

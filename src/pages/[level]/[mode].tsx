@@ -1,7 +1,7 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Luisteren from "~/components/gameModes/luisteren";
-import Spelen from "~/components/gameModes/spelen";
+import Luisteren from "~/components/gameModes/luisteren/luisteren";
+import Spelen from "~/components/gameModes/spelen/spelen";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
