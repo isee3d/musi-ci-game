@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
+import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 
 interface LuisterenProps {
     fragmentsToShow: number;
@@ -19,12 +20,29 @@ function formatTime(ms: number): string {
 
 const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
-    const [isPlaying, setIsPlaying] = useState(true);
+    const [isPlayingGameMode, setIsPlayingGameMode] = useState(true);
+    const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
     const time = useRef(Date.now());
+
+    function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
+        setactiveFragmentPlayerIndex(fragment.id);
+        if (activeFragmentPlayerIndex === undefined) {
+            start(fragment);
+        }
+    }
 
     function renderFragmentPlayers() {
         return shownFragments.map((fragment) => (
-            <AnimationPlayer key={ fragment.id } animationFragment={ fragment } />
+            <AnimationPlayer
+                key={ fragment.id }
+                animationFragment={ fragment }
+                options={ {
+                    isAnimating: activeFragmentPlayerIndex === fragment.id,
+                    isClickable: activeFragmentPlayerIndex === undefined,
+                    onAnimationClicked: onFragmentPlayerClicked,
+                    onAnimationComplete: () => setactiveFragmentPlayerIndex(undefined)
+                } }
+            />
         ));
     }
 
@@ -44,7 +62,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
                     <h3 className="text-center text-xl font-bold">Play knop</h3>
                 </button>
                 <button
-                    onClick={ () => setIsPlaying(false) }
+                    onClick={ () => setIsPlayingGameMode(false) }
                     className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
                 >
                     <h3 className="text-center text-xl font-bold">Stop Luisteren</h3>
@@ -78,11 +96,11 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { isPlaying && renderFragmentPlayers() }
-            { !isPlaying && showStopped() }
+            { isPlayingGameMode && renderFragmentPlayers() }
+            { !isPlayingGameMode && showStopped() }
             <div className=" flex justify-center space-x-5">
-                { !isPlaying && renderBacktoOverviewLink() }
-                { isPlaying && renderPlayingButtons() }
+                { !isPlayingGameMode && renderBacktoOverviewLink() }
+                { isPlayingGameMode && renderPlayingButtons() }
             </div>
         </>
     );

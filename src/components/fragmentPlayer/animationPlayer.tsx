@@ -25,23 +25,6 @@ const View = dynamic(() => import('~/components/3D/canvas/View').then((mod) => m
   ),
 })
 
-// const points: THREE.Vector3[] = [
-//   new THREE.Vector3(5, 150, 0),
-//   new THREE.Vector3(11, 0, 0),
-// ];
-
-// const points2: THREE.Vector3[] = [
-//   new THREE.Vector3(104, -90, 0),
-//   new THREE.Vector3(200, -90, 0),
-// ];
-
-// const points3: THREE.Vector3[] = [
-//   new THREE.Vector3(200, -10, 0),
-//   new THREE.Vector3(300, -10, 0),
-// ];
-
-// const pointsArray = [points, points2, points3];
-
 function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   let minX = Infinity;
   let maxX = -Infinity;
@@ -59,14 +42,13 @@ function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
 interface AnimationPlayerOptions {
   isClickable?: boolean;
   isLooping?: boolean;
-  isMuted?: boolean;
-  onAnimationClicked?: (fragmentID: number) => boolean;
+  isAnimating: boolean;
+  onAnimationClicked?: (fragment: FragmentWithNotes) => void;
   onAnimationComplete?: () => void;
 }
 
 interface AnimationPlayerProps {
   animationFragment: FragmentWithNotes;
-  isAnimating: boolean;
   options?: AnimationPlayerOptions;
 }
 
@@ -76,7 +58,7 @@ export interface NotePositionTime {
 }
 
 const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
-  animationFragment, isAnimating, options
+  animationFragment, options
 }) => {
   const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
@@ -111,25 +93,22 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
 
   function handleAnimationClicked() {
     if (options?.onAnimationClicked) {
-      options.onAnimationClicked(animationFragment.id);
+      options.onAnimationClicked(animationFragment);
     }
-    // setAnimationClickPlay(true);
   }
 
   function handleAnimationComplete() {
     if (options?.onAnimationComplete) {
       options.onAnimationComplete();
     }
-
-    // setAnimationClickPlay(false);
   }
-
+  console.log('options?.isAnimating', options?.isAnimating, options?.isClickable);
   return (
     <button
-      disabled={ options?.isClickable || false }
-      onClick={ () => handleAnimationClicked() }
+      disabled={ (!options?.isAnimating && !options?.isClickable) }
+      onClick={ handleAnimationClicked }
       ref={ containerRef }
-      className={ ` rounded-2xl bg-zinc-500 shadow shadow-slate-600  ${options?.isClickable || true ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+      className={ ` rounded-2xl bg-zinc-500 shadow shadow-slate-600  ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
     >
       <View useOrbit className='h-48 w-full'>
         <Suspense fallback={ null }>
@@ -149,8 +128,8 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
             radius={ 10 }
             color={ "red" }
             onComplete={ handleAnimationComplete }
-            isAnimating={ isAnimating }
-            loop={ false } />
+            isAnimating={ options?.isAnimating  }
+            loop={ options?.isLooping } />
           <Ortho />
         </Suspense>
       </View>

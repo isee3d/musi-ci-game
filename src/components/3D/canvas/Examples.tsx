@@ -108,7 +108,7 @@ interface CircleProps {
   xCorrection: number;
   segments: number;
   pointsList: NotePositionTime[];
-  isAnimating: boolean;
+  isAnimating?: boolean;
   loop?: boolean;
   onComplete?: () => void;
 }
