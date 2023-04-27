@@ -21,7 +21,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     const countdownTimings: CountdownTimings = {
         one: 1000,
         two: 1000,
-        three: 10000,
+        three: 1000,
         go: 1000,
         soundInitialized: 1000
     }
