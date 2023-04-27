@@ -4,11 +4,11 @@
 export interface Typegen0 {
     '@@xstate/typegen': true;
     internalEvents: {
-        "xstate.after(1000)#spelen.countdown.1": { type: "xstate.after(1000)#spelen.countdown.1" };
-        "xstate.after(1000)#spelen.countdown.2": { type: "xstate.after(1000)#spelen.countdown.2" };
-        "xstate.after(1000)#spelen.countdown.3": { type: "xstate.after(1000)#spelen.countdown.3" };
-        "xstate.after(1000)#spelen.countdown.GO!": { type: "xstate.after(1000)#spelen.countdown.GO!" };
-        "xstate.after(3000)#spelen.playing.initializePlaying": { type: "xstate.after(3000)#spelen.playing.initializePlaying" };
+        "xstate.after(GO)#spelen.countdown.GO!": { type: "xstate.after(GO)#spelen.countdown.GO!" };
+        "xstate.after(ONE)#spelen.countdown.1": { type: "xstate.after(ONE)#spelen.countdown.1" };
+        "xstate.after(SOUNDTIME)#spelen.playing.initializePlaying": { type: "xstate.after(SOUNDTIME)#spelen.playing.initializePlaying" };
+        "xstate.after(THREE)#spelen.countdown.3": { type: "xstate.after(THREE)#spelen.countdown.3" };
+        "xstate.after(TWO)#spelen.countdown.2": { type: "xstate.after(TWO)#spelen.countdown.2" };
         "xstate.init": { type: "xstate.init" };
         "xstate.stop": { type: "xstate.stop" };
     };
@@ -23,12 +23,16 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "initializeContext": "FINISHEDLISTENING" | "STARTROUND";
-        "onCountdownFinished": "xstate.after(1000)#spelen.countdown.GO!" | "xstate.stop";
+        "onCountdownFinished": "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
     eventsCausingDelays: {
-
+        "GO": "xstate.after(ONE)#spelen.countdown.1";
+        "ONE": "xstate.after(TWO)#spelen.countdown.2";
+        "SOUNDTIME": "xstate.after(GO)#spelen.countdown.GO!";
+        "THREE": "STARTCOUNTDOWN";
+        "TWO": "xstate.after(THREE)#spelen.countdown.3";
     };
     eventsCausingGuards: {
 

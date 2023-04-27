@@ -1,8 +1,14 @@
-import { createMachine, assign, send, actions } from 'xstate';
+import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 
-const { raise } = actions;
+export interface CountdownTimings {
+    one: number;
+    two: number;
+    three: number;
+    go: number;
+    soundInitialized: number;
+}
 
 export const spelenMachine = createMachine({
     predictableActionArguments: true,
@@ -17,6 +23,7 @@ export const spelenMachine = createMachine({
         activeFragment: undefined as FragmentWithNotes | undefined,
         shownFragments: [] as FragmentWithNotes[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
+        countdownTimings: undefined as CountdownTimings | undefined,
     },
     schema: {
         services: {} as {
@@ -33,7 +40,7 @@ export const spelenMachine = createMachine({
             | { type: "FINISHEDLISTENING"; }
             | { type: "FINISHEDPLAYING"; }
             | { type: "GUESSEDFRAGMENT"; guessedFragment: FragmentWithNotes; }
-            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; }
+            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; }
     },
     tsTypes: {} as import("./spelenMachine.typegen").Typegen0,
     states: {
@@ -60,22 +67,22 @@ export const spelenMachine = createMachine({
             states: {
                 "3": {
                     after: {
-                        1000: '2',
+                        THREE: '2',
                     },
                 },
                 "2": {
                     after: {
-                        1000: '1',
+                        TWO: '1',
                     },
                 },
                 "1": {
                     after: {
-                        1000: 'GO!',
+                        ONE: 'GO!',
                     },
                 },
                 "GO!": {
                     after: {
-                        1000: '#spelen.playing',
+                        GO: '#spelen.playing',
                     },
                     exit: 'onCountdownFinished',
                 },
@@ -87,7 +94,7 @@ export const spelenMachine = createMachine({
                 initializePlaying: {
                     description: 'Loads the new view, at the moment the fragments need to initialize...',
                     after: {
-                        3000: 'playSound',
+                        SOUNDTIME: 'playSound',
                     },
                     exit: assign({ isClickable: false, isAnimating: true }),
                 },
@@ -130,6 +137,7 @@ export const spelenMachine = createMachine({
                 return {
                     allLevelFragments: event.levelFragments,
                     fragmentsToShow: event.fragmentsToShow,
+                    countdownTimings: event.countdownTimings,
                 };
             }),
             setGuessedFragment: assign((_, event) => {
@@ -155,6 +163,13 @@ export const spelenMachine = createMachine({
                     activeFragment: newActiveFragment,
                 };
             }),
+        },
+        delays: {
+            THREE: (context) => context.countdownTimings?.three ?? 1000,
+            TWO: (context) => context.countdownTimings?.two ?? 1000,
+            ONE: (context) => context.countdownTimings?.one ?? 1000,
+            GO: (context) => context.countdownTimings?.go ?? 1000,
+            SOUNDTIME: (context) => context.countdownTimings?.soundInitialized ?? 1000,
         },
     },
 );

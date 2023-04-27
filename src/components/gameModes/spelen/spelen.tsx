@@ -4,6 +4,7 @@ import StartRoundUI from '~/components/gameModes/spelen/startRoundUI';
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer';
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer';
 import { SpelenMachineContext } from '~/pages/[level]/[mode]';
+import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 
 interface SpelenProps {
     fragments: FragmentWithNotes[];
@@ -17,11 +18,20 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
 
+    const countdownTimings: CountdownTimings = {
+        one: 1000,
+        two: 1000,
+        three: 10000,
+        go: 1000,
+        soundInitialized: 1000
+    }
+
     useEffect(() => {
         send({
             type: "STARTROUND",
             levelFragments: fragments,
-            fragmentsToShow: fragmentsToShow
+            fragmentsToShow: fragmentsToShow,
+            countdownTimings: countdownTimings
         })
     }, [])
 
