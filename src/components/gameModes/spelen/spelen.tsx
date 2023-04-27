@@ -12,14 +12,17 @@ interface SpelenProps {
 }
 
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
+    const { send } = SpelenMachineContext.useActorRef();
     const startRoundState = SpelenMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
 
-    const { send } = SpelenMachineContext.useActorRef();
-
     useEffect(() => {
-        send({ type: "STARTROUND", levelFragments: fragments, fragmentsToShow: fragmentsToShow })
+        send({
+            type: "STARTROUND",
+            levelFragments: fragments,
+            fragmentsToShow: fragmentsToShow
+        })
     }, [])
 
     return (
