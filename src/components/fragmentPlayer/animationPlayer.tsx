@@ -44,7 +44,7 @@ interface AnimationPlayerOptions {
   isLooping?: boolean;
   isAnimating: boolean;
   showCorrectOutline?: boolean;
-  isCorrect: boolean;
+  isCorrect?: boolean;
   onAnimationClicked?: (fragment: FragmentWithNotes) => void;
   onAnimationComplete?: (fragment?: FragmentWithNotes) => void;
 }

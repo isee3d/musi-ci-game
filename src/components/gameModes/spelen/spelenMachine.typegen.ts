@@ -10,6 +10,7 @@ export interface Typegen0 {
         "xstate.after(1000)#spelen.countdown.GO!": { type: "xstate.after(1000)#spelen.countdown.GO!" };
         "xstate.after(3000)#spelen.playing.initializePlaying": { type: "xstate.after(3000)#spelen.playing.initializePlaying" };
         "xstate.init": { type: "xstate.init" };
+        "xstate.stop": { type: "xstate.stop" };
     };
     invokeSrcNameMap: {
 
@@ -21,7 +22,11 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
+        "initializeContext": "FINISHEDLISTENING" | "STARTROUND";
+        "onCountdownFinished": "xstate.after(1000)#spelen.countdown.GO!" | "xstate.stop";
         "onPlayingEntry": "xstate.after(3000)#spelen.playing.initializePlaying";
+        "setGuessedFragment": "GUESSEDFRAGMENT";
+        "setupData": "STARTROUND";
     };
     eventsCausingDelays: {
 
@@ -32,7 +37,7 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "FinishedPlayingSpelenMode" | "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO!" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | {
+    matchesStates: "FinishedPlayingSpelenMode" | "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO!" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | "startRound" | {
         "countdown"?: "1" | "2" | "3" | "GO!";
         "playing"?: "guessHeardFragment" | "initializePlaying" | "listenToFragments" | "playSound";
     };

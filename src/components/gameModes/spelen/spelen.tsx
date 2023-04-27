@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMachine } from "@xstate/react";
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
@@ -12,21 +12,23 @@ interface SpelenProps {
     fragmentsToShow: number;
 }
 
-// TODO: Add green/red render when in the choosing state
-// TODO: shuffle the shown fragments and set a new fragment to play
-
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
-    const [activeFragment, setActiveFragment] = useState<FragmentWithNotes | undefined>(fragments[0]);
-    const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
-    const [guessedFragment, setGuessedFragment] = useState<FragmentWithNotes | undefined>(undefined);
 
     const [state, send] = useMachine(spelenMachine, {
         actions: {
-            onPlayingEntry: async () => await start(activeFragment, { onFinishedPlaying: () => send("SOUNDFINISHED") }),
+            onPlayingEntry: playAudio,
         },
         devTools: true,
     })
+
+    useEffect(() => {
+        send({ type: "STARTROUND", levelFragments: fragments, fragmentsToShow: fragmentsToShow })
+    }, [])
+
+    async function playAudio() {
+        await start(state.context.activeFragment, { onFinishedPlaying: () => send("SOUNDFINISHED") })
+    }
 
     function checkIsAnimating(fragment: FragmentWithNotes) {
         if (state.context.isAnimating === undefined) {
@@ -43,17 +45,17 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     }
 
     function checkIsGuessedCorrect(selfFragment: FragmentWithNotes) {
-        if (selfFragment.id === activeFragment?.id) {
+        if (selfFragment.id === state.context.activeFragment?.id) {
             // the clicked fragment is the active fragment
-           return true;
+            return true;
         } else {
             // the clicked fragment is not the active fragment
-            if (selfFragment.id === guessedFragment?.id) {
+            if (selfFragment.id === state.context.guessedFragment?.id) {
                 // the clicked fragment is a wrong guess
                 return false;
             } else {
                 // the clicked fragment has not been guessed yet
-                return activeFragment ? false : true;
+                return state.context.activeFragment ? false : true;
             }
         }
     }
@@ -61,8 +63,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
         if (state.matches("playing.guessHeardFragment")) {
             setactiveFragmentPlayerIndex(undefined);
-            setGuessedFragment(fragment);
-            send("GUESSEDFRAGMENT")
+            send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
         if (state.matches("playing.listenToFragments")) {
@@ -83,7 +84,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                     <h3 className="text-center text-xl font-bold">Start</h3>
                 </button>
                 <Link
-                    onClick={ () => send("FINISHEDPLAYING")}
+                    onClick={ () => send("FINISHEDPLAYING") }
                     href={ `/modeSelect/${levelName}` }
                     className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
                 >
@@ -96,7 +97,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     function countdownSceneScreen() {
         return (
             <div className="text-center text-4xl font-extrabold tracking-tight text-white">
-                { state.toStrings()[1]?.split('.')[1]}
+                { state.toStrings()[1]?.split('.')[1] }
             </div>
         );
     }
@@ -105,7 +106,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         return (
             <>
                 {
-                    shownFragments.map((fragment) => (
+                    state.context.shownFragments.map((fragment) => (
                         <AnimationPlayer
                             key={ fragment.id }
                             animationFragment={ fragment }
@@ -138,7 +139,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { state.matches('idle') && startSceneScreen() }
+            { state.matches('startRound') && startSceneScreen() }
             { state.matches('countdown') && countdownSceneScreen() }
             { state.matches('playing') && renderFragmentPlayers() }
         </>
