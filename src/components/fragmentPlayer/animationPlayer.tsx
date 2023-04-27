@@ -43,6 +43,8 @@ interface AnimationPlayerOptions {
   isClickable?: boolean;
   isLooping?: boolean;
   isAnimating: boolean;
+  showCorrectOutline?: boolean;
+  isCorrect: boolean;
   onAnimationClicked?: (fragment: FragmentWithNotes) => void;
   onAnimationComplete?: (fragment?: FragmentWithNotes) => void;
 }
@@ -102,13 +104,17 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
       options.onAnimationComplete(animationFragment);
     }
   }
-  
+
   return (
     <button
       disabled={ (!options?.isAnimating && !options?.isClickable) }
       onClick={ handleAnimationClicked }
       ref={ containerRef }
-      className={ ` rounded-2xl bg-zinc-500 shadow shadow-slate-600  ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+      className={
+        `rounded-2xl border-4 bg-zinc-500 shadow shadow-slate-600
+       ${options?.showCorrectOutline ? (options?.isCorrect ? 'border-green-500' : 'border-red-500') : 'border-transparent'}
+       ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}
+           `}
     >
       <View useOrbit className='h-48 w-full'>
         <Suspense fallback={ null }>
@@ -128,7 +134,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
             radius={ 10 }
             color={ "red" }
             onComplete={ handleAnimationComplete }
-            isAnimating={ options?.isAnimating  }
+            isAnimating={ options?.isAnimating }
             loop={ options?.isLooping } />
           <Ortho />
         </Suspense>

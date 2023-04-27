@@ -29,22 +29,22 @@ export const spelenMachine = createMachine({
         countdown: {
             initial: '3',
             states: {
-                3: {
+                "3": {
                     after: {
                         1000: '2',
                     },
                 },
-                2: {
+                "2": {
                     after: {
                         1000: '1',
                     },
                 },
-                1: {
+                "1": {
                     after: {
-                        1000: 'GO',
+                        1000: 'GO!',
                     },
                 },
-                GO: {
+                "GO!": {
                     after: {
                         1000: '#spelen.playing',
                     },
@@ -52,13 +52,14 @@ export const spelenMachine = createMachine({
             },
         },
         playing: {
+            entry: assign({ isClickable: false, isAnimating: false }),
             initial: 'initializePlaying',
             states: {
                 initializePlaying: {
-                    // entry: assign({ isClickable: undefined, isAnimating: true }),
                     after: {
                         3000: 'playSound',
-                    }
+                    },
+                    exit: assign({ isClickable: false, isAnimating: true }),
                 },
                 playSound: {
                     entry: 'onPlayingEntry',

@@ -19,6 +19,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     const [activeFragment, setActiveFragment] = useState<FragmentWithNotes | undefined>(fragments[0]);
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
+    const [guessedFragment, setGuessedFragment] = useState<FragmentWithNotes | undefined>(undefined);
 
     const [state, send] = useMachine(spelenMachine, {
         actions: {
@@ -41,9 +42,26 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         return state.context.isClickable;
     }
 
+    function checkIsGuessedCorrect(selfFragment: FragmentWithNotes) {
+        if (selfFragment.id === activeFragment?.id) {
+            // the clicked fragment is the active fragment
+           return true;
+        } else {
+            // the clicked fragment is not the active fragment
+            if (selfFragment.id === guessedFragment?.id) {
+                // the clicked fragment is a wrong guess
+                return false;
+            } else {
+                // the clicked fragment has not been guessed yet
+                return activeFragment ? false : true;
+            }
+        }
+    }
+
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
         if (state.matches("playing.guessHeardFragment")) {
             setactiveFragmentPlayerIndex(undefined);
+            setGuessedFragment(fragment);
             console.log("isCorrect: " + (fragment.id === activeFragment?.id))
             // Render green/red outline for every fragmentplayer
             send("GUESSEDFRAGMENT")
@@ -79,7 +97,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     function countdownSceneScreen() {
         return (
             <div className="text-center text-4xl font-extrabold tracking-tight text-white">
-                { state.toStrings()[1]?.split('.')[1] + '!' }
+                { state.toStrings()[1]?.split('.')[1]}
             </div>
         );
     }
@@ -95,6 +113,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                             options={ {
                                 isClickable: checkIsClickable(),
                                 isAnimating: checkIsAnimating(fragment),
+                                showCorrectOutline: state.matches("playing.listenToFragments"),
+                                isCorrect: checkIsGuessedCorrect(fragment),
                                 // isLooping: true,
                                 onAnimationClicked: onFragmentPlayerClicked,
                                 onAnimationComplete: () => setactiveFragmentPlayerIndex(undefined)
