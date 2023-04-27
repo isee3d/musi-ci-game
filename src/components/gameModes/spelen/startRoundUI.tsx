@@ -4,10 +4,9 @@ import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
 interface StartUIProps {
     levelName: string;
-    // service: InterpreterFrom<typeof spelenMachine>;
 }
 
-const StartUI: React.FC<StartUIProps> = ({levelName}) => {
+const StartUI: React.FC<StartUIProps> = ({ levelName }) => {
     const [_, send] = SpelenMachineContext.useActor();
 
     return (

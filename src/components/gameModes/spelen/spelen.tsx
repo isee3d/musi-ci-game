@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
-import { useMachine } from "@xstate/react";
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine';
-import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import StartRoundUI from '~/components/gameModes/spelen/startRoundUI';
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer';
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer';
