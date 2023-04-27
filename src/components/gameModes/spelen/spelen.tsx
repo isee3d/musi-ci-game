@@ -6,6 +6,7 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import StartRoundUI from '~/components/gameModes/spelen/startRoundUI';
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer';
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer';
+import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
 interface SpelenProps {
     fragments: FragmentWithNotes[];
@@ -14,29 +15,20 @@ interface SpelenProps {
 }
 
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
-    const [state, send, service] = useMachine(spelenMachine, {
-        actions: {
-            onPlayingEntry: playAudio,
-        },
-        devTools: true,
-    })
+    const [state, send] = SpelenMachineContext.useActor();
 
     useEffect(() => {
         send({ type: "STARTROUND", levelFragments: fragments, fragmentsToShow: fragmentsToShow })
     }, [])
-
-    async function playAudio() {
-        await start(state.context.activeFragment, { onFinishedPlaying: () => send("SOUNDFINISHED") })
-    }
 
     return (
         <>
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { state.matches('startRound') && <StartRoundUI levelName={levelName} service={service}/> }
-            { state.matches('countdown') &&<CountdownPlayer service={service}/> }
-            { state.matches('playing') && <FragmentPlayerRenderer service={service}/> }
+            { state.matches('startRound') && <StartRoundUI levelName={levelName}/> }
+            { state.matches('countdown') &&<CountdownPlayer/> }
+            { state.matches('playing') && <FragmentPlayerRenderer/> }
         </>
     );
 };

@@ -1,9 +1,13 @@
+import { createActorContext } from "@xstate/react";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Luisteren from "~/components/gameModes/luisteren/luisteren";
 import Spelen from "~/components/gameModes/spelen/spelen";
+import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
+
+export const SpelenMachineContext = createActorContext(spelenMachine, {devTools: true});
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
@@ -16,7 +20,11 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
             case 'Luisteren':
                 return <Luisteren fragmentsToShow={fragmentsToShow} fragments={fragments} levelName={level} />;
             case 'Spelen':
-                return <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                return(
+                    <SpelenMachineContext.Provider>
+                    <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                    </SpelenMachineContext.Provider>
+                    )
             // case 'uitdaging':
             //     return <Uitdaging />;
             default:

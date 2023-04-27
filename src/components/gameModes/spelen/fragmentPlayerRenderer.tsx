@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import { InterpreterFrom } from 'xstate';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine';
-import { useActor } from "@xstate/react";
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
+import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
-interface FragmentPlayerRendererProps {
-    service: InterpreterFrom<typeof spelenMachine>;
-}
-
-const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({service}) => {
-    const [state, send] = useActor(service);
+const FragmentPlayerRenderer: React.FC = () => {
+    const [state, send] = SpelenMachineContext.useActor();
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
 
     function checkIsAnimating(fragment: FragmentWithNotes) {
@@ -46,7 +40,9 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({service}
 
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
         if (state.matches("playing.guessHeardFragment")) {
-            setactiveFragmentPlayerIndex(undefined);
+            if(activeFragmentPlayerIndex !== undefined) {
+                setactiveFragmentPlayerIndex(undefined);
+            }
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }

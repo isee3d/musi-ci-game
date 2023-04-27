@@ -16,7 +16,7 @@ export interface Typegen0 {
 
     };
     missingImplementations: {
-        actions: "onPlayingEntry";
+        actions: never;
         delays: never;
         guards: never;
         services: never;
@@ -24,7 +24,6 @@ export interface Typegen0 {
     eventsCausingActions: {
         "initializeContext": "FINISHEDLISTENING" | "STARTROUND";
         "onCountdownFinished": "xstate.after(1000)#spelen.countdown.GO!" | "xstate.stop";
-        "onPlayingEntry": "xstate.after(3000)#spelen.playing.initializePlaying";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };

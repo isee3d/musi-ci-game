@@ -1,14 +1,8 @@
-import { useActor } from '@xstate/react';
 import React from 'react';
-import { InterpreterFrom } from 'xstate';
-import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine';
+import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
-interface CountdownPlayerProps {
-    service: InterpreterFrom<typeof spelenMachine>;
-}
-
-const CountdownPlayer: React.FC<CountdownPlayerProps> = ({ service }) => {
-    const [state] = useActor(service);
+const CountdownPlayer: React.FC = () => {
+    const [state] = SpelenMachineContext.useActor();
 
     return (
         <div className="text-center text-4xl font-extrabold tracking-tight text-white">

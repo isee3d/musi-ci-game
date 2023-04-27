@@ -1,7 +1,11 @@
-import { createMachine, assign } from 'xstate';
+import { createMachine, assign, send, actions } from 'xstate';
+import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 
+const { raise } = actions;
+
 export const spelenMachine = createMachine({
+    predictableActionArguments: true,
     id: 'spelen',
     initial: 'idle',
     context: {
@@ -11,10 +15,15 @@ export const spelenMachine = createMachine({
         allLevelFragments: undefined as FragmentWithNotes[] | undefined,
         fragmentsToShow: 0 as number,
         activeFragment: undefined as FragmentWithNotes | undefined,
-        shownFragments: [] as FragmentWithNotes[] ,
+        shownFragments: [] as FragmentWithNotes[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
     },
     schema: {
+        services: {} as {
+            playAudio: {
+                data: void
+            };
+        },
         events: {} as
             | { type: "STARTCOUNTDOWN"; }
             | { type: "STARTCOUNTDOWN"; }
@@ -83,17 +92,19 @@ export const spelenMachine = createMachine({
                     exit: assign({ isClickable: false, isAnimating: true }),
                 },
                 playSound: {
-                    entry: 'onPlayingEntry',
-                    description: 'In this state the active fragment is played',
-                    on: {
-                        SOUNDFINISHED: 'guessHeardFragment',
+                    invoke: {
+                        src: async (context) => await start(context.activeFragment),
+                        onDone: [{
+                            target: "guessHeardFragment"
+                        },]
                     },
+                    description: 'In this state the active fragment is played',
                     exit: assign({ isClickable: true, isAnimating: false }),
                 },
                 guessHeardFragment: {
                     description: 'In this state the user can guess the heard fragment',
                     on: {
-                        GUESSEDFRAGMENT:{
+                        GUESSEDFRAGMENT: {
                             target: 'listenToFragments',
                             actions: 'setGuessedFragment',
                         },
@@ -145,5 +156,5 @@ export const spelenMachine = createMachine({
                 };
             }),
         },
-    }
+    },
 );

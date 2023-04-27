@@ -1,16 +1,14 @@
 import Link from 'next/link';
 import React from 'react';
-import { InterpreterFrom } from 'xstate';
-import { useActor } from "@xstate/react";
-import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine';
+import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
 interface StartUIProps {
     levelName: string;
-    service: InterpreterFrom<typeof spelenMachine>;
+    // service: InterpreterFrom<typeof spelenMachine>;
 }
 
-const StartUI: React.FC<StartUIProps> = ({levelName, service}) => {
-    const [_, send] = useActor(service);
+const StartUI: React.FC<StartUIProps> = ({levelName}) => {
+    const [_, send] = SpelenMachineContext.useActor();
 
     return (
         <div className='flex justify-center space-x-5'>
