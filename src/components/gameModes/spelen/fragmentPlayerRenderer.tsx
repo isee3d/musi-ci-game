@@ -3,28 +3,35 @@ import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[level]/[mode]';
+import { shallowEqual } from '@xstate/react';
 
 const FragmentPlayerRenderer: React.FC = () => {
-    const [state, send] = SpelenMachineContext.useActor();
+    const { send } = SpelenMachineContext.useActorRef();
+    const isAnimating = SpelenMachineContext.useSelector(state => state.context.isAnimating);
+    const isClickable = SpelenMachineContext.useSelector(state => state.context.isClickable);
+    const activeFragment = SpelenMachineContext.useSelector(state => state.context.activeFragment, shallowEqual);
+    const guessedFragment = SpelenMachineContext.useSelector(state => state.context.guessedFragment, shallowEqual);
+    const shownFragments = SpelenMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
+    const guessHeardFragmentState = SpelenMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
+    const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
+
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
     const [isPlayingFragment, setIsPlayingFragment] = useState(false);
 
     function checkIsAnimating(fragment: FragmentWithNotes) {
-        return state.context.isAnimating === undefined
+        return isAnimating === undefined
             ? activeFragmentPlayerIndex === fragment.id
-            : state.context.isAnimating;
+            : isAnimating;
     }
 
     function checkIsClickable() {
-        return state.context.isClickable === undefined
+        return isClickable === undefined
             ? activeFragmentPlayerIndex === undefined
-            : state.context.isClickable;
+            : isClickable;
     }
 
     function checkIsGuessedCorrect(selfFragment: FragmentWithNotes) {
-        const { activeFragment, guessedFragment } = state.context;
-
-        if(selfFragment.id === activeFragment?.id) {
+        if (selfFragment.id === activeFragment?.id) {
             // The clicked fragment is the active fragment
             return true;
         }
@@ -39,15 +46,15 @@ const FragmentPlayerRenderer: React.FC = () => {
     }
 
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-        if (state.matches("playing.guessHeardFragment")) {
-            if(activeFragmentPlayerIndex !== undefined) {
+        if (guessHeardFragmentState) {
+            if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
 
-        if (state.matches("playing.listenToFragments")) {
+        if (listenToFragmentsState) {
             setIsPlayingFragment(true);
             setactiveFragmentPlayerIndex(fragment.id);
             if (activeFragmentPlayerIndex === undefined) {
@@ -64,14 +71,14 @@ const FragmentPlayerRenderer: React.FC = () => {
     return (
         <>
             {
-                state.context.shownFragments.map((fragment) => (
+                shownFragments.map((fragment) => (
                     <AnimationPlayer
                         key={ fragment.id }
                         animationFragment={ fragment }
                         options={ {
                             isClickable: checkIsClickable(),
                             isAnimating: checkIsAnimating(fragment),
-                            showCorrectOutline: state.matches("playing.listenToFragments"),
+                            showCorrectOutline: listenToFragmentsState,
                             isCorrect: checkIsGuessedCorrect(fragment),
                             // isLooping: true,
                             onAnimationClicked: onFragmentPlayerClicked,
@@ -80,11 +87,11 @@ const FragmentPlayerRenderer: React.FC = () => {
                 ))
             }
             <button
-                disabled={ !state.matches("playing.listenToFragments") || isPlayingFragment }
+                disabled={ !listenToFragmentsState || isPlayingFragment }
                 onClick={ () => send("FINISHEDLISTENING") }
                 className={
                     `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
-                          ${state.matches("playing.listenToFragments") && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+                          ${listenToFragmentsState && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
             >
                 <h3 className="text-center text-xl font-bold">Volgende</h3>
             </button>

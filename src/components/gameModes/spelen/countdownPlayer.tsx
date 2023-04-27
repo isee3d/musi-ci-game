@@ -2,11 +2,11 @@ import React from 'react';
 import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 
 const CountdownPlayer: React.FC = () => {
-    const [state] = SpelenMachineContext.useActor();
+    const spelenStates = SpelenMachineContext.useSelector(state => state.toStrings())
 
     return (
         <div className="text-center text-4xl font-extrabold tracking-tight text-white">
-            { state.toStrings()[1]?.split('.')[1] }
+            { spelenStates[1]?.split('.')[1] }
         </div>
     );
 };

@@ -12,7 +12,11 @@ interface SpelenProps {
 }
 
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
-    const [state, send] = SpelenMachineContext.useActor();
+    const startRoundState = SpelenMachineContext.useSelector(state => state.matches('startRound'));
+    const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
+    const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
+
+    const { send } = SpelenMachineContext.useActorRef();
 
     useEffect(() => {
         send({ type: "STARTROUND", levelFragments: fragments, fragmentsToShow: fragmentsToShow })
@@ -23,9 +27,9 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { state.matches('startRound') && <StartRoundUI levelName={levelName}/> }
-            { state.matches('countdown') &&<CountdownPlayer/> }
-            { state.matches('playing') && <FragmentPlayerRenderer/> }
+            { startRoundState && <StartRoundUI levelName={ levelName } /> }
+            { countdownState && <CountdownPlayer /> }
+            { playingState && <FragmentPlayerRenderer /> }
         </>
     );
 };

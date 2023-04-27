@@ -7,7 +7,7 @@ interface StartUIProps {
 }
 
 const StartUI: React.FC<StartUIProps> = ({ levelName }) => {
-    const [_, send] = SpelenMachineContext.useActor();
+    const { send } = SpelenMachineContext.useActorRef();
 
     return (
         <div className='flex justify-center space-x-5'>

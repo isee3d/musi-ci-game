@@ -7,7 +7,7 @@ import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
-export const SpelenMachineContext = createActorContext(spelenMachine, {devTools: true});
+export const SpelenMachineContext = createActorContext(spelenMachine, {devTools: false});
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
