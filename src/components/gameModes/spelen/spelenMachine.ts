@@ -17,6 +17,7 @@ export const spelenMachine = createMachine({
             | { type: "SOUNDFINISHED"; }
             | { type: "GUESSEDFRAGMENT"; }
             | { type: "FINISHEDLISTENING"; }
+            | { type: "FINISHEDPLAYING"; }
     },
     tsTypes: {} as import("./spelenMachine.typegen").Typegen0,
     states: {
@@ -24,6 +25,7 @@ export const spelenMachine = createMachine({
             entry: assign({ isClickable: false, isAnimating: true }),
             on: {
                 STARTCOUNTDOWN: 'countdown',
+                FINISHEDPLAYING: 'FinishedPlayingSpelenMode',
             },
         },
         countdown: {
@@ -69,7 +71,7 @@ export const spelenMachine = createMachine({
                     exit: assign({ isClickable: true, isAnimating: false }),
                 },
                 guessHeardFragment: {
-                    entry: assign({isClickable: true, isAnimating: false}),
+                    entry: assign({ isClickable: true, isAnimating: false }),
                     on: {
                         GUESSEDFRAGMENT: 'listenToFragments',
                     },
@@ -82,5 +84,8 @@ export const spelenMachine = createMachine({
                 },
             }
         },
+        FinishedPlayingSpelenMode: {
+            type: 'final',
+        }
     }
 });

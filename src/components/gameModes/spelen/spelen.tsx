@@ -62,8 +62,6 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
         if (state.matches("playing.guessHeardFragment")) {
             setactiveFragmentPlayerIndex(undefined);
             setGuessedFragment(fragment);
-            console.log("isCorrect: " + (fragment.id === activeFragment?.id))
-            // Render green/red outline for every fragmentplayer
             send("GUESSEDFRAGMENT")
             return;
         }
@@ -85,6 +83,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                     <h3 className="text-center text-xl font-bold">Start</h3>
                 </button>
                 <Link
+                    onClick={ () => send("FINISHEDPLAYING")}
                     href={ `/modeSelect/${levelName}` }
                     className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
                 >
