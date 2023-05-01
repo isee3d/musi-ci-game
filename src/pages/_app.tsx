@@ -9,16 +9,18 @@ import { api } from "~/utils/api";
 import Head from "next/head";
 
 import "~/styles/globals.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
-import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
+// import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
+import InitializeSoundModal from "~/components/initializeSoundModal";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const { init: initAudio, audioContext } = useAudioServiceStore.getState();
+  // const { audioContext } = useAudioServiceStore.getState();
+  const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -27,24 +29,21 @@ const MyApp: AppType<{ session: Session | null }> = ({
         iframe: false
       });
     }
-    initAudio();
   }, []);
 
 
-  function handleAudiocontextChange(e: AudioContextState) {
-    if(e === "running") return
-    // TODO:
-    // display a modal to enable audio...
-    // maybe in game page, but then with a redirect...
-  }
+  // function handleAudiocontextChange(e: AudioContextState) {
+  //   if (e === "running") return
+  //   setShowModal(true);
+  // }
 
 
-  useEffect(() => {
-    if(!audioContext) return;
-    audioContext.onstatechange = () => {
-        handleAudiocontextChange(audioContext.state)
-    }
-  },[])
+  // useEffect(() => {
+  //   if (!audioContext) return;
+  //   audioContext.onstatechange = () => {
+  //     handleAudiocontextChange(audioContext.state)
+  //   }
+  // }, [])
 
   return (
     <SessionProvider session={ session }>
@@ -54,6 +53,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
+        { showModal && <InitializeSoundModal showModal={ showModal } setmodal={ setShowModal } /> }
         <TailwindIndicator />
         <Toaster position="bottom-center" />
         <Component { ...pageProps } />

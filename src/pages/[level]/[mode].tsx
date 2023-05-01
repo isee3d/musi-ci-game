@@ -10,7 +10,6 @@ import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true });
-
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true });
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
