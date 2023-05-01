@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface CountdownActions {
-    init: (ttc?: number) => void
-    start: (ttc?: number) => void;
+    init: (ttc?: number) => void;
+    start: () => void;
     pause: () => void;
     resume: () => void;
     reset: () => void;
@@ -68,27 +68,18 @@ const useCountDown = (
             timer.current.started = undefined;
             timer.current.lastInterval = undefined;
             timer.current.timeToCount = newTimeToCount;
-
-            setTimeLeft(newTimeToCount);
-        },
-        [timeToCount],
-    );
-
-    const start = useCallback(
-        (ttc?: number) => {
-            window.cancelAnimationFrame(timer.current.requestId || 0);
-
-            const newTimeToCount = ttc !== undefined ? ttc * 1000 : timeToCount * 1000; // Convert input to milliseconds
-            timer.current.started = undefined;
-            timer.current.lastInterval = undefined;
-            timer.current.timeToCount = newTimeToCount;
-            timer.current.requestId = window.requestAnimationFrame(run);
+            // timer.current.requestId = window.requestAnimationFrame(run);
 
             setTimeLeft(newTimeToCount);
             setIsRunning(true);
         },
         [timeToCount],
     );
+
+    const start = useCallback(
+        () => {
+            timer.current.requestId = window.requestAnimationFrame(run);
+        }, []);
 
     const pause = useCallback(() => {
         window.cancelAnimationFrame(timer.current.requestId || 0);

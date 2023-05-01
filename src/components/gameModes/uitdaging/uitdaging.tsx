@@ -17,7 +17,6 @@ interface UitdagingProps {
 
 const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsToShow, playTime }) => {
     const { send } = UitdagingMachineContext.useActorRef();
-    const isIdleState = UitdagingMachineContext.useSelector(state => state.matches('idle'));
     const startRoundState = UitdagingMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = UitdagingMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = UitdagingMachineContext.useSelector(state => state.matches('playing'));
@@ -34,9 +33,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
     }
 
     useEffect(() => {
-        // if(isIdleState){
-
-        // }
         send({
             type: "STARTROUND",
             levelFragments: fragments,
@@ -44,7 +40,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             countdownTimings: countdownTimings,
             countdownActions: countdown.actions
         })
-        countdown.actions.pause()
     }, [])
 
 

@@ -54,10 +54,11 @@ export const uitdagingMachine = createMachine({
             on: {
                 STARTCOUNTDOWN: 'countdown',
             },
-            exit: (context) => context.countdownActions?.start(),
+            // exit: (context) => context.countdownActions?.start(),
+            exit: "initTimer"
         },
         countdown: {
-            entry: (context) => context.countdownActions?.resume(),
+            entry: (context) => context.countdownActions?.start(),
             initial: '3',
             description: 'Has all the chid states for counting down before a scene starts',
             states: {
@@ -143,6 +144,9 @@ export const uitdagingMachine = createMachine({
                     countdownActions: event.countdownActions,
                 };
             }),
+            initTimer: (context) => {
+                context.countdownActions?.init();
+            },
             setGuessedFragment: assign((context, event) => {
                 context.countdownActions?.pause();
                 return {
