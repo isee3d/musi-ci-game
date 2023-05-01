@@ -10,8 +10,10 @@ interface CountdownActions {
 const useCountDown = (
     timeToCount = 60, // Default is now in seconds
     intervalMS = 1000,
+    onFinish?: () => void,
 ): [{ hours: string; minutes: string; seconds: string }, CountdownActions] => {
     const [timeLeft, setTimeLeft] = useState<number>(0);
+    const [isRunning, setIsRunning] = useState<boolean>(false);
     const timer = useRef<{
         started?: number;
         lastInterval?: number;
@@ -52,6 +54,8 @@ const useCountDown = (
         } else {
             timer.current = {};
             setTimeLeft(0);
+            setIsRunning(false);
+            if (onFinish) onFinish();
         }
     };
 
@@ -66,6 +70,7 @@ const useCountDown = (
             timer.current.requestId = window.requestAnimationFrame(run);
 
             setTimeLeft(newTimeToCount);
+            setIsRunning(true);
         },
         [timeToCount],
     );
@@ -75,6 +80,7 @@ const useCountDown = (
         timer.current.started = undefined;
         timer.current.lastInterval = undefined;
         timer.current.timeToCount = timer.current.timeLeft;
+        setIsRunning(false);
     }, []);
 
     const resume = useCallback(() => {

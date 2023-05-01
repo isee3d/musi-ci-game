@@ -121,7 +121,7 @@ export const spelenMachine = createMachine({
                 listenToFragments: {
                     description: 'In this state the user can listen to all the fragments again',
                     on: {
-                        FINISHEDLISTENING: '#spelen.startRound',
+                        FINISHEDLISTENING: '#spelen.countdown',
                     },
                 },
             }

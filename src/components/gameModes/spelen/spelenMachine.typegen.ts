@@ -22,7 +22,7 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "initializeContext": "FINISHEDLISTENING" | "STARTROUND";
+        "initializeContext": "STARTROUND";
         "onCountdownFinished": "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
@@ -31,7 +31,7 @@ export interface Typegen0 {
         "GO": "xstate.after(ONE)#spelen.countdown.1";
         "ONE": "xstate.after(TWO)#spelen.countdown.2";
         "SOUNDTIME": "xstate.after(GO)#spelen.countdown.GO!";
-        "THREE": "STARTCOUNTDOWN";
+        "THREE": "FINISHEDLISTENING" | "STARTCOUNTDOWN";
         "TWO": "xstate.after(THREE)#spelen.countdown.3";
     };
     eventsCausingGuards: {

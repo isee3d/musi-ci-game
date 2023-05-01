@@ -42,7 +42,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             </h3>
             { startRoundState && <StartRoundUI levelName={ levelName } /> }
             { countdownState && <CountdownPlayer /> }
-            { playingState && <FragmentPlayerRenderer /> }
+            { playingState && <FragmentPlayerRenderer levelName={ levelName } /> }
         </>
     );
 };

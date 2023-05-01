@@ -4,8 +4,13 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 import { shallowEqual } from '@xstate/react';
+import Link from 'next/link';
 
-const FragmentPlayerRenderer: React.FC = () => {
+interface FragmentPlayerRendererProps {
+    levelName: string;
+}
+
+const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelName }) => {
     const { send } = SpelenMachineContext.useActorRef();
     const isAnimating = SpelenMachineContext.useSelector(state => state.context.isAnimating);
     const isClickable = SpelenMachineContext.useSelector(state => state.context.isClickable);
@@ -86,15 +91,32 @@ const FragmentPlayerRenderer: React.FC = () => {
                         } } />
                 ))
             }
-            <button
-                disabled={ !listenToFragmentsState || isPlayingFragment }
-                onClick={ () => send("FINISHEDLISTENING") }
-                className={
-                    `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
+            <div className='flex justify-center space-x-12'>
+                <button
+                    disabled={ !listenToFragmentsState || isPlayingFragment }
+                    onClick={ () => send("FINISHEDLISTENING") }
+                    className={
+                        `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
                           ${listenToFragmentsState && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
-            >
-                <h3 className="text-center text-xl font-bold">Volgende</h3>
-            </button>
+                >
+                    <h3 className="text-center text-xl font-bold">Volgende</h3>
+                </button>
+                <button
+                    disabled={ !listenToFragmentsState || isPlayingFragment }
+                    onClick={ () => send("FINISHEDPLAYING") }
+                    className={
+                        `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20
+                          ${listenToFragmentsState && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+                >
+                    <Link
+                        href={ `/modeSelect/${levelName}` }
+                    >
+                        <h3>Terug naar overzicht</h3>
+                    </Link>
+                </button>
+            </div>
+
+
         </>
     )
 };
