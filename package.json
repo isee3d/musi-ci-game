@@ -14,6 +14,7 @@
     "lint": "next lint",
     "start": "next start",
     "db-seed": "prisma db seed",
+    "db-clear": "pnpx prisma db push --force-reset",
     "typecheck": "tsc --noEmit",
     "open-browser": "start http://localhost:3000"
   },
@@ -41,7 +42,7 @@
     "react-hook-form": "^7.43.9",
     "react-hot-toast": "^2.4.1",
     "superjson": "1.12.3",
-    "three": "^0.151.3",
+    "three": "^0.152.2",
     "three-stdlib": "^2.21.10",
     "tunnel-rat": "^0.1.2",
     "xstate": "^4.37.2",

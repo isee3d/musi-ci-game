@@ -145,6 +145,7 @@ model Level {
   BPM               Int
   correctAnswers    Int
   cooldownTime      Int?
+  playTime          Int?
   fragmentToShow    Int
 }
 

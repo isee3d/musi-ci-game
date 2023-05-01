@@ -24,7 +24,7 @@ export const LevelResultFragmentAnswerScalarFieldEnumSchema = z.enum(['id','id_L
 
 export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','playDate','startTime','endTime','timesListenedAgain','transposed','reactionTime']);
 
-export const LevelScalarFieldEnumSchema = z.enum(['id','id_Game','id_levelResult','name','description','BPM','correctAnswers','cooldownTime','fragmentToShow']);
+export const LevelScalarFieldEnumSchema = z.enum(['id','id_Game','id_levelResult','name','description','BPM','correctAnswers','cooldownTime','playTime','fragmentToShow']);
 
 export const NoteScalarFieldEnumSchema = z.enum(['id','id_Fragment','name','time','duration','speed']);
 
@@ -536,6 +536,7 @@ export const LevelSchema = z.object({
   BPM: z.number().int(),
   correctAnswers: z.number().int(),
   cooldownTime: z.number().int().nullish(),
+  playTime: z.number().int().nullish(),
   fragmentToShow: z.number().int(),
 })
 
@@ -1159,6 +1160,7 @@ export const LevelSelectSchema: z.ZodType<Prisma.LevelSelect> = z.object({
   BPM: z.boolean().optional(),
   correctAnswers: z.boolean().optional(),
   cooldownTime: z.boolean().optional(),
+  playTime: z.boolean().optional(),
   fragmentToShow: z.boolean().optional(),
   game: z.union([z.boolean(),z.lazy(() => GameArgsSchema)]).optional(),
   fragments: z.union([z.boolean(),z.lazy(() => FragmentFindManyArgsSchema)]).optional(),
@@ -1836,6 +1838,7 @@ export const LevelWhereInputSchema: z.ZodType<Prisma.LevelWhereInput> = z.object
   BPM: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   correctAnswers: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   cooldownTime: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  playTime: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   fragmentToShow: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   game: z.union([ z.lazy(() => GameRelationFilterSchema),z.lazy(() => GameWhereInputSchema) ]).optional().nullable(),
   fragments: z.lazy(() => FragmentListRelationFilterSchema).optional(),
@@ -1852,6 +1855,7 @@ export const LevelOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelOrderByW
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional(),
   game: z.lazy(() => GameOrderByWithRelationInputSchema).optional(),
   fragments: z.lazy(() => FragmentOrderByRelationAggregateInputSchema).optional(),
@@ -1872,6 +1876,7 @@ export const LevelOrderByWithAggregationInputSchema: z.ZodType<Prisma.LevelOrder
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => LevelCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => LevelAvgOrderByAggregateInputSchema).optional(),
@@ -1892,6 +1897,7 @@ export const LevelScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.LevelSc
   BPM: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   correctAnswers: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   cooldownTime: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
+  playTime: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   fragmentToShow: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
@@ -2645,6 +2651,7 @@ export const LevelCreateInputSchema: z.ZodType<Prisma.LevelCreateInput> = z.obje
   BPM: z.number().int(),
   correctAnswers: z.number().int(),
   cooldownTime: z.number().int().optional().nullable(),
+  playTime: z.number().int().optional().nullable(),
   fragmentToShow: z.number().int(),
   game: z.lazy(() => GameCreateNestedOneWithoutLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
@@ -2661,6 +2668,7 @@ export const LevelUncheckedCreateInputSchema: z.ZodType<Prisma.LevelUncheckedCre
   BPM: z.number().int(),
   correctAnswers: z.number().int(),
   cooldownTime: z.number().int().optional().nullable(),
+  playTime: z.number().int().optional().nullable(),
   fragmentToShow: z.number().int(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional()
@@ -2672,6 +2680,7 @@ export const LevelUpdateInputSchema: z.ZodType<Prisma.LevelUpdateInput> = z.obje
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   game: z.lazy(() => GameUpdateOneWithoutLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
@@ -2688,6 +2697,7 @@ export const LevelUncheckedUpdateInputSchema: z.ZodType<Prisma.LevelUncheckedUpd
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional()
@@ -2699,6 +2709,7 @@ export const LevelUpdateManyMutationInputSchema: z.ZodType<Prisma.LevelUpdateMan
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -2711,6 +2722,7 @@ export const LevelUncheckedUpdateManyInputSchema: z.ZodType<Prisma.LevelUnchecke
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -3584,6 +3596,7 @@ export const LevelCountOrderByAggregateInputSchema: z.ZodType<Prisma.LevelCountO
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3594,6 +3607,7 @@ export const LevelAvgOrderByAggregateInputSchema: z.ZodType<Prisma.LevelAvgOrder
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3606,6 +3620,7 @@ export const LevelMaxOrderByAggregateInputSchema: z.ZodType<Prisma.LevelMaxOrder
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3618,6 +3633,7 @@ export const LevelMinOrderByAggregateInputSchema: z.ZodType<Prisma.LevelMinOrder
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3628,6 +3644,7 @@ export const LevelSumOrderByAggregateInputSchema: z.ZodType<Prisma.LevelSumOrder
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
   cooldownTime: z.lazy(() => SortOrderSchema).optional(),
+  playTime: z.lazy(() => SortOrderSchema).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -5747,6 +5764,7 @@ export const LevelCreateWithoutGameInputSchema: z.ZodType<Prisma.LevelCreateWith
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -5761,6 +5779,7 @@ export const LevelUncheckedCreateWithoutGameInputSchema: z.ZodType<Prisma.LevelU
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional()
@@ -5815,6 +5834,7 @@ export const LevelScalarWhereInputSchema: z.ZodType<Prisma.LevelScalarWhereInput
   BPM: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   correctAnswers: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   cooldownTime: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  playTime: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   fragmentToShow: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
@@ -6024,6 +6044,7 @@ export const LevelCreateWithoutFragmentsInputSchema: z.ZodType<Prisma.LevelCreat
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   game: z.lazy(() => GameCreateNestedOneWithoutLevelsInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -6039,6 +6060,7 @@ export const LevelUncheckedCreateWithoutFragmentsInputSchema: z.ZodType<Prisma.L
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional()
 }).strict();
@@ -6134,6 +6156,7 @@ export const LevelCreateWithoutGameModesInputSchema: z.ZodType<Prisma.LevelCreat
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   game: z.lazy(() => GameCreateNestedOneWithoutLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
@@ -6149,6 +6172,7 @@ export const LevelUncheckedCreateWithoutGameModesInputSchema: z.ZodType<Prisma.L
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional()
 }).strict();
@@ -6299,6 +6323,7 @@ export const LevelCreateWithoutLevelResultInputSchema: z.ZodType<Prisma.LevelCre
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   game: z.lazy(() => GameCreateNestedOneWithoutLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
@@ -6313,6 +6338,7 @@ export const LevelUncheckedCreateWithoutLevelResultInputSchema: z.ZodType<Prisma
   BPM: z.number(),
   correctAnswers: z.number(),
   cooldownTime: z.number().optional().nullable(),
+  playTime: z.number().optional().nullable(),
   fragmentToShow: z.number(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional()
@@ -6806,6 +6832,7 @@ export const LevelUpdateWithoutGameInputSchema: z.ZodType<Prisma.LevelUpdateWith
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -6820,6 +6847,7 @@ export const LevelUncheckedUpdateWithoutGameInputSchema: z.ZodType<Prisma.LevelU
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional()
@@ -6833,6 +6861,7 @@ export const LevelUncheckedUpdateManyWithoutLevelsInputSchema: z.ZodType<Prisma.
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -6901,6 +6930,7 @@ export const LevelUpdateWithoutFragmentsInputSchema: z.ZodType<Prisma.LevelUpdat
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   game: z.lazy(() => GameUpdateOneWithoutLevelsNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -6916,6 +6946,7 @@ export const LevelUncheckedUpdateWithoutFragmentsInputSchema: z.ZodType<Prisma.L
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional()
 }).strict();
@@ -6929,6 +6960,7 @@ export const LevelUncheckedUpdateManyWithoutLevelInputSchema: z.ZodType<Prisma.L
   BPM: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -6938,6 +6970,7 @@ export const LevelUpdateWithoutGameModesInputSchema: z.ZodType<Prisma.LevelUpdat
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   game: z.lazy(() => GameUpdateOneWithoutLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
@@ -6953,6 +6986,7 @@ export const LevelUncheckedUpdateWithoutGameModesInputSchema: z.ZodType<Prisma.L
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional()
 }).strict();
@@ -6974,6 +7008,7 @@ export const LevelUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma.LevelUpd
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   game: z.lazy(() => GameUpdateOneWithoutLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
@@ -6988,6 +7023,7 @@ export const LevelUncheckedUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma
   BPM: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   correctAnswers: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   cooldownTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  playTime: z.union([ z.number(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentToShow: z.union([ z.number(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional()

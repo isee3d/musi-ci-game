@@ -1,4 +1,3 @@
-import { RestGehoor } from './generated/zod/index';
 import { prisma } from "../src/server/db";
 
 async function main() {
@@ -165,6 +164,7 @@ async function main() {
     create: {
       name: 'gelijk anders',
       description: 'een gelijk fragment en een anders fragment',
+      playTime: 60,
       BPM: 60,
       correctAnswers: 10,
       cooldownTime: 0,

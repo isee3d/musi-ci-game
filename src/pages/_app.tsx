@@ -21,10 +21,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init: initAudio, audioContext } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
       inspect({
         url: 'https://statecharts.io/inspect', // (default)
-        iframe: false, // (default) You can change this to true if you want to use an iframe
+        iframe: false
       });
     }
     initAudio();
