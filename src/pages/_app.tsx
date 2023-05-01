@@ -12,14 +12,12 @@ import "~/styles/globals.css";
 import { useEffect, useState } from "react";
 import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
-// import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import InitializeSoundModal from "~/components/initializeSoundModal";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  // const { audioContext } = useAudioServiceStore.getState();
   const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
@@ -30,20 +28,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
       });
     }
   }, []);
-
-
-  // function handleAudiocontextChange(e: AudioContextState) {
-  //   if (e === "running") return
-  //   setShowModal(true);
-  // }
-
-
-  // useEffect(() => {
-  //   if (!audioContext) return;
-  //   audioContext.onstatechange = () => {
-  //     handleAudiocontextChange(audioContext.state)
-  //   }
-  // }, [])
 
   return (
     <SessionProvider session={ session }>
