@@ -34,11 +34,9 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
     }
 
     useEffect(() => {
-        if(isIdleState){
-            console.log("Starting countdown")
-            countdown.actions.start()
-            countdown.actions.pause()
-        }
+        // if(isIdleState){
+
+        // }
         send({
             type: "STARTROUND",
             levelFragments: fragments,
@@ -46,6 +44,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             countdownTimings: countdownTimings,
             countdownActions: countdown.actions
         })
+        countdown.actions.pause()
     }, [])
 
 

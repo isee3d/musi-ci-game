@@ -53,7 +53,6 @@ export const uitdagingMachine = createMachine({
             description: 'Starts a new round & Shows the start and back to overview button',
             on: {
                 STARTCOUNTDOWN: 'countdown',
-                // FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
             },
             exit: (context) => context.countdownActions?.start(),
         },
