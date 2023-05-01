@@ -6,12 +6,12 @@ export async function start(
     fragment: FragmentWithNotes | undefined,
     { onStartPlaying, onFinishedPlaying }: { onStartPlaying?: () => void; onFinishedPlaying?: () => void } = {}
 ) {
-    if(!fragment) return;
+    if (!fragment) return;
 
     const { piano, ticksToMS } = useAudioServiceStore.getState();
     if (!piano) return;
 
-    if(onStartPlaying) onStartPlaying();
+    if (onStartPlaying) onStartPlaying();
 
     const playPromises = fragment.notes.map((note: Note) => {
         return piano.play({
@@ -24,7 +24,7 @@ export async function start(
     });
 
     await Promise.all(playPromises);
-    if(onFinishedPlaying) onFinishedPlaying();
+    if (onFinishedPlaying) onFinishedPlaying();
 }
 
 export async function stopAll(onAllStopped?: () => void) {
@@ -32,8 +32,10 @@ export async function stopAll(onAllStopped?: () => void) {
     await piano?.stopAll(onAllStopped);
 }
 
-export async function initializeSound () {
+export async function initializeSound() {
     const { piano } = useAudioServiceStore.getState();
+    console.log('Initializing sound');
+    if (!piano) return;
     await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
     await piano?.play({
         note: 'C5',

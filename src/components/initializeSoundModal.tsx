@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { initializeSound } from "~/components/fragmentPlayer/audio/AudioControls";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 interface BaseStaticModalProps {
@@ -7,16 +8,16 @@ interface BaseStaticModalProps {
 }
 
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmodal }) => {
-    const { audioContext, init: initAudio } = useAudioServiceStore.getState();
+    const { audioContext } = useAudioServiceStore();
 
     function handleAudiocontextChange(e: AudioContextState) {
         if (e === "running") return
         setmodal(true);
     }
 
-    function initializeAudio() {
-        initAudio();
+    async function initializeAudio() {
         setmodal(false);
+        await initializeSound();
     }
 
     useEffect(() => {

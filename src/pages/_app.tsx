@@ -13,12 +13,14 @@ import { useEffect, useState } from "react";
 import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
 import InitializeSoundModal from "~/components/initializeSoundModal";
+import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   const [showModal, setShowModal] = useState(true);
+  const { init: initAudio } = useAudioServiceStore.getState();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -27,6 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         iframe: false
       });
     }
+    initAudio();
   }, []);
 
   return (
