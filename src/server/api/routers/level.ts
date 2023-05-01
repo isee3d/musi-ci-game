@@ -52,6 +52,7 @@ export const levelRouter = createTRPCRouter({
                 name: levelName,
             },
             select: {
+                playTime: true,
                 fragmentToShow: true,
                 fragments: {
                     select: {

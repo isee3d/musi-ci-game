@@ -4,47 +4,47 @@ import Head from "next/head";
 import Luisteren from "~/components/gameModes/luisteren/luisteren";
 import Spelen from "~/components/gameModes/spelen/spelen";
 import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
+import Uitdaging from "~/components/gameModes/uitdaging/uitdaging";
+import { uitdagingMachine } from "~/components/gameModes/uitdaging/uitdagingMachine";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
-export const SpelenMachineContext = createActorContext(spelenMachine, {devTools: true});
+export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true });
+
+export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true });
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
 
     const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0;
     const fragments = fragmentLevelQuery?.data?.fragments ?? [];
+    const playTime = fragmentLevelQuery?.data?.playTime;
 
     function renderGameMode(mode: string) {
         switch (mode) {
             case 'Luisteren':
-                return <Luisteren fragmentsToShow={fragmentsToShow} fragments={fragments} levelName={level} />;
+                return <Luisteren fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
             case 'Spelen':
-                return(
+                return (
                     <SpelenMachineContext.Provider>
-                    <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                        <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
                     </SpelenMachineContext.Provider>
-                    )
-            // case 'uitdaging':
-            //     return <Uitdaging />;
+                )
+            case 'Uitdaging':
+                return(
+                    <UitdagingMachineContext.Provider>
+                    <Uitdaging
+                        fragmentsToShow={ fragmentsToShow }
+                        fragments={ fragments }
+                        levelName={ level }
+                        playTime={ playTime }
+                    />;
+                    </UitdagingMachineContext.Provider>
+                )
             default:
                 return null;
         }
     }
-
-    // function renderElements() {
-    //     const elements = [];
-    //     for (let i = 0; i < 1; i++) {
-    //         if (fragmentLevelQuery.data) {
-    //             elements.push(<FragmentPlayer key={ i }
-    //                 fragment={ fragmentLevelQuery.data.fragments[1] as FragmentWithNotes } />);
-    //         } else {
-    //             elements.push(<div key={ i }>loading</div>);
-    //         }
-    //     }
-
-    //     return <>{ elements }</>;
-    // }
 
     return (<>
         <Head>
@@ -73,10 +73,7 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                     Kijk en luister
                 </h3> */}
                 <div className="flex w-1/2 flex-col justify-center space-y-8 p-5">
-
                     { renderGameMode(mode) }
-
-
                 </div>
             </div>
         </main>
