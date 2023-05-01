@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-interface CountdownActions {
+export interface CountdownActions {
+    init: (ttc?: number) => void
     start: (ttc?: number) => void;
     pause: () => void;
     resume: () => void;
@@ -9,9 +10,9 @@ interface CountdownActions {
 
 const useCountDown = (
     timeToCount = 60, // Default is now in seconds
-    intervalMS = 1000,
     onFinish?: () => void,
-): [{ hours: string; minutes: string; seconds: string }, CountdownActions] => {
+    intervalMS = 1000,
+) => {
     const [timeLeft, setTimeLeft] = useState<number>(0);
     const [isRunning, setIsRunning] = useState<boolean>(false);
     const timer = useRef<{
@@ -59,6 +60,20 @@ const useCountDown = (
         }
     };
 
+    const init = useCallback(
+        (ttc?: number) => {
+            window.cancelAnimationFrame(timer.current.requestId || 0);
+
+            const newTimeToCount = ttc !== undefined ? ttc * 1000 : timeToCount * 1000; // Convert input to milliseconds
+            timer.current.started = undefined;
+            timer.current.lastInterval = undefined;
+            timer.current.timeToCount = newTimeToCount;
+
+            setTimeLeft(newTimeToCount);
+        },
+        [timeToCount],
+    );
+
     const start = useCallback(
         (ttc?: number) => {
             window.cancelAnimationFrame(timer.current.requestId || 0);
@@ -87,6 +102,7 @@ const useCountDown = (
         if (!timer.current.started && timer.current.timeLeft && timer.current.timeLeft > 0) {
             window.cancelAnimationFrame(timer.current.requestId || 0);
             timer.current.requestId = window.requestAnimationFrame(run);
+            setIsRunning(true);
         }
     }, []);
 
@@ -95,13 +111,14 @@ const useCountDown = (
             window.cancelAnimationFrame(timer.current.requestId || 0);
             timer.current = {};
             setTimeLeft(0);
+            setIsRunning(false);
         }
     }, []);
 
     const actions = useMemo(
-        () => ({ start, pause, resume, reset }),
-        [start, pause, resume, reset],
-    );
+        () => ({ init, start, pause, resume, reset }),
+        [init, start, pause, resume, reset],
+    ) as CountdownActions;
 
     useEffect(() => {
         return () => window.cancelAnimationFrame(timer.current.requestId || 0);
@@ -109,7 +126,11 @@ const useCountDown = (
 
     const convertedTime = useMemo(() => convertToTime(timeLeft), [timeLeft]);
 
-    return [convertedTime, actions];
+    return {
+        convertedTime,
+        actions,
+        isRunning,
+    };
 };
 
 export default useCountDown;

@@ -17,11 +17,13 @@ interface UitdagingProps {
 
 const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsToShow, playTime }) => {
     const { send } = UitdagingMachineContext.useActorRef();
+    const isIdleState = UitdagingMachineContext.useSelector(state => state.matches('idle'));
     const startRoundState = UitdagingMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = UitdagingMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = UitdagingMachineContext.useSelector(state => state.matches('playing'));
-    const [convertedTime, { start, pause, resume, reset }] = useCountDown(60);
-    const { hours, minutes, seconds } = convertedTime;
+    const finished = UitdagingMachineContext.useSelector(state => state.matches('FinishedPlayingUitdagingMode'));
+    const countdown = useCountDown(playTime ?? 0, () => send('FINISHEDPLAYING'));
+    const { hours, minutes, seconds } = countdown.convertedTime;
 
     const countdownTimings: CountdownTimings = {
         one: 1000,
@@ -32,11 +34,17 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
     }
 
     useEffect(() => {
+        if(isIdleState){
+            console.log("Starting countdown")
+            countdown.actions.start()
+            countdown.actions.pause()
+        }
         send({
             type: "STARTROUND",
             levelFragments: fragments,
             fragmentsToShow: fragmentsToShow,
-            countdownTimings: countdownTimings
+            countdownTimings: countdownTimings,
+            countdownActions: countdown.actions
         })
     }, [])
 
@@ -49,9 +57,13 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Speel met de klok
             </h3>
+            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+                Time:  { hours }:{ minutes }:{ seconds }
+            </h3>
             { startRoundState && <StartUitdagingUI levelName={ levelName } /> }
             { countdownState && <UitdagingCountdownPlayer /> }
             { playingState && <UitdagingFragmentPlayerRenderer /> }
+            { finished && <h1 className="text-center text-4xl font-extrabold tracking-tight text-white">Einde van de uitdaging</h1> }
         </>
     );
 };

@@ -2,6 +2,7 @@ import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
+import { CountdownActions } from '~/hooks/useCountdown';
 
 export const uitdagingMachine = createMachine({
     predictableActionArguments: true,
@@ -17,6 +18,7 @@ export const uitdagingMachine = createMachine({
         shownFragments: [] as FragmentWithNotes[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
         countdownTimings: undefined as CountdownTimings | undefined,
+        countdownActions: undefined as CountdownActions | undefined,
     },
     schema: {
         services: {} as {
@@ -30,14 +32,14 @@ export const uitdagingMachine = createMachine({
             | { type: "FINISH"; }
             | { type: "RESTART"; }
             | { type: "SOUNDFINISHED"; }
-            | { type: "FINISHEDLISTENING"; }
             | { type: "FINISHEDPLAYING"; }
             | { type: "GUESSEDFRAGMENT"; guessedFragment: FragmentWithNotes; }
-            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; }
+            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; countdownActions: CountdownActions; }
     },
     tsTypes: {} as import("./uitdagingMachine.typegen").Typegen0,
     states: {
         idle: {
+
             description: 'The state where the context data will be initialized',
             on: {
                 STARTROUND: {
@@ -51,10 +53,12 @@ export const uitdagingMachine = createMachine({
             description: 'Starts a new round & Shows the start and back to overview button',
             on: {
                 STARTCOUNTDOWN: 'countdown',
-                FINISHEDPLAYING: 'FinishedPlayingSpelenMode',
+                // FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
             },
+            exit: (context) => context.countdownActions?.start(),
         },
         countdown: {
+            entry: (context) => context.countdownActions?.resume(),
             initial: '3',
             description: 'Has all the chid states for counting down before a scene starts',
             states: {
@@ -92,6 +96,7 @@ export const uitdagingMachine = createMachine({
                     exit: assign({ isClickable: false, isAnimating: true }),
                 },
                 playSound: {
+                    entry: (context) => context.countdownActions?.resume(),
                     invoke: {
                         src: async (context) => await start(context.activeFragment),
                         onDone: [{
@@ -112,17 +117,22 @@ export const uitdagingMachine = createMachine({
                     exit: assign({ isClickable: false, isAnimating: false }),
                 },
                 restAfterAnswering: {
+                    entry: (context) => context.countdownActions?.pause(),
                     description: 'In this state the users gets a 1 second rest and the timer has to stop',
                     after: {
                         1000: '#spelen.countdown',
                     },
+                    exit: (context) => context.countdownActions?.resume(),
                 },
             }
         },
-        FinishedPlayingSpelenMode: {
+        FinishedPlayingUitdagingMode: {
             type: 'final',
         },
     },
+    on: {
+        FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
+    }
 },
     {
         actions: {
@@ -131,9 +141,11 @@ export const uitdagingMachine = createMachine({
                     allLevelFragments: event.levelFragments,
                     fragmentsToShow: event.fragmentsToShow,
                     countdownTimings: event.countdownTimings,
+                    countdownActions: event.countdownActions,
                 };
             }),
-            setGuessedFragment: assign((_, event) => {
+            setGuessedFragment: assign((context, event) => {
+                context.countdownActions?.pause();
                 return {
                     guessedFragment: event.guessedFragment,
                 };
@@ -164,4 +176,4 @@ export const uitdagingMachine = createMachine({
             GO: (context) => context.countdownTimings?.go ?? 1000,
             SOUNDTIME: (context) => context.countdownTimings?.soundInitialized ?? 1000,
         },
-});
+    });
