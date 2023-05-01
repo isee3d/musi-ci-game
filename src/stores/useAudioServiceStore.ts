@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import Sampler from '~/components/fragmentPlayer/audio/Sampler';
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
+import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard';
+import { Note } from '@prisma/client';
 
 type AudioServiceState = {
     audioContext: AudioContext | undefined
@@ -26,6 +28,7 @@ type AudioserviceAction = {
     ticksToMS: (ticks: number) => number;
     msToTicks: (ms: number) => number;
     returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>;
+    transposeFragments: (fragments: FragmentWithNotes[], direction: number) => FragmentWithNotes[];
 };
 
 const MS_PER_MINUTE = 1000 * 60;
@@ -103,6 +106,36 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
             set({ hasSupport: false });
         }
     },
+    transposeFragments: (fragments: FragmentWithNotes[], direction: number) => {
+        const helperArray: string[] = [];
+        helperArray.push(...baseNotes, ...baseNotes, ...baseNotes);
+        const newFragments: FragmentWithNotes[] = [];
+
+        for (let i = 0; i < fragments.length; i++) {
+            const fragment = fragments[i];
+            const notes: Note[] = [];
+            if(!fragment) continue;
+            for (let j = 0; j < fragment.notes.length; j++) {
+                const n = fragment.notes[j];
+                if(!n) continue;
+                const note = n.name.replace(/\d/, '');
+                let octave = parseInt(n.name.replace(/\D+/, ''));
+                const index = baseNotes.findIndex((no) => no === note) + direction;
+                if (index < 0) octave -= 1;
+                if (index >= 12) octave += 1;
+
+                const oldNote = helperArray[12 + index];
+                if (!oldNote) continue;
+                const newNote = oldNote + octave;
+
+                n.name = newNote;
+                notes.push(n);
+            }
+            fragment.notes = notes;
+            newFragments.push(fragment);
+        }
+        return newFragments;
+    }
 }));
 
 if (process.env.NODE_ENV === 'development') {

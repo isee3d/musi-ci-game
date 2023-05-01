@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore';
 
 interface LuisterenProps {
     fragmentsToShow: number;
@@ -19,6 +20,7 @@ function formatTime(ms: number): string {
 
 
 const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, levelName }) => {
+    const { transposeFragments } = useAudioServiceStore();
     const [shownFragments, setShownFragments] = useState(fragments.slice(0, fragmentsToShow));
     const [isPlayingGameMode, setIsPlayingGameMode] = useState(true);
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
@@ -49,7 +51,9 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
     function shuffleNewFragments() {
         const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
         const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
-        setShownFragments(selectedFragments);
+        const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6;
+        const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection);
+        setShownFragments(transposedFragments);
     }
 
     function renderPlayingButtons() {
