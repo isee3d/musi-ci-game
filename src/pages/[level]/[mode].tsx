@@ -1,12 +1,15 @@
 import { createActorContext } from "@xstate/react";
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Luisteren from "~/components/gameModes/luisteren/luisteren";
 import Spelen from "~/components/gameModes/spelen/spelen";
 import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
 import Uitdaging from "~/components/gameModes/uitdaging/uitdaging";
 import { uitdagingMachine } from "~/components/gameModes/uitdaging/uitdagingMachine";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
+import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import { api } from "~/utils/api";
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true });
@@ -14,10 +17,17 @@ export const UitdagingMachineContext = createActorContext(uitdagingMachine, { de
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
-
+    const router = useRouter();
+    const { audioContext } = useAudioServiceStore();
     const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0;
     const fragments = fragmentLevelQuery?.data?.fragments ?? [];
     const playTime = fragmentLevelQuery?.data?.playTime;
+
+    useEffect(() => {
+        if (!audioContext) {
+            router.push(`/modeSelect/${level}`);
+        }
+    }, []);
 
     function renderGameMode(mode: string) {
         switch (mode) {
@@ -30,14 +40,14 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
                     </SpelenMachineContext.Provider>
                 )
             case 'Uitdaging':
-                return(
+                return (
                     <UitdagingMachineContext.Provider>
-                    <Uitdaging
-                        fragmentsToShow={ fragmentsToShow }
-                        fragments={ fragments }
-                        levelName={ level }
-                        playTime={ playTime }
-                    />;
+                        <Uitdaging
+                            fragmentsToShow={ fragmentsToShow }
+                            fragments={ fragments }
+                            levelName={ level }
+                            playTime={ playTime }
+                        />;
                     </UitdagingMachineContext.Provider>
                 )
             default:
