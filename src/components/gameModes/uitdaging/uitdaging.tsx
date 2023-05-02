@@ -56,7 +56,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
                 Speel met de klok
             </h3>
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
-                Time:  { hours }:{ minutes }:{ seconds }
+                Countdown:  { hours }:{ minutes }:{ seconds }
             </h3>
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
