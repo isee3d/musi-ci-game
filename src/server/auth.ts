@@ -5,6 +5,7 @@ import {
   type DefaultSession,
   DefaultUser,
 } from "next-auth";
+import bcrypt from "bcrypt";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -67,26 +68,38 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-          const {email, password} = credentials as {email: string, password: string};
-
+        const { email, password } = credentials as { email: string, password: string };
+        try {
           const user = await prisma.user.findUnique({
             where: { email: email },
           })
 
-          if(!user){
-            // TODO: throw error
-            return null;
+          if (!user) {
+            throw new Error("User does not exist");
           }
 
-          // hash given password and compare hashes
-          const isValid = user.id === password;
+          const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user.id
+          );
 
-
+          if (!isPasswordCorrect) {
+            throw new Error("Password or Email is not correct");
+          }
 
           // Check if user exists in DB
           // Get the user and his role from DB
 
-          return {id: "1", name: "John Doe", email: "john@gmail.com", role: "USER"};
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          };
+        } catch (error: unknown){
+          console.error(error.message)
+        }
+
       }
     })
     /**
@@ -99,9 +112,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-  // pages: {
-  //   signIn: "/auth/signin",
-  // }
+  pages: {
+    signIn: "/auth/signin",
+  }
 };
 
 /**
