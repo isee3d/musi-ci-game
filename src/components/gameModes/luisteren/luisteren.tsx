@@ -14,7 +14,6 @@ interface LuisterenProps {
 
 const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, levelName }) => {
     const { send } = LuisterenMachineContext.useActorRef();
-    const isIdleState = LuisterenMachineContext.useSelector(state => state.matches('idle'));
     const isPlayingState = LuisterenMachineContext.useSelector(state => state.matches('playing'));
     const isfinishedPlayingState = LuisterenMachineContext.useSelector(state => state.matches('finishedListening'));
     const time = useRef(Date.now());

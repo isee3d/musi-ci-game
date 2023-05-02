@@ -15,8 +15,6 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
             }
         }
 
-        console.log(shownFragments, "fragdgdsgdsgfdsgdfgdf")
-        if(!shownFragments) return null;
         return (
             <>
                 { shownFragments.map((fragment) => (

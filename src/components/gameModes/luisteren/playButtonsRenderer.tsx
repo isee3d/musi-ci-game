@@ -1,11 +1,6 @@
 import React from 'react';
 import { LuisterenMachineContext } from '~/pages/[level]/[mode]';
 
-// interface PlayButtonsRendererProps {
-//     setIsPlayingGameMode: (isPlaying: boolean) => void;
-//     shuffleNewFragments: () => void;
-// }
-
 const PlayButtonsRenderer: React.FC = () => {
     const { send } = LuisterenMachineContext.useActorRef();
 
