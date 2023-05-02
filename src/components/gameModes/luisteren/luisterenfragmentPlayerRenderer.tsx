@@ -2,14 +2,10 @@ import React, { useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { LuisterenMachineContext } from '~/pages/[level]/[mode]';
 
-interface LuisterenfragmentPlayerRendererProps {
-    shownFragments: FragmentWithNotes[];
-}
-
-const LuisterenfragmentPlayerRenderer: React.FC<LuisterenfragmentPlayerRendererProps> =
-    ({ shownFragments }) => {
-
+const LuisterenfragmentPlayerRenderer: React.FC = () => {
+        const shownFragments = LuisterenMachineContext.useSelector(state => state.context.shownFragments);
         const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
 
         function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
@@ -19,6 +15,8 @@ const LuisterenfragmentPlayerRenderer: React.FC<LuisterenfragmentPlayerRendererP
             }
         }
 
+        console.log(shownFragments, "fragdgdsgdsgfdsgdfgdf")
+        if(!shownFragments) return null;
         return (
             <>
                 { shownFragments.map((fragment) => (

@@ -3,6 +3,7 @@ import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { luisterenMachine } from "~/components/gameModes/luisteren/LuisterenMachine";
 import Luisteren from "~/components/gameModes/luisteren/luisteren";
 import Spelen from "~/components/gameModes/spelen/spelen";
 import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
@@ -14,6 +15,7 @@ import { api } from "~/utils/api";
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true });
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true });
+export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true });
 
 const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
@@ -32,7 +34,11 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
     function renderGameMode(mode: string) {
         switch (mode) {
             case 'Luisteren':
-                return <Luisteren fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                return (
+                    <LuisterenMachineContext.Provider>
+                        <Luisteren fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                    </LuisterenMachineContext.Provider>
+                )
             case 'Spelen':
                 return (
                     <SpelenMachineContext.Provider>

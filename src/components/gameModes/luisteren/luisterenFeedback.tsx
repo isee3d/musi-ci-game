@@ -1,4 +1,3 @@
-import React from 'react';
 
 function formatTime(ms: number): string {
     const seconds = Math.floor((ms / 1000) % 60);
@@ -6,7 +5,6 @@ function formatTime(ms: number): string {
     const hours = Math.floor(ms / (1000 * 60 * 60));
     return `${hours}h ${minutes}m ${seconds}s`;
 }
-
 
 interface LuisterenFeedbackProps {
     time: React.MutableRefObject<number>;
