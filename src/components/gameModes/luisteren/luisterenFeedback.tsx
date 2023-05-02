@@ -1,12 +1,6 @@
 import { useEffect } from "react";
 import { useLuisterenStore } from "~/stores/gameModes/luisterenStore";
-
-function formatTime(ms: number): string {
-    const seconds = Math.floor((ms / 1000) % 60);
-    const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    const hours = Math.floor(ms / (1000 * 60 * 60));
-    return `${hours}h ${minutes}m ${seconds}s`;
-}
+import { formatTime } from "~/utils/time";
 
 interface LuisterenFeedbackProps {
     time: React.MutableRefObject<number>;
@@ -18,6 +12,7 @@ const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ time }) => {
     useEffect(() => {
         setTimePlayed(Date.now() - time.current);
     }, []);
+
     return (
         <>
             <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>

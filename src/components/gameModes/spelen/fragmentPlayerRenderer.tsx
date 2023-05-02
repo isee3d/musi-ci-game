@@ -4,13 +4,9 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[level]/[mode]';
 import { shallowEqual } from '@xstate/react';
-import Link from 'next/link';
+import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 
-interface FragmentPlayerRendererProps {
-    levelName: string;
-}
-
-const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelName }) => {
+const FragmentPlayerRenderer: React.FC = () => {
     const { send } = SpelenMachineContext.useActorRef();
     const isAnimating = SpelenMachineContext.useSelector(state => state.context.isAnimating);
     const isClickable = SpelenMachineContext.useSelector(state => state.context.isClickable);
@@ -20,6 +16,9 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelNa
     const guessHeardFragmentState = SpelenMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
 
+    const { addOneCorrectlyAnswered, addOneWrongAnswered } =useSpelenStore();
+
+    // local state
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
     const [isPlayingFragment, setIsPlayingFragment] = useState(false);
 
@@ -35,7 +34,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelNa
             : isClickable;
     }
 
-    function checkIsGuessedCorrect(selfFragment: FragmentWithNotes) {
+    function checkIsGuessedCorrect(selfFragment: FragmentWithNotes): boolean {
         if (selfFragment.id === activeFragment?.id) {
             // The clicked fragment is the active fragment
             return true;
@@ -55,6 +54,8 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelNa
             if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
+            checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
+
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
@@ -102,21 +103,13 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ levelNa
                     <h3 className="text-center text-xl font-bold">Volgende</h3>
                 </button>
                 <button
-                    disabled={ !listenToFragmentsState || isPlayingFragment }
                     onClick={ () => send("FINISHEDPLAYING") }
                     className={
-                        `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20
-                          ${listenToFragmentsState && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
+                        `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }
                 >
-                    <Link
-                        href={ `/modeSelect/${levelName}` }
-                    >
-                        <h3>Terug naar overzicht</h3>
-                    </Link>
+                    stoppen
                 </button>
             </div>
-
-
         </>
     )
 };

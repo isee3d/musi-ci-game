@@ -58,7 +58,6 @@ export const spelenMachine = createMachine({
             description: 'Starts a new round & Shows the start and back to overview button',
             on: {
                 STARTCOUNTDOWN: 'countdown',
-                FINISHEDPLAYING: 'FinishedPlayingSpelenMode',
             },
         },
         countdown: {
@@ -128,6 +127,11 @@ export const spelenMachine = createMachine({
         },
         FinishedPlayingSpelenMode: {
             type: 'final',
+        },
+    },
+    on: {
+        FINISHEDPLAYING: {
+            target: 'FinishedPlayingSpelenMode',
         },
     },
 },

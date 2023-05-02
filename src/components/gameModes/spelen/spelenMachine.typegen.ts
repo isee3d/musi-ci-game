@@ -23,7 +23,7 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
-        "onCountdownFinished": "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
+        "onCountdownFinished": "FINISHEDPLAYING" | "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
