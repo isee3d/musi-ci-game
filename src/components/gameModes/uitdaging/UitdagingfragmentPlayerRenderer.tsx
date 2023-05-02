@@ -4,6 +4,7 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { UitdagingMachineContext } from '~/pages/[level]/[mode]';
 import { shallowEqual } from '@xstate/react';
+import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 
 const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const { send } = UitdagingMachineContext.useActorRef();
@@ -14,6 +15,8 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const shownFragments = UitdagingMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
     const guessHeardFragmentState = UitdagingMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = UitdagingMachineContext.useSelector(state => state.matches("playing.restAfterAnswering"));
+
+    const { addOneCorrectlyAnswered, addOneWrongAnswered } = useUitdagingStore();
 
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
 
@@ -29,7 +32,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
             : isClickable;
     }
 
-    function checkIsGuessedCorrect(selfFragment: FragmentWithNotes) {
+    function checkIsGuessedCorrect(selfFragment: FragmentWithNotes): boolean {
         if (selfFragment.id === activeFragment?.id) {
             // The clicked fragment is the active fragment
             return true;
@@ -49,16 +52,11 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
             if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
+            checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
+
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
-
-        // if (listenToFragmentsState) {
-        //     setactiveFragmentPlayerIndex(fragment.id);
-        //     if (activeFragmentPlayerIndex === undefined) {
-        //         start(fragment);
-        //     }
-        // }
     }
 
     function onFragmentPlayingComplete() {

@@ -16,7 +16,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     const guessHeardFragmentState = SpelenMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
 
-    const { addOneCorrectlyAnswered, addOneWrongAnswered } =useSpelenStore();
+    const { addOneCorrectlyAnswered, addOneWrongAnswered } = useSpelenStore();
 
     // local state
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);

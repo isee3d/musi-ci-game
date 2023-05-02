@@ -9,7 +9,7 @@ interface SpelenFeedbackProps {
 }
 
 const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ time, levelName }) => {
-    const { getPercentageCorrectlyAnswered, timePlayed, setTimePlayed } = useSpelenStore();
+    const { reset, getPercentageCorrectlyAnswered, timePlayed, setTimePlayed } = useSpelenStore();
 
     useEffect(() => {
         setTimePlayed(Date.now() - time.current);
@@ -31,6 +31,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ time, levelName }) => {
 
             <div className='flex justify-center'>
                 <Link
+                    onClick={() => reset()}
                     className={ `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }
                     href={ `/modeSelect/${levelName}` }
                 >
