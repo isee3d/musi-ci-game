@@ -60,48 +60,6 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    CredentialsProvider({
-      type: "credentials",
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email", placeholder: "me@gmail.com" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials, req) {
-        const { email, password } = credentials as { email: string, password: string };
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: email },
-          })
-
-          if (!user) {
-            throw new Error("User does not exist");
-          }
-
-          const isPasswordCorrect = await bcrypt.compare(
-            password,
-            user.id
-          );
-
-          if (!isPasswordCorrect) {
-            throw new Error("Password or Email is not correct");
-          }
-
-          // Check if user exists in DB
-          // Get the user and his role from DB
-
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          };
-        } catch (error: unknown){
-          console.error(error.message)
-        }
-
-      }
-    })
     /**
      * ...add more providers here.
      *
@@ -112,9 +70,11 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-  pages: {
-    signIn: "/auth/signin",
-  }
+  // Custom signin page
+  
+  // pages: {
+  //   signIn: "/auth/signin",
+  // }
 };
 
 /**
