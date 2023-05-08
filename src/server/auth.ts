@@ -42,13 +42,13 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        session.user.role = user.role;
-      }
-      return session;
-    },
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+      },
+    }),
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   // Custom signin page
-  
+
   // pages: {
   //   signIn: "/auth/signin",
   // }
