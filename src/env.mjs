@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    NODE_ENV: z.enum(["development", "test", "production"]),
+
     NEXTAUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string().min(1)
@@ -33,6 +33,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
+    NEXT_PUBLIC_XSTATE_DEV_TOOLS: z.enum(["true", "false"]),
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   },
 
@@ -42,7 +44,8 @@ export const env = createEnv({
    */
   runtimeEnv: {
       DATABASE_URL: process.env.DATABASE_URL,
-      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+      NEXT_PUBLIC_XSTATE_DEV_TOOLS: process.env.NEXT_PUBLIC_XSTATE_DEV_TOOLS,
       NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
       NEXTAUTH_URL: process.env.NEXTAUTH_URL,
       DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,

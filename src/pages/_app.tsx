@@ -14,6 +14,7 @@ import { Layout } from "~/components/3D/dom/Layout";
 import { TailwindIndicator } from "~/components/tailwindIndicator";
 import InitializeSoundModal from "~/components/initializeSoundModal";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
+import { env } from "~/env.mjs";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -23,13 +24,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init: initAudio } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    initAudio();
+    if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return;
+    if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
       inspect({
         url: 'https://statecharts.io/inspect', // (default)
         iframe: false
       });
     }
-    initAudio();
   }, []);
 
   return (
