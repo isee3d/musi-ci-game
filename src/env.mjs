@@ -44,7 +44,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
       DATABASE_URL: process.env.DATABASE_URL,
-      NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+      NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
       NEXT_PUBLIC_XSTATE_DEV_TOOLS: process.env.NEXT_PUBLIC_XSTATE_DEV_TOOLS,
       NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
       NEXTAUTH_URL: process.env.NEXTAUTH_URL,
