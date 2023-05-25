@@ -39,6 +39,7 @@ export const spelenMachine = createMachine({
             | { type: "SOUNDFINISHED"; }
             | { type: "FINISHEDLISTENING"; }
             | { type: "FINISHEDPLAYING"; }
+            | { type: "CANCELLEDPLAYING"; }
             | { type: "GUESSEDFRAGMENT"; guessedFragment: FragmentWithNotes; }
             | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; }
     },
@@ -128,11 +129,17 @@ export const spelenMachine = createMachine({
         FinishedPlayingSpelenMode: {
             type: 'final',
         },
+        CancelledPlayingSpelenMode: {
+            type: 'final',
+        },
     },
     on: {
         FINISHEDPLAYING: {
             target: 'FinishedPlayingSpelenMode',
         },
+        CANCELLEDPLAYING: {
+            target: 'CancelledPlayingSpelenMode',
+        }
     },
 },
     {

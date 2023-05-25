@@ -23,7 +23,7 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
-        "onCountdownFinished": "FINISHEDPLAYING" | "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
+        "onCountdownFinished": "CANCELLEDPLAYING" | "FINISHEDPLAYING" | "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
@@ -40,7 +40,7 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "FinishedPlayingSpelenMode" | "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO!" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | "startRound" | {
+    matchesStates: "CancelledPlayingSpelenMode" | "FinishedPlayingSpelenMode" | "countdown" | "countdown.1" | "countdown.2" | "countdown.3" | "countdown.GO!" | "idle" | "playing" | "playing.guessHeardFragment" | "playing.initializePlaying" | "playing.listenToFragments" | "playing.playSound" | "startRound" | {
         "countdown"?: "1" | "2" | "3" | "GO!";
         "playing"?: "guessHeardFragment" | "initializePlaying" | "listenToFragments" | "playSound";
     };

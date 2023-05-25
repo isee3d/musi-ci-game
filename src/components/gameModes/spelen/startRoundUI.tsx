@@ -17,13 +17,13 @@ const StartUI: React.FC<StartUIProps> = ({ levelName }) => {
             >
                 <h3 className="text-center text-xl font-bold">Start</h3>
             </button>
-            {/* <Link
-                onClick={ () => send("FINISHEDPLAYING") }
+            <Link
+                onClick={ () => send("CANCELLEDPLAYING") }
                 href={ `/modeSelect/${levelName}` }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >
-                <h3 className="text-center text-xl font-bold">Terug naar overzicht</h3>
-            </Link> */}
+                <h3 className="text-center text-xl font-bold">Annuleren</h3>
+            </Link>
         </div>
     )
 };
