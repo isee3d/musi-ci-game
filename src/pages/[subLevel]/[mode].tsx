@@ -27,7 +27,7 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
     const playTime = fragmentLevelQuery?.data?.playTime;
 
     useEffect(() => {
-        if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
+        if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
             router.push(`/modeSelect/${subLevel}`);
         }
     }, []);

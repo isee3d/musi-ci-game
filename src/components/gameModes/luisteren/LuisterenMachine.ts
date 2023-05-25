@@ -2,12 +2,12 @@ import { createMachine, assign } from "xstate";
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
-const shuffleAndTranspose = (fragments: FragmentWithNotes[], fragmentsToShow: number) => {
+const Transpose = (fragments: FragmentWithNotes[], fragmentsToShow: number) => {
     const { transposeFragments } = useAudioServiceStore.getState();
-    const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
-    const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
+    // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
+    // const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
     const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6;
-    const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection);
+    const transposedFragments = transposeFragments(fragments, randomTransposeDirection);
 
     return transposedFragments;
 };
@@ -64,13 +64,13 @@ export const luisterenMachine = createMachine({
                 }
             }),
             initializeShownFragments: assign((context) => {
-                const transposedFragments = shuffleAndTranspose(context.allLevelFragments, context.fragmentsToShow);
+                const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow);
                 return {
                     shownFragments: transposedFragments,
                 }
             }),
             shuffleFragments: assign((context) => {
-                const transposedFragments = shuffleAndTranspose(context.allLevelFragments, context.fragmentsToShow);
+                const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow);
                 return {
                     shownFragments: transposedFragments,
                 }
