@@ -48,3 +48,5 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [ ] Add spelen logic
 - [ ] Add uitdaging logic
 
+
+pnpx prisma db push --force-reset
