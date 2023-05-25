@@ -40,7 +40,6 @@ const Level: NextPage<{ subLevel: string }> = ({ subLevel }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const ssg = generateServerSideHelper();
     const subLevel = context.params?.subLevel;
-    console.log("subLevel: " + subLevel)
     if (typeof subLevel !== "string") throw new Error("No subLevel");
 
     // await ssg.   Do the prefetch of the level data here

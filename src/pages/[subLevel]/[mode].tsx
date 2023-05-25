@@ -9,6 +9,7 @@ import Spelen from "~/components/gameModes/spelen/spelen";
 import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
 import Uitdaging from "~/components/gameModes/uitdaging/uitdaging";
 import { uitdagingMachine } from "~/components/gameModes/uitdaging/uitdagingMachine";
+import { env } from "~/env.mjs";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import { api } from "~/utils/api";
@@ -18,7 +19,7 @@ export const UitdagingMachineContext = createActorContext(uitdagingMachine, { de
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true });
 
 const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) => {
-    const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ levelName: subLevel });
+    const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ subLevelId: subLevel });
     const router = useRouter();
     const { audioContext } = useAudioServiceStore();
     const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0;
@@ -26,7 +27,7 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
     const playTime = fragmentLevelQuery?.data?.playTime;
 
     useEffect(() => {
-        if (!audioContext) {
+        if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
             router.push(`/modeSelect/${subLevel}`);
         }
     }, []);
@@ -36,13 +37,19 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
             case 'Luisteren':
                 return (
                     <LuisterenMachineContext.Provider>
-                        <Luisteren fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                        <Luisteren
+                            fragmentsToShow={ fragmentsToShow }
+                            fragments={ fragments }
+                            levelName={ subLevel } />;
                     </LuisterenMachineContext.Provider>
                 )
             case 'Spelen':
                 return (
                     <SpelenMachineContext.Provider>
-                        <Spelen fragmentsToShow={ fragmentsToShow } fragments={ fragments } levelName={ level } />;
+                        <Spelen
+                            fragmentsToShow={ fragmentsToShow }
+                            fragments={ fragments }
+                            levelName={ subLevel } />;
                     </SpelenMachineContext.Provider>
                 )
             case 'Uitdaging':
@@ -51,7 +58,7 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
                         <Uitdaging
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
-                            levelName={ level }
+                            levelName={ subLevel }
                             playTime={ playTime }
                         />;
                     </UitdagingMachineContext.Provider>
@@ -69,7 +76,7 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
         </Head>
         <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
             <h1 className="mb-10 py-3 text-center text-8xl font-extrabold tracking-tight text-white ">
-                { level }
+                { subLevel }
             </h1>
             <div className="container mx-auto flex flex-col items-center justify-center rounded-2xl border-4 border-white ">
                 {/* Title */ }
@@ -98,19 +105,19 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
 export const getStaticProps: GetStaticProps = async (context) => {
     const ssg = generateServerSideHelper();
     const mode = context.params?.mode;
-    const level = context.params?.level;
+    const subLevel = context.params?.subLevel;
 
     if (typeof mode !== "string") throw new Error("No mode");
-    if (typeof level !== "string") throw new Error("No level");
+    if (typeof subLevel !== "string") throw new Error("No sublevel");
 
-    await ssg.level.getFragmentsOfSublevel.prefetch({ levelName: level });
+    await ssg.sublevel.getFragmentsOfSublevel.prefetch({ subLevelId: subLevel });
 
     // await ssg.   Do the prefetch of the level and data here
 
     return {
         props: {
             trpcState: ssg.dehydrate(),
-            level,
+            subLevel,
             mode,
         },
     };

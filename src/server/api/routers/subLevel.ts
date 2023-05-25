@@ -47,31 +47,32 @@ export const subLevelRouter = createTRPCRouter({
             return gameModes.gameModes;
         }),
 
-    getFragmentsOfSublevel: publicProcedure.input(z.object({ levelName: z.string() })).query(async ({ ctx, input }) => {
-        const { levelName } = input;
-        const fragments = await ctx.prisma.subLevel.findFirst({
-            where: {
-                name: levelName,
-            },
-            select: {
-                playTime: true,
-                fragmentToShow: true,
-                fragments: {
-                    select: {
-                        id: true,
-                        name: true,
-                        description: true,
-                        notes: true,
+    getFragmentsOfSublevel: publicProcedure.input(z.object({ subLevelId: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const { subLevelId } = input;
+            const fragments = await ctx.prisma.subLevel.findFirst({
+                where: {
+                    id: parseInt(subLevelId),
+                },
+                select: {
+                    playTime: true,
+                    fragmentToShow: true,
+                    fragments: {
+                        select: {
+                            id: true,
+                            name: true,
+                            description: true,
+                            notes: true,
+                        },
                     },
                 },
-            },
-        });
-        if (!fragments) {
-            throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no fragments' });
-        }
+            });
+            if (!fragments) {
+                throw new TRPCError({ code: 'NOT_FOUND', message: 'SubLevel has no fragments' });
+            }
 
-        return fragments;
-    }),
+            return fragments;
+        }),
 
     updateSubLevel: publicProcedure.input(SubLevelSchema).mutation(async ({ ctx, input }) => {
         const { id } = input;
