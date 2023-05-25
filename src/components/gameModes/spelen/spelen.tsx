@@ -44,8 +44,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                 Kijk en luister
             </h3>
             { startRoundState && <StartRoundUI levelName={ levelName } /> }
-            { countdownState && <CountdownPlayer /> }
-            { playingState && <FragmentPlayerRenderer /> }
+                { countdownState && <CountdownPlayer /> }
+                { (playingState || countdownState) && <FragmentPlayerRenderer /> }
             { finishedState && <SpelenFeedback time={ time } levelName={ levelName } /> }
         </>
     );
