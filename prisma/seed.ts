@@ -158,7 +158,7 @@ async function main() {
     },
   })
 
-  const level1 = await prisma.level.upsert({
+  const sublevel1 = await prisma.subLevel.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -169,8 +169,19 @@ async function main() {
       correctAnswers: 10,
       cooldownTime: 0,
       fragmentToShow: 2,
-      game: { connect: { id: 1 } },
       gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+    },
+  })
+  
+  const level = await prisma.level.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      // id: 1,
+      name: 'Level 1',
+      description: 'Een level',
+      game: { connect: { id: 1 } },
+      subLevels: { connect: [{ id: 1 }] },
     },
   })
 

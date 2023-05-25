@@ -133,6 +133,8 @@ model Game {
 
 model Level{
   id                Int         @id @default(autoincrement())
+  name              String      @unique
+  description       String?
   id_Game           Int?
   game              Game?      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subLevels         SubLevel[]
@@ -153,7 +155,7 @@ model SubLevel {
   cooldownTime      Int?
   playTime          Int?
   fragmentToShow    Int
-	@@map("Level")
+	@@map("SubLevel")
 }
 
 model Fragment {
