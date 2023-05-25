@@ -1,5 +1,5 @@
 import React from 'react';
-import { SpelenMachineContext, UitdagingMachineContext } from '~/pages/[level]/[mode]';
+import { SpelenMachineContext, UitdagingMachineContext } from '~/pages/[subLevel]/[mode]';
 
 const UitdagingCountdownPlayer: React.FC = () => {
     const spelenStates = UitdagingMachineContext.useSelector(state => state.toStrings())

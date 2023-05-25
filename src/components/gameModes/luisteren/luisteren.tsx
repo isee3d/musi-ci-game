@@ -4,7 +4,7 @@ import BackToOverView from '~/components/gameModes/luisteren/backToOverView';
 import PlayButtonsRenderer from '~/components/gameModes/luisteren/playButtonsRenderer';
 import LuisterenFeedback from '~/components/gameModes/luisteren/luisterenFeedback';
 import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/luisterenfragmentPlayerRenderer';
-import { LuisterenMachineContext } from '~/pages/[level]/[mode]';
+import { LuisterenMachineContext } from '~/pages/[subLevel]/[mode]';
 
 interface LuisterenProps {
     fragmentsToShow: number;
@@ -32,7 +32,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
                 Kijk en luister
             </h3>
             { isPlayingState && <LuisterenfragmentPlayerRenderer /> }
-            { isfinishedPlayingState && <LuisterenFeedback time={time} /> }
+            { isfinishedPlayingState && <LuisterenFeedback time={ time } /> }
             <div className=" flex justify-center space-x-5">
                 { isPlayingState && < PlayButtonsRenderer /> }
                 { isfinishedPlayingState && <BackToOverView levelName={ levelName } /> }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import { LuisterenMachineContext } from '~/pages/[level]/[mode]';
+import { LuisterenMachineContext } from '~/pages/[subLevel]/[mode]';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 
 const LuisterenfragmentPlayerRenderer: React.FC = () => {

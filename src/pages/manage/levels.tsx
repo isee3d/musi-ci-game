@@ -34,7 +34,7 @@ const validationRules = {
 const ManageLevels: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Level>({ mode: 'onBlur' });
     const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
-    const { mutate: addLevel } = api.level.createLevel.useMutation();
+    const { mutate: addLevel } = api.level.createSubLevel.useMutation();
     const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
 
     const onSubmit: SubmitHandler<Level> = (data) => {

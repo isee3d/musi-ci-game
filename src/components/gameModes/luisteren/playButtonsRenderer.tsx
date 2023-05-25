@@ -1,5 +1,5 @@
 import React from 'react';
-import { LuisterenMachineContext } from '~/pages/[level]/[mode]';
+import { LuisterenMachineContext } from '~/pages/[subLevel]/[mode]';
 
 const PlayButtonsRenderer: React.FC = () => {
     const { send } = LuisterenMachineContext.useActorRef();

@@ -35,6 +35,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_NODE_ENV: z.enum(["development", "test", "production"]),
     NEXT_PUBLIC_XSTATE_DEV_TOOLS: z.enum(["true", "false"]),
+    NEXT_PUBLIC_ENABLE_AUDIO: z.enum(["true", "false"]),
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   },
 
@@ -43,6 +44,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+      NEXT_PUBLIC_ENABLE_AUDIO: process.env.NEXT_PUBLIC_ENABLE_AUDIO,
       DATABASE_URL: process.env.DATABASE_URL,
       NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
       NEXT_PUBLIC_XSTATE_DEV_TOOLS: process.env.NEXT_PUBLIC_XSTATE_DEV_TOOLS,

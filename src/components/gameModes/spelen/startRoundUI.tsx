@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { SpelenMachineContext } from '~/pages/[level]/[mode]';
+import { SpelenMachineContext } from '~/pages/[subLevel]/[mode]';
 
 interface StartUIProps {
     levelName: string;

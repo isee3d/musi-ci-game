@@ -1,12 +1,12 @@
 import { GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Level from "~/components/level";
+import Sublevel from "~/components/subLevel";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
-const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
-    const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
-
+const SublevelsPage: NextPage<{ levelId: string }> = ({ levelId }) => {
+    const subLevelsOfLevel = api.level.getSubLevelsOfLevel.useQuery({ levelId });
+    console.log("data: " + subLevelsOfLevel.data)
     return (<>
         <Head>
             <title>Voortgang Musi-CI</title>
@@ -17,11 +17,11 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
             <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-2xl border-4 border-white">
                 {/* Title */ }
                 <h1 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight text-white ">
-                    Voortgang Musi-CI
+                    Sublevels
                 </h1>
                 <div className=" flex w-full flex-col justify-between space-y-8 pl-8">
-                    { levelsOfGameQuery.data?.map((level) => (
-                        <Level key={ level.id } levelId={ level.id } name={ level.name } score={ level.id } borderColor="green" />
+                    { subLevelsOfLevel.data?.map((subLevel) => (
+                        <Sublevel key={ subLevel.id } sublevelId={ subLevel.id } name={ subLevel.name } borderColor="green" />
                     )) }
                 </div>
             </div>
@@ -31,15 +31,15 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const ssg = generateServerSideHelper();
-    const gameId = context.params?.gameId;
+    const levelId = context.params?.levelId;
 
-    if (typeof gameId !== "string") throw new Error("No gameId");
+    if (typeof levelId !== "string") throw new Error("No levelId");
 
     // await ssg.   Do the prefetch of the level data here
     return {
         props: {
             trpcState: ssg.dehydrate(),
-            gameId,
+            levelId: levelId,
         },
     };
 };
@@ -48,4 +48,4 @@ export const getStaticPaths = () => {
     return { paths: [], fallback: "blocking" };
 };
 
-export default UserLevelsPage;
+export default SublevelsPage;

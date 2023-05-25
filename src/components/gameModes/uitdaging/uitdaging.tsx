@@ -7,7 +7,7 @@ import StartUitdagingUI from '~/components/gameModes/uitdaging/startUitdagingRou
 import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdagingCountdownPlayer';
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback';
 import useCountDown from '~/hooks/useCountdown';
-import { UitdagingMachineContext } from '~/pages/[level]/[mode]';
+import { UitdagingMachineContext } from '~/pages/[subLevel]/[mode]';
 
 interface UitdagingProps {
     fragments: FragmentWithNotes[];

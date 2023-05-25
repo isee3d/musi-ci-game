@@ -17,8 +17,8 @@ export const SpelenMachineContext = createActorContext(spelenMachine, { devTools
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true });
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true });
 
-const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
-    const fragmentLevelQuery = api.level.getFragmentsOflevel.useQuery({ levelName: level });
+const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) => {
+    const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ levelName: subLevel });
     const router = useRouter();
     const { audioContext } = useAudioServiceStore();
     const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0;
@@ -27,7 +27,7 @@ const Mode: NextPage<{ level: string, mode: string }> = ({ level, mode }) => {
 
     useEffect(() => {
         if (!audioContext) {
-            router.push(`/modeSelect/${level}`);
+            router.push(`/modeSelect/${subLevel}`);
         }
     }, []);
 
@@ -103,7 +103,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if (typeof mode !== "string") throw new Error("No mode");
     if (typeof level !== "string") throw new Error("No level");
 
-    await ssg.level.getFragmentsOflevel.prefetch({ levelName: level });
+    await ssg.level.getFragmentsOfSublevel.prefetch({ levelName: level });
 
     // await ssg.   Do the prefetch of the level and data here
 

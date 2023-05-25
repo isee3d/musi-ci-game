@@ -24,7 +24,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init: initAudio } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    initAudio();
+    if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
+      initAudio();
+    }
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return;
     if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
       inspect({

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { UitdagingMachineContext } from '~/pages/[level]/[mode]';
+import { UitdagingMachineContext } from '~/pages/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 

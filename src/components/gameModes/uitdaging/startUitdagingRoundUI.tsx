@@ -1,5 +1,5 @@
 import React from 'react';
-import { UitdagingMachineContext } from '~/pages/[level]/[mode]';
+import { UitdagingMachineContext } from '~/pages/[subLevel]/[mode]';
 
 
 const StartUitdagingUI: React.FC = () => {
