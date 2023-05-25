@@ -131,10 +131,16 @@ model Game {
   description       String?
 }
 
-model Level {
+model Level{
   id                Int         @id @default(autoincrement())
   id_Game           Int?
   game              Game?      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subLevels         SubLevel[]
+}
+
+model SubLevel {
+  id                Int         @id @default(autoincrement())
+  levels            Level[]
   fragments         Fragment[]
   gameModes         GameMode[]
   id_levelResult    Int?
@@ -147,12 +153,13 @@ model Level {
   cooldownTime      Int?
   playTime          Int?
   fragmentToShow    Int
+	@@map("Level")
 }
 
 model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
-  level           Level[]
+  level           SubLevel[]
 
   name              String
   description       String?
@@ -171,7 +178,7 @@ model Note {
 
 model GameMode {
   id                 Int         @id @default(autoincrement())
-  levels            Level[]
+  levels            SubLevel[]
   id_levelResult    Int?
   levelResult       LevelResult?   @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -183,7 +190,7 @@ model LevelResult {
    id_User             String
    user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
    gameModes         GameMode[]
-   levels            Level[]
+   levels            SubLevel[]
    levelResultFragmentAnswers LevelResultFragmentAnswer[]
 
     playDate           DateTime
