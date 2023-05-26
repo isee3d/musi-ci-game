@@ -73,7 +73,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
                         options={ {
                             isClickable: checkIsClickable(),
                             isAnimating: checkIsAnimating(fragment),
-                            showCorrectOutline: listenToFragmentsState,
+                            showCorrectOutline: false,
                             isCorrect: checkIsGuessedCorrect(fragment),
                             // isLooping: true,
                             onAnimationClicked: onFragmentPlayerClicked,

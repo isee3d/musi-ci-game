@@ -55,12 +55,12 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Speel met de klok
             </h3>
-            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+            {/* <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Countdown:  { hours }:{ minutes }:{ seconds }
-            </h3>
+            </h3> */}
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
-            { playingState && <UitdagingFragmentPlayerRenderer /> }
+            { (playingState || countdownState) && <UitdagingFragmentPlayerRenderer /> }
             { isFinishedState && <UitdagingFeedback time={ time } levelName={ levelName } /> }
         </>
     );

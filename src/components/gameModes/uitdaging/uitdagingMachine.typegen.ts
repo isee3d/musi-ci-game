@@ -25,7 +25,7 @@ export interface Typegen0 {
     eventsCausingActions: {
         "initTimer": "FINISHEDPLAYING" | "STARTCOUNTDOWN" | "xstate.stop";
         "initializeContext": "STARTROUND";
-        "onCountdownFinished": "FINISHEDPLAYING" | "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
+        "onCountdownStarted": "STARTCOUNTDOWN" | "xstate.after(1000)#spelen.playing.restAfterAnswering";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
