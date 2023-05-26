@@ -66,6 +66,7 @@ export const spelenMachine = createMachine({
             description: 'Has all the chid states for counting down before a scene starts',
             states: {
                 "3": {
+                    entry: 'onCountdownStarted',
                     after: {
                         THREE: '2',
                     },
@@ -84,7 +85,6 @@ export const spelenMachine = createMachine({
                     after: {
                         GO: '#spelen.playing',
                     },
-                    exit: 'onCountdownFinished',
                 },
             },
         },
@@ -166,7 +166,7 @@ export const spelenMachine = createMachine({
                     shownFragments: [],
                 }
             }),
-            onCountdownFinished: assign((context) => {
+            onCountdownStarted: assign((context) => {
                 const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5);
                 const newActiveFragment = shuffledFragments?.[Math.floor(Math.random() * shuffledFragments.length)];
                 return {

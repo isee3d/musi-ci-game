@@ -10,7 +10,6 @@ export interface Typegen0 {
         "xstate.after(THREE)#spelen.countdown.3": { type: "xstate.after(THREE)#spelen.countdown.3" };
         "xstate.after(TWO)#spelen.countdown.2": { type: "xstate.after(TWO)#spelen.countdown.2" };
         "xstate.init": { type: "xstate.init" };
-        "xstate.stop": { type: "xstate.stop" };
     };
     invokeSrcNameMap: {
 
@@ -23,7 +22,7 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
-        "onCountdownFinished": "CANCELLEDPLAYING" | "FINISHEDPLAYING" | "xstate.after(GO)#spelen.countdown.GO!" | "xstate.stop";
+        "onCountdownStarted": "FINISHEDLISTENING" | "STARTCOUNTDOWN";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
