@@ -11,7 +11,6 @@ export interface Typegen0 {
         "xstate.after(THREE)#spelen.countdown.3": { type: "xstate.after(THREE)#spelen.countdown.3" };
         "xstate.after(TWO)#spelen.countdown.2": { type: "xstate.after(TWO)#spelen.countdown.2" };
         "xstate.init": { type: "xstate.init" };
-        "xstate.stop": { type: "xstate.stop" };
     };
     invokeSrcNameMap: {
 
@@ -23,7 +22,6 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "initTimer": "FINISHEDPLAYING" | "STARTCOUNTDOWN" | "xstate.stop";
         "initializeContext": "STARTROUND";
         "onCountdownStarted": "STARTCOUNTDOWN" | "xstate.after(1000)#spelen.playing.restAfterAnswering";
         "setGuessedFragment": "GUESSEDFRAGMENT";

@@ -2,7 +2,8 @@ import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
-import { CountdownActions } from '~/hooks/useCountdown';
+// import { CountdownActions } from '~/hooks/useCountdown';
+import { StopwatchActions } from '~/hooks/useStopwatch';
 
 export const uitdagingMachine = createMachine({
     predictableActionArguments: true,
@@ -18,7 +19,7 @@ export const uitdagingMachine = createMachine({
         shownFragments: [] as FragmentWithNotes[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
         countdownTimings: undefined as CountdownTimings | undefined,
-        countdownActions: undefined as CountdownActions | undefined,
+        countdownActions: undefined as StopwatchActions | undefined,
     },
     schema: {
         services: {} as {
@@ -34,7 +35,7 @@ export const uitdagingMachine = createMachine({
             | { type: "SOUNDFINISHED"; }
             | { type: "FINISHEDPLAYING"; }
             | { type: "GUESSEDFRAGMENT"; guessedFragment: FragmentWithNotes; }
-            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; countdownActions: CountdownActions; }
+            | { type: "STARTROUND"; levelFragments: FragmentWithNotes[]; fragmentsToShow: number; countdownTimings: CountdownTimings; countdownActions: StopwatchActions; }
     },
     tsTypes: {} as import("./uitdagingMachine.typegen").Typegen0,
     states: {
@@ -55,7 +56,7 @@ export const uitdagingMachine = createMachine({
                 STARTCOUNTDOWN: 'countdown',
             },
             // exit: (context) => context.countdownActions?.start(),
-            exit: "initTimer"
+            // exit: "initTimer"
         },
         countdown: {
             entry: (context) => context.countdownActions?.start(),
@@ -144,9 +145,9 @@ export const uitdagingMachine = createMachine({
                     countdownActions: event.countdownActions,
                 };
             }),
-            initTimer: (context) => {
-                context.countdownActions?.init();
-            },
+            // initTimer: (context) => {
+            //     context.countdownActions?.start();
+            // },
             setGuessedFragment: assign((context, event) => {
                 context.countdownActions?.pause();
                 return {

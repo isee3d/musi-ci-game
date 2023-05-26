@@ -7,6 +7,7 @@ import StartUitdagingUI from '~/components/gameModes/uitdaging/startUitdagingRou
 import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdagingCountdownPlayer';
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback';
 import useCountDown from '~/hooks/useCountdown';
+import useStopwatch from '~/hooks/useStopwatch';
 import { UitdagingMachineContext } from '~/pages/[subLevel]/[mode]';
 
 interface UitdagingProps {
@@ -24,8 +25,8 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
     const isFinishedState = UitdagingMachineContext.useSelector(state => state.matches('FinishedPlayingUitdagingMode'));
 
     const time = useRef(Date.now());
-
-    const countdown = useCountDown(playTime ?? 0, () => send('FINISHEDPLAYING'));
+    const countdown = useStopwatch(1000)
+    // const countdown = useCountDown(playTime ?? 0, () => send('FINISHEDPLAYING'));
     const { hours, minutes, seconds } = countdown.convertedTime;
 
     const countdownTimings: CountdownTimings = {
@@ -55,9 +56,9 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Speel met de klok
             </h3>
-            {/* <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
-                Countdown:  { hours }:{ minutes }:{ seconds }
-            </h3> */}
+            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+                Stopwatch:  { hours }:{ minutes }:{ seconds }
+            </h3>
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
             { (playingState || countdownState) && <UitdagingFragmentPlayerRenderer /> }
