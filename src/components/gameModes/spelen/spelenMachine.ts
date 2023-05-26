@@ -170,6 +170,7 @@ export const spelenMachine = createMachine({
                 const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5);
                 const newActiveFragment = shuffledFragments?.[Math.floor(Math.random() * shuffledFragments.length)];
                 return {
+                    guessedFragment: undefined,
                     shownFragments: shuffledFragments?.slice(0, context.fragmentsToShow) ?? [],
                     activeFragment: newActiveFragment,
                 };

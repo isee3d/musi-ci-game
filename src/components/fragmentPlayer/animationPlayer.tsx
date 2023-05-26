@@ -27,6 +27,25 @@ import { FragmentCircle, FragmentLine } from '~/components/3D/canvas/Examples';
 //   ),
 // })
 
+function getAnimationClass(options: AnimationPlayerOptions | undefined, thisFragment: FragmentWithNotes){
+  let borderColorClass = 'border-transparent';
+  let bgColorClass = 'bg-zinc-500';
+  let cursorClass = 'cursor-not-allowed bg-gray-400';
+
+  if (options?.showCorrectOutline) {
+    borderColorClass = options?.isCorrect ? 'border-green-500' : 'border-red-500';
+    if (thisFragment.id === options?.guessedFragment?.id) {
+      bgColorClass = options?.isCorrect ? 'bg-green-500' : 'bg-red-500';
+    }
+  }
+
+  if (!options?.isAnimating && options?.isClickable) {
+    cursorClass = 'cursor-pointer hover:bg-slate-200/20';
+  }
+
+  return `rounded-2xl border-4 shadow shadow-slate-600 ${borderColorClass} ${bgColorClass} ${cursorClass}`;
+}
+
 function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
   let minX = Infinity;
   let maxX = -Infinity;
@@ -46,6 +65,7 @@ interface AnimationPlayerOptions {
   isLooping?: boolean;
   isAnimating: boolean;
   showCorrectOutline?: boolean;
+  guessedFragment?: FragmentWithNotes;
   isCorrect?: boolean;
   onAnimationClicked?: (fragment: FragmentWithNotes) => void;
   onAnimationComplete?: (fragment?: FragmentWithNotes) => void;
@@ -112,11 +132,12 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
       disabled={ (!options?.isAnimating && !options?.isClickable) }
       onClick={ handleAnimationClicked }
       ref={ containerRef }
-      className={
-        `rounded-2xl border-4 bg-zinc-500 shadow shadow-slate-600
-       ${options?.showCorrectOutline ? (options?.isCorrect ? 'border-green-500' : 'border-red-500') : 'border-transparent'}
-       ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}
-           `}
+      // className={
+      //   `rounded-2xl border-4 bg-zinc-500 shadow shadow-slate-600
+      //  ${options?.showCorrectOutline ? (options?.isCorrect ? 'border-green-500' : 'border-red-500') : 'border-transparent'}
+      //  ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}
+      //      `}
+      className={ `${getAnimationClass(options, animationFragment)}`}
     >
       <View useOrbit className='h-48 w-full'>
         <Suspense fallback={ null }>

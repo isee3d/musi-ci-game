@@ -86,6 +86,7 @@ const FragmentPlayerRenderer: React.FC = () => {
                             isAnimating: checkIsAnimating(fragment),
                             showCorrectOutline: listenToFragmentsState,
                             isCorrect: checkIsGuessedCorrect(fragment),
+                            guessedFragment: guessedFragment,
                             // isLooping: true,
                             onAnimationClicked: onFragmentPlayerClicked,
                             onAnimationComplete: onFragmentPlayingComplete
