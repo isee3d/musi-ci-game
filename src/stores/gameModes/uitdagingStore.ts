@@ -1,4 +1,4 @@
-import { SceneData, modeData } from "types/SceneData";
+import { SceneData, ModeData } from "types/SceneData";
 import { create } from "zustand";
 
 type UitdagingState = {
@@ -6,7 +6,7 @@ type UitdagingState = {
     timePlayed: number;
     answeredCorrectly: number;
     answeredWrong: number;
-    modeData: modeData | undefined;
+    modeData: ModeData | undefined;
     // here under more advanced stuff
     chosenFragment: number | undefined;
     chosenFragmentlatency: number | undefined;
@@ -25,7 +25,7 @@ type UitdagingActions = {
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneDataItem: (item: SceneData) => void;
     AddSceneData: (items: SceneData[]) => void;
-    setModeData: (data: modeData) => void;
+    setModeData: (data: ModeData) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
@@ -62,7 +62,7 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     AddSceneData: (items: SceneData[]) => set((state) => ({ SceneData: items })),
     AddSceneDataItem: (item: SceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
     setChosenFragment: (fragmentId: number) => set((state) => ({ chosenFragment: fragmentId })),
-    setModeData: (data: modeData) => set((state) => ({ modeData: data })),
+    setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
     setChosenFragmentLatency: (latency: number) => set((state) => ({ chosenFragmentlatency: latency })),
     addRelistenFragment: (fragmentId: number) => set((state) =>
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),

@@ -5,6 +5,8 @@ import PlayButtonsRenderer from '~/components/gameModes/luisteren/playButtonsRen
 import LuisterenFeedback from '~/components/gameModes/luisteren/luisterenFeedback';
 import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/luisterenfragmentPlayerRenderer';
 import { LuisterenMachineContext } from '~/pages/[subLevel]/[mode]';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
+import { ModeData } from 'types/SceneData';
 
 interface LuisterenProps {
     fragmentsToShow: number;
@@ -16,9 +18,13 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, level
     const { send } = LuisterenMachineContext.useActorRef();
     const isPlayingState = LuisterenMachineContext.useSelector(state => state.matches('playing'));
     const isfinishedPlayingState = LuisterenMachineContext.useSelector(state => state.matches('finishedListening'));
+    const { setStartTime, setModeData } = useLuisterenStore();
+
     const time = useRef(Date.now());
 
     useEffect(() => {
+        setStartTime(Date.now());
+        setModeData({level: levelName, subLevel: "gfdgd", mode: "luisteren"})
         send({
             type: "STARTROUND",
             levelFragments: fragments,

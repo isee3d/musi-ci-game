@@ -1,11 +1,11 @@
-import { SceneData, modeData } from './../../../types/SceneData';
+import { SceneData, ModeData } from './../../../types/SceneData';
 import { create } from "zustand";
 
 type LuisterenState = {
-    startTime: Date;
+    startTime: number;
     timePlayed: number;
     score: number;
-    modeData: modeData | undefined;
+    modeData: ModeData | undefined;
     // here under more advanced stuff
     chosenFragment: number | undefined;
     chosenFragmentlatency: number | undefined;
@@ -21,14 +21,14 @@ type LuisterenActions = {
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneDataItem: (item: SceneData) => void;
     AddSceneData: (items: SceneData[]) => void;
-    setStartTime: (time: Date) => void;
-    setModeData: (data: modeData) => void;
+    setStartTime: (time: number) => void;
+    setModeData: (data: ModeData) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
 
 const initialState: LuisterenState = {
-    startTime: new Date(),
+    startTime: 0,
     timePlayed: 0,
     score: 0,
     modeData: undefined,
@@ -50,7 +50,7 @@ const initialRoundState: Partial<LuisterenState> = {
 export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set, get) => ({
     timePlayed: 0,
     score: 0,
-    startTime: new Date(),
+    startTime: 0,
     modeData: undefined,
     chosenFragment: undefined,
     chosenFragmentlatency: undefined,
@@ -60,11 +60,11 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     AddSceneDataItem: (item: SceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
     setChosenFragment: (fragmentId: number) => set((state) => ({ chosenFragment: fragmentId })),
     setChosenFragmentLatency: (latency: number) => set((state) => ({ chosenFragmentlatency: latency })),
-    setModeData: (data: modeData) => set((state) => ({ modeData: data })),
+    setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
     addRelistenFragment: (fragmentId: number) => set((state) =>
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
     addScore: (score: number) => set((state) => ({ score: state.score + score })),
-    setStartTime: (time: Date) => set((state) => ({ startTime: time })),
+    setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)

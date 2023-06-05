@@ -6,7 +6,7 @@ export interface SceneData {
     groundTone: number;
 }
 
-export interface modeData {
+export interface ModeData {
     level: string;
     subLevel: string;
     mode: string;
