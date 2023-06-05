@@ -18,6 +18,6 @@ export const useNoteStore = create<NoteState>((set) => ({
   resetNotes: () => set({ notes: [] }),
 }))
 
-if (process.env.NODE_ENV === 'development') {
-  mountStoreDevtool('NoteStore', useNoteStore);
-}
+// if (process.env.NODE_ENV === 'development') {
+//   mountStoreDevtool('NoteStore', useNoteStore);
+// }

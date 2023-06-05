@@ -17,7 +17,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
             sceneData.push({
                 fragmentId: fragment.id,
                 fragmentIndex: index,
-                groundTone: Math.floor(Math.random() * 3) + 1,
+                groundTone: fragment.transpose,
             })
         })
         AddSceneData(sceneData);

@@ -1,15 +1,22 @@
+import { Fragment } from '@prisma/client';
 import { createMachine, assign } from "xstate";
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 
-const Transpose = (fragments: FragmentWithNotes[], fragmentsToShow: number) => {
+type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number };
+
+const Transpose = (fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+     fragmentsToShow: number) => {
     const { transposeFragments } = useAudioServiceStore.getState();
     // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
     // const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
     const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6;
     const transposedFragments = transposeFragments(fragments, randomTransposeDirection);
+    const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
+        return { ...fragment, transpose: randomTransposeDirection };
+    });
 
-    return transposedFragments;
+    return TransPosedfragmentsWithdirection;
 };
 
 export const luisterenMachine = createMachine({
@@ -17,9 +24,9 @@ export const luisterenMachine = createMachine({
     id: 'luisteren',
     initial: 'idle',
     context: {
-        allLevelFragments: [] as FragmentWithNotes[],
+        allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
         fragmentsToShow: 0 as number,
-        shownFragments: [] as FragmentWithNotes[],
+        shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
     },
     schema: {
         events: {} as
