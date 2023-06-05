@@ -10,7 +10,7 @@ interface UitdagingFeedbackProps {
 }
 
 const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ time, levelId, sublevelId }) => {
-    const { reset, getPercentageCorrectlyAnswered, timePlayed, setTimePlayed } = useUitdagingStore();
+    const { reset, getPercentageCorrectlyAnswered, timePlayed, setTimePlayed, startTime, endTime } = useUitdagingStore();
 
     useEffect(() => {
         setTimePlayed(Date.now() - time.current);
@@ -19,7 +19,7 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ time, levelId, su
   return (
       <>
           <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>
-              You played for { formatTime(timePlayed) }
+              You played for { formatTime(endTime - startTime) }
           </h3>
 
           <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>

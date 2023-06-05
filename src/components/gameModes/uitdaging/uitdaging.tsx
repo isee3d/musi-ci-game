@@ -42,7 +42,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     }
 
     useEffect(() => {
-        setStartTime(Date.now());
         setModeData({ level: levelId, subLevel: sublevelId, mode: "spelen" })
         send({
             type: "STARTROUND",
