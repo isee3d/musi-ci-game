@@ -168,6 +168,7 @@ export const uitdagingMachine = createMachine({
             }
         },
         FinishedPlayingUitdagingMode: {
+            entry: (context) => context.countdownActions?.reset(),
             type: 'final',
         },
     },
