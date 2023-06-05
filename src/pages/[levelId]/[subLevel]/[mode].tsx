@@ -61,8 +61,9 @@ const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ l
                         <Uitdaging
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
-                            levelName={ subLevel }
+                            levelId={ levelId }
                             playTime={ playTime }
+                            sublevelId={ subLevel }
                         />;
                     </UitdagingMachineContext.Provider>
                 )

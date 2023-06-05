@@ -6,18 +6,19 @@ import UitdagingFragmentPlayerRenderer from '~/components/gameModes/uitdaging/Ui
 import StartUitdagingUI from '~/components/gameModes/uitdaging/startUitdagingRoundUI';
 import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdagingCountdownPlayer';
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback';
-import useCountDown from '~/hooks/useCountdown';
 import useStopwatch from '~/hooks/useStopwatch';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
+import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 
 interface UitdagingProps {
     fragments: FragmentWithNotes[];
-    levelName: string;
+    levelId: string;
+    sublevelId: string;
     fragmentsToShow: number;
     playTime: number | null | undefined;
 }
 
-const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsToShow, playTime }) => {
+const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, fragmentsToShow, playTime }) => {
     const { send } = UitdagingMachineContext.useActorRef();
     const startRoundState = UitdagingMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = UitdagingMachineContext.useSelector(state => state.matches('countdown'));
@@ -26,6 +27,9 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
 
     const time = useRef(Date.now());
     const countdown = useStopwatch(1000)
+
+    const { setStartTime, setModeData } = useUitdagingStore();
+
     // const countdown = useCountDown(playTime ?? 0, () => send('FINISHEDPLAYING'));
     const { hours, minutes, seconds } = countdown.convertedTime;
 
@@ -38,6 +42,8 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
     }
 
     useEffect(() => {
+        setStartTime(Date.now());
+        setModeData({ level: levelId, subLevel: sublevelId, mode: "spelen" })
         send({
             type: "STARTROUND",
             levelFragments: fragments,
@@ -62,7 +68,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelName, fragmentsTo
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
             { (playingState || countdownState) && <UitdagingFragmentPlayerRenderer /> }
-            { isFinishedState && <UitdagingFeedback time={ time } levelName={ levelName } /> }
+            { isFinishedState && <UitdagingFeedback time={ time } levelId={ levelId } sublevelId={sublevelId} /> }
         </>
     );
 };

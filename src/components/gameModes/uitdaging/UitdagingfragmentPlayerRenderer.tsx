@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
+import { SceneData } from 'types/SceneData';
 
 const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const { send } = UitdagingMachineContext.useActorRef();
@@ -15,10 +16,30 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const shownFragments = UitdagingMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
     const guessHeardFragmentState = UitdagingMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = UitdagingMachineContext.useSelector(state => state.matches("playing.restAfterAnswering"));
+    const latency = UitdagingMachineContext.useSelector(state => state.context.latency?.latency);
 
-    const { addOneCorrectlyAnswered, addOneWrongAnswered } = useUitdagingStore();
+    const {
+        addOneCorrectlyAnswered,
+        addOneWrongAnswered,
+        AddSceneData,
+        setEndTime,
+        setChosenFragment,
+        setChosenFragmentLatency,
+    } = useUitdagingStore();
 
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        const sceneData: SceneData[] = [];
+        shownFragments.forEach((fragment, index) => {
+            sceneData.push({
+                fragmentId: fragment.id,
+                fragmentIndex: index,
+                groundTone: fragment.transpose,
+            })
+        })
+        AddSceneData(sceneData);
+    }, [shownFragments])
 
     function checkIsAnimating(fragment: FragmentWithNotes) {
         return isAnimating === undefined
@@ -49,18 +70,19 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
 
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
         if (guessHeardFragmentState) {
+            send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
             checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
-
-            send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
+            setChosenFragment(fragment.id);
             return;
         }
     }
 
     function onFragmentPlayingComplete() {
         setactiveFragmentPlayerIndex(undefined);
+        setChosenFragmentLatency(latency ?? -1);
     }
 
     return (

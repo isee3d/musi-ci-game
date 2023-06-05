@@ -1,8 +1,10 @@
+import { mountStoreDevtool } from "simple-zustand-devtools";
 import { SceneData, ModeData } from "types/SceneData";
 import { create } from "zustand";
 
 type UitdagingState = {
-    startTime: Date;
+    startTime: number;
+    endTime: number;
     timePlayed: number;
     answeredCorrectly: number;
     answeredWrong: number;
@@ -17,7 +19,8 @@ type UitdagingState = {
 type UitdagingActions = {
     addOneCorrectlyAnswered: () => void;
     addOneWrongAnswered: () => void;
-    setStartTime: (time: Date) => void;
+    setStartTime: (time: number) => void;
+    setEndTime: (time: number) => void;
     setTimePlayed: (time: number) => void;
     getPercentageCorrectlyAnswered: () => number;
     setChosenFragment: (fragmentId: number) => void;
@@ -31,7 +34,8 @@ type UitdagingActions = {
 };
 
 const initialState: UitdagingState = {
-    startTime: new Date(),
+    startTime: 0,
+    endTime: 0,
     timePlayed: 0,
     answeredCorrectly: 0,
     modeData: undefined,
@@ -52,7 +56,8 @@ const initialRoundState: Partial<UitdagingState> = {
 export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set, get) => ({
     timePlayed: 0,
     answeredCorrectly: 0,
-    startTime: new Date(),
+    startTime: 0,
+    endTime: 0,
     answeredWrong: 0,
     modeData: undefined,
     chosenFragment: undefined,
@@ -69,7 +74,8 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
     addOneWrongAnswered: () => set((state) => ({ answeredWrong: state.answeredWrong + 1 })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
-    setStartTime: (time: Date) => set((state) => ({ startTime: time })),
+    setStartTime: (time: number) => set((state) => ({ startTime: time })),
+    setEndTime: (time: number) => set((state) => ({ endTime: time })),
     getPercentageCorrectlyAnswered: () => {
         const { answeredCorrectly, answeredWrong } = get();
         const total = answeredCorrectly + answeredWrong;
@@ -79,3 +85,7 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState),
 }));
+
+if (process.env.NODE_ENV === 'development') {
+    mountStoreDevtool('UitdagingStore', useUitdagingStore);
+}

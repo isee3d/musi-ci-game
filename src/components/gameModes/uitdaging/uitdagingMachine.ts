@@ -1,9 +1,26 @@
+import { Latency } from 'types/latency';
 import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 // import { CountdownActions } from '~/hooks/useCountdown';
 import { StopwatchActions } from '~/hooks/useStopwatch';
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore';
+
+const Transpose = (fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+    fragmentsToShow: number) => {
+    const { transposeFragments } = useAudioServiceStore.getState();
+    const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
+    const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
+    const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6;
+    const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection);
+    const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
+        return { ...fragment, transpose: randomTransposeDirection };
+    });
+
+    return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[];
+};
+
 
 export const uitdagingMachine = createMachine({
     predictableActionArguments: true,
@@ -13,13 +30,14 @@ export const uitdagingMachine = createMachine({
         isClickable: undefined as boolean | undefined,
         isAnimating: undefined as boolean | undefined,
         isLooping: undefined as boolean | undefined,
-        allLevelFragments: undefined as FragmentWithNotes[] | undefined,
+        allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
         fragmentsToShow: 0 as number,
         activeFragment: undefined as FragmentWithNotes | undefined,
-        shownFragments: [] as FragmentWithNotes[],
+        shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
         countdownTimings: undefined as CountdownTimings | undefined,
         countdownActions: undefined as StopwatchActions | undefined,
+        latency: undefined as Latency | undefined,
     },
     schema: {
         services: {} as {
@@ -64,7 +82,6 @@ export const uitdagingMachine = createMachine({
             description: 'Has all the chid states for counting down before a scene starts',
             states: {
                 "3": {
-                    entry: 'onCountdownStarted',
                     after: {
                         THREE: '2',
                     },
@@ -87,6 +104,7 @@ export const uitdagingMachine = createMachine({
             },
         },
         playing: {
+            entry: 'onCountdownStarted',
             initial: 'initializePlaying',
             states: {
                 initializePlaying: {
@@ -108,6 +126,9 @@ export const uitdagingMachine = createMachine({
                     exit: assign({ isClickable: true, isAnimating: false }),
                 },
                 guessHeardFragment: {
+                    entry: assign({
+                        latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 })
+                    }),
                     description: 'In this state the user can guess the heard fragment',
                     on: {
                         GUESSEDFRAGMENT: {
@@ -115,13 +136,26 @@ export const uitdagingMachine = createMachine({
                             actions: 'setGuessedFragment',
                         },
                     },
-                    exit: assign({ isClickable: false, isAnimating: false }),
+                    exit: [
+                        assign({
+                            latency: (context) => {
+                                if (context.latency) {
+                                    const endTime = Date.now();
+                                    const latency = endTime - context.latency.startTime;
+                                    return { ...context.latency, endTime, latency };
+                                }
+                                return context.latency;
+                            },
+                            isClickable: undefined,
+                            isAnimating: undefined
+                        }),
+                    ]
                 },
                 restAfterAnswering: {
                     entry: (context) => context.countdownActions?.pause(),
                     description: 'In this state the users gets a 1 second rest and the timer has to stop',
                     after: {
-                        1000: '#spelen.countdown',
+                        1000: '#spelen.playing',
                     },
                     exit: (context) => context.countdownActions?.resume(),
                 },
@@ -166,9 +200,17 @@ export const uitdagingMachine = createMachine({
             }),
             onCountdownStarted: assign((context) => {
                 const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5);
-                const newActiveFragment = shuffledFragments?.[Math.floor(Math.random() * shuffledFragments.length)];
+                let newActiveFragment: FragmentWithNotes | undefined = undefined;
+                let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined;
+                if (shuffledFragments) {
+                    transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow);
+                    newActiveFragment = transposedFragments?.[Math.floor(Math.random() *
+                        shuffledFragments.length)]
+                        console.log("active" + newActiveFragment?.id);
+                }
                 return {
-                    shownFragments: shuffledFragments?.slice(0, context.fragmentsToShow) ?? [],
+                    guessedFragment: undefined,
+                    shownFragments: transposedFragments?.slice(0, context.fragmentsToShow) ?? [],
                     activeFragment: newActiveFragment,
                 };
             }),

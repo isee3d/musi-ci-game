@@ -23,7 +23,7 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
-        "onCountdownStarted": "STARTCOUNTDOWN" | "xstate.after(1000)#spelen.playing.restAfterAnswering";
+        "onCountdownStarted": "xstate.after(GO)#spelen.countdown.GO!";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };
@@ -31,7 +31,7 @@ export interface Typegen0 {
         "GO": "xstate.after(ONE)#spelen.countdown.1";
         "ONE": "xstate.after(TWO)#spelen.countdown.2";
         "SOUNDTIME": "xstate.after(GO)#spelen.countdown.GO!";
-        "THREE": "STARTCOUNTDOWN" | "xstate.after(1000)#spelen.playing.restAfterAnswering";
+        "THREE": "STARTCOUNTDOWN";
         "TWO": "xstate.after(THREE)#spelen.countdown.3";
     };
     eventsCausingGuards: {
