@@ -20,7 +20,6 @@ export const luisterenMachine = createMachine({
         allLevelFragments: [] as FragmentWithNotes[],
         fragmentsToShow: 0 as number,
         shownFragments: [] as FragmentWithNotes[],
-
     },
     schema: {
         events: {} as

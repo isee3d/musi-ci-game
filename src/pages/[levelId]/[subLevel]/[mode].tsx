@@ -18,7 +18,7 @@ export const SpelenMachineContext = createActorContext(spelenMachine, { devTools
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true });
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true });
 
-const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) => {
+const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ levelId, subLevel, mode }) => {
     const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ subLevelId: subLevel });
     const router = useRouter();
     const { audioContext } = useAudioServiceStore();
@@ -28,7 +28,7 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
 
     useEffect(() => {
         if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-            router.push(`/modeSelect/${subLevel}`);
+            router.push(`/modeSelect/${levelId}/${subLevel}`);
         }
     }, []);
 
@@ -40,7 +40,8 @@ const Mode: NextPage<{ subLevel: string, mode: string }> = ({ subLevel, mode }) 
                         <Luisteren
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
-                            levelName={ subLevel } />;
+                            levelId={ levelId }
+                            sublevelId={subLevel} />;
                     </LuisterenMachineContext.Provider>
                 )
             case 'Spelen':
@@ -106,6 +107,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const ssg = generateServerSideHelper();
     const mode = context.params?.mode;
     const subLevel = context.params?.subLevel;
+    const levelId = context.params?.levelId;
 
     if (typeof mode !== "string") throw new Error("No mode");
     if (typeof subLevel !== "string") throw new Error("No sublevel");
@@ -118,6 +120,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         props: {
             trpcState: ssg.dehydrate(),
             subLevel,
+            levelId,
             mode,
         },
     };

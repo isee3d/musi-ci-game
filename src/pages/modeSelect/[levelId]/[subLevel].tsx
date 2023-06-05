@@ -4,7 +4,7 @@ import Link from "next/link";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { api } from "~/utils/api";
 
-const Level: NextPage<{ subLevel: string }> = ({ subLevel }) => {
+const Level: NextPage<{ subLevel: string, levelId: string }> = ({ subLevel, levelId }) => {
     const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ subLevelId: subLevel })
 
     return (<>
@@ -24,7 +24,7 @@ const Level: NextPage<{ subLevel: string }> = ({ subLevel }) => {
                         <Link
                             key={ gameMode.id }
                             className="my-5 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
-                            href={ `/${subLevel}/${gameMode.name}` }
+                            href={ `/${levelId}/${subLevel}/${gameMode.name}` }
                         >
                             <h3 className="text-center text-2xl font-bold">{ gameMode.name }</h3>
                         </Link>
@@ -40,6 +40,7 @@ const Level: NextPage<{ subLevel: string }> = ({ subLevel }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const ssg = generateServerSideHelper();
     const subLevel = context.params?.subLevel;
+    const levelId = context.params?.levelId;
     if (typeof subLevel !== "string") throw new Error("No subLevel");
 
     // await ssg.   Do the prefetch of the level data here
@@ -47,6 +48,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         props: {
             trpcState: ssg.dehydrate(),
             subLevel: subLevel,
+            levelId: levelId,
         },
     };
 };

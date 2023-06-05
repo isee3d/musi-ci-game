@@ -2,7 +2,7 @@ export interface SceneData {
     fragmentId: number;
     fragmentIndex: number;
     isCorrectFragment?: boolean;
-    isPlayedFragment: boolean;
+    isPlayedFragment?: boolean;
     groundTone: number;
 }
 

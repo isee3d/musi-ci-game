@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { SpelenMachineContext } from '~/pages/[subLevel]/[mode]';
+import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 

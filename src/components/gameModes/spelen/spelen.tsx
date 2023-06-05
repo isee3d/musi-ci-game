@@ -3,7 +3,7 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import StartRoundUI from '~/components/gameModes/spelen/startRoundUI';
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer';
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer';
-import { SpelenMachineContext } from '~/pages/[subLevel]/[mode]';
+import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback';
 
@@ -44,8 +44,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
                 Kijk en luister
             </h3>
             { startRoundState && <StartRoundUI levelName={ levelName } /> }
-                { countdownState && <CountdownPlayer /> }
-                { (playingState || countdownState) && <FragmentPlayerRenderer /> }
+            { countdownState && <CountdownPlayer /> }
+            { (playingState || countdownState) && <FragmentPlayerRenderer /> }
             { finishedState && <SpelenFeedback time={ time } levelName={ levelName } /> }
         </>
     );

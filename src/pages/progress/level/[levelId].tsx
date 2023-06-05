@@ -21,7 +21,7 @@ const SublevelsPage: NextPage<{ levelId: string }> = ({ levelId }) => {
                 </h1>
                 <div className=" flex w-full flex-col justify-between space-y-8 pl-8">
                     { subLevelsOfLevel.data?.map((subLevel) => (
-                        <Sublevel key={ subLevel.id } sublevelId={ subLevel.id } name={ subLevel.name } borderColor="green" />
+                        <Sublevel key={ subLevel.id } sublevelId={ subLevel.id } levelId={levelId} name={ subLevel.name } borderColor="green" />
                     )) }
                 </div>
             </div>
