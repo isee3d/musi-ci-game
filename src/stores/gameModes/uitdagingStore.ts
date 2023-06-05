@@ -5,7 +5,6 @@ import { create } from "zustand";
 type UitdagingState = {
     startTime: number;
     endTime: number;
-    timePlayed: number;
     answeredCorrectly: number;
     answeredWrong: number;
     modeData: ModeData | undefined;
@@ -21,7 +20,6 @@ type UitdagingActions = {
     addOneWrongAnswered: () => void;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
-    setTimePlayed: (time: number) => void;
     getPercentageCorrectlyAnswered: () => number;
     setChosenFragment: (fragmentId: number) => void;
     setChosenFragmentLatency: (latency: number) => void;
@@ -36,7 +34,6 @@ type UitdagingActions = {
 const initialState: UitdagingState = {
     startTime: 0,
     endTime: 0,
-    timePlayed: 0,
     answeredCorrectly: 0,
     modeData: undefined,
     answeredWrong: 0,
@@ -73,7 +70,6 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
     addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
     addOneWrongAnswered: () => set((state) => ({ answeredWrong: state.answeredWrong + 1 })),
-    setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
     getPercentageCorrectlyAnswered: () => {

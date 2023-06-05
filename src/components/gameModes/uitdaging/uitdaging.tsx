@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { isNullish } from 'types/nullish';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
@@ -24,13 +24,10 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     const countdownState = UitdagingMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = UitdagingMachineContext.useSelector(state => state.matches('playing'));
     const isFinishedState = UitdagingMachineContext.useSelector(state => state.matches('FinishedPlayingUitdagingMode'));
-
-    const time = useRef(Date.now());
     const countdown = useStopwatch(1000)
 
-    const { setStartTime, setModeData } = useUitdagingStore();
+    const { setModeData } = useUitdagingStore();
 
-    // const countdown = useCountDown(playTime ?? 0, () => send('FINISHEDPLAYING'));
     const { hours, minutes, seconds } = countdown.convertedTime;
 
     const countdownTimings: CountdownTimings = {
@@ -69,7 +66,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
             { (playingState || countdownState) && <UitdagingFragmentPlayerRenderer /> }
-            { isFinishedState && <UitdagingFeedback time={ time } levelId={ levelId } sublevelId={ sublevelId } /> }
+            { isFinishedState && <UitdagingFeedback levelId={ levelId } sublevelId={ sublevelId } /> }
         </>
     );
 };
