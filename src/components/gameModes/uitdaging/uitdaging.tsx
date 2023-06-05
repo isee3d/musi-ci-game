@@ -62,13 +62,15 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Speel met de klok
             </h3>
-            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
-                Stopwatch:  { hours }:{ minutes }:{ seconds }
-            </h3>
+            { !isFinishedState &&
+                <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+                    Stopwatch:  { hours }:{ minutes }:{ seconds }
+                </h3>
+            }
             { startRoundState && <StartUitdagingUI /> }
             { countdownState && <UitdagingCountdownPlayer /> }
             { (playingState || countdownState) && <UitdagingFragmentPlayerRenderer /> }
-            { isFinishedState && <UitdagingFeedback time={ time } levelId={ levelId } sublevelId={sublevelId} /> }
+            { isFinishedState && <UitdagingFeedback time={ time } levelId={ levelId } sublevelId={ sublevelId } /> }
         </>
     );
 };

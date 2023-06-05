@@ -17,6 +17,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const guessHeardFragmentState = UitdagingMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = UitdagingMachineContext.useSelector(state => state.matches("playing.restAfterAnswering"));
     const latency = UitdagingMachineContext.useSelector(state => state.context.latency?.latency);
+    const amountPlayed = UitdagingMachineContext.useSelector(state => state.context.amountPlayed);
 
     const {
         addOneCorrectlyAnswered,
@@ -39,6 +40,10 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
             })
         })
         AddSceneData(sceneData);
+        if (amountPlayed === 2) {
+            setEndTime(Date.now());
+            send("FINISHEDPLAYING");
+        }
     }, [shownFragments])
 
     function checkIsAnimating(fragment: FragmentWithNotes) {

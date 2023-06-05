@@ -38,6 +38,7 @@ export const uitdagingMachine = createMachine({
         countdownTimings: undefined as CountdownTimings | undefined,
         countdownActions: undefined as StopwatchActions | undefined,
         latency: undefined as Latency | undefined,
+        amountPlayed: 0 as number,
     },
     schema: {
         services: {} as {
@@ -157,7 +158,12 @@ export const uitdagingMachine = createMachine({
                     after: {
                         1000: '#spelen.playing',
                     },
-                    exit: (context) => context.countdownActions?.resume(),
+                    exit: [
+                        assign({
+                            amountPlayed: (context) => context.amountPlayed + 1,
+                        }),
+                        (context) => context.countdownActions?.resume(),
+                    ]
                 },
             }
         },
@@ -206,7 +212,6 @@ export const uitdagingMachine = createMachine({
                     transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow);
                     newActiveFragment = transposedFragments?.[Math.floor(Math.random() *
                         shuffledFragments.length)]
-                        console.log("active" + newActiveFragment?.id);
                 }
                 return {
                     guessedFragment: undefined,
