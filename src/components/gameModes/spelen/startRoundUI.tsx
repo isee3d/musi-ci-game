@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import React from 'react';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
+import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 
 interface StartUIProps {
-    levelName: string;
+    levelId: string;
+    sublevelId: string;
 }
 
-const StartUI: React.FC<StartUIProps> = ({ levelName }) => {
+const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId }) => {
     const { send } = SpelenMachineContext.useActorRef();
+    const { reset } = useSpelenStore()
 
     return (
         <div className='flex justify-center space-x-5'>
@@ -18,8 +21,11 @@ const StartUI: React.FC<StartUIProps> = ({ levelName }) => {
                 <h3 className="text-center text-xl font-bold">Start</h3>
             </button>
             <Link
-                onClick={ () => send("CANCELLEDPLAYING") }
-                href={ `/modeSelect/${levelName}` }
+                onClick={ () => {
+                    reset()
+                    send("CANCELLEDPLAYING")
+                }  }
+                href={ `/modeSelect/${levelId}/${sublevelId}` }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >
                 <h3 className="text-center text-xl font-bold">Annuleren</h3>

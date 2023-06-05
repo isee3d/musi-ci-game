@@ -1,9 +1,11 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { ModeData } from './../../../types/SceneData';
 import { SceneData } from "types/SceneData";
 import { create } from "zustand";
 
 type SpelenState = {
-    startTime: Date;
+    startTime: number;
+    endTime: number;
     timePlayed: number;
     answeredCorrectly: number;
     answeredWrong: number;
@@ -19,7 +21,8 @@ type SpelenActions = {
     addOneCorrectlyAnswered: () => void;
     addOneWrongAnswered: () => void;
     setTimePlayed: (time: number) => void;
-    setStartTime: (time: Date) => void;
+    setStartTime: (time: number) => void;
+    setEndTime: (time: number) => void;
     getPercentageCorrectlyAnswered: () => number;
     setChosenFragment: (fragmentId: number) => void;
     setChosenFragmentLatency: (latency: number) => void;
@@ -32,7 +35,8 @@ type SpelenActions = {
 };
 
 const initialState: SpelenState = {
-    startTime: new Date(),
+    startTime: 0,
+    endTime: 0,
     timePlayed: 0,
     answeredCorrectly: 0,
     modeData: undefined,
@@ -55,7 +59,8 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     answeredCorrectly: 0,
     answeredWrong: 0,
     modeData: undefined,
-    startTime: new Date(),
+    startTime: 0,
+    endTime: 0,
     chosenFragment: undefined,
     chosenFragmentlatency: undefined,
     relistenFragments: [],
@@ -70,7 +75,8 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
     addOneWrongAnswered: () => set((state) => ({ answeredWrong: state.answeredWrong + 1 })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
-    setStartTime: (time: Date) => set((state) => ({ startTime: time })),
+    setStartTime: (time: number) => set((state) => ({ startTime: time })),
+    setEndTime: (time: number) => set((state) => ({ endTime: time })),
     getPercentageCorrectlyAnswered: () => {
         const { answeredCorrectly, answeredWrong } = get();
         const total = answeredCorrectly + answeredWrong;
@@ -80,3 +86,7 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)
 }));
+
+if (process.env.NODE_ENV === 'development') {
+    mountStoreDevtool('SpelenStore', useSpelenStore);
+}

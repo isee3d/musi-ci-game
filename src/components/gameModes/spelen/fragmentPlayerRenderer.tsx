@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
+import { SceneData } from 'types/SceneData';
 
 const FragmentPlayerRenderer: React.FC = () => {
     const { send } = SpelenMachineContext.useActorRef();
@@ -13,14 +14,35 @@ const FragmentPlayerRenderer: React.FC = () => {
     const activeFragment = SpelenMachineContext.useSelector(state => state.context.activeFragment, shallowEqual);
     const guessedFragment = SpelenMachineContext.useSelector(state => state.context.guessedFragment, shallowEqual);
     const shownFragments = SpelenMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
+    const latency = SpelenMachineContext.useSelector(state => state.context.latency?.latency);
     const guessHeardFragmentState = SpelenMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
 
-    const { addOneCorrectlyAnswered, addOneWrongAnswered } = useSpelenStore();
+    const {
+        addOneCorrectlyAnswered,
+        addOneWrongAnswered,
+        AddSceneData,
+        setEndTime,
+        addRelistenFragment,
+        setChosenFragment,
+        setChosenFragmentLatency,
+    } = useSpelenStore();
 
     // local state
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
     const [isPlayingFragment, setIsPlayingFragment] = useState(false);
+
+    useEffect(() => {
+        const sceneData: SceneData[] = [];
+        shownFragments.forEach((fragment, index) => {
+            sceneData.push({
+                fragmentId: fragment.id,
+                fragmentIndex: index,
+                groundTone: fragment.transpose,
+            })
+        })
+        AddSceneData(sceneData);
+    }, [shownFragments])
 
     function checkIsAnimating(fragment: FragmentWithNotes) {
         return isAnimating === undefined
@@ -55,17 +77,19 @@ const FragmentPlayerRenderer: React.FC = () => {
                 setactiveFragmentPlayerIndex(undefined);
             }
             checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
-
+            setChosenFragment(fragment.id);
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
 
         if (listenToFragmentsState) {
+            setChosenFragmentLatency(latency ?? -1);
             setIsPlayingFragment(true);
             setactiveFragmentPlayerIndex(fragment.id);
             if (activeFragmentPlayerIndex === undefined) {
                 start(fragment);
             }
+            addRelistenFragment(fragment.id);
         }
     }
 
@@ -104,7 +128,11 @@ const FragmentPlayerRenderer: React.FC = () => {
                     <h3 className="text-center text-xl font-bold">Volgende</h3>
                 </button>
                 <button
-                    onClick={ () => send("FINISHEDPLAYING") }
+                    onClick={ () => {
+                        setEndTime(Date.now());
+                        send("FINISHEDPLAYING")
+
+                    } }
                     className={
                         `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }
                 >

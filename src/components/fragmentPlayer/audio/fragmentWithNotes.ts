@@ -7,6 +7,8 @@ export interface FragmentWithNotes {
     description: string | null;
 }
 
+export type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number };
+
 export interface FragmentToPlay extends FragmentWithNotes {
     mute: boolean;
 }

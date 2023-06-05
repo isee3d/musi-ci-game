@@ -9,6 +9,7 @@ import Spelen from "~/components/gameModes/spelen/spelen";
 import { spelenMachine } from "~/components/gameModes/spelen/spelenMachine";
 import Uitdaging from "~/components/gameModes/uitdaging/uitdaging";
 import { uitdagingMachine } from "~/components/gameModes/uitdaging/uitdagingMachine";
+import Sublevel from "~/components/subLevel";
 import { env } from "~/env.mjs";
 import { generateServerSideHelper } from "~/server/helpers/serverSideHelper";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
@@ -50,7 +51,8 @@ const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ l
                         <Spelen
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
-                            levelName={ subLevel } />;
+                            levelId={ levelId }
+                            sublevelId={ subLevel } />;
                     </SpelenMachineContext.Provider>
                 )
             case 'Uitdaging':

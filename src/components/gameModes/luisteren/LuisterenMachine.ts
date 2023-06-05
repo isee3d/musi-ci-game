@@ -1,9 +1,7 @@
 import { Fragment } from '@prisma/client';
 import { createMachine, assign } from "xstate";
-import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
+import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
-
-type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number };
 
 const Transpose = (fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
      fragmentsToShow: number) => {

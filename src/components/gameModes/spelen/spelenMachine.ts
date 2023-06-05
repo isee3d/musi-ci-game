@@ -1,6 +1,8 @@
+import { Latency } from 'types/latency';
 import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore';
 
 export interface CountdownTimings {
     one: number;
@@ -10,6 +12,20 @@ export interface CountdownTimings {
     soundInitialized: number;
 }
 
+const Transpose = (fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+    fragmentsToShow: number) => {
+    const { transposeFragments } = useAudioServiceStore.getState();
+    // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
+    // const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
+    const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6;
+    const transposedFragments = transposeFragments(fragments, randomTransposeDirection);
+    const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
+        return { ...fragment, transpose: randomTransposeDirection };
+    });
+
+    return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[];
+};
+
 export const spelenMachine = createMachine({
     predictableActionArguments: true,
     id: 'spelen',
@@ -18,12 +34,13 @@ export const spelenMachine = createMachine({
         isClickable: undefined as boolean | undefined,
         isAnimating: undefined as boolean | undefined,
         isLooping: undefined as boolean | undefined,
-        allLevelFragments: undefined as FragmentWithNotes[] | undefined,
+        allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
         fragmentsToShow: 0 as number,
         activeFragment: undefined as FragmentWithNotes | undefined,
-        shownFragments: [] as FragmentWithNotes[],
+        shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
         guessedFragment: undefined as FragmentWithNotes | undefined,
         countdownTimings: undefined as CountdownTimings | undefined,
+        latency: undefined as Latency | undefined,
     },
     schema: {
         services: {} as {
@@ -109,6 +126,9 @@ export const spelenMachine = createMachine({
                     exit: assign({ isClickable: true, isAnimating: false }),
                 },
                 guessHeardFragment: {
+                    entry: assign({
+                        latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 })
+                    }),
                     description: 'In this state the user can guess the heard fragment',
                     on: {
                         GUESSEDFRAGMENT: {
@@ -116,7 +136,20 @@ export const spelenMachine = createMachine({
                             actions: 'setGuessedFragment',
                         },
                     },
-                    exit: assign({ isClickable: undefined, isAnimating: undefined }),
+                    exit:[
+                        assign({
+                            latency: (context) => {
+                                if (context.latency) {
+                                    const endTime = Date.now();
+                                    const latency = endTime - context.latency.startTime;
+                                    return { ...context.latency, endTime, latency };
+                                }
+                                return context.latency;
+                            },
+                            isClickable: undefined,
+                            isAnimating: undefined
+                        }),
+                    ]
                 },
                 listenToFragments: {
                     description: 'In this state the user can listen to all the fragments again',
@@ -168,10 +201,16 @@ export const spelenMachine = createMachine({
             }),
             onCountdownStarted: assign((context) => {
                 const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5);
-                const newActiveFragment = shuffledFragments?.[Math.floor(Math.random() * shuffledFragments.length)];
+                let newActiveFragment: FragmentWithNotes | undefined = undefined;
+                let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined;
+                if (shuffledFragments) {
+                    transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow);
+                    newActiveFragment = transposedFragments?.[Math.floor(Math.random() *
+                        shuffledFragments.length)]
+                }
                 return {
                     guessedFragment: undefined,
-                    shownFragments: shuffledFragments?.slice(0, context.fragmentsToShow) ?? [],
+                    shownFragments: transposedFragments?.slice(0, context.fragmentsToShow) ?? [],
                     activeFragment: newActiveFragment,
                 };
             }),

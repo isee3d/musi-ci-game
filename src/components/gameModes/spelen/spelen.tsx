@@ -6,19 +6,24 @@ import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayer
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback';
+import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 
 interface SpelenProps {
     fragments: FragmentWithNotes[];
-    levelName: string;
+    levelId: string;
+    sublevelId: string;
     fragmentsToShow: number;
 }
 
-const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }) => {
+const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId }) => {
     const { send } = SpelenMachineContext.useActorRef();
     const startRoundState = SpelenMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
     const finishedState = SpelenMachineContext.useSelector(state => state.matches('FinishedPlayingSpelenMode'));
+
+    const { setStartTime, setModeData } = useSpelenStore();
+
     const time = useRef(Date.now());
 
     const countdownTimings: CountdownTimings = {
@@ -30,6 +35,8 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
     }
 
     useEffect(() => {
+        setStartTime(Date.now());
+        setModeData({ level: levelId, subLevel: sublevelId, mode: "spelen" })
         send({
             type: "STARTROUND",
             levelFragments: fragments,
@@ -43,10 +50,10 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, levelName }
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-            { startRoundState && <StartRoundUI levelName={ levelName } /> }
+            { startRoundState && <StartRoundUI levelId={ levelId } sublevelId={ sublevelId} /> }
             { countdownState && <CountdownPlayer /> }
             { (playingState || countdownState) && <FragmentPlayerRenderer /> }
-            { finishedState && <SpelenFeedback time={ time } levelName={ levelName } /> }
+            { finishedState && <SpelenFeedback time={ time } levelId={ levelId } sublevelId={sublevelId} /> }
         </>
     );
 };
