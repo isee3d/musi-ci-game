@@ -8,10 +8,18 @@ import {
 
 export const levelResultRouter = createTRPCRouter({
     saveLevelResult: publicProcedure
-        .input(z.object({ text: z.string() }))
-        .query(({ input }) => {
-            return {
-                greeting: `Hello ${input.text}`,
-            };
+        .input()
+        .mutation(async ({ ctx, input }) => {
+            return await ctx.prisma.levelResult.create({
+                data: input,
+            });
         }),
+
+    // saveLevelResult: publicProcedure
+    //     .input(z.object({ text: z.string() }))
+    //     .query(({ input }) => {
+    //         return {
+    //             greeting: `Hello ${input.text}`,
+    //         };
+    //     }),
 });
