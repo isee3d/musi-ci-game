@@ -4,13 +4,14 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 
 const PlayButtonsRenderer: React.FC = () => {
     const { send } = LuisterenMachineContext.useActorRef();
-    const { resetSceneRelatedData, setEndTime } = useLuisterenStore();
+    const { resetSceneRelatedData, setEndTime, SceneData, addScene } = useLuisterenStore();
 
     return (
         <>
             <button
                 onClick={ () => {
                     send("SHUFFLEFRAGMENTS")
+                    addScene(SceneData);
                     resetSceneRelatedData();
                 } }
                 className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"

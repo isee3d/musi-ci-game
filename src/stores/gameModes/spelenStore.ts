@@ -1,6 +1,6 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { ModeData } from './../../../types/SceneData';
-import { SceneData } from "types/SceneData";
+import { ModeData, Scene } from './../../../types/SceneData';
+import { FragmentSceneData } from "types/SceneData";
 import { create } from "zustand";
 
 type SpelenState = {
@@ -9,15 +9,19 @@ type SpelenState = {
     timePlayed: number;
     answeredCorrectly: number;
     answeredWrong: number;
-    modeData: ModeData | undefined;
+    level: string;
+    subLevel: string;
+    mode: string;
+    // modeData: ModeData | undefined;
     // here under more advanced stuff
-    chosenFragment: number | undefined;
-    chosenFragmentlatency: number | undefined;
+    // chosenFragment: number | undefined;
+    // chosenFragmentlatency: number | undefined;
     relistenFragments: number[];
-    SceneData: SceneData[];
+    SceneData: Scene;
 };
 
 type SpelenActions = {
+    setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
     addOneCorrectlyAnswered: () => void;
     addOneWrongAnswered: () => void;
     setTimePlayed: (time: number) => void;
@@ -27,9 +31,7 @@ type SpelenActions = {
     setChosenFragment: (fragmentId: number) => void;
     setChosenFragmentLatency: (latency: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
-    AddSceneDataItem: (item: SceneData) => void;
-    AddSceneData: (items: SceneData[]) => void;
-    setModeData: (data: ModeData) => void;
+    AddSceneData: (items: FragmentSceneData[]) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
@@ -39,19 +41,17 @@ const initialState: SpelenState = {
     endTime: 0,
     timePlayed: 0,
     answeredCorrectly: 0,
-    modeData: undefined,
+    level: '',
+    subLevel: '',
+    mode: '',
     answeredWrong: 0,
-    chosenFragment: undefined,
-    chosenFragmentlatency: undefined,
     relistenFragments: [],
-    SceneData: [],
+    SceneData: {},
 };
 
 const initialRoundState: Partial<SpelenState> = {
-    chosenFragment: undefined,
-    chosenFragmentlatency: undefined,
     relistenFragments: [],
-    SceneData: [],
+    SceneData: {},
 }
 
 export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => ({
@@ -60,18 +60,33 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     answeredWrong: 0,
     modeData: undefined,
     startTime: 0,
+    level: '',
+    subLevel: '',
+    mode: '',
     endTime: 0,
     chosenFragment: undefined,
     chosenFragmentlatency: undefined,
     relistenFragments: [],
-    SceneData: [],
-    AddSceneData: (items: SceneData[]) => set((state) => ({ SceneData: items })),
-    AddSceneDataItem: (item: SceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
-    setChosenFragment: (fragmentId: number) => set((state) => ({ chosenFragment: fragmentId })),
-    setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
-    setChosenFragmentLatency: (latency: number) => set((state) => ({ chosenFragmentlatency: latency })),
+    SceneData: {},
+    AddSceneData: (items: FragmentSceneData[]) => set((state) => {
+        const newScene = { ...state.SceneData };
+        newScene.fragments = items;
+        return { SceneData: newScene };
+    }),
+    setChosenFragment: (fragmentId: number) => set((state) => {
+        const newScene = { ...state.SceneData };
+        newScene.chosenFragment = fragmentId;
+        return { SceneData: newScene };
+    }),
+    setChosenFragmentLatency: (latency: number) => set((state) => {
+        const newScene = { ...state.SceneData };
+        newScene.chosenFragmentlatency = latency;
+        return { SceneData: newScene };
+    }),
     addRelistenFragment: (fragmentId: number) => set((state) =>
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
+    setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
+        set((state) => ({ level, subLevel, mode })),
     addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
     addOneWrongAnswered: () => set((state) => ({ answeredWrong: state.answeredWrong + 1 })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),

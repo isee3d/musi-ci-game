@@ -5,7 +5,7 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
-import { SceneData } from 'types/SceneData';
+import { FragmentSceneData } from 'types/SceneData';
 
 const FragmentPlayerRenderer: React.FC = () => {
     const { send } = SpelenMachineContext.useActorRef();
@@ -33,7 +33,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     const [isPlayingFragment, setIsPlayingFragment] = useState(false);
 
     useEffect(() => {
-        const sceneData: SceneData[] = [];
+        const sceneData: FragmentSceneData[] = [];
         shownFragments.forEach((fragment, index) => {
             sceneData.push({
                 fragmentId: fragment.id,

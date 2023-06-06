@@ -138,6 +138,7 @@ model Level{
   id_Game           Int?
   game              Game?      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subLevels         SubLevel[]
+  levelResult       LevelResult[]
 }
 
 model SubLevel {
@@ -145,8 +146,7 @@ model SubLevel {
   levels            Level[]
   fragments         Fragment[]
   gameModes         GameMode[]
-  id_levelResult    Int?
-  levelResult       LevelResult?  @relation(fields: [id_levelResult], references: [id])
+  levelResult       LevelResult[]
 
   name              String
   description       String?
@@ -161,8 +161,8 @@ model SubLevel {
 model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
-  level           SubLevel[]
-
+  level            SubLevel[]
+  scene            Scene[]
   name              String
   description       String?
 }
@@ -181,9 +181,7 @@ model Note {
 model GameMode {
   id                 Int         @id @default(autoincrement())
   levels            SubLevel[]
-  id_levelResult    Int?
-  levelResult       LevelResult?   @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
+  levelResult       LevelResult[]
   name               String         @unique
 }
 
@@ -191,22 +189,38 @@ model LevelResult {
    id                 Int         @id @default(autoincrement())
    id_User             String
    user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   gameModes         GameMode[]
-   levels            SubLevel[]
-   levelResultFragmentAnswers LevelResultFragmentAnswer[]
+   id_level            Int?
+   Level              Level?         @relation(fields: [id_level], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   id_subLevel         Int?
+   subLevel           SubLevel?      @relation(fields: [id_subLevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   id_gameMode         Int?
+   gameMode           GameMode?      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   Scenes             Scene[]
+   answeredCorrectlyAmount  Int
+   answeredIncorrectlyAmount Int
 
-    playDate           DateTime
-    startTime          DateTime
-    endTime            DateTime
-    timesListenedAgain Int
-    transposed         Int
-    reactionTime       Int
+   startTime          DateTime
+   endTime            DateTime
+   score              Int
 }
 
-model LevelResultFragmentAnswer {
-   id                 Int         @id @default(autoincrement())
-   id_LevelResult      Int
-   levelResult         LevelResult    @relation(fields: [id_LevelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model Scene {
+  id                 Int         @id @default(autoincrement())
+  id_chosenFragment     Int?
+  chosenFragment    Fragment?  @relation(fields: [id_chosenFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sceneFragments     SceneFragment[]
+  id_levelResult     Int?
+  levelResult        LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chosenFragmentLatency Int
+}
 
-   answeredCorrectly  Boolean
+model SceneFragment {
+   id                 Int         @id @default(autoincrement())
+   id_Scene           Int?
+   scene              Scene?         @relation(fields: [id_Scene], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+   fragmentIndex       Int
+   isCorrectFragment   Boolean
+   isPlayedFragment    Boolean
+   groundTone          Int
 }

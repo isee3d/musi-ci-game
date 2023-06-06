@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SceneData } from 'types/SceneData';
+import { FragmentSceneData } from 'types/SceneData';
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
@@ -12,7 +12,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
     const { addScore, AddSceneData, addRelistenFragment } = useLuisterenStore();
 
     useEffect(() => {
-        const sceneData: SceneData[] = [];
+        const sceneData: FragmentSceneData[] = [];
         shownFragments.forEach((fragment, index) => {
             sceneData.push({
                 fragmentId: fragment.id,

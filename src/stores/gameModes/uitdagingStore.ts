@@ -1,5 +1,5 @@
 import { mountStoreDevtool } from "simple-zustand-devtools";
-import { SceneData, ModeData } from "types/SceneData";
+import { FragmentSceneData, ModeData } from "types/SceneData";
 import { create } from "zustand";
 
 type UitdagingState = {
@@ -12,7 +12,7 @@ type UitdagingState = {
     chosenFragment: number | undefined;
     chosenFragmentlatency: number | undefined;
     relistenFragments: number[];
-    SceneData: SceneData[];
+    SceneData: FragmentSceneData[];
 };
 
 type UitdagingActions = {
@@ -24,8 +24,8 @@ type UitdagingActions = {
     setChosenFragment: (fragmentId: number) => void;
     setChosenFragmentLatency: (latency: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
-    AddSceneDataItem: (item: SceneData) => void;
-    AddSceneData: (items: SceneData[]) => void;
+    AddSceneDataItem: (item: FragmentSceneData) => void;
+    AddSceneData: (items: FragmentSceneData[]) => void;
     setModeData: (data: ModeData) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
@@ -61,8 +61,8 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     chosenFragmentlatency: undefined,
     relistenFragments: [],
     SceneData: [],
-    AddSceneData: (items: SceneData[]) => set((state) => ({ SceneData: items })),
-    AddSceneDataItem: (item: SceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
+    AddSceneData: (items: FragmentSceneData[]) => set((state) => ({ SceneData: items })),
+    AddSceneDataItem: (item: FragmentSceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
     setChosenFragment: (fragmentId: number) => set((state) => ({ chosenFragment: fragmentId })),
     setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
     setChosenFragmentLatency: (latency: number) => set((state) => ({ chosenFragmentlatency: latency })),

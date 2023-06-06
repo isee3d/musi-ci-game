@@ -5,7 +5,7 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
-import { SceneData } from 'types/SceneData';
+import { FragmentSceneData } from 'types/SceneData';
 
 const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const { send } = UitdagingMachineContext.useActorRef();
@@ -31,7 +31,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
 
     useEffect(() => {
-        const sceneData: SceneData[] = [];
+        const sceneData: FragmentSceneData[] = [];
         shownFragments.forEach((fragment, index) => {
             sceneData.push({
                 fragmentId: fragment.id,

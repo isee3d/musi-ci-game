@@ -1,27 +1,30 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { SceneData, ModeData } from './../../../types/SceneData';
+import { FragmentSceneData } from './../../../types/SceneData';
 import { create } from "zustand";
 
 type LuisterenState = {
-    startTime: number;                                                  // done
-    endTime: number;                                                    // done
-    timePlayed: number;                                                 // done
-    score: number;                                                      // semi done
-    modeData: ModeData | undefined;                                     // done
-    // here under more advanced stuff
+    startTime: number;
+    endTime: number;
+    timePlayed: number;
+    score: number;
+    level: string;
+    subLevel: string;
+    mode: string;
     relistenFragments: number[];
-    SceneData: SceneData[];
+    allPlayedScenes: FragmentSceneData[][];
+    SceneData: FragmentSceneData[];
 };
 
 type LuisterenActions = {
+    setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
     addScore: (score: number) => void;
+    addScene: (scene: FragmentSceneData[]) => void;
     setTimePlayed: (time: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
-    AddSceneDataItem: (item: SceneData) => void;
-    AddSceneData: (items: SceneData[]) => void;
+    AddSceneDataItem: (item: FragmentSceneData) => void;
+    AddSceneData: (items: FragmentSceneData[]) => void;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
-    setModeData: (data: ModeData) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
@@ -31,9 +34,12 @@ const initialState: LuisterenState = {
     endTime: 0,
     timePlayed: 0,
     score: 0,
-    modeData: undefined,
+    level: '',
+    subLevel: '',
+    mode: '',
     relistenFragments: [],
     SceneData: [],
+    allPlayedScenes: [],
 };
 
 const initialRoundState: Partial<LuisterenState> = {
@@ -48,18 +54,23 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     score: 0,
     startTime: 0,
     endTime: 0,
-    modeData: undefined,
+    level: '',
+    subLevel: '',
+    mode: '',
     relistenFragments: [],
     SceneData: [],
-    AddSceneData: (items: SceneData[]) => set((state) => ({ SceneData: items })),
-    AddSceneDataItem: (item: SceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
-    setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
+    allPlayedScenes: [],
+    addScene: (scene: FragmentSceneData[]) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
+    AddSceneData: (items: FragmentSceneData[]) => set((state) => ({ SceneData: items })),
+    AddSceneDataItem: (item: FragmentSceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
     addRelistenFragment: (fragmentId: number) => set((state) =>
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
     addScore: (score: number) => set((state) => ({ score: state.score + score })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
+    setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
+        set((state) => ({ level, subLevel, mode })),
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)
 }));

@@ -18,13 +18,13 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, suble
     const { send } = LuisterenMachineContext.useActorRef();
     const isPlayingState = LuisterenMachineContext.useSelector(state => state.matches('playing'));
     const isfinishedPlayingState = LuisterenMachineContext.useSelector(state => state.matches('finishedListening'));
-    const { setStartTime, setModeData } = useLuisterenStore();
+    const { setStartTime, setLevelSublevelMode } = useLuisterenStore();
 
     const time = useRef(Date.now());
 
     useEffect(() => {
         setStartTime(Date.now());
-        setModeData({ level: levelId, subLevel: sublevelId, mode: "luisteren" })
+        setLevelSublevelMode(levelId, sublevelId,  "luisteren")
         send({
             type: "STARTROUND",
             levelFragments: fragments,
