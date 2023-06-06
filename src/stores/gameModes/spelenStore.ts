@@ -16,8 +16,7 @@ type SpelenState = {
     // here under more advanced stuff
     // chosenFragment: number | undefined;
     // chosenFragmentlatency: number | undefined;
-    relistenFragments: number[];
-    SceneData: Scene;
+    sceneData: Scene;
 };
 
 type SpelenActions = {
@@ -46,13 +45,11 @@ const initialState: SpelenState = {
     subLevel: '',
     mode: '',
     answeredWrong: 0,
-    relistenFragments: [],
-    SceneData: {},
+    sceneData: {},
 };
 
 const initialRoundState: Partial<SpelenState> = {
-    relistenFragments: [],
-    SceneData: {},
+    sceneData: {},
 }
 
 export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => ({
@@ -68,24 +65,27 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     chosenFragment: undefined,
     chosenFragmentlatency: undefined,
     relistenFragments: [],
-    SceneData: {},
+    sceneData: {},
     AddSceneData: (items: FragmentSceneData[]) => set((state) => {
-        const newScene = { ...state.SceneData };
+        const newScene = { ...state.sceneData };
         newScene.fragments = items;
-        return { SceneData: newScene };
+        return { sceneData: newScene };
     }),
     setChosenFragment: (fragmentId: number) => set((state) => {
-        const newScene = { ...state.SceneData };
+        const newScene = { ...state.sceneData };
         newScene.chosenFragment = fragmentId;
-        return { SceneData: newScene };
+        return { sceneData: newScene };
     }),
     setChosenFragmentLatency: (latency: number) => set((state) => {
-        const newScene = { ...state.SceneData };
+        const newScene = { ...state.sceneData };
         newScene.chosenFragmentlatency = latency;
-        return { SceneData: newScene };
+        return { sceneData: newScene };
     }),
-    addRelistenFragment: (fragmentId: number) => set((state) =>
-        ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
+    addRelistenFragment: (fragmentId: number) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.relistenfragments?.push(fragmentId);
+        return { sceneData: newScene };
+    }),
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
         set((state) => ({ level, subLevel, mode })),
     addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
@@ -100,8 +100,12 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
         return Math.round((answeredCorrectly / total) * 100);
     },
     getRelistenCounts: (): { [key: number]: number } => {
-        const { relistenFragments } = get();
-        return relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
+        const { sceneData } = get();
+        if (!sceneData || !sceneData.relistenfragments) {
+            return {};
+        }
+
+        return sceneData.relistenfragments.reduce<{ [key: number]: number }>((counts, id) => {
             counts[id] = (counts[id] || 0) + 1;
             return counts;
         }, {});

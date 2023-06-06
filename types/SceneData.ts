@@ -8,6 +8,7 @@ export interface FragmentSceneData {
 
 export interface Scene {
     fragments?: FragmentSceneData[];
+    relistenfragments?: number[];
     chosenFragment?: number | undefined;
     chosenFragmentlatency?: number | undefined;
 }

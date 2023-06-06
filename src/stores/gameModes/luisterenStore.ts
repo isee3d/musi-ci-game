@@ -1,5 +1,5 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { FragmentSceneData } from './../../../types/SceneData';
+import { FragmentSceneData, Scene } from './../../../types/SceneData';
 import { create } from "zustand";
 
 type LuisterenState = {
@@ -10,18 +10,16 @@ type LuisterenState = {
     level: string;
     subLevel: string;
     mode: string;
-    relistenFragments: number[];
-    allPlayedScenes: FragmentSceneData[][];
-    SceneData: FragmentSceneData[];
+    allPlayedScenes: Scene[];
+    sceneData: Scene;
 };
 
 type LuisterenActions = {
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
     addScore: (score: number) => void;
-    addScene: (scene: FragmentSceneData[]) => void;
+    addScene: (scene: Scene) => void;
     setTimePlayed: (time: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
-    AddSceneDataItem: (item: FragmentSceneData) => void;
     AddSceneData: (items: FragmentSceneData[]) => void;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
@@ -38,14 +36,12 @@ const initialState: LuisterenState = {
     level: '',
     subLevel: '',
     mode: '',
-    relistenFragments: [],
-    SceneData: [],
+    sceneData: {},
     allPlayedScenes: [],
 };
 
 const initialRoundState: Partial<LuisterenState> = {
-    relistenFragments: [],
-    SceneData: [],
+    sceneData: {},
 }
 
 // TODO: Add saveToDB action that then only resets a certain part of the store
@@ -58,14 +54,23 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     level: '',
     subLevel: '',
     mode: '',
-    relistenFragments: [],
-    SceneData: [],
+    sceneData: {},
     allPlayedScenes: [],
-    addScene: (scene: FragmentSceneData[]) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
-    AddSceneData: (items: FragmentSceneData[]) => set((state) => ({ SceneData: items })),
-    AddSceneDataItem: (item: FragmentSceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
-    addRelistenFragment: (fragmentId: number) => set((state) =>
-        ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
+    addScene: (scene: Scene) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
+    AddSceneData: (items: FragmentSceneData[]) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.fragments = items;
+        return { sceneData: newScene };
+    }),
+    addRelistenFragment: (fragmentId: number) => set((state) => {
+        const newScene = { ...state.sceneData };
+        if (newScene.relistenfragments) {
+            newScene.relistenfragments.push(fragmentId);
+        } else {
+            newScene.relistenfragments = [fragmentId];
+        }
+        return { sceneData: newScene };
+    }),
     addScore: (score: number) => set((state) => ({ score: state.score + score })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
@@ -73,8 +78,12 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
         set((state) => ({ level, subLevel, mode })),
     getRelistenCounts: (): { [key: number]: number } => {
-        const { relistenFragments } = get();
-        return relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
+        const { sceneData } = get();
+        if (!sceneData || !sceneData.relistenfragments) {
+            return {};
+        }
+
+        return sceneData.relistenfragments.reduce<{ [key: number]: number }>((counts, id) => {
             counts[id] = (counts[id] || 0) + 1;
             return counts;
         }, {});
