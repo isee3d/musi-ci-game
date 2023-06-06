@@ -26,6 +26,7 @@ type LuisterenActions = {
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
     resetSceneRelatedData: () => void;
+    getRelistenCounts: () => { [key: number]: number };
     reset: () => void;
 };
 
@@ -71,6 +72,13 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
         set((state) => ({ level, subLevel, mode })),
+    getRelistenCounts: (): { [key: number]: number } => {
+        const { relistenFragments } = get();
+        return relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
+            counts[id] = (counts[id] || 0) + 1;
+            return counts;
+        }, {});
+    },
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)
 }));

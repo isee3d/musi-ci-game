@@ -32,6 +32,7 @@ type SpelenActions = {
     setChosenFragmentLatency: (latency: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneData: (items: FragmentSceneData[]) => void;
+    getRelistenCounts: () => { [key: number]: number };
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
@@ -97,6 +98,13 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
         const total = answeredCorrectly + answeredWrong;
         if (total === 0) return 0;
         return Math.round((answeredCorrectly / total) * 100);
+    },
+    getRelistenCounts: (): { [key: number]: number } => {
+        const { relistenFragments } = get();
+        return relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
+            counts[id] = (counts[id] || 0) + 1;
+            return counts;
+        }, {});
     },
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)

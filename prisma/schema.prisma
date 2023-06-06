@@ -161,8 +161,9 @@ model SubLevel {
 model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
-  level            SubLevel[]
-  scene            Scene[]
+  level             SubLevel[]
+  scene             Scene[]
+  relistenfragment  RelistenFragment[]
   name              String
   description       String?
 }
@@ -211,6 +212,8 @@ model Scene {
   sceneFragments     SceneFragment[]
   id_levelResult     Int?
   levelResult        LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  relistenFragments RelistenFragment[]
+
   chosenFragmentLatency Int
 }
 
@@ -223,4 +226,14 @@ model SceneFragment {
    isCorrectFragment   Boolean
    isPlayedFragment    Boolean
    groundTone          Int
+}
+
+model RelistenFragment {
+  id                 Int         @id @default(autoincrement())
+  id_fragment        Int
+  fragment           Fragment       @relation(fields: [id_fragment], references: [id])
+  id_scene           Int
+  scene              Scene       @relation(fields: [id_scene], references: [id])
+
+  relistenCount      Int
 }
