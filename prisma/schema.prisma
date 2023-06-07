@@ -190,19 +190,19 @@ model LevelResult {
    id                 Int         @id @default(autoincrement())
    id_User             String
    user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   id_level            Int?
-   Level              Level?         @relation(fields: [id_level], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   id_subLevel         Int?
-   subLevel           SubLevel?      @relation(fields: [id_subLevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   id_gameMode         Int?
-   gameMode           GameMode?      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   id_level            Int
+   Level              Level         @relation(fields: [id_level], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   id_subLevel         Int
+   subLevel           SubLevel     @relation(fields: [id_subLevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   id_gameMode         Int
+   gameMode           GameMode      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
    Scenes             Scene[]
-   answeredCorrectlyAmount  Int
-   answeredIncorrectlyAmount Int
+   answeredCorrectlyAmount  Int?
+   answeredIncorrectlyAmount Int?
 
    startTime          DateTime
    endTime            DateTime
-   score              Int
+   score              Int?
 }
 
 model Scene {
