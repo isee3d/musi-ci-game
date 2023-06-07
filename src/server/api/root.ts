@@ -10,7 +10,7 @@ import { teamRouter } from "~/server/api/routers/team";
 import { typeCIRouter } from "~/server/api/routers/typeCI";
 import { usersRouter } from "~/server/api/routers/users";
 import { levelRouter } from "~/server/api/routers/level";
-import { levelResultRouter } from "~/server/api/routers/levelResult";
+// import { levelResultRouter } from "~/server/api/routers/levelResult";
 
 /**
  * This is the primary router for your server.
@@ -29,7 +29,7 @@ export const appRouter = createTRPCRouter({
   team: teamRouter,
   typeCI: typeCIRouter,
   user: usersRouter,
-  levelResult: levelResultRouter,
+  // levelResult: levelResultRouter,
 });
 
 // export type definition of API

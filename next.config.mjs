@@ -7,6 +7,7 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+
  typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
