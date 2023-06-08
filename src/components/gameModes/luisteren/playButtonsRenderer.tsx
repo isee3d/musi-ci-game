@@ -51,7 +51,7 @@ const input = {
 
 const PlayButtonsRenderer: React.FC = () => {
     const { send } = LuisterenMachineContext.useActorRef();
-    const { resetSceneRelatedData, setEndTime, sceneData, addScene } = useLuisterenStore();
+    const { resetSceneRelatedData, setEndTime, sceneData, addScene, getFormattedStoreData } = useLuisterenStore();
     const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
         onSuccess: () => {
             toast.success("levelResult created!");
@@ -79,7 +79,7 @@ const PlayButtonsRenderer: React.FC = () => {
                 onClick={ () => {
                     send("FINISHEDLISTENING")
                     setEndTime(Date.now());
-                    saveToDB(input)
+                    saveToDB(getFormattedStoreData())
                 } }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >

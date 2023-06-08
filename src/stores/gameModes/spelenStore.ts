@@ -68,7 +68,7 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     sceneData: {},
     AddSceneData: (items: FragmentSceneData[]) => set((state) => {
         const newScene = { ...state.sceneData };
-        newScene.fragments = items;
+        newScene.sceneFragments = items;
         return { sceneData: newScene };
     }),
     setChosenFragment: (fragmentId: number) => set((state) => {
@@ -83,7 +83,7 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     }),
     addRelistenFragment: (fragmentId: number) => set((state) => {
         const newScene = { ...state.sceneData };
-        newScene.relistenfragments?.push(fragmentId);
+        newScene.relistenFragments?.push(fragmentId);
         return { sceneData: newScene };
     }),
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
@@ -101,11 +101,11 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
     },
     getRelistenCounts: (): { [key: number]: number } => {
         const { sceneData } = get();
-        if (!sceneData || !sceneData.relistenfragments) {
+        if (!sceneData || !sceneData.relistenFragments) {
             return {};
         }
 
-        return sceneData.relistenfragments.reduce<{ [key: number]: number }>((counts, id) => {
+        return sceneData.relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
             counts[id] = (counts[id] || 0) + 1;
             return counts;
         }, {});

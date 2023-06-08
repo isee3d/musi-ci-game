@@ -34,7 +34,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
         const sceneData: FragmentSceneData[] = [];
         shownFragments.forEach((fragment, index) => {
             sceneData.push({
-                fragmentId: fragment.id,
+                id_fragment: fragment.id,
                 fragmentIndex: index,
                 groundTone: fragment.transpose,
             })

@@ -32,7 +32,7 @@ export const RestGehoorScalarFieldEnumSchema = z.enum(['id','created_at','restGe
 
 export const RoleScalarFieldEnumSchema = z.enum(['id','name']);
 
-export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','fragmentIndex','isCorrectFragment','isPlayedFragment','groundTone']);
+export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fragment','fragmentIndex','isCorrectFragment','isPlayedFragment','groundTone']);
 
 export const SceneScalarFieldEnumSchema = z.enum(['id','id_chosenFragment','id_levelResult','chosenFragmentLatency']);
 
@@ -678,6 +678,7 @@ export type FragmentRelations = {
   level: SubLevelWithRelations[];
   scene: SceneWithRelations[];
   relistenfragment: RelistenFragmentWithRelations[];
+  sceneFragment: SceneFragmentWithRelations[];
 };
 
 export type FragmentWithRelations = z.infer<typeof FragmentSchema> & FragmentRelations
@@ -687,6 +688,7 @@ export const FragmentWithRelationsSchema: z.ZodType<FragmentWithRelations> = Fra
   level: z.lazy(() => SubLevelWithRelationsSchema).array(),
   scene: z.lazy(() => SceneWithRelationsSchema).array(),
   relistenfragment: z.lazy(() => RelistenFragmentWithRelationsSchema).array(),
+  sceneFragment: z.lazy(() => SceneFragmentWithRelationsSchema).array(),
 }))
 
 // FRAGMENT OPTIONAL DEFAULTS RELATION SCHEMA
@@ -697,6 +699,7 @@ export type FragmentOptionalDefaultsRelations = {
   level: SubLevelOptionalDefaultsWithRelations[];
   scene: SceneOptionalDefaultsWithRelations[];
   relistenfragment: RelistenFragmentOptionalDefaultsWithRelations[];
+  sceneFragment: SceneFragmentOptionalDefaultsWithRelations[];
 };
 
 export type FragmentOptionalDefaultsWithRelations = z.infer<typeof FragmentOptionalDefaultsSchema> & FragmentOptionalDefaultsRelations
@@ -706,6 +709,7 @@ export const FragmentOptionalDefaultsWithRelationsSchema: z.ZodType<FragmentOpti
   level: z.lazy(() => SubLevelOptionalDefaultsWithRelationsSchema).array(),
   scene: z.lazy(() => SceneOptionalDefaultsWithRelationsSchema).array(),
   relistenfragment: z.lazy(() => RelistenFragmentOptionalDefaultsWithRelationsSchema).array(),
+  sceneFragment: z.lazy(() => SceneFragmentOptionalDefaultsWithRelationsSchema).array(),
 }))
 
 /////////////////////////////////////////
@@ -820,8 +824,8 @@ export const LevelResultSchema = z.object({
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().nullish(),
   answeredIncorrectlyAmount: z.number().int().nullish(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().nullish(),
+  endTime: z.coerce.date().nullish(),
   score: z.number().int().nullish(),
 })
 
@@ -886,7 +890,7 @@ export const SceneSchema = z.object({
   id: z.number().int(),
   id_chosenFragment: z.number().int().nullish(),
   id_levelResult: z.number().int().nullish(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().nullish(),
 })
 
 export type Scene = z.infer<typeof SceneSchema>
@@ -945,10 +949,11 @@ export const SceneOptionalDefaultsWithRelationsSchema: z.ZodType<SceneOptionalDe
 export const SceneFragmentSchema = z.object({
   id: z.number().int(),
   id_Scene: z.number().int().nullish(),
-  fragmentIndex: z.number().int(),
-  isCorrectFragment: z.boolean(),
-  isPlayedFragment: z.boolean(),
-  groundTone: z.number().int(),
+  id_fragment: z.number().int().nullish(),
+  fragmentIndex: z.number().int().nullish(),
+  isCorrectFragment: z.boolean().nullish(),
+  isPlayedFragment: z.boolean().nullish(),
+  groundTone: z.number().int().nullish(),
 })
 
 export type SceneFragment = z.infer<typeof SceneFragmentSchema>
@@ -967,12 +972,14 @@ export type SceneFragmentOptionalDefaults = z.infer<typeof SceneFragmentOptional
 
 export type SceneFragmentRelations = {
   scene?: SceneWithRelations | null;
+  fragment?: FragmentWithRelations | null;
 };
 
 export type SceneFragmentWithRelations = z.infer<typeof SceneFragmentSchema> & SceneFragmentRelations
 
 export const SceneFragmentWithRelationsSchema: z.ZodType<SceneFragmentWithRelations> = SceneFragmentSchema.merge(z.object({
   scene: z.lazy(() => SceneWithRelationsSchema).nullish(),
+  fragment: z.lazy(() => FragmentWithRelationsSchema).nullish(),
 }))
 
 // SCENE FRAGMENT OPTIONAL DEFAULTS RELATION SCHEMA
@@ -980,12 +987,14 @@ export const SceneFragmentWithRelationsSchema: z.ZodType<SceneFragmentWithRelati
 
 export type SceneFragmentOptionalDefaultsRelations = {
   scene?: SceneOptionalDefaultsWithRelations | null;
+  fragment?: FragmentOptionalDefaultsWithRelations | null;
 };
 
 export type SceneFragmentOptionalDefaultsWithRelations = z.infer<typeof SceneFragmentOptionalDefaultsSchema> & SceneFragmentOptionalDefaultsRelations
 
 export const SceneFragmentOptionalDefaultsWithRelationsSchema: z.ZodType<SceneFragmentOptionalDefaultsWithRelations> = SceneFragmentOptionalDefaultsSchema.merge(z.object({
   scene: z.lazy(() => SceneOptionalDefaultsWithRelationsSchema).nullish(),
+  fragment: z.lazy(() => FragmentOptionalDefaultsWithRelationsSchema).nullish(),
 }))
 
 /////////////////////////////////////////
@@ -996,7 +1005,7 @@ export const RelistenFragmentSchema = z.object({
   id: z.number().int(),
   id_fragment: z.number().int(),
   id_scene: z.number().int().nullish(),
-  relistenCount: z.number().int(),
+  relistenCount: z.number().int().nullish(),
 })
 
 export type RelistenFragment = z.infer<typeof RelistenFragmentSchema>
@@ -1400,6 +1409,7 @@ export const FragmentIncludeSchema: z.ZodType<Prisma.FragmentInclude> = z.object
   level: z.union([z.boolean(),z.lazy(() => SubLevelFindManyArgsSchema)]).optional(),
   scene: z.union([z.boolean(),z.lazy(() => SceneFindManyArgsSchema)]).optional(),
   relistenfragment: z.union([z.boolean(),z.lazy(() => RelistenFragmentFindManyArgsSchema)]).optional(),
+  sceneFragment: z.union([z.boolean(),z.lazy(() => SceneFragmentFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => FragmentCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1417,6 +1427,7 @@ export const FragmentCountOutputTypeSelectSchema: z.ZodType<Prisma.FragmentCount
   level: z.boolean().optional(),
   scene: z.boolean().optional(),
   relistenfragment: z.boolean().optional(),
+  sceneFragment: z.boolean().optional(),
 }).strict();
 
 export const FragmentSelectSchema: z.ZodType<Prisma.FragmentSelect> = z.object({
@@ -1427,6 +1438,7 @@ export const FragmentSelectSchema: z.ZodType<Prisma.FragmentSelect> = z.object({
   level: z.union([z.boolean(),z.lazy(() => SubLevelFindManyArgsSchema)]).optional(),
   scene: z.union([z.boolean(),z.lazy(() => SceneFindManyArgsSchema)]).optional(),
   relistenfragment: z.union([z.boolean(),z.lazy(() => RelistenFragmentFindManyArgsSchema)]).optional(),
+  sceneFragment: z.union([z.boolean(),z.lazy(() => SceneFragmentFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => FragmentCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1569,6 +1581,7 @@ export const SceneSelectSchema: z.ZodType<Prisma.SceneSelect> = z.object({
 
 export const SceneFragmentIncludeSchema: z.ZodType<Prisma.SceneFragmentInclude> = z.object({
   scene: z.union([z.boolean(),z.lazy(() => SceneArgsSchema)]).optional(),
+  fragment: z.union([z.boolean(),z.lazy(() => FragmentArgsSchema)]).optional(),
 }).strict()
 
 export const SceneFragmentArgsSchema: z.ZodType<Prisma.SceneFragmentArgs> = z.object({
@@ -1579,11 +1592,13 @@ export const SceneFragmentArgsSchema: z.ZodType<Prisma.SceneFragmentArgs> = z.ob
 export const SceneFragmentSelectSchema: z.ZodType<Prisma.SceneFragmentSelect> = z.object({
   id: z.boolean().optional(),
   id_Scene: z.boolean().optional(),
+  id_fragment: z.boolean().optional(),
   fragmentIndex: z.boolean().optional(),
   isCorrectFragment: z.boolean().optional(),
   isPlayedFragment: z.boolean().optional(),
   groundTone: z.boolean().optional(),
   scene: z.union([z.boolean(),z.lazy(() => SceneArgsSchema)]).optional(),
+  fragment: z.union([z.boolean(),z.lazy(() => FragmentArgsSchema)]).optional(),
 }).strict()
 
 // RELISTEN FRAGMENT
@@ -2246,7 +2261,8 @@ export const FragmentWhereInputSchema: z.ZodType<Prisma.FragmentWhereInput> = z.
   notes: z.lazy(() => NoteListRelationFilterSchema).optional(),
   level: z.lazy(() => SubLevelListRelationFilterSchema).optional(),
   scene: z.lazy(() => SceneListRelationFilterSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentListRelationFilterSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentListRelationFilterSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentListRelationFilterSchema).optional()
 }).strict();
 
 export const FragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.FragmentOrderByWithRelationInput> = z.object({
@@ -2256,7 +2272,8 @@ export const FragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.FragmentOr
   notes: z.lazy(() => NoteOrderByRelationAggregateInputSchema).optional(),
   level: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
   scene: z.lazy(() => SceneOrderByRelationAggregateInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentOrderByRelationAggregateInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentOrderByRelationAggregateInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const FragmentWhereUniqueInputSchema: z.ZodType<Prisma.FragmentWhereUniqueInput> = z.object({
@@ -2387,8 +2404,8 @@ export const LevelResultWhereInputSchema: z.ZodType<Prisma.LevelResultWhereInput
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   answeredCorrectlyAmount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  startTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  endTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   score: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
   Level: z.union([ z.lazy(() => LevelRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
@@ -2448,8 +2465,8 @@ export const LevelResultScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.L
   id_gameMode: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   answeredCorrectlyAmount: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  startTime: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  endTime: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  startTime: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
+  endTime: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
   score: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
@@ -2460,7 +2477,7 @@ export const SceneWhereInputSchema: z.ZodType<Prisma.SceneWhereInput> = z.object
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_chosenFragment: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   id_levelResult: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  chosenFragmentLatency: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   chosenFragment: z.union([ z.lazy(() => FragmentRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentListRelationFilterSchema).optional(),
   levelResult: z.union([ z.lazy(() => LevelResultRelationFilterSchema),z.lazy(() => LevelResultWhereInputSchema) ]).optional().nullable(),
@@ -2501,7 +2518,7 @@ export const SceneScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.SceneSc
   id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   id_chosenFragment: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   id_levelResult: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  chosenFragmentLatency: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentWhereInputSchema: z.ZodType<Prisma.SceneFragmentWhereInput> = z.object({
@@ -2510,21 +2527,25 @@ export const SceneFragmentWhereInputSchema: z.ZodType<Prisma.SceneFragmentWhereI
   NOT: z.union([ z.lazy(() => SceneFragmentWhereInputSchema),z.lazy(() => SceneFragmentWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_Scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  isCorrectFragment: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  isPlayedFragment: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  groundTone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  id_fragment: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  fragmentIndex: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
+  groundTone: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   scene: z.union([ z.lazy(() => SceneRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
+  fragment: z.union([ z.lazy(() => FragmentRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   isCorrectFragment: z.lazy(() => SortOrderSchema).optional(),
   isPlayedFragment: z.lazy(() => SortOrderSchema).optional(),
   groundTone: z.lazy(() => SortOrderSchema).optional(),
-  scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional()
+  scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional(),
+  fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional()
 }).strict();
 
 export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragmentWhereUniqueInput> = z.object({
@@ -2534,6 +2555,7 @@ export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragment
 export const SceneFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   isCorrectFragment: z.lazy(() => SortOrderSchema).optional(),
   isPlayedFragment: z.lazy(() => SortOrderSchema).optional(),
@@ -2551,10 +2573,11 @@ export const SceneFragmentScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma
   NOT: z.union([ z.lazy(() => SceneFragmentScalarWhereWithAggregatesInputSchema),z.lazy(() => SceneFragmentScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   id_Scene: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  fragmentIndex: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  isCorrectFragment: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
-  isPlayedFragment: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
-  groundTone: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  id_fragment: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
+  fragmentIndex: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.lazy(() => BoolNullableWithAggregatesFilterSchema),z.boolean() ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.lazy(() => BoolNullableWithAggregatesFilterSchema),z.boolean() ]).optional().nullable(),
+  groundTone: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentWhereInputSchema: z.ZodType<Prisma.RelistenFragmentWhereInput> = z.object({
@@ -2564,7 +2587,7 @@ export const RelistenFragmentWhereInputSchema: z.ZodType<Prisma.RelistenFragment
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  relistenCount: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  relistenCount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   fragment: z.union([ z.lazy(() => FragmentRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
   scene: z.union([ z.lazy(() => SceneRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
 }).strict();
@@ -2601,7 +2624,7 @@ export const RelistenFragmentScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
   id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   id_fragment: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   id_scene: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  relistenCount: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  relistenCount: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const AccountCreateInputSchema: z.ZodType<Prisma.AccountCreateInput> = z.object({
@@ -3231,7 +3254,8 @@ export const FragmentCreateInputSchema: z.ZodType<Prisma.FragmentCreateInput> = 
   notes: z.lazy(() => NoteCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelCreateNestedManyWithoutFragmentsInputSchema).optional(),
   scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedCreateInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateInput> = z.object({
@@ -3241,7 +3265,8 @@ export const FragmentUncheckedCreateInputSchema: z.ZodType<Prisma.FragmentUnchec
   notes: z.lazy(() => NoteUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedCreateNestedManyWithoutFragmentsInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUpdateInputSchema: z.ZodType<Prisma.FragmentUpdateInput> = z.object({
@@ -3250,7 +3275,8 @@ export const FragmentUpdateInputSchema: z.ZodType<Prisma.FragmentUpdateInput> = 
   notes: z.lazy(() => NoteUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUpdateManyWithoutFragmentsNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateInput> = z.object({
@@ -3260,7 +3286,8 @@ export const FragmentUncheckedUpdateInputSchema: z.ZodType<Prisma.FragmentUnchec
   notes: z.lazy(() => NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedUpdateManyWithoutFragmentsNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUpdateManyMutationInputSchema: z.ZodType<Prisma.FragmentUpdateManyMutationInput> = z.object({
@@ -3362,8 +3389,8 @@ export const GameModeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.GameModeUn
 export const LevelResultCreateInputSchema: z.ZodType<Prisma.LevelResultCreateInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -3380,8 +3407,8 @@ export const LevelResultUncheckedCreateInputSchema: z.ZodType<Prisma.LevelResult
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
@@ -3389,8 +3416,8 @@ export const LevelResultUncheckedCreateInputSchema: z.ZodType<Prisma.LevelResult
 export const LevelResultUpdateInputSchema: z.ZodType<Prisma.LevelResultUpdateInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -3407,8 +3434,8 @@ export const LevelResultUncheckedUpdateInputSchema: z.ZodType<Prisma.LevelResult
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
@@ -3416,8 +3443,8 @@ export const LevelResultUncheckedUpdateInputSchema: z.ZodType<Prisma.LevelResult
 export const LevelResultUpdateManyMutationInputSchema: z.ZodType<Prisma.LevelResultUpdateManyMutationInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -3429,13 +3456,13 @@ export const LevelResultUncheckedUpdateManyInputSchema: z.ZodType<Prisma.LevelRe
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneCreateInputSchema: z.ZodType<Prisma.SceneCreateInput> = z.object({
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   chosenFragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentCreateNestedManyWithoutSceneInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedOneWithoutScenesInputSchema).optional(),
@@ -3446,13 +3473,13 @@ export const SceneUncheckedCreateInputSchema: z.ZodType<Prisma.SceneUncheckedCre
   id: z.number().int().optional(),
   id_chosenFragment: z.number().int().optional().nullable(),
   id_levelResult: z.number().int().optional().nullable(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional()
 }).strict();
 
 export const SceneUpdateInputSchema: z.ZodType<Prisma.SceneUpdateInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   chosenFragment: z.lazy(() => FragmentUpdateOneWithoutSceneNestedInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentUpdateManyWithoutSceneNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateOneWithoutScenesNestedInputSchema).optional(),
@@ -3463,74 +3490,79 @@ export const SceneUncheckedUpdateInputSchema: z.ZodType<Prisma.SceneUncheckedUpd
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional()
 }).strict();
 
 export const SceneUpdateManyMutationInputSchema: z.ZodType<Prisma.SceneUpdateManyMutationInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SceneUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentCreateInputSchema: z.ZodType<Prisma.SceneFragmentCreateInput> = z.object({
-  fragmentIndex: z.number().int(),
-  isCorrectFragment: z.boolean(),
-  isPlayedFragment: z.boolean(),
-  groundTone: z.number().int(),
-  scene: z.lazy(() => SceneCreateNestedOneWithoutSceneFragmentsInputSchema).optional()
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable(),
+  scene: z.lazy(() => SceneCreateNestedOneWithoutSceneFragmentsInputSchema).optional(),
+  fragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneFragmentInputSchema).optional()
 }).strict();
 
 export const SceneFragmentUncheckedCreateInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedCreateInput> = z.object({
   id: z.number().int().optional(),
   id_Scene: z.number().int().optional().nullable(),
-  fragmentIndex: z.number().int(),
-  isCorrectFragment: z.boolean(),
-  isPlayedFragment: z.boolean(),
-  groundTone: z.number().int()
+  id_fragment: z.number().int().optional().nullable(),
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable()
 }).strict();
 
 export const SceneFragmentUpdateInputSchema: z.ZodType<Prisma.SceneFragmentUpdateInput> = z.object({
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  scene: z.lazy(() => SceneUpdateOneWithoutSceneFragmentsNestedInputSchema).optional()
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  scene: z.lazy(() => SceneUpdateOneWithoutSceneFragmentsNestedInputSchema).optional(),
+  fragment: z.lazy(() => FragmentUpdateOneWithoutSceneFragmentNestedInputSchema).optional()
 }).strict();
 
 export const SceneFragmentUncheckedUpdateInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_fragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentUpdateManyMutationInputSchema: z.ZodType<Prisma.SceneFragmentUpdateManyMutationInput> = z.object({
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_fragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentCreateInputSchema: z.ZodType<Prisma.RelistenFragmentCreateInput> = z.object({
-  relistenCount: z.number().int(),
+  relistenCount: z.number().int().optional().nullable(),
   fragment: z.lazy(() => FragmentCreateNestedOneWithoutRelistenfragmentInputSchema).optional(),
   scene: z.lazy(() => SceneCreateNestedOneWithoutRelistenFragmentsInputSchema).optional()
 }).strict();
@@ -3539,11 +3571,11 @@ export const RelistenFragmentUncheckedCreateInputSchema: z.ZodType<Prisma.Relist
   id: z.number().int().optional(),
   id_fragment: z.number().int(),
   id_scene: z.number().int().optional().nullable(),
-  relistenCount: z.number().int()
+  relistenCount: z.number().int().optional().nullable()
 }).strict();
 
 export const RelistenFragmentUpdateInputSchema: z.ZodType<Prisma.RelistenFragmentUpdateInput> = z.object({
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragment: z.lazy(() => FragmentUpdateOneWithoutRelistenfragmentNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUpdateOneWithoutRelistenFragmentsNestedInputSchema).optional()
 }).strict();
@@ -3552,18 +3584,18 @@ export const RelistenFragmentUncheckedUpdateInputSchema: z.ZodType<Prisma.Relist
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUpdateManyMutationInputSchema: z.ZodType<Prisma.RelistenFragmentUpdateManyMutationInput> = z.object({
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
@@ -4299,6 +4331,12 @@ export const RelistenFragmentListRelationFilterSchema: z.ZodType<Prisma.Relisten
   none: z.lazy(() => RelistenFragmentWhereInputSchema).optional()
 }).strict();
 
+export const SceneFragmentListRelationFilterSchema: z.ZodType<Prisma.SceneFragmentListRelationFilter> = z.object({
+  every: z.lazy(() => SceneFragmentWhereInputSchema).optional(),
+  some: z.lazy(() => SceneFragmentWhereInputSchema).optional(),
+  none: z.lazy(() => SceneFragmentWhereInputSchema).optional()
+}).strict();
+
 export const NoteOrderByRelationAggregateInputSchema: z.ZodType<Prisma.NoteOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -4308,6 +4346,10 @@ export const SceneOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SceneOrd
 }).strict();
 
 export const RelistenFragmentOrderByRelationAggregateInputSchema: z.ZodType<Prisma.RelistenFragmentOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const SceneFragmentOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SceneFragmentOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -4482,19 +4524,9 @@ export const LevelResultSumOrderByAggregateInputSchema: z.ZodType<Prisma.LevelRe
   score: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const SceneFragmentListRelationFilterSchema: z.ZodType<Prisma.SceneFragmentListRelationFilter> = z.object({
-  every: z.lazy(() => SceneFragmentWhereInputSchema).optional(),
-  some: z.lazy(() => SceneFragmentWhereInputSchema).optional(),
-  none: z.lazy(() => SceneFragmentWhereInputSchema).optional()
-}).strict();
-
 export const LevelResultRelationFilterSchema: z.ZodType<Prisma.LevelResultRelationFilter> = z.object({
   is: z.lazy(() => LevelResultWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => LevelResultWhereInputSchema).optional().nullable()
-}).strict();
-
-export const SceneFragmentOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SceneFragmentOrderByRelationAggregateInput> = z.object({
-  _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SceneCountOrderByAggregateInputSchema: z.ZodType<Prisma.SceneCountOrderByAggregateInput> = z.object({
@@ -4532,11 +4564,6 @@ export const SceneSumOrderByAggregateInputSchema: z.ZodType<Prisma.SceneSumOrder
   chosenFragmentLatency: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const BoolFilterSchema: z.ZodType<Prisma.BoolFilter> = z.object({
-  equals: z.boolean().optional(),
-  not: z.union([ z.boolean(),z.lazy(() => NestedBoolFilterSchema) ]).optional(),
-}).strict();
-
 export const SceneRelationFilterSchema: z.ZodType<Prisma.SceneRelationFilter> = z.object({
   is: z.lazy(() => SceneWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => SceneWhereInputSchema).optional().nullable()
@@ -4545,6 +4572,7 @@ export const SceneRelationFilterSchema: z.ZodType<Prisma.SceneRelationFilter> = 
 export const SceneFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   isCorrectFragment: z.lazy(() => SortOrderSchema).optional(),
   isPlayedFragment: z.lazy(() => SortOrderSchema).optional(),
@@ -4554,6 +4582,7 @@ export const SceneFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.Sce
 export const SceneFragmentAvgOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentAvgOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   groundTone: z.lazy(() => SortOrderSchema).optional()
 }).strict();
@@ -4561,6 +4590,7 @@ export const SceneFragmentAvgOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
 export const SceneFragmentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   isCorrectFragment: z.lazy(() => SortOrderSchema).optional(),
   isPlayedFragment: z.lazy(() => SortOrderSchema).optional(),
@@ -4570,6 +4600,7 @@ export const SceneFragmentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
 export const SceneFragmentMinOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   isCorrectFragment: z.lazy(() => SortOrderSchema).optional(),
   isPlayedFragment: z.lazy(() => SortOrderSchema).optional(),
@@ -4579,16 +4610,9 @@ export const SceneFragmentMinOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
 export const SceneFragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentSumOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
+  id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   groundTone: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const BoolWithAggregatesFilterSchema: z.ZodType<Prisma.BoolWithAggregatesFilter> = z.object({
-  equals: z.boolean().optional(),
-  not: z.union([ z.boolean(),z.lazy(() => NestedBoolWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedBoolFilterSchema).optional(),
-  _max: z.lazy(() => NestedBoolFilterSchema).optional()
 }).strict();
 
 export const RelistenFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.RelistenFragmentCountOrderByAggregateInput> = z.object({
@@ -5402,6 +5426,12 @@ export const RelistenFragmentCreateNestedManyWithoutFragmentInputSchema: z.ZodTy
   connect: z.union([ z.lazy(() => RelistenFragmentWhereUniqueInputSchema),z.lazy(() => RelistenFragmentWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const SceneFragmentCreateNestedManyWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentCreateNestedManyWithoutFragmentInput> = z.object({
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema).array(),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const NoteUncheckedCreateNestedManyWithoutFragmentInputSchema: z.ZodType<Prisma.NoteUncheckedCreateNestedManyWithoutFragmentInput> = z.object({
   create: z.union([ z.lazy(() => NoteCreateWithoutFragmentInputSchema),z.lazy(() => NoteCreateWithoutFragmentInputSchema).array(),z.lazy(() => NoteUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => NoteUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => NoteCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => NoteCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
@@ -5424,6 +5454,12 @@ export const RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema
   create: z.union([ z.lazy(() => RelistenFragmentCreateWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentCreateWithoutFragmentInputSchema).array(),z.lazy(() => RelistenFragmentUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => RelistenFragmentCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
   connect: z.union([ z.lazy(() => RelistenFragmentWhereUniqueInputSchema),z.lazy(() => RelistenFragmentWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedCreateNestedManyWithoutFragmentInput> = z.object({
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema).array(),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const NoteUpdateManyWithoutFragmentNestedInputSchema: z.ZodType<Prisma.NoteUpdateManyWithoutFragmentNestedInput> = z.object({
@@ -5478,6 +5514,19 @@ export const RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema: z.ZodTy
   deleteMany: z.union([ z.lazy(() => RelistenFragmentScalarWhereInputSchema),z.lazy(() => RelistenFragmentScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const SceneFragmentUpdateManyWithoutFragmentNestedInputSchema: z.ZodType<Prisma.SceneFragmentUpdateManyWithoutFragmentNestedInput> = z.object({
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema).array(),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => SceneFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => SceneFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => SceneFragmentUpdateManyWithWhereWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpdateManyWithWhereWithoutFragmentInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema: z.ZodType<Prisma.NoteUncheckedUpdateManyWithoutFragmentNestedInput> = z.object({
   create: z.union([ z.lazy(() => NoteCreateWithoutFragmentInputSchema),z.lazy(() => NoteCreateWithoutFragmentInputSchema).array(),z.lazy(() => NoteUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => NoteUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => NoteCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => NoteCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
@@ -5528,6 +5577,19 @@ export const RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema
   update: z.union([ z.lazy(() => RelistenFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => RelistenFragmentUpdateManyWithWhereWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentUpdateManyWithWhereWithoutFragmentInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => RelistenFragmentScalarWhereInputSchema),z.lazy(() => RelistenFragmentScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInput> = z.object({
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema).array(),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema),z.lazy(() => SceneFragmentCreateOrConnectWithoutFragmentInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => SceneFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => SceneFragmentWhereUniqueInputSchema),z.lazy(() => SceneFragmentWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => SceneFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => SceneFragmentUpdateManyWithWhereWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUpdateManyWithWhereWithoutFragmentInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const FragmentCreateNestedOneWithoutNotesInputSchema: z.ZodType<Prisma.FragmentCreateNestedOneWithoutNotesInput> = z.object({
@@ -5836,8 +5898,10 @@ export const SceneCreateNestedOneWithoutSceneFragmentsInputSchema: z.ZodType<Pri
   connect: z.lazy(() => SceneWhereUniqueInputSchema).optional()
 }).strict();
 
-export const BoolFieldUpdateOperationsInputSchema: z.ZodType<Prisma.BoolFieldUpdateOperationsInput> = z.object({
-  set: z.boolean().optional()
+export const FragmentCreateNestedOneWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentCreateNestedOneWithoutSceneFragmentInput> = z.object({
+  create: z.union([ z.lazy(() => FragmentCreateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedCreateWithoutSceneFragmentInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FragmentCreateOrConnectWithoutSceneFragmentInputSchema).optional(),
+  connect: z.lazy(() => FragmentWhereUniqueInputSchema).optional()
 }).strict();
 
 export const SceneUpdateOneWithoutSceneFragmentsNestedInputSchema: z.ZodType<Prisma.SceneUpdateOneWithoutSceneFragmentsNestedInput> = z.object({
@@ -5848,6 +5912,16 @@ export const SceneUpdateOneWithoutSceneFragmentsNestedInputSchema: z.ZodType<Pri
   delete: z.boolean().optional(),
   connect: z.lazy(() => SceneWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => SceneUpdateWithoutSceneFragmentsInputSchema),z.lazy(() => SceneUncheckedUpdateWithoutSceneFragmentsInputSchema) ]).optional(),
+}).strict();
+
+export const FragmentUpdateOneWithoutSceneFragmentNestedInputSchema: z.ZodType<Prisma.FragmentUpdateOneWithoutSceneFragmentNestedInput> = z.object({
+  create: z.union([ z.lazy(() => FragmentCreateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedCreateWithoutSceneFragmentInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => FragmentCreateOrConnectWithoutSceneFragmentInputSchema).optional(),
+  upsert: z.lazy(() => FragmentUpsertWithoutSceneFragmentInputSchema).optional(),
+  disconnect: z.boolean().optional(),
+  delete: z.boolean().optional(),
+  connect: z.lazy(() => FragmentWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => FragmentUpdateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedUpdateWithoutSceneFragmentInputSchema) ]).optional(),
 }).strict();
 
 export const FragmentCreateNestedOneWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.FragmentCreateNestedOneWithoutRelistenfragmentInput> = z.object({
@@ -6081,19 +6155,6 @@ export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.ob
   gt: z.number().optional(),
   gte: z.number().optional(),
   not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
-}).strict();
-
-export const NestedBoolFilterSchema: z.ZodType<Prisma.NestedBoolFilter> = z.object({
-  equals: z.boolean().optional(),
-  not: z.union([ z.boolean(),z.lazy(() => NestedBoolFilterSchema) ]).optional(),
-}).strict();
-
-export const NestedBoolWithAggregatesFilterSchema: z.ZodType<Prisma.NestedBoolWithAggregatesFilter> = z.object({
-  equals: z.boolean().optional(),
-  not: z.union([ z.boolean(),z.lazy(() => NestedBoolWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedBoolFilterSchema).optional(),
-  _max: z.lazy(() => NestedBoolFilterSchema).optional()
 }).strict();
 
 export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWithoutAccountsInput> = z.object({
@@ -6373,8 +6434,8 @@ export const TeamCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.TeamCr
 export const LevelResultCreateWithoutUserInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutUserInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -6389,8 +6450,8 @@ export const LevelResultUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
@@ -6539,8 +6600,8 @@ export const LevelResultScalarWhereInputSchema: z.ZodType<Prisma.LevelResultScal
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   answeredCorrectlyAmount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  startTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
+  endTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   score: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
@@ -6993,8 +7054,8 @@ export const SubLevelCreateOrConnectWithoutLevelsInputSchema: z.ZodType<Prisma.S
 export const LevelResultCreateWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutLevelInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -7009,8 +7070,8 @@ export const LevelResultUncheckedCreateWithoutLevelInputSchema: z.ZodType<Prisma
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
@@ -7109,7 +7170,8 @@ export const FragmentCreateWithoutLevelInputSchema: z.ZodType<Prisma.FragmentCre
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteCreateNestedManyWithoutFragmentInputSchema).optional(),
   scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedCreateWithoutLevelInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateWithoutLevelInput> = z.object({
@@ -7118,7 +7180,8 @@ export const FragmentUncheckedCreateWithoutLevelInputSchema: z.ZodType<Prisma.Fr
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentCreateOrConnectWithoutLevelInputSchema: z.ZodType<Prisma.FragmentCreateOrConnectWithoutLevelInput> = z.object({
@@ -7145,8 +7208,8 @@ export const GameModeCreateOrConnectWithoutLevelsInputSchema: z.ZodType<Prisma.G
 export const LevelResultCreateWithoutSubLevelInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutSubLevelInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -7161,8 +7224,8 @@ export const LevelResultUncheckedCreateWithoutSubLevelInputSchema: z.ZodType<Pri
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
@@ -7306,7 +7369,7 @@ export const SubLevelCreateOrConnectWithoutFragmentsInputSchema: z.ZodType<Prism
 }).strict();
 
 export const SceneCreateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.SceneCreateWithoutChosenFragmentInput> = z.object({
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentCreateNestedManyWithoutSceneInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedOneWithoutScenesInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentCreateNestedManyWithoutSceneInputSchema).optional()
@@ -7315,7 +7378,7 @@ export const SceneCreateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.Scene
 export const SceneUncheckedCreateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.SceneUncheckedCreateWithoutChosenFragmentInput> = z.object({
   id: z.number().int().optional(),
   id_levelResult: z.number().int().optional().nullable(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional()
 }).strict();
@@ -7326,19 +7389,41 @@ export const SceneCreateOrConnectWithoutChosenFragmentInputSchema: z.ZodType<Pri
 }).strict();
 
 export const RelistenFragmentCreateWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentCreateWithoutFragmentInput> = z.object({
-  relistenCount: z.number().int(),
+  relistenCount: z.number().int().optional().nullable(),
   scene: z.lazy(() => SceneCreateNestedOneWithoutRelistenFragmentsInputSchema).optional()
 }).strict();
 
 export const RelistenFragmentUncheckedCreateWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedCreateWithoutFragmentInput> = z.object({
   id: z.number().int().optional(),
   id_scene: z.number().int().optional().nullable(),
-  relistenCount: z.number().int()
+  relistenCount: z.number().int().optional().nullable()
 }).strict();
 
 export const RelistenFragmentCreateOrConnectWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentCreateOrConnectWithoutFragmentInput> = z.object({
   where: z.lazy(() => RelistenFragmentWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => RelistenFragmentCreateWithoutFragmentInputSchema),z.lazy(() => RelistenFragmentUncheckedCreateWithoutFragmentInputSchema) ]),
+}).strict();
+
+export const SceneFragmentCreateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentCreateWithoutFragmentInput> = z.object({
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable(),
+  scene: z.lazy(() => SceneCreateNestedOneWithoutSceneFragmentsInputSchema).optional()
+}).strict();
+
+export const SceneFragmentUncheckedCreateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedCreateWithoutFragmentInput> = z.object({
+  id: z.number().int().optional(),
+  id_Scene: z.number().int().optional().nullable(),
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable()
+}).strict();
+
+export const SceneFragmentCreateOrConnectWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentCreateOrConnectWithoutFragmentInput> = z.object({
+  where: z.lazy(() => SceneFragmentWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema) ]),
 }).strict();
 
 export const NoteUpsertWithWhereUniqueWithoutFragmentInputSchema: z.ZodType<Prisma.NoteUpsertWithWhereUniqueWithoutFragmentInput> = z.object({
@@ -7408,7 +7493,7 @@ export const SceneScalarWhereInputSchema: z.ZodType<Prisma.SceneScalarWhereInput
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_chosenFragment: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   id_levelResult: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  chosenFragmentLatency: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentUpsertWithWhereUniqueWithoutFragmentInput> = z.object({
@@ -7434,7 +7519,36 @@ export const RelistenFragmentScalarWhereInputSchema: z.ZodType<Prisma.RelistenFr
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  relistenCount: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  relistenCount: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+}).strict();
+
+export const SceneFragmentUpsertWithWhereUniqueWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUpsertWithWhereUniqueWithoutFragmentInput> = z.object({
+  where: z.lazy(() => SceneFragmentWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => SceneFragmentUpdateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedUpdateWithoutFragmentInputSchema) ]),
+  create: z.union([ z.lazy(() => SceneFragmentCreateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedCreateWithoutFragmentInputSchema) ]),
+}).strict();
+
+export const SceneFragmentUpdateWithWhereUniqueWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUpdateWithWhereUniqueWithoutFragmentInput> = z.object({
+  where: z.lazy(() => SceneFragmentWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => SceneFragmentUpdateWithoutFragmentInputSchema),z.lazy(() => SceneFragmentUncheckedUpdateWithoutFragmentInputSchema) ]),
+}).strict();
+
+export const SceneFragmentUpdateManyWithWhereWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUpdateManyWithWhereWithoutFragmentInput> = z.object({
+  where: z.lazy(() => SceneFragmentScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => SceneFragmentUpdateManyMutationInputSchema),z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneFragmentInputSchema) ]),
+}).strict();
+
+export const SceneFragmentScalarWhereInputSchema: z.ZodType<Prisma.SceneFragmentScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => SceneFragmentScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  id_Scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  id_fragment: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  fragmentIndex: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
+  groundTone: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const FragmentCreateWithoutNotesInputSchema: z.ZodType<Prisma.FragmentCreateWithoutNotesInput> = z.object({
@@ -7442,7 +7556,8 @@ export const FragmentCreateWithoutNotesInputSchema: z.ZodType<Prisma.FragmentCre
   description: z.string().optional().nullable(),
   level: z.lazy(() => SubLevelCreateNestedManyWithoutFragmentsInputSchema).optional(),
   scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedCreateWithoutNotesInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateWithoutNotesInput> = z.object({
@@ -7451,7 +7566,8 @@ export const FragmentUncheckedCreateWithoutNotesInputSchema: z.ZodType<Prisma.Fr
   description: z.string().optional().nullable(),
   level: z.lazy(() => SubLevelUncheckedCreateNestedManyWithoutFragmentsInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentCreateOrConnectWithoutNotesInputSchema: z.ZodType<Prisma.FragmentCreateOrConnectWithoutNotesInput> = z.object({
@@ -7469,7 +7585,8 @@ export const FragmentUpdateWithoutNotesInputSchema: z.ZodType<Prisma.FragmentUpd
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   level: z.lazy(() => SubLevelUpdateManyWithoutFragmentsNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateWithoutNotesInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateWithoutNotesInput> = z.object({
@@ -7478,7 +7595,8 @@ export const FragmentUncheckedUpdateWithoutNotesInputSchema: z.ZodType<Prisma.Fr
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   level: z.lazy(() => SubLevelUncheckedUpdateManyWithoutFragmentsNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const SubLevelCreateWithoutGameModesInputSchema: z.ZodType<Prisma.SubLevelCreateWithoutGameModesInput> = z.object({
@@ -7516,8 +7634,8 @@ export const SubLevelCreateOrConnectWithoutGameModesInputSchema: z.ZodType<Prism
 export const LevelResultCreateWithoutGameModeInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutGameModeInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -7532,8 +7650,8 @@ export const LevelResultUncheckedCreateWithoutGameModeInputSchema: z.ZodType<Pri
   id_subLevel: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
@@ -7687,7 +7805,7 @@ export const GameModeCreateOrConnectWithoutLevelResultInputSchema: z.ZodType<Pri
 }).strict();
 
 export const SceneCreateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneCreateWithoutLevelResultInput> = z.object({
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   chosenFragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentCreateNestedManyWithoutSceneInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentCreateNestedManyWithoutSceneInputSchema).optional()
@@ -7696,7 +7814,7 @@ export const SceneCreateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneCre
 export const SceneUncheckedCreateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneUncheckedCreateWithoutLevelResultInput> = z.object({
   id: z.number().int().optional(),
   id_chosenFragment: z.number().int().optional().nullable(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional()
 }).strict();
@@ -7838,7 +7956,8 @@ export const FragmentCreateWithoutSceneInputSchema: z.ZodType<Prisma.FragmentCre
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelCreateNestedManyWithoutFragmentsInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedCreateWithoutSceneInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateWithoutSceneInput> = z.object({
@@ -7847,7 +7966,8 @@ export const FragmentUncheckedCreateWithoutSceneInputSchema: z.ZodType<Prisma.Fr
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedCreateNestedManyWithoutFragmentsInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Prisma.FragmentCreateOrConnectWithoutSceneInput> = z.object({
@@ -7856,18 +7976,20 @@ export const FragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Prisma.Fr
 }).strict();
 
 export const SceneFragmentCreateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentCreateWithoutSceneInput> = z.object({
-  fragmentIndex: z.number().int(),
-  isCorrectFragment: z.boolean(),
-  isPlayedFragment: z.boolean(),
-  groundTone: z.number().int()
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable(),
+  fragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneFragmentInputSchema).optional()
 }).strict();
 
 export const SceneFragmentUncheckedCreateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedCreateWithoutSceneInput> = z.object({
   id: z.number().int().optional(),
-  fragmentIndex: z.number().int(),
-  isCorrectFragment: z.boolean(),
-  isPlayedFragment: z.boolean(),
-  groundTone: z.number().int()
+  id_fragment: z.number().int().optional().nullable(),
+  fragmentIndex: z.number().int().optional().nullable(),
+  isCorrectFragment: z.boolean().optional().nullable(),
+  isPlayedFragment: z.boolean().optional().nullable(),
+  groundTone: z.number().int().optional().nullable()
 }).strict();
 
 export const SceneFragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentCreateOrConnectWithoutSceneInput> = z.object({
@@ -7878,8 +8000,8 @@ export const SceneFragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Pris
 export const LevelResultCreateWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutScenesInput> = z.object({
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -7895,8 +8017,8 @@ export const LevelResultUncheckedCreateWithoutScenesInputSchema: z.ZodType<Prism
   id_gameMode: z.number().int(),
   answeredCorrectlyAmount: z.number().int().optional().nullable(),
   answeredIncorrectlyAmount: z.number().int().optional().nullable(),
-  startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
+  startTime: z.coerce.date().optional().nullable(),
+  endTime: z.coerce.date().optional().nullable(),
   score: z.number().int().optional().nullable()
 }).strict();
 
@@ -7906,14 +8028,14 @@ export const LevelResultCreateOrConnectWithoutScenesInputSchema: z.ZodType<Prism
 }).strict();
 
 export const RelistenFragmentCreateWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentCreateWithoutSceneInput> = z.object({
-  relistenCount: z.number().int(),
+  relistenCount: z.number().int().optional().nullable(),
   fragment: z.lazy(() => FragmentCreateNestedOneWithoutRelistenfragmentInputSchema).optional()
 }).strict();
 
 export const RelistenFragmentUncheckedCreateWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedCreateWithoutSceneInput> = z.object({
   id: z.number().int().optional(),
   id_fragment: z.number().int(),
-  relistenCount: z.number().int()
+  relistenCount: z.number().int().optional().nullable()
 }).strict();
 
 export const RelistenFragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentCreateOrConnectWithoutSceneInput> = z.object({
@@ -7931,7 +8053,8 @@ export const FragmentUpdateWithoutSceneInputSchema: z.ZodType<Prisma.FragmentUpd
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUpdateManyWithoutFragmentsNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateWithoutSceneInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateWithoutSceneInput> = z.object({
@@ -7940,7 +8063,8 @@ export const FragmentUncheckedUpdateWithoutSceneInputSchema: z.ZodType<Prisma.Fr
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedUpdateManyWithoutFragmentsNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const SceneFragmentUpsertWithWhereUniqueWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUpsertWithWhereUniqueWithoutSceneInput> = z.object({
@@ -7959,18 +8083,6 @@ export const SceneFragmentUpdateManyWithWhereWithoutSceneInputSchema: z.ZodType<
   data: z.union([ z.lazy(() => SceneFragmentUpdateManyMutationInputSchema),z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneFragmentsInputSchema) ]),
 }).strict();
 
-export const SceneFragmentScalarWhereInputSchema: z.ZodType<Prisma.SceneFragmentScalarWhereInput> = z.object({
-  AND: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
-  OR: z.lazy(() => SceneFragmentScalarWhereInputSchema).array().optional(),
-  NOT: z.union([ z.lazy(() => SceneFragmentScalarWhereInputSchema),z.lazy(() => SceneFragmentScalarWhereInputSchema).array() ]).optional(),
-  id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  id_Scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  isCorrectFragment: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  isPlayedFragment: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  groundTone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-}).strict();
-
 export const LevelResultUpsertWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultUpsertWithoutScenesInput> = z.object({
   update: z.union([ z.lazy(() => LevelResultUpdateWithoutScenesInputSchema),z.lazy(() => LevelResultUncheckedUpdateWithoutScenesInputSchema) ]),
   create: z.union([ z.lazy(() => LevelResultCreateWithoutScenesInputSchema),z.lazy(() => LevelResultUncheckedCreateWithoutScenesInputSchema) ]),
@@ -7979,8 +8091,8 @@ export const LevelResultUpsertWithoutScenesInputSchema: z.ZodType<Prisma.LevelRe
 export const LevelResultUpdateWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutScenesInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -7996,8 +8108,8 @@ export const LevelResultUncheckedUpdateWithoutScenesInputSchema: z.ZodType<Prism
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -8018,7 +8130,7 @@ export const RelistenFragmentUpdateManyWithWhereWithoutSceneInputSchema: z.ZodTy
 }).strict();
 
 export const SceneCreateWithoutSceneFragmentsInputSchema: z.ZodType<Prisma.SceneCreateWithoutSceneFragmentsInput> = z.object({
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   chosenFragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedOneWithoutScenesInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentCreateNestedManyWithoutSceneInputSchema).optional()
@@ -8028,7 +8140,7 @@ export const SceneUncheckedCreateWithoutSceneFragmentsInputSchema: z.ZodType<Pri
   id: z.number().int().optional(),
   id_chosenFragment: z.number().int().optional().nullable(),
   id_levelResult: z.number().int().optional().nullable(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional()
 }).strict();
 
@@ -8037,13 +8149,37 @@ export const SceneCreateOrConnectWithoutSceneFragmentsInputSchema: z.ZodType<Pri
   create: z.union([ z.lazy(() => SceneCreateWithoutSceneFragmentsInputSchema),z.lazy(() => SceneUncheckedCreateWithoutSceneFragmentsInputSchema) ]),
 }).strict();
 
+export const FragmentCreateWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentCreateWithoutSceneFragmentInput> = z.object({
+  name: z.string(),
+  description: z.string().optional().nullable(),
+  notes: z.lazy(() => NoteCreateNestedManyWithoutFragmentInputSchema).optional(),
+  level: z.lazy(() => SubLevelCreateNestedManyWithoutFragmentsInputSchema).optional(),
+  scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
+  relistenfragment: z.lazy(() => RelistenFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
+}).strict();
+
+export const FragmentUncheckedCreateWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateWithoutSceneFragmentInput> = z.object({
+  id: z.number().int().optional(),
+  name: z.string(),
+  description: z.string().optional().nullable(),
+  notes: z.lazy(() => NoteUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
+  level: z.lazy(() => SubLevelUncheckedCreateNestedManyWithoutFragmentsInputSchema).optional(),
+  scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
+}).strict();
+
+export const FragmentCreateOrConnectWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentCreateOrConnectWithoutSceneFragmentInput> = z.object({
+  where: z.lazy(() => FragmentWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => FragmentCreateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedCreateWithoutSceneFragmentInputSchema) ]),
+}).strict();
+
 export const SceneUpsertWithoutSceneFragmentsInputSchema: z.ZodType<Prisma.SceneUpsertWithoutSceneFragmentsInput> = z.object({
   update: z.union([ z.lazy(() => SceneUpdateWithoutSceneFragmentsInputSchema),z.lazy(() => SceneUncheckedUpdateWithoutSceneFragmentsInputSchema) ]),
   create: z.union([ z.lazy(() => SceneCreateWithoutSceneFragmentsInputSchema),z.lazy(() => SceneUncheckedCreateWithoutSceneFragmentsInputSchema) ]),
 }).strict();
 
 export const SceneUpdateWithoutSceneFragmentsInputSchema: z.ZodType<Prisma.SceneUpdateWithoutSceneFragmentsInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   chosenFragment: z.lazy(() => FragmentUpdateOneWithoutSceneNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateOneWithoutScenesNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUpdateManyWithoutSceneNestedInputSchema).optional()
@@ -8053,8 +8189,32 @@ export const SceneUncheckedUpdateWithoutSceneFragmentsInputSchema: z.ZodType<Pri
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional()
+}).strict();
+
+export const FragmentUpsertWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentUpsertWithoutSceneFragmentInput> = z.object({
+  update: z.union([ z.lazy(() => FragmentUpdateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedUpdateWithoutSceneFragmentInputSchema) ]),
+  create: z.union([ z.lazy(() => FragmentCreateWithoutSceneFragmentInputSchema),z.lazy(() => FragmentUncheckedCreateWithoutSceneFragmentInputSchema) ]),
+}).strict();
+
+export const FragmentUpdateWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentUpdateWithoutSceneFragmentInput> = z.object({
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  notes: z.lazy(() => NoteUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  level: z.lazy(() => SubLevelUpdateManyWithoutFragmentsNestedInputSchema).optional(),
+  scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
+  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
+}).strict();
+
+export const FragmentUncheckedUpdateWithoutSceneFragmentInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateWithoutSceneFragmentInput> = z.object({
+  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  notes: z.lazy(() => NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  level: z.lazy(() => SubLevelUncheckedUpdateManyWithoutFragmentsNestedInputSchema).optional(),
+  scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentCreateWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.FragmentCreateWithoutRelistenfragmentInput> = z.object({
@@ -8062,7 +8222,8 @@ export const FragmentCreateWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelCreateNestedManyWithoutFragmentsInputSchema).optional(),
-  scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional()
+  scene: z.lazy(() => SceneCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedCreateWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.FragmentUncheckedCreateWithoutRelistenfragmentInput> = z.object({
@@ -8071,7 +8232,8 @@ export const FragmentUncheckedCreateWithoutRelistenfragmentInputSchema: z.ZodTyp
   description: z.string().optional().nullable(),
   notes: z.lazy(() => NoteUncheckedCreateNestedManyWithoutFragmentInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedCreateNestedManyWithoutFragmentsInputSchema).optional(),
-  scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional()
+  scene: z.lazy(() => SceneUncheckedCreateNestedManyWithoutChosenFragmentInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutFragmentInputSchema).optional()
 }).strict();
 
 export const FragmentCreateOrConnectWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.FragmentCreateOrConnectWithoutRelistenfragmentInput> = z.object({
@@ -8080,7 +8242,7 @@ export const FragmentCreateOrConnectWithoutRelistenfragmentInputSchema: z.ZodTyp
 }).strict();
 
 export const SceneCreateWithoutRelistenFragmentsInputSchema: z.ZodType<Prisma.SceneCreateWithoutRelistenFragmentsInput> = z.object({
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   chosenFragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentCreateNestedManyWithoutSceneInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedOneWithoutScenesInputSchema).optional()
@@ -8090,7 +8252,7 @@ export const SceneUncheckedCreateWithoutRelistenFragmentsInputSchema: z.ZodType<
   id: z.number().int().optional(),
   id_chosenFragment: z.number().int().optional().nullable(),
   id_levelResult: z.number().int().optional().nullable(),
-  chosenFragmentLatency: z.number().int(),
+  chosenFragmentLatency: z.number().int().optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedCreateNestedManyWithoutSceneInputSchema).optional()
 }).strict();
 
@@ -8109,7 +8271,8 @@ export const FragmentUpdateWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUpdateManyWithoutFragmentsNestedInputSchema).optional(),
-  scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional()
+  scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateWithoutRelistenfragmentInput> = z.object({
@@ -8118,7 +8281,8 @@ export const FragmentUncheckedUpdateWithoutRelistenfragmentInputSchema: z.ZodTyp
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
   level: z.lazy(() => SubLevelUncheckedUpdateManyWithoutFragmentsNestedInputSchema).optional(),
-  scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional()
+  scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const SceneUpsertWithoutRelistenFragmentsInputSchema: z.ZodType<Prisma.SceneUpsertWithoutRelistenFragmentsInput> = z.object({
@@ -8127,7 +8291,7 @@ export const SceneUpsertWithoutRelistenFragmentsInputSchema: z.ZodType<Prisma.Sc
 }).strict();
 
 export const SceneUpdateWithoutRelistenFragmentsInputSchema: z.ZodType<Prisma.SceneUpdateWithoutRelistenFragmentsInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   chosenFragment: z.lazy(() => FragmentUpdateOneWithoutSceneNestedInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentUpdateManyWithoutSceneNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateOneWithoutScenesNestedInputSchema).optional()
@@ -8137,7 +8301,7 @@ export const SceneUncheckedUpdateWithoutRelistenFragmentsInputSchema: z.ZodType<
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional()
 }).strict();
 
@@ -8204,8 +8368,8 @@ export const SessionUncheckedUpdateManyWithoutSessionsInputSchema: z.ZodType<Pri
 export const LevelResultUpdateWithoutUserInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutUserInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -8220,8 +8384,8 @@ export const LevelResultUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
@@ -8233,8 +8397,8 @@ export const LevelResultUncheckedUpdateManyWithoutLevelResultsInputSchema: z.Zod
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -8508,8 +8672,8 @@ export const SubLevelUncheckedUpdateManyWithoutSubLevelsInputSchema: z.ZodType<P
 export const LevelResultUpdateWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutLevelInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -8524,8 +8688,8 @@ export const LevelResultUncheckedUpdateWithoutLevelInputSchema: z.ZodType<Prisma
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
@@ -8537,8 +8701,8 @@ export const LevelResultUncheckedUpdateManyWithoutLevelResultInputSchema: z.ZodT
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -8562,7 +8726,8 @@ export const FragmentUpdateWithoutLevelInputSchema: z.ZodType<Prisma.FragmentUpd
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUpdateManyWithoutFragmentNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateWithoutLevelInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateWithoutLevelInput> = z.object({
@@ -8571,7 +8736,8 @@ export const FragmentUncheckedUpdateWithoutLevelInputSchema: z.ZodType<Prisma.Fr
   description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   notes: z.lazy(() => NoteUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
   scene: z.lazy(() => SceneUncheckedUpdateManyWithoutChosenFragmentNestedInputSchema).optional(),
-  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
+  relistenfragment: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional(),
+  sceneFragment: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutFragmentNestedInputSchema).optional()
 }).strict();
 
 export const FragmentUncheckedUpdateManyWithoutFragmentsInputSchema: z.ZodType<Prisma.FragmentUncheckedUpdateManyWithoutFragmentsInput> = z.object({
@@ -8599,8 +8765,8 @@ export const GameModeUncheckedUpdateManyWithoutGameModesInputSchema: z.ZodType<P
 export const LevelResultUpdateWithoutSubLevelInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutSubLevelInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -8615,8 +8781,8 @@ export const LevelResultUncheckedUpdateWithoutSubLevelInputSchema: z.ZodType<Pri
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
@@ -8683,7 +8849,7 @@ export const SubLevelUncheckedUpdateManyWithoutLevelInputSchema: z.ZodType<Prism
 }).strict();
 
 export const SceneUpdateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.SceneUpdateWithoutChosenFragmentInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUpdateManyWithoutSceneNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateOneWithoutScenesNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUpdateManyWithoutSceneNestedInputSchema).optional()
@@ -8692,7 +8858,7 @@ export const SceneUpdateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.Scene
 export const SceneUncheckedUpdateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.SceneUncheckedUpdateWithoutChosenFragmentInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional()
 }).strict();
@@ -8700,24 +8866,50 @@ export const SceneUncheckedUpdateWithoutChosenFragmentInputSchema: z.ZodType<Pri
 export const SceneUncheckedUpdateManyWithoutSceneInputSchema: z.ZodType<Prisma.SceneUncheckedUpdateManyWithoutSceneInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_levelResult: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentUpdateWithoutFragmentInput> = z.object({
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   scene: z.lazy(() => SceneUpdateOneWithoutRelistenFragmentsNestedInputSchema).optional()
 }).strict();
 
 export const RelistenFragmentUncheckedUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedUpdateWithoutFragmentInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUncheckedUpdateManyWithoutRelistenfragmentInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedUpdateManyWithoutRelistenfragmentInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const SceneFragmentUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUpdateWithoutFragmentInput> = z.object({
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  scene: z.lazy(() => SceneUpdateOneWithoutSceneFragmentsNestedInputSchema).optional()
+}).strict();
+
+export const SceneFragmentUncheckedUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateWithoutFragmentInput> = z.object({
+  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const SceneFragmentUncheckedUpdateManyWithoutSceneFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyWithoutSceneFragmentInput> = z.object({
+  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SubLevelUpdateWithoutGameModesInputSchema: z.ZodType<Prisma.SubLevelUpdateWithoutGameModesInput> = z.object({
@@ -8761,8 +8953,8 @@ export const SubLevelUncheckedUpdateManyWithoutLevelsInputSchema: z.ZodType<Pris
 export const LevelResultUpdateWithoutGameModeInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutGameModeInput> = z.object({
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -8777,14 +8969,14 @@ export const LevelResultUncheckedUpdateWithoutGameModeInputSchema: z.ZodType<Pri
   id_subLevel: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   answeredCorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   answeredIncorrectlyAmount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  startTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  endTime: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
 export const SceneUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneUpdateWithoutLevelResultInput> = z.object({
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   chosenFragment: z.lazy(() => FragmentUpdateOneWithoutSceneNestedInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentUpdateManyWithoutSceneNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUpdateManyWithoutSceneNestedInputSchema).optional()
@@ -8793,7 +8985,7 @@ export const SceneUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneUpd
 export const SceneUncheckedUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma.SceneUncheckedUpdateWithoutLevelResultInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional(),
   relistenFragments: z.lazy(() => RelistenFragmentUncheckedUpdateManyWithoutSceneNestedInputSchema).optional()
 }).strict();
@@ -8801,47 +8993,50 @@ export const SceneUncheckedUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma
 export const SceneUncheckedUpdateManyWithoutScenesInputSchema: z.ZodType<Prisma.SceneUncheckedUpdateManyWithoutScenesInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_chosenFragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentUpdateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUpdateWithoutSceneInput> = z.object({
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragment: z.lazy(() => FragmentUpdateOneWithoutSceneFragmentNestedInputSchema).optional()
 }).strict();
 
 export const SceneFragmentUncheckedUpdateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateWithoutSceneInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_fragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentUncheckedUpdateManyWithoutSceneFragmentsInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyWithoutSceneFragmentsInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_fragment: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentIndex: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isCorrectFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isPlayedFragment: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  groundTone: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUpdateWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentUpdateWithoutSceneInput> = z.object({
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragment: z.lazy(() => FragmentUpdateOneWithoutRelistenfragmentNestedInputSchema).optional()
 }).strict();
 
 export const RelistenFragmentUncheckedUpdateWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedUpdateWithoutSceneInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentUncheckedUpdateManyWithoutRelistenFragmentsInputSchema: z.ZodType<Prisma.RelistenFragmentUncheckedUpdateManyWithoutRelistenFragmentsInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  relistenCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 /////////////////////////////////////////

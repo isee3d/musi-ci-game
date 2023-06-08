@@ -1,5 +1,5 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { FragmentSceneData, Scene } from './../../../types/SceneData';
+import { FormattedData, FragmentSceneData, Scene } from './../../../types/SceneData';
 import { create } from "zustand";
 
 type LuisterenState = {
@@ -16,6 +16,7 @@ type LuisterenState = {
 
 type LuisterenActions = {
     setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
+    getFormattedStoreData: () => FormattedData;
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
     setTimePlayed: (time: number) => void;
@@ -59,15 +60,15 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     addScene: (scene: Scene) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
     AddSceneData: (items: FragmentSceneData[]) => set((state) => {
         const newScene = { ...state.sceneData };
-        newScene.fragments = items;
+        newScene.sceneFragments = items;
         return { sceneData: newScene };
     }),
     addRelistenFragment: (fragmentId: number) => set((state) => {
         const newScene = { ...state.sceneData };
-        if (newScene.relistenfragments) {
-            newScene.relistenfragments.push(fragmentId);
+        if (newScene.relistenFragments) {
+            newScene.relistenFragments.push(fragmentId);
         } else {
-            newScene.relistenfragments = [fragmentId];
+            newScene.relistenFragments = [fragmentId];
         }
         return { sceneData: newScene };
     }),
@@ -79,14 +80,64 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         set((state) => ({ level, subLevel, mode })),
     getRelistenCounts: (): { [key: number]: number } => {
         const { sceneData } = get();
-        if (!sceneData || !sceneData.relistenfragments) {
+        if (!sceneData || !sceneData.relistenFragments) {
             return {};
         }
 
-        return sceneData.relistenfragments.reduce<{ [key: number]: number }>((counts, id) => {
+        return sceneData.relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
             counts[id] = (counts[id] || 0) + 1;
             return counts;
         }, {});
+    },
+    getFormattedStoreData: () => {
+        const {
+            startTime,
+            endTime,
+            score,
+            level,
+            subLevel,
+            mode,
+            allPlayedScenes,
+            getRelistenCounts
+        } = get();
+
+        const Scenes = allPlayedScenes.map((scene) => {
+            const sceneFragments = scene.sceneFragments?.map((fragment) => {
+                return {
+                    id_fragment: fragment.id_fragment,
+                    fragmentIndex: fragment.fragmentIndex,
+                    isCorrectFragment: fragment.isCorrectFragment,
+                    isPlayedFragment: fragment.isPlayedFragment,
+                    groundTone: fragment.groundTone,
+                };
+            }) ?? [];
+
+            // Use getRelistenCounts to gather and format relistenFragments data
+            const relistenCounts = getRelistenCounts();
+            const relistenFragments = Object.keys(relistenCounts).map((key) => {
+                return {
+                    id_fragment: parseInt(key),
+                    relistenCount: relistenCounts[parseInt(key)],
+                };
+            });
+
+            return {
+                chosenFragmentLatency: scene.chosenFragmentlatency ?? 0,
+                sceneFragments: sceneFragments,
+                relistenFragments: relistenFragments,
+            };
+        });
+
+        return {
+            id_User: "",
+            id_level: parseInt(level),
+            id_subLevel: parseInt(subLevel),
+            id_gameMode: parseInt(mode),
+            startTime: new Date(startTime),
+            endTime: new Date(endTime),
+            score: score,
+            Scenes: Scenes,
+        };
     },
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)

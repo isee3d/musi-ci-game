@@ -164,6 +164,7 @@ model Fragment {
   level             SubLevel[]
   scene             Scene[]
   relistenfragment  RelistenFragment[]
+  sceneFragment     SceneFragment[]
   name              String
   description       String?
 }
@@ -200,8 +201,8 @@ model LevelResult {
    answeredCorrectlyAmount  Int?
    answeredIncorrectlyAmount Int?
 
-   startTime          DateTime
-   endTime            DateTime
+   startTime          DateTime?
+   endTime            DateTime?
    score              Int?
 }
 
@@ -214,18 +215,19 @@ model Scene {
   levelResult        LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
   relistenFragments RelistenFragment[]
 
-  chosenFragmentLatency Int
+  chosenFragmentLatency Int?
 }
 
 model SceneFragment {
    id                 Int         @id @default(autoincrement())
    id_Scene           Int?
    scene              Scene?         @relation(fields: [id_Scene], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-   fragmentIndex       Int
-   isCorrectFragment   Boolean
-   isPlayedFragment    Boolean
-   groundTone          Int
+   id_fragment        Int?
+   fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
+   fragmentIndex       Int?
+   isCorrectFragment   Boolean?
+   isPlayedFragment    Boolean?
+   groundTone          Int?
 }
 
 model RelistenFragment {
@@ -235,5 +237,5 @@ model RelistenFragment {
   id_scene           Int?
   scene              Scene?       @relation(fields: [id_scene], references: [id])
 
-  relistenCount      Int
+  relistenCount      Int?
 }
