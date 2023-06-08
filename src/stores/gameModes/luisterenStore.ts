@@ -7,15 +7,15 @@ type LuisterenState = {
     endTime: number;
     timePlayed: number;
     score: number;
-    level: string;
-    subLevel: string;
-    mode: string;
+    level: number;
+    subLevel: number;
+    mode: number;
     allPlayedScenes: Scene[];
     sceneData: Scene;
 };
 
 type LuisterenActions = {
-    setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
     getFormattedStoreData: () => FormattedData;
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
@@ -34,9 +34,9 @@ const initialState: LuisterenState = {
     endTime: 0,
     timePlayed: 0,
     score: 0,
-    level: '',
-    subLevel: '',
-    mode: '',
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     sceneData: {},
     allPlayedScenes: [],
 };
@@ -52,9 +52,9 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     score: 0,
     startTime: 0,
     endTime: 0,
-    level: '',
-    subLevel: '',
-    mode: '',
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     sceneData: {},
     allPlayedScenes: [],
     addScene: (scene: Scene) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
@@ -76,7 +76,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
-    setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) =>
         set((state) => ({ level, subLevel, mode })),
     getRelistenCounts: (): { [key: number]: number } => {
         const { sceneData } = get();
@@ -129,10 +129,10 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         });
 
         return {
-            id_User: "",
-            id_level: parseInt(level),
-            id_subLevel: parseInt(subLevel),
-            id_gameMode: parseInt(mode),
+            id_User: "1",
+            id_level: level,
+            id_subLevel: subLevel,
+            id_gameMode: mode,
             startTime: new Date(startTime),
             endTime: new Date(endTime),
             score: score,

@@ -19,6 +19,15 @@ export const gameModeRouter = createTRPCRouter({
         return ctx.prisma.gameMode.findMany();
     }),
 
+    getGameMode: publicProcedure.input(GameModeSchema.pick({ name: true })).query(
+        async ({ ctx, input }) => {
+            const { name } = input;
+            return await ctx.prisma.gameMode.findUnique({
+                where: { name },
+            });
+        }
+    ),
+
     updateGameMode: publicProcedure.input(GameModeSchema).mutation(async ({ ctx, input }) => {
         const { id } = input;
         return await ctx.prisma.gameMode.update({

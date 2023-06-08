@@ -21,6 +21,7 @@ export const LuisterenMachineContext = createActorContext(luisterenMachine, { de
 
 const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ levelId, subLevel, mode }) => {
     const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ subLevelId: subLevel });
+    const modeQuery = api.gameMode.getGameMode.useQuery({name: mode})
     const router = useRouter();
     const { audioContext } = useAudioServiceStore();
     const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0;
@@ -42,7 +43,8 @@ const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ l
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
                             levelId={ levelId }
-                            sublevelId={subLevel} />;
+                            sublevelId={subLevel}
+                            mode={modeQuery?.data?.id.toString()} />;
                     </LuisterenMachineContext.Provider>
                 )
             case 'Spelen':

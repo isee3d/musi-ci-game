@@ -12,9 +12,10 @@ interface LuisterenProps {
     fragments: FragmentWithNotes[];
     levelId: string;
     sublevelId: string;
+    mode: string | undefined;
 }
 
-const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId }) => {
+const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId, mode }) => {
     const { send } = LuisterenMachineContext.useActorRef();
     const isPlayingState = LuisterenMachineContext.useSelector(state => state.matches('playing'));
     const isfinishedPlayingState = LuisterenMachineContext.useSelector(state => state.matches('finishedListening'));
@@ -24,7 +25,7 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, suble
 
     useEffect(() => {
         setStartTime(Date.now());
-        setLevelSublevelMode(levelId, sublevelId,  "luisteren")
+        setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId),  parseInt(mode ?? '0'))
         send({
             type: "STARTROUND",
             levelFragments: fragments,
