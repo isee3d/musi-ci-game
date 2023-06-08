@@ -19,13 +19,14 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, suble
     const { send } = LuisterenMachineContext.useActorRef();
     const isPlayingState = LuisterenMachineContext.useSelector(state => state.matches('playing'));
     const isfinishedPlayingState = LuisterenMachineContext.useSelector(state => state.matches('finishedListening'));
-    const { setStartTime, setLevelSublevelMode } = useLuisterenStore();
+    const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore();
 
     const time = useRef(Date.now());
 
     useEffect(() => {
+        reset();
         setStartTime(Date.now());
-        setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId),  parseInt(mode ?? '0'))
+        setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), parseInt(mode ?? '0'))
         send({
             type: "STARTROUND",
             levelFragments: fragments,
@@ -38,11 +39,11 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, suble
             <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
                 Kijk en luister
             </h3>
-             { isPlayingState && <LuisterenfragmentPlayerRenderer /> }
+            { isPlayingState && <LuisterenfragmentPlayerRenderer /> }
             { isfinishedPlayingState && <LuisterenFeedback time={ time } /> }
             <div className=" flex justify-center space-x-5">
                 { isPlayingState && < PlayButtonsRenderer /> }
-                { isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} /> }
+                { isfinishedPlayingState && <BackToOverView levelId={ levelId } sublevelId={ sublevelId } /> }
             </div>
         </>
     );

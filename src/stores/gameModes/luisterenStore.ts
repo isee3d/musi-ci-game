@@ -16,12 +16,16 @@ type LuisterenState = {
 
 type LuisterenActions = {
     setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
+    addNewUserSceneAnswer: (isCorrect: boolean) => void;
     getFormattedStoreData: () => FormattedData;
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
     setTimePlayed: (time: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneData: (items: FragmentSceneData[]) => void;
+    setChosenFragmentLatency: (latency: number) => void;
+    setChosenFragment: (fragmentId: number) => void;
+    getPercentageCorrectlyAnswered: () => number;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
     resetSceneRelatedData: () => void;
@@ -63,6 +67,16 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         newScene.sceneFragments = items;
         return { sceneData: newScene };
     }),
+    setChosenFragment: (fragmentId: number) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.chosenFragment = fragmentId;
+        return { sceneData: newScene };
+    }),
+    setChosenFragmentLatency: (latency: number) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.chosenFragmentlatency = latency;
+        return { sceneData: newScene };
+    }),
     addRelistenFragment: (fragmentId: number) => set((state) => {
         const newScene = { ...state.sceneData };
         if (newScene.relistenFragments) {
@@ -72,12 +86,30 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         }
         return { sceneData: newScene };
     }),
+    addNewUserSceneAnswer: (isCorrect: boolean) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.answeredCorrectly = isCorrect;
+        return { sceneData: newScene };
+    }),
     addScore: (score: number) => set((state) => ({ score: state.score + score })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
     setLevelSublevelMode: (level: number, subLevel: number, mode: number) =>
         set((state) => ({ level, subLevel, mode })),
+    getPercentageCorrectlyAnswered: () => {
+        const { allPlayedScenes } = get();
+
+        const amountCorrect = allPlayedScenes.reduce((total, scene) => {
+            if (scene.answeredCorrectly) {
+                return total + 1;
+            }
+            return total;
+        }, 0);
+
+        if (amountCorrect === 0) return 0;
+        return Math.round((amountCorrect / allPlayedScenes.length) * 100);
+    },
     getRelistenCounts: (): { [key: number]: number } => {
         const { sceneData } = get();
         if (!sceneData || !sceneData.relistenFragments) {
@@ -123,6 +155,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
 
             return {
                 chosenFragmentLatency: scene.chosenFragmentlatency ?? 0,
+                answeredCorrectly: scene.answeredCorrectly ?? false,
+                id_chosenFragment: scene.chosenFragment ?? 0,
                 sceneFragments: sceneFragments,
                 relistenFragments: relistenFragments,
             };

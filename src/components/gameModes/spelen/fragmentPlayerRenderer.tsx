@@ -6,6 +6,9 @@ import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 import { FragmentSceneData } from 'types/SceneData';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
+import { api } from '~/utils/api';
+import toast from 'react-hot-toast';
 
 const FragmentPlayerRenderer: React.FC = () => {
     const { send } = SpelenMachineContext.useActorRef();
@@ -19,14 +22,25 @@ const FragmentPlayerRenderer: React.FC = () => {
     const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
 
     const {
-        addOneCorrectlyAnswered,
-        addOneWrongAnswered,
+        addNewUserSceneAnswer,
         AddSceneData,
         setEndTime,
         addRelistenFragment,
         setChosenFragment,
         setChosenFragmentLatency,
-    } = useSpelenStore();
+        addScene,
+        sceneData,
+        getFormattedStoreData,
+    } = useLuisterenStore();
+
+    const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
+        onSuccess: () => {
+            toast.success("levelResult created!");
+        },
+        onError: () => {
+            toast.error("Failed to upload new levelresult!");
+        }
+    });
 
     // local state
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
@@ -76,7 +90,7 @@ const FragmentPlayerRenderer: React.FC = () => {
             if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
-            checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
+            addNewUserSceneAnswer(checkIsGuessedCorrect(fragment));
             setChosenFragment(fragment.id);
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
@@ -120,7 +134,10 @@ const FragmentPlayerRenderer: React.FC = () => {
             <div className='flex justify-center space-x-12'>
                 <button
                     disabled={ !listenToFragmentsState || isPlayingFragment }
-                    onClick={ () => send("FINISHEDLISTENING") }
+                    onClick={ () => {
+                        addScene(sceneData);
+                        send("FINISHEDLISTENING")
+                    } }
                     className={
                         `rounded-xl bg-white/10 p-4 text-white hover:bg-white/20
                           ${listenToFragmentsState && !isPlayingFragment ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}` }
@@ -131,7 +148,8 @@ const FragmentPlayerRenderer: React.FC = () => {
                     onClick={ () => {
                         setEndTime(Date.now());
                         send("FINISHEDPLAYING")
-
+                        console.log("my data: " + JSON.stringify(getFormattedStoreData()));
+                        saveToDB(getFormattedStoreData());
                     } }
                     className={
                         `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }

@@ -16,9 +16,10 @@ interface UitdagingProps {
     sublevelId: string;
     fragmentsToShow: number;
     playTime: number | null | undefined;
+    mode: string | undefined;
 }
 
-const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, fragmentsToShow, playTime }) => {
+const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, fragmentsToShow, playTime, mode }) => {
     const { send } = UitdagingMachineContext.useActorRef();
     const startRoundState = UitdagingMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = UitdagingMachineContext.useSelector(state => state.matches('countdown'));
@@ -26,7 +27,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     const isFinishedState = UitdagingMachineContext.useSelector(state => state.matches('FinishedPlayingUitdagingMode'));
     const countdown = useStopwatch(1000)
 
-    const { setModeData } = useUitdagingStore();
+    const { setLevelSublevelMode } = useUitdagingStore();
 
     const { hours, minutes, seconds } = countdown.convertedTime;
 
@@ -39,7 +40,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     }
 
     useEffect(() => {
-        setModeData({ level: levelId, subLevel: sublevelId, mode: "spelen" })
+        setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), parseInt(mode ?? '0'));
         send({
             type: "STARTROUND",
             levelFragments: fragments,

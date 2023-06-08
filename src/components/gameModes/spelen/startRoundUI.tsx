@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 
 interface StartUIProps {
@@ -10,12 +11,12 @@ interface StartUIProps {
 
 const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId }) => {
     const { send } = SpelenMachineContext.useActorRef();
-    const { reset } = useSpelenStore()
+    const { reset } = useLuisterenStore()
 
     return (
         <div className='flex justify-center space-x-5'>
             <button
-                onClick={ () => send("STARTCOUNTDOWN") }
+                onClick={ () => send("STARTCOUNTDOWN")}
                 className=" rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             >
                 <h3 className="text-center text-xl font-bold">Start</h3>

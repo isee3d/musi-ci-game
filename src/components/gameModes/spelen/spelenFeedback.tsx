@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect } from 'react';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 import { formatTime } from '~/utils/time';
 
@@ -10,7 +11,7 @@ interface SpelenFeedbackProps {
 }
 
 const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ time, levelId, sublevelId }) => {
-    const { reset, getPercentageCorrectlyAnswered, timePlayed, setTimePlayed } = useSpelenStore();
+    const { reset, getPercentageCorrectlyAnswered, timePlayed, setTimePlayed } = useLuisterenStore();
 
     useEffect(() => {
         setTimePlayed(Date.now() - time.current);

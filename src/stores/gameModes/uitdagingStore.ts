@@ -1,5 +1,5 @@
 import { mountStoreDevtool } from "simple-zustand-devtools";
-import { FragmentSceneData, ModeData } from "types/SceneData";
+import { FragmentSceneData, Scene } from "types/SceneData";
 import { create } from "zustand";
 
 type UitdagingState = {
@@ -7,15 +7,14 @@ type UitdagingState = {
     endTime: number;
     answeredCorrectly: number;
     answeredWrong: number;
-    modeData: ModeData | undefined;
-    // here under more advanced stuff
-    chosenFragment: number | undefined;
-    chosenFragmentlatency: number | undefined;
-    relistenFragments: number[];
-    SceneData: FragmentSceneData[];
+    level: number;
+    subLevel: number;
+    mode: number;
+    SceneData: Scene;
 };
 
 type UitdagingActions = {
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
     addOneCorrectlyAnswered: () => void;
     addOneWrongAnswered: () => void;
     setStartTime: (time: number) => void;
@@ -25,8 +24,8 @@ type UitdagingActions = {
     setChosenFragmentLatency: (latency: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneDataItem: (item: FragmentSceneData) => void;
+    getRelistenCounts: () => { [key: number]: number };
     AddSceneData: (items: FragmentSceneData[]) => void;
-    setModeData: (data: ModeData) => void;
     resetSceneRelatedData: () => void;
     reset: () => void;
 };
@@ -34,8 +33,10 @@ type UitdagingActions = {
 const initialState: UitdagingState = {
     startTime: 0,
     endTime: 0,
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     answeredCorrectly: 0,
-    modeData: undefined,
     answeredWrong: 0,
     chosenFragment: undefined,
     chosenFragmentlatency: undefined,
@@ -55,6 +56,9 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     answeredCorrectly: 0,
     startTime: 0,
     endTime: 0,
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     answeredWrong: 0,
     modeData: undefined,
     chosenFragment: undefined,
@@ -64,7 +68,8 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
     AddSceneData: (items: FragmentSceneData[]) => set((state) => ({ SceneData: items })),
     AddSceneDataItem: (item: FragmentSceneData) => set((state) => ({ SceneData: [...state.SceneData, item] })),
     setChosenFragment: (fragmentId: number) => set((state) => ({ chosenFragment: fragmentId })),
-    setModeData: (data: ModeData) => set((state) => ({ modeData: data })),
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) =>
+        set((state) => ({ level, subLevel, mode })),
     setChosenFragmentLatency: (latency: number) => set((state) => ({ chosenFragmentlatency: latency })),
     addRelistenFragment: (fragmentId: number) => set((state) =>
         ({ relistenFragments: [...state.relistenFragments, fragmentId] })),
@@ -77,6 +82,17 @@ export const useUitdagingStore = create<UitdagingState & UitdagingActions>((set,
         const total = answeredCorrectly + answeredWrong;
         if (total === 0) return 0;
         return Math.round((answeredCorrectly / total) * 100);
+    },
+    getRelistenCounts: (): { [key: number]: number } => {
+        const { sceneData } = get();
+        if (!sceneData || !sceneData.relistenFragments) {
+            return {};
+        }
+
+        return sceneData.relistenFragments.reduce<{ [key: number]: number }>((counts, id) => {
+            counts[id] = (counts[id] || 0) + 1;
+            return counts;
+        }, {});
     },
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState),

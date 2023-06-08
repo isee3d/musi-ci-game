@@ -7,22 +7,24 @@ import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback';
 import { useSpelenStore } from '~/stores/gameModes/spelenStore';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 
 interface SpelenProps {
     fragments: FragmentWithNotes[];
     levelId: string;
     sublevelId: string;
     fragmentsToShow: number;
+    mode: string | undefined;
 }
 
-const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId }) => {
+const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId, mode }) => {
     const { send } = SpelenMachineContext.useActorRef();
     const startRoundState = SpelenMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
     const finishedState = SpelenMachineContext.useSelector(state => state.matches('FinishedPlayingSpelenMode'));
 
-    const { setStartTime, setModeData } = useSpelenStore();
+    const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore();
 
     const time = useRef(Date.now());
 
@@ -35,8 +37,9 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId,
     }
 
     useEffect(() => {
+        reset();
         setStartTime(Date.now());
-        setModeData({ level: levelId, subLevel: sublevelId, mode: "spelen" })
+        setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), parseInt(mode ?? '0'));
         send({
             type: "STARTROUND",
             levelFragments: fragments,

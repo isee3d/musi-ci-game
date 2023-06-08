@@ -198,8 +198,6 @@ model LevelResult {
    id_gameMode         Int
    gameMode           GameMode?      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
    Scenes             Scene[]
-   answeredCorrectlyAmount  Int?
-   answeredIncorrectlyAmount Int?
 
    startTime          DateTime?
    endTime            DateTime?
@@ -216,6 +214,7 @@ model Scene {
   relistenFragments RelistenFragment[]
 
   chosenFragmentLatency Int?
+  answeredCorrectly    Boolean?
 }
 
 model SceneFragment {

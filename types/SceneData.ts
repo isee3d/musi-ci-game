@@ -11,6 +11,7 @@ export interface Scene {
     relistenFragments?: number[];
     chosenFragment?: number | undefined;
     chosenFragmentlatency?: number | undefined;
+    answeredCorrectly?: boolean;
 }
 
 interface FormattedScene {
@@ -21,6 +22,8 @@ interface FormattedScene {
     }[]
     // id_chosenFragment?: number | undefined;
     chosenFragmentlatency?: number | undefined;
+    id_chosenFragment?: number | undefined;
+    answeredCorrectly?: boolean;
 }
 
 export interface FormattedData {
@@ -28,17 +31,8 @@ export interface FormattedData {
     id_level: number;
     id_subLevel: number;
     id_gameMode: number;
-    answeredCorrectlyAmount?: number;
-    answeredIncorrectlyAmount?: number;
     startTime: Date;
     endTime: Date;
     score: number;
     Scenes: FormattedScene[];
 }
-
-export interface ModeData {
-    level: string;
-    subLevel: string;
-    mode: string;
-}
-

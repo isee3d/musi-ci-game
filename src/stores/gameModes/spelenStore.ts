@@ -1,5 +1,5 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import { ModeData, Scene } from './../../../types/SceneData';
+import { FormattedData, Scene } from './../../../types/SceneData';
 import { FragmentSceneData } from "types/SceneData";
 import { create } from "zustand";
 
@@ -7,23 +7,21 @@ type SpelenState = {
     startTime: number;
     endTime: number;
     timePlayed: number;
-    answeredCorrectly: number;
-    answeredWrong: number;
-    level: string;
-    subLevel: string;
-    mode: string;
-    // modeData: ModeData | undefined;
-    // here under more advanced stuff
-    // chosenFragment: number | undefined;
-    // chosenFragmentlatency: number | undefined;
+    level: number;
+    subLevel: number;
+    mode: number;
+    score: number;
     sceneData: Scene;
+    allPlayedScenes: Scene[];
 };
 
 type SpelenActions = {
-    setLevelSublevelMode: (level: string, subLevel: string, mode: string) => void;
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
     addOneCorrectlyAnswered: () => void;
     addOneWrongAnswered: () => void;
+    getFormattedStoreData: () => FormattedData;
     setTimePlayed: (time: number) => void;
+    addScene: (scene: Scene) => void;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
     getPercentageCorrectlyAnswered: () => number;
@@ -39,13 +37,13 @@ type SpelenActions = {
 const initialState: SpelenState = {
     startTime: 0,
     endTime: 0,
+    score: 0,
     timePlayed: 0,
-    answeredCorrectly: 0,
-    level: '',
-    subLevel: '',
-    mode: '',
-    answeredWrong: 0,
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     sceneData: {},
+    allPlayedScenes: [],
 };
 
 const initialRoundState: Partial<SpelenState> = {
@@ -54,18 +52,15 @@ const initialRoundState: Partial<SpelenState> = {
 
 export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => ({
     timePlayed: 0,
-    answeredCorrectly: 0,
-    answeredWrong: 0,
-    modeData: undefined,
     startTime: 0,
-    level: '',
-    subLevel: '',
-    mode: '',
+    score: 0,
+    level: 0,
+    subLevel: 0,
+    mode: 0,
     endTime: 0,
-    chosenFragment: undefined,
-    chosenFragmentlatency: undefined,
-    relistenFragments: [],
+    allPlayedScenes: [],
     sceneData: {},
+    addScene: (scene: Scene) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
     AddSceneData: (items: FragmentSceneData[]) => set((state) => {
         const newScene = { ...state.sceneData };
         newScene.sceneFragments = items;
@@ -86,18 +81,35 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
         newScene.relistenFragments?.push(fragmentId);
         return { sceneData: newScene };
     }),
-    setLevelSublevelMode: (level: string, subLevel: string, mode: string) =>
+    setLevelSublevelMode: (level: number, subLevel: number, mode: number) =>
         set((state) => ({ level, subLevel, mode })),
-    addOneCorrectlyAnswered: () => set((state) => ({ answeredCorrectly: state.answeredCorrectly + 1 })),
-    addOneWrongAnswered: () => set((state) => ({ answeredWrong: state.answeredWrong + 1 })),
+    addOneCorrectlyAnswered: () => set((state) => {
+        const newScene = { ...state.sceneData };
+        if (!newScene.answeredCorrectly) {
+            newScene.answeredCorrectly = 1;
+            return { sceneData: newScene };
+        }
+        newScene.answeredCorrectly += 1;
+        return { sceneData: newScene };
+    }),
+    addOneWrongAnswered: () => set((state) => {
+        const newScene = { ...state.sceneData };
+        if (!newScene.answeredWrong) {
+            newScene.answeredWrong = 1;
+            return { sceneData: newScene };
+        }
+        newScene.answeredWrong += 1;
+        return { sceneData: newScene };
+    }),
     setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
     getPercentageCorrectlyAnswered: () => {
-        const { answeredCorrectly, answeredWrong } = get();
-        const total = answeredCorrectly + answeredWrong;
+        const { sceneData } = get();
+        if(!sceneData.answeredCorrectly || !sceneData.answeredWrong) return -1;
+        const total = sceneData?.answeredCorrectly + sceneData?.answeredWrong;
         if (total === 0) return 0;
-        return Math.round((answeredCorrectly / total) * 100);
+        return Math.round((sceneData.answeredCorrectly / total) * 100);
     },
     getRelistenCounts: (): { [key: number]: number } => {
         const { sceneData } = get();
@@ -109,6 +121,56 @@ export const useSpelenStore = create<SpelenState & SpelenActions>((set, get) => 
             counts[id] = (counts[id] || 0) + 1;
             return counts;
         }, {});
+    },
+    getFormattedStoreData: () => {
+        const {
+            startTime,
+            endTime,
+            score,
+            level,
+            subLevel,
+            mode,
+            allPlayedScenes,
+            getRelistenCounts
+        } = get();
+
+        const Scenes = allPlayedScenes.map((scene) => {
+            const sceneFragments = scene.sceneFragments?.map((fragment) => {
+                return {
+                    id_fragment: fragment.id_fragment,
+                    fragmentIndex: fragment.fragmentIndex,
+                    isCorrectFragment: fragment.isCorrectFragment,
+                    isPlayedFragment: fragment.isPlayedFragment,
+                    groundTone: fragment.groundTone,
+                };
+            }) ?? [];
+
+            // Use getRelistenCounts to gather and format relistenFragments data
+            const relistenCounts = getRelistenCounts();
+            const relistenFragments = Object.keys(relistenCounts).map((key) => {
+                return {
+                    id_fragment: parseInt(key),
+                    relistenCount: relistenCounts[parseInt(key)],
+                };
+            });
+
+            return {
+                chosenFragmentLatency: scene.chosenFragmentlatency ?? 0,
+                sceneFragments: sceneFragments,
+                relistenFragments: relistenFragments,
+            };
+        });
+
+        return {
+            id_User: "1",
+            id_level: level,
+            id_subLevel: subLevel,
+            id_gameMode: mode,
+            startTime: new Date(startTime),
+            endTime: new Date(endTime),
+            score: score,
+            Scenes: Scenes,
+        };
     },
     reset: () => set(initialState),
     resetSceneRelatedData: () => set(initialRoundState)

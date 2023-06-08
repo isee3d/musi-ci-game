@@ -54,7 +54,8 @@ const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ l
                             fragmentsToShow={ fragmentsToShow }
                             fragments={ fragments }
                             levelId={ levelId }
-                            sublevelId={ subLevel } />;
+                            sublevelId={ subLevel }
+                            mode={ modeQuery?.data?.id.toString() } />;
                     </SpelenMachineContext.Provider>
                 )
             case 'Uitdaging':
@@ -66,6 +67,7 @@ const Mode: NextPage<{ levelId: string, subLevel: string, mode: string }> = ({ l
                             levelId={ levelId }
                             playTime={ playTime }
                             sublevelId={ subLevel }
+                            mode={ modeQuery?.data?.id.toString() }
                         />;
                     </UitdagingMachineContext.Provider>
                 )
