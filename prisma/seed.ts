@@ -172,7 +172,7 @@ async function main() {
       gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
     },
   })
-  
+
   const level = await prisma.level.upsert({
     where: { id: 1 },
     update: {},
@@ -256,33 +256,6 @@ async function main() {
       duration: 120,
       speed: 1,
       fragment: { connect: { id: 2 } },
-    },
-  })
-
-  const levelResult1 = await prisma.levelResult.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      // id: 1,
-      user: { connect: { id: '1' } },
-      gameModes: { connect: { id: 1 } },
-      levels: { connect: { id: 1 } },
-      playDate: new Date(),
-      startTime: new Date(),
-      endTime: new Date(),
-      timesListenedAgain: 2,
-      transposed: 6,
-      reactionTime: 10,
-    },
-  })
-
-  const levelResultFragmentAnswer1 = await prisma.levelResultFragmentAnswer.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      // id: 1,
-      levelResult: { connect: { id: 1 } },
-      answeredCorrectly: true,
     },
   })
 }
