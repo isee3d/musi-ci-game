@@ -189,13 +189,13 @@ model GameMode {
 model LevelResult {
    id                 Int         @id @default(autoincrement())
    id_User             String
-   user                User           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   user                User?           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
    id_level            Int
-   Level              Level         @relation(fields: [id_level], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   Level              Level?         @relation(fields: [id_level], references: [id], onDelete: Cascade, onUpdate: Cascade)
    id_subLevel         Int
-   subLevel           SubLevel     @relation(fields: [id_subLevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   subLevel           SubLevel?     @relation(fields: [id_subLevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
    id_gameMode         Int
-   gameMode           GameMode      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
+   gameMode           GameMode?      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
    Scenes             Scene[]
    answeredCorrectlyAmount  Int?
    answeredIncorrectlyAmount Int?
@@ -231,9 +231,9 @@ model SceneFragment {
 model RelistenFragment {
   id                 Int         @id @default(autoincrement())
   id_fragment        Int
-  fragment           Fragment       @relation(fields: [id_fragment], references: [id])
-  id_scene           Int
-  scene              Scene       @relation(fields: [id_scene], references: [id])
+  fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
+  id_scene           Int?
+  scene              Scene?       @relation(fields: [id_scene], references: [id])
 
   relistenCount      Int
 }
