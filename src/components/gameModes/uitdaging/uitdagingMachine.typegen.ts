@@ -24,6 +24,8 @@ export interface Typegen0 {
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
         "onCountdownStarted": "xstate.after(GO)#spelen.countdown.GO!";
+        "saveLatency": "GUESSEDFRAGMENT";
+        "saveScene": "GUESSEDFRAGMENT";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };

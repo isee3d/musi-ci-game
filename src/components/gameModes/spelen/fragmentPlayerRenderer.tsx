@@ -26,7 +26,6 @@ const FragmentPlayerRenderer: React.FC = () => {
         setEndTime,
         addRelistenFragment,
         setChosenFragment,
-        // setChosenFragmentLatency,
         addScene,
         sceneData,
         getFormattedStoreData,

@@ -8,6 +8,7 @@ import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdaging
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback';
 import useStopwatch from '~/hooks/useStopwatch';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 
 interface UitdagingProps {
@@ -27,7 +28,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     const isFinishedState = UitdagingMachineContext.useSelector(state => state.matches('FinishedPlayingUitdagingMode'));
     const countdown = useStopwatch(1000)
 
-    const { setLevelSublevelMode } = useUitdagingStore();
+    const { setLevelSublevelMode, reset, setStartTime } = useLuisterenStore();
 
     const { hours, minutes, seconds } = countdown.convertedTime;
 
@@ -40,6 +41,8 @@ const Uitdaging: React.FC<UitdagingProps> = ({ fragments, levelId, sublevelId, f
     }
 
     useEffect(() => {
+        reset();
+        setStartTime(Date.now());
         setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), parseInt(mode ?? '0'));
         send({
             type: "STARTROUND",

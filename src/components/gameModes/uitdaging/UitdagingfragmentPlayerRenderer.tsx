@@ -6,6 +6,9 @@ import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
 import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 import { FragmentSceneData } from 'types/SceneData';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
+import toast from 'react-hot-toast';
+import { api } from '~/utils/api';
 
 const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const { send } = UitdagingMachineContext.useActorRef();
@@ -15,20 +18,29 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
     const guessedFragment = UitdagingMachineContext.useSelector(state => state.context.guessedFragment, shallowEqual);
     const shownFragments = UitdagingMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
     const guessHeardFragmentState = UitdagingMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
-    const listenToFragmentsState = UitdagingMachineContext.useSelector(state => state.matches("playing.restAfterAnswering"));
-    const latency = UitdagingMachineContext.useSelector(state => state.context.latency?.latency);
     const amountPlayed = UitdagingMachineContext.useSelector(state => state.context.amountPlayed);
 
     const {
-        addOneCorrectlyAnswered,
-        addOneWrongAnswered,
+        addNewUserSceneAnswer,
         AddSceneData,
         setEndTime,
         setChosenFragment,
-        setChosenFragmentLatency,
-    } = useUitdagingStore();
+        addScene,
+        sceneData,
+        getFormattedStoreData,
+        resetSceneRelatedData,
+    } = useLuisterenStore();
 
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
+
+    const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
+        onSuccess: () => {
+            toast.success("levelResult created!");
+        },
+        onError: () => {
+            toast.error("Failed to upload new levelresult!");
+        }
+    });
 
     useEffect(() => {
         const sceneData: FragmentSceneData[] = [];
@@ -42,6 +54,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
         AddSceneData(sceneData);
         if (amountPlayed === 2) {
             setEndTime(Date.now());
+            saveToDB(getFormattedStoreData());
             send("FINISHEDPLAYING");
         }
     }, [shownFragments])
@@ -75,19 +88,17 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
 
     function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
         if (guessHeardFragmentState) {
-            send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             if (activeFragmentPlayerIndex !== undefined) {
                 setactiveFragmentPlayerIndex(undefined);
             }
-            checkIsGuessedCorrect(fragment) ? addOneCorrectlyAnswered() : addOneWrongAnswered();
+            addNewUserSceneAnswer(checkIsGuessedCorrect(fragment));
             setChosenFragment(fragment.id);
-            return;
+            send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
         }
     }
 
     function onFragmentPlayingComplete() {
         setactiveFragmentPlayerIndex(undefined);
-        setChosenFragmentLatency(latency ?? -1);
     }
 
     return (

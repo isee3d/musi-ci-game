@@ -5,6 +5,7 @@ import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from '~/com
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 // import { CountdownActions } from '~/hooks/useCountdown';
 import { StopwatchActions } from '~/hooks/useStopwatch';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore';
 
 const Transpose = (fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
@@ -134,26 +135,21 @@ export const uitdagingMachine = createMachine({
                     on: {
                         GUESSEDFRAGMENT: {
                             target: 'restAfterAnswering',
-                            actions: 'setGuessedFragment',
+                            actions: [
+                                'setGuessedFragment',
+                                'saveLatency',
+                            ],
                         },
                     },
                     exit: [
-                        assign({
-                            latency: (context) => {
-                                if (context.latency) {
-                                    const endTime = Date.now();
-                                    const latency = endTime - context.latency.startTime;
-                                    return { ...context.latency, endTime, latency };
-                                }
-                                return context.latency;
-                            },
-                            isClickable: undefined,
-                            isAnimating: undefined
-                        }),
+
                     ]
                 },
                 restAfterAnswering: {
-                    entry: (context) => context.countdownActions?.pause(),
+                    entry: [
+                        (context) => context.countdownActions?.pause(),
+                        'saveScene'
+                    ],
                     description: 'In this state the users gets a 1 second rest and the timer has to stop',
                     after: {
                         1000: '#spelen.playing',
@@ -186,9 +182,25 @@ export const uitdagingMachine = createMachine({
                     countdownActions: event.countdownActions,
                 };
             }),
-            // initTimer: (context) => {
-            //     context.countdownActions?.start();
-            // },
+            saveLatency: assign({
+                latency: (context) => {
+                    if (context.latency) {
+                        const { setChosenFragmentLatency } = useLuisterenStore.getState();
+                        const endTime = Date.now();
+                        const latency = endTime - context.latency.startTime;
+                        setChosenFragmentLatency(latency);
+                        return { ...context.latency, endTime, latency };
+                    }
+                    return context.latency;
+                },
+                isClickable: undefined,
+                isAnimating: undefined
+            }),
+            saveScene: () => {
+                const { addScene, sceneData, resetSceneRelatedData } = useLuisterenStore.getState();
+                addScene(sceneData);
+                resetSceneRelatedData();
+            },
             setGuessedFragment: assign((context, event) => {
                 context.countdownActions?.pause();
                 return {
