@@ -120,7 +120,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if (typeof subLevel !== "string") throw new Error("No sublevel");
 
     await ssg.sublevel.getFragmentsOfSublevel.prefetch({ subLevelId: subLevel });
-
+    await ssg.gameMode.getGameMode.prefetch({ name: mode });
     // await ssg.   Do the prefetch of the level and data here
 
     return {

@@ -26,6 +26,7 @@ export const levelResultRouter = createTRPCRouter({
                             answeredCorrectly: scene.answeredCorrectly ?? false,
                             sceneFragments: {
                                 create: scene.sceneFragments.map((fragment) => ({
+                                    id_fragment: fragment.id_fragment,
                                     fragmentIndex: fragment.fragmentIndex,
                                     isCorrectFragment: fragment.isCorrectFragment,
                                     isPlayedFragment: fragment.isPlayedFragment,
