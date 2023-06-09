@@ -2,7 +2,6 @@ import Link from 'next/link';
 import React from 'react';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 
 interface StartUIProps {
     levelId: string;

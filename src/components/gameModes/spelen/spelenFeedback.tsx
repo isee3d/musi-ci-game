@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 import { formatTime } from '~/utils/time';
 
 interface SpelenFeedbackProps {

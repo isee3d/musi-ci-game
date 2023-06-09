@@ -6,7 +6,6 @@ import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayer
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine';
 import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback';
-import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 
 interface SpelenProps {

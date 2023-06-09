@@ -4,7 +4,6 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
-import { useSpelenStore } from '~/stores/gameModes/spelenStore';
 import { FragmentSceneData } from 'types/SceneData';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { api } from '~/utils/api';
