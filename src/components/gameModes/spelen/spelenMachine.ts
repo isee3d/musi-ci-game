@@ -208,9 +208,11 @@ export const spelenMachine = createMachine({
                 let newActiveFragment: FragmentWithNotes | undefined = undefined;
                 let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined;
                 if (shuffledFragments) {
+                    const { setPlayedFragmentId } = useLuisterenStore.getState();
                     transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow);
                     newActiveFragment = transposedFragments?.[Math.floor(Math.random() *
                         shuffledFragments.length)]
+                    setPlayedFragmentId(newActiveFragment?.id ?? 0);
                 }
                 return {
                     guessedFragment: undefined,

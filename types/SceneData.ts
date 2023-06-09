@@ -1,8 +1,6 @@
 export interface FragmentSceneData {
     id_fragment: number;
     fragmentIndex: number;
-    isCorrectFragment?: boolean;
-    isPlayedFragment?: boolean;
     groundTone: number;
 }
 
@@ -12,6 +10,7 @@ export interface Scene {
     chosenFragment?: number | undefined;
     chosenFragmentlatency?: number | undefined;
     answeredCorrectly?: boolean;
+    id_playedFragment?: number;
 }
 
 interface FormattedScene {
@@ -20,10 +19,10 @@ interface FormattedScene {
         id_fragment: number;
         relistenCount: number | undefined;
     }[]
-    // id_chosenFragment?: number | undefined;
     chosenFragmentlatency?: number | undefined;
     id_chosenFragment?: number | undefined;
     answeredCorrectly?: boolean;
+    id_playedFragment?: number;
 }
 
 export interface FormattedData {

@@ -21,6 +21,7 @@ type LuisterenActions = {
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
     setTimePlayed: (time: number) => void;
+    setPlayedFragmentId: (fragmentId: number) => void;
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneData: (items: FragmentSceneData[]) => void;
     setChosenFragmentLatency: (latency: number) => void;
@@ -75,6 +76,11 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     setChosenFragmentLatency: (latency: number) => set((state) => {
         const newScene = { ...state.sceneData };
         newScene.chosenFragmentlatency = latency;
+        return { sceneData: newScene };
+    }),
+    setPlayedFragmentId: (fragmentId: number) => set((state) => {
+        const newScene = { ...state.sceneData };
+        newScene.id_playedFragment = fragmentId;
         return { sceneData: newScene };
     }),
     addRelistenFragment: (fragmentId: number) => set((state) => {
@@ -138,8 +144,6 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
                 return {
                     id_fragment: fragment.id_fragment,
                     fragmentIndex: fragment.fragmentIndex,
-                    isCorrectFragment: fragment.isCorrectFragment,
-                    isPlayedFragment: fragment.isPlayedFragment,
                     groundTone: fragment.groundTone,
                 };
             }) ?? [];
@@ -157,6 +161,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
                 chosenFragmentLatency: scene.chosenFragmentlatency,
                 answeredCorrectly: scene.answeredCorrectly,
                 id_chosenFragment: scene.chosenFragment,
+                id_playedFragment: scene.id_playedFragment,
                 sceneFragments: sceneFragments,
                 relistenFragments: relistenFragments,
             };

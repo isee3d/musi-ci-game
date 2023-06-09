@@ -218,6 +218,7 @@ export const uitdagingMachine = createMachine({
                 }
             }),
             onCountdownStarted: assign((context) => {
+                const { setPlayedFragmentId } = useLuisterenStore.getState();
                 const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5);
                 let newActiveFragment: FragmentWithNotes | undefined = undefined;
                 let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined;
@@ -225,6 +226,7 @@ export const uitdagingMachine = createMachine({
                     transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow);
                     newActiveFragment = transposedFragments?.[Math.floor(Math.random() *
                         shuffledFragments.length)]
+                    setPlayedFragmentId(newActiveFragment?.id ?? 0);
                 }
                 return {
                     guessedFragment: undefined,

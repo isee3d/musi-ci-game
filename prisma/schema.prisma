@@ -162,7 +162,8 @@ model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
   level             SubLevel[]
-  scene             Scene[]
+  chosenScene             Scene[]     @relation("ChosenFragment")
+  playedScene       Scene[]           @relation("PlayedFragment")
   relistenfragment  RelistenFragment[]
   sceneFragment     SceneFragment[]
   name              String
@@ -207,12 +208,13 @@ model LevelResult {
 model Scene {
   id                 Int         @id @default(autoincrement())
   id_chosenFragment     Int?
-  chosenFragment    Fragment?  @relation(fields: [id_chosenFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chosenFragment    Fragment?  @relation("ChosenFragment", fields: [id_chosenFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sceneFragments     SceneFragment[]
   id_levelResult     Int?
   levelResult        LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
   relistenFragments RelistenFragment[]
-
+  id_playedFragment Int?
+  playedFragment    Fragment?  @relation("PlayedFragment", fields: [id_playedFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chosenFragmentLatency Int?
   answeredCorrectly    Boolean?
 }
@@ -224,8 +226,6 @@ model SceneFragment {
    id_fragment        Int?
    fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
    fragmentIndex       Int?
-   isCorrectFragment   Boolean?
-   isPlayedFragment    Boolean?
    groundTone          Int?
 }
 
