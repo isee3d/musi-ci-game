@@ -4,7 +4,6 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { shallowEqual } from '@xstate/react';
-import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 import { FragmentSceneData } from 'types/SceneData';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import toast from 'react-hot-toast';

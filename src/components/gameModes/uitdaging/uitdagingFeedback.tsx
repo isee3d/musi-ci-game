@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 import { formatTime } from '~/utils/time';
 
 interface UitdagingFeedbackProps {
@@ -9,9 +8,6 @@ interface UitdagingFeedbackProps {
 }
 
 const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ levelId, sublevelId }) => {
-    // const { reset, getPercentageCorrectlyAnswered, startTime, endTime }
-    //     = useUitdagingStore();
-
     const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore();
 
     return (

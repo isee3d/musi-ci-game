@@ -1,7 +1,6 @@
 import React from 'react';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 
 
 const StartUitdagingUI: React.FC = () => {

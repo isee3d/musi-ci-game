@@ -19,7 +19,6 @@ const FragmentPlayerRenderer: React.FC = () => {
     const activeFragment = SpelenMachineContext.useSelector(state => state.context.activeFragment, shallowEqual);
     const guessedFragment = SpelenMachineContext.useSelector(state => state.context.guessedFragment, shallowEqual);
     const shownFragments = SpelenMachineContext.useSelector(state => state.context.shownFragments, shallowEqual);
-    const latency = SpelenMachineContext.useSelector(state => state.context.latency?.latency);
     const guessHeardFragmentState = SpelenMachineContext.useSelector(state => state.matches("playing.guessHeardFragment"));
     const listenToFragmentsState = SpelenMachineContext.useSelector(state => state.matches("playing.listenToFragments"));
 

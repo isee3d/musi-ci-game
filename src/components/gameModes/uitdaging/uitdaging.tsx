@@ -9,7 +9,6 @@ import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedbac
 import useStopwatch from '~/hooks/useStopwatch';
 import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { useUitdagingStore } from '~/stores/gameModes/uitdagingStore';
 
 interface UitdagingProps {
     fragments: FragmentWithNotes[];
