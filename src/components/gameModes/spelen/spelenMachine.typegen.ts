@@ -23,6 +23,7 @@ export interface Typegen0 {
     eventsCausingActions: {
         "initializeContext": "STARTROUND";
         "onCountdownStarted": "FINISHEDLISTENING" | "STARTCOUNTDOWN";
+        "saveLatency": "GUESSEDFRAGMENT";
         "setGuessedFragment": "GUESSEDFRAGMENT";
         "setupData": "STARTROUND";
     };

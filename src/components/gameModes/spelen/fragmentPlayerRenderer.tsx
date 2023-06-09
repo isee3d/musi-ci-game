@@ -27,7 +27,7 @@ const FragmentPlayerRenderer: React.FC = () => {
         setEndTime,
         addRelistenFragment,
         setChosenFragment,
-        setChosenFragmentLatency,
+        // setChosenFragmentLatency,
         addScene,
         sceneData,
         getFormattedStoreData,
@@ -95,9 +95,8 @@ const FragmentPlayerRenderer: React.FC = () => {
             send({ type: "GUESSEDFRAGMENT", guessedFragment: fragment })
             return;
         }
-
+        // setChosenFragmentLatency(latency ?? -1);
         if (listenToFragmentsState) {
-            setChosenFragmentLatency(latency ?? -1);
             setIsPlayingFragment(true);
             setactiveFragmentPlayerIndex(fragment.id);
             if (activeFragmentPlayerIndex === undefined) {

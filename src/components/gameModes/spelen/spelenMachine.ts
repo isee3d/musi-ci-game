@@ -2,6 +2,7 @@ import { Latency } from 'types/latency';
 import { createMachine, assign } from 'xstate';
 import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore';
 
 export interface CountdownTimings {
@@ -133,23 +134,12 @@ export const spelenMachine = createMachine({
                     on: {
                         GUESSEDFRAGMENT: {
                             target: 'listenToFragments',
-                            actions: 'setGuessedFragment',
+                            actions: [
+                                'setGuessedFragment',
+                                'saveLatency',
+                            ]
                         },
                     },
-                    exit:[
-                        assign({
-                            latency: (context) => {
-                                if (context.latency) {
-                                    const endTime = Date.now();
-                                    const latency = endTime - context.latency.startTime;
-                                    return { ...context.latency, endTime, latency };
-                                }
-                                return context.latency;
-                            },
-                            isClickable: undefined,
-                            isAnimating: undefined
-                        }),
-                    ]
                 },
                 listenToFragments: {
                     description: 'In this state the user can listen to all the fragments again',
@@ -188,6 +178,20 @@ export const spelenMachine = createMachine({
                 return {
                     guessedFragment: event.guessedFragment,
                 };
+            }),
+            saveLatency: assign({
+                latency: (context) => {
+                    if (context.latency) {
+                        const { setChosenFragmentLatency } = useLuisterenStore.getState();
+                        const endTime = Date.now();
+                        const latency = endTime - context.latency.startTime;
+                        setChosenFragmentLatency(latency);
+                        return { ...context.latency, endTime, latency };
+                    }
+                    return context.latency;
+                },
+                isClickable: undefined,
+                isAnimating: undefined
             }),
             initializeContext: assign(() => {
                 return {
