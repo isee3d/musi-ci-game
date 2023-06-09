@@ -1,55 +1,13 @@
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { LuisterenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { api } from '~/utils/api';
 
-const input = {
-    id_User: "1",
-    id_level: 1,
-    id_subLevel: 1,
-    id_gameMode: 2,
-    answeredCorrectlyAmount: 10,
-    answeredIncorrectlyAmount: 5,
-    startTime: new Date("2023-06-08T10:00:00"),
-    endTime: new Date("2023-06-08T11:00:00"),
-    score: 80,
-    Scenes: [
-        {
-            chosenFragmentLatency: 1000,
-            sceneFragments: [
-                {
-                    fragmentIndex: 1,
-                    isCorrectFragment: true,
-                    isPlayedFragment: false,
-                    groundTone: 1,
-                },
-                {
-                    fragmentIndex: 2,
-                    isCorrectFragment: false,
-                    isPlayedFragment: true,
-                    groundTone: 9,
-                },
-                // More sceneFragments if necessary
-            ],
-            relistenFragments: [
-                {
-                    id_fragment: 1,
-                    relistenCount: 3,
-                },
-                {
-                    id_fragment: 2,
-                    relistenCount: 2,
-                },
-                // More relistenFragments if necessary
-            ],
-        },
-        // More Scenes if necessary
-    ],
-};
-
-
 const PlayButtonsRenderer: React.FC = () => {
+    const { data: sessionData } = useSession();
+
     const { send } = LuisterenMachineContext.useActorRef();
     const { resetSceneRelatedData, setEndTime, sceneData, addScene, getFormattedStoreData } = useLuisterenStore();
     const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
@@ -60,8 +18,6 @@ const PlayButtonsRenderer: React.FC = () => {
             toast.error("Failed to upload new levelresult!");
         }
     });
-
-
 
     return (
         <>
@@ -79,7 +35,8 @@ const PlayButtonsRenderer: React.FC = () => {
                 onClick={ () => {
                     send("FINISHEDLISTENING")
                     setEndTime(Date.now());
-                    saveToDB(getFormattedStoreData())
+                    console.log( "data " + JSON.stringify(getFormattedStoreData(sessionData?.user.id ?? "1")))
+                    saveToDB(getFormattedStoreData(sessionData?.user.id ?? "1"))
                 } }
                 className="rounded-xl bg-white/10 p-4 text-white hover:bg-white/20 "
             >

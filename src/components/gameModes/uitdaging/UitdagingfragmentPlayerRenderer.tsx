@@ -9,8 +9,11 @@ import { FragmentSceneData } from 'types/SceneData';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useSession } from 'next-auth/react';
 
 const UitdagingFragmentPlayerRenderer: React.FC = () => {
+    const { data: sessionData } = useSession();
+
     const { send } = UitdagingMachineContext.useActorRef();
     const isAnimating = UitdagingMachineContext.useSelector(state => state.context.isAnimating);
     const isClickable = UitdagingMachineContext.useSelector(state => state.context.isClickable);
@@ -25,10 +28,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
         AddSceneData,
         setEndTime,
         setChosenFragment,
-        addScene,
-        sceneData,
         getFormattedStoreData,
-        resetSceneRelatedData,
     } = useLuisterenStore();
 
     const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(undefined);
@@ -54,7 +54,7 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
         AddSceneData(sceneData);
         if (amountPlayed === 2) {
             setEndTime(Date.now());
-            saveToDB(getFormattedStoreData());
+            saveToDB(getFormattedStoreData(sessionData?.user.id ?? "1"));
             send("FINISHEDPLAYING");
         }
     }, [shownFragments])

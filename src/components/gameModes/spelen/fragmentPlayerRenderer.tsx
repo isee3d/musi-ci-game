@@ -8,8 +8,11 @@ import { FragmentSceneData } from 'types/SceneData';
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
 import { api } from '~/utils/api';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 const FragmentPlayerRenderer: React.FC = () => {
+    const { data: sessionData } = useSession();
+
     const { send } = SpelenMachineContext.useActorRef();
     const isAnimating = SpelenMachineContext.useSelector(state => state.context.isAnimating);
     const isClickable = SpelenMachineContext.useSelector(state => state.context.isClickable);
@@ -145,8 +148,7 @@ const FragmentPlayerRenderer: React.FC = () => {
                     onClick={ () => {
                         setEndTime(Date.now());
                         send("FINISHEDPLAYING")
-                        console.log("my data: " + JSON.stringify(getFormattedStoreData()));
-                        saveToDB(getFormattedStoreData());
+                        saveToDB(getFormattedStoreData(sessionData?.user.id ?? "1"));
                     } }
                     className={
                         `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }

@@ -17,7 +17,7 @@ type LuisterenState = {
 type LuisterenActions = {
     setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
     addNewUserSceneAnswer: (isCorrect: boolean) => void;
-    getFormattedStoreData: () => FormattedData;
+    getFormattedStoreData: (id_user: string) => FormattedData;
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
     setTimePlayed: (time: number) => void;
@@ -121,7 +121,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
             return counts;
         }, {});
     },
-    getFormattedStoreData: () => {
+    getFormattedStoreData: (id_user: string) => {
         const {
             startTime,
             endTime,
@@ -154,16 +154,16 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
             });
 
             return {
-                chosenFragmentLatency: scene.chosenFragmentlatency ?? 0,
-                answeredCorrectly: scene.answeredCorrectly ?? false,
-                id_chosenFragment: scene.chosenFragment ?? 0,
+                chosenFragmentLatency: scene.chosenFragmentlatency,
+                answeredCorrectly: scene.answeredCorrectly,
+                id_chosenFragment: scene.chosenFragment,
                 sceneFragments: sceneFragments,
                 relistenFragments: relistenFragments,
             };
         });
 
         return {
-            id_User: "1",
+            id_User: id_user,
             id_level: level,
             id_subLevel: subLevel,
             id_gameMode: mode,
