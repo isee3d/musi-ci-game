@@ -258,14 +258,44 @@ async function main() {
       fragment: { connect: { id: 2 } },
     },
   })
+
+
+
+  const levelResult = await prisma.levelResult.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      user: { connect: { id: "1" } },
+      Level: { connect: { id: 1 } },
+      subLevel: { connect: { id: 1 } },
+      gameMode: { connect: { id: 1 } },
+      Scenes: {
+        create: {
+          chosenFragment: { connect: { id: 1 } },
+          sceneFragments: {
+            create: {
+              fragment: { connect: { id: 1 } },
+              fragmentIndex: 1,
+              isCorrectFragment: true,
+              isPlayedFragment: true,
+              groundTone: 1,
+            },
+          },
+        },
+      },
+      startTime: new Date(),
+      endTime: new Date(),
+      score: 100,
+    },
+  })
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+  main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (e) => {
+      console.error(e);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
