@@ -34,9 +34,9 @@
     "@trpc/server": "^10.30.0",
     "@xstate/inspect": "^0.8.0",
     "@xstate/react": "^3.2.2",
-    "bcrypt": "^5.1.0",
     "dayjs": "^1.11.8",
     "glsl-random": "^0.0.5",
+    "json2csv": "6.0.0-alpha.2",
     "next": "^13.4.5",
     "next-auth": "^4.22.1",
     "react": "18.2.0",
@@ -54,6 +54,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/eslint": "^8.40.1",
+    "@types/json2csv": "^5.0.3",
     "@types/node": "^20.3.0",
     "@types/react": "^18.2.11",
     "@types/react-dom": "^18.2.4",
