@@ -60,6 +60,18 @@ export const usersRouter = createTRPCRouter({
             });
         }),
 
+    setParticipantIdToUser: publicProcedure.input(z.object({ userId: z.string(), participantId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const { userId, participantId } = input;
+            return await ctx.prisma.user.update({
+                where: { id: userId },
+                data: {
+                    participantId: participantId,
+                },
+            });
+        }),
+        
+
 
     // updateKliniek: publicProcedure.input(UserSchema).mutation(async ({ ctx, input }) => {
     //     const { id } = input;

@@ -1,3 +1,4 @@
+import { signIn } from 'next-auth/react';
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
@@ -49,6 +50,20 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    async signIn({ user, account, profile, email, credentials }) {
+      const userInDB = await prisma.user.findUnique({
+        where: { email: user.email ?? undefined },
+      });
+
+      if(userInDB?.participantId) {
+        return true;
+      } else{
+        return false;
+        // custom error page met url paste function.... redirect...
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [

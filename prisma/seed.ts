@@ -276,8 +276,8 @@ async function main() {
             create: {
               fragment: { connect: { id: 1 } },
               fragmentIndex: 1,
-              isCorrectFragment: true,
-              isPlayedFragment: true,
+              // isCorrectFragment: true,
+              // isPlayedFragment: true,
               groundTone: 1,
             },
           },

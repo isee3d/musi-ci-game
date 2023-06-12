@@ -46,6 +46,7 @@ const AuthShowcase: React.FC<{ teamId: string, participantId: string }> = ({ tea
   const { data: sessionData } = useSession();
 
   const { mutate: setUserToTeam } = api.user.setUserToTeam.useMutation();
+  const { mutate: setParticipantIdToUser } = api.user.setParticipantIdToUser.useMutation();
 
   async function createAccountAndConnectTeamPlusParticipant() {
     await signIn();
@@ -53,6 +54,7 @@ const AuthShowcase: React.FC<{ teamId: string, participantId: string }> = ({ tea
     if (!userId) throw new Error("No user id found");
     // Fix this to include participantId and teamId for DB
     setUserToTeam({ teamId: parseInt(teamId), userId });
+    setParticipantIdToUser({ participantId: participantId, userId })
   }
   // const { data: secretMessage } = api.example.getSecretMessage.useQuery(
   //   undefined, // no input
