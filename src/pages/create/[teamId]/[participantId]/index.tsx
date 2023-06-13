@@ -1,10 +1,20 @@
 import Head from 'next/head';
-import { type NextPage } from 'next';
+import { GetStaticProps, type NextPage } from 'next';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { api } from '~/utils/api';
 import Link from 'next/link';
+import { useSignupStore } from '~/stores/signupStore';
+import { useEffect } from 'react';
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper';
 
 const CreateAccountPage: NextPage<{ teamId: string, participantId: string }> = ({ teamId, participantId }) => {
+  const { setTeamParticipant } = useSignupStore();
+
+  useEffect(() => {
+    setTeamParticipant(teamId, participantId);
+  }, [])
+
+
   return (
     <>
       <Head>
@@ -48,7 +58,10 @@ const AuthShowcase: React.FC<{ teamId: string, participantId: string }> = ({ tea
   const { mutate: setUserToTeam } = api.user.setUserToTeam.useMutation();
   const { mutate: setParticipantIdToUser } = api.user.setParticipantIdToUser.useMutation();
 
+
+
   async function createAccountAndConnectTeamPlusParticipant() {
+    // has valid teamid and participantid then start the sign in process, else 
     await signIn();
     const userId = sessionData?.user?.id;
     if (!userId) throw new Error("No user id found");
@@ -71,4 +84,25 @@ const AuthShowcase: React.FC<{ teamId: string, participantId: string }> = ({ tea
       </button>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = generateServerSideHelper();
+  const teamId = context.params?.teamId;
+  const participantId = context.params?.participantId;
+
+  if (typeof teamId !== "string") throw new Error("No teamId");
+  if (typeof participantId !== "string") throw new Error("No participantId");
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      participantId,
+      teamId,
+    },
+  };
+};
+
+export const getStaticPaths = () => {
+  return { paths: [], fallback: "blocking" };
 };
