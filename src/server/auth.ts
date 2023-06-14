@@ -22,6 +22,8 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       role: string;
+      participantId: string | undefined;
+      id_Team: string | undefined;
       // role: UserRole;
     } & DefaultSession["user"];
   }
@@ -29,6 +31,8 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     // ...other properties
     role: string;
+    participantId: string | undefined;
+    id_Team: string | undefined;
   }
 }
 
@@ -44,6 +48,9 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
+        role: user.role,
+        participantId: user.participantId,
+        id_Team: user.id_Team,
       },
     }),
   },

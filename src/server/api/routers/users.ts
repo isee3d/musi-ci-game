@@ -72,15 +72,6 @@ export const usersRouter = createTRPCRouter({
         }),
         
 
-
-    // updateKliniek: publicProcedure.input(UserSchema).mutation(async ({ ctx, input }) => {
-    //     const { id } = input;
-    //     return await ctx.prisma.kliniek.update({
-    //         where: { id },
-    //         data: input,
-    //     });
-    // }),
-
     deleteUser: publicProcedure.input(UserSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
         const { id } = input;
         return await ctx.prisma.user.delete({

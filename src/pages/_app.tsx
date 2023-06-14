@@ -15,6 +15,7 @@ import { TailwindIndicator } from "~/components/tailwindIndicator";
 import InitializeSoundModal from "~/components/initializeSoundModal";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import { env } from "~/env.mjs";
+import SetTeamIdAndParticipantIdModal from "~/components/setTeamIdAndParticipantIdModal";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -45,6 +46,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <Layout>
         { showModal && <InitializeSoundModal showModal={ showModal } setmodal={ setShowModal } /> }
+        <SetTeamIdAndParticipantIdModal />
         <TailwindIndicator />
         <Toaster position="bottom-center" />
         <Component { ...pageProps } />
