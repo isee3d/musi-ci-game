@@ -1,4 +1,4 @@
-import { Fragment, Level } from "@prisma/client";
+import { Fragment, Level, SubLevel } from "@prisma/client";
 import { NextPage } from "next";
 import Head from "next/head";
 import { FragmentOptionalDefaultsWithRelations, FragmentWithRelations } from "prisma/generated/zod";
@@ -6,76 +6,79 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NoteCreator from "~/components/creators/noteCreator";
+import Sublevel from "~/components/subLevel";
 import { api } from "~/utils/api";
 
 const validationRules = {
     name: { required: 'Note is required.' },
     description: { required: 'Description is required.' },
-    bpm: {
-        required: 'BPM is required.',
-        pattern: { value: /^[0-9]+$/, message: 'BPM must be a number.' },
-        min: { value: 0, message: 'BPM must be higher than 0' },
-        setValueAs: (value: any) => parseInt(value),
-    },
-    correctAnswers: {
-        required: 'Field is required.',
-        pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
-        min: { value: 0, message: 'Field must be higher than 0' },
-        setValueAs: (value: any) => parseInt(value),
-    },
-    fragmentsToShow: {
-        required: 'Field is required.',
-        pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
-        min: { value: 0, message: 'Field must be higher than 0' },
-        setValueAs: (value: any) => parseInt(value),
-    },
+    // bpm: {
+    //     required: 'BPM is required.',
+    //     pattern: { value: /^[0-9]+$/, message: 'BPM must be a number.' },
+    //     min: { value: 0, message: 'BPM must be higher than 0' },
+    //     setValueAs: (value: any) => parseInt(value),
+    // },
+    // correctAnswers: {
+    //     required: 'Field is required.',
+    //     pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
+    //     min: { value: 0, message: 'Field must be higher than 0' },
+    //     setValueAs: (value: any) => parseInt(value),
+    // },
+    // fragmentsToShow: {
+    //     required: 'Field is required.',
+    //     pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
+    //     min: { value: 0, message: 'Field must be higher than 0' },
+    //     setValueAs: (value: any) => parseInt(value),
+    // },
 };
 
 const ManageLevels: NextPage = () => {
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Level>({ mode: 'onBlur' });
-    const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
-    const { mutate: addLevel } = api.level.createSubLevel.useMutation();
-    const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
+    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<SubLevel>({ mode: 'onBlur' });
+    // const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
+    const { mutate: addLevel } = api.level.createLevel.useMutation();
+    const subLevelQuery = api.sublevel.getAllSubLevels.useQuery();
+    // const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
+    const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([]);
 
-    const onSubmit: SubmitHandler<Level> = (data) => {
-        addLevel({ ...data, fragments: addedFragments.map(f => f.id) });
+    const onSubmit: SubmitHandler<SubLevel> = (data) => {
+        addLevel({ ...data, sublevels: addedSubLevels.map(sublevel => sublevel.id) });
         toast.success("Level created!")
-        setAddedFragments([]);
+        setAddedSubLevels([]);
         reset();
     }
 
-    const onAddFragmentButtonClick = (fragment: Fragment) => {
-        setAddedFragments([...addedFragments, fragment]);
+    const onAddSublevelButtonClick = (sublevel: SubLevel) => {
+        setAddedSubLevels([...addedSubLevels, sublevel]);
     }
 
     const onRemoveFragmentButtonClick = (fragment: Fragment) => {
-        setAddedFragments(addedFragments.filter(f => f.id !== fragment.id));
+        setAddedSubLevels(addedSubLevels.filter(f => f.id !== fragment.id));
     }
 
 
-    const fragmentsfromDBList = fragmentQuery.data?.map(fragment => {
-        if (addedFragments.find(f => f.id === fragment.id)) return null;
+    const AllsublevelsFromDB = subLevelQuery.data?.map(sublevel => {
+        if (addedSubLevels.find(addedSublevel => addedSublevel.id === sublevel.id)) return null;
         return (
-            <li key={ fragment.id } className="flex items-center justify-between">
-                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ fragment.name }</label>
+            <li key={ sublevel.id } className="flex items-center justify-between">
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ sublevel.name }</label>
                 <button
                     type="button"
                     className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
-                    onClick={ () => onAddFragmentButtonClick(fragment) }>
+                    onClick={ () => onAddSublevelButtonClick(sublevel) }>
                     Add
                 </button>
             </li>
         );
     });
 
-    const addedFragmentsList = addedFragments.map((fragment) => {
+    const addedSublevelsList = addedSubLevels.map((sublevel) => {
         return (
-            <li key={ fragment.id } className="flex items-center justify-between">
-                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ fragment.name }</label>
+            <li key={ sublevel.id } className="flex items-center justify-between">
+                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ sublevel.name }</label>
                 <button
                     type="button"
                     className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
-                    onClick={ () => onRemoveFragmentButtonClick(fragment) }>
+                    onClick={ () => onRemoveFragmentButtonClick(sublevel) }>
                     Remove
                 </button>
             </li>
@@ -105,7 +108,7 @@ const ManageLevels: NextPage = () => {
                                     type="text"
                                     id="name"
                                     autoComplete='off'
-                                    placeholder="bijv: gelijk: twee gelijke noten"
+                                    placeholder="bijv: level 1"
                                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                     required />
                                 <p className='text-red-600'>{ errors.name?.message }</p>
@@ -120,7 +123,7 @@ const ManageLevels: NextPage = () => {
                                     required />
                                 <p className='text-red-600'>{ errors.description?.message }</p>
                             </div>
-                            <div>
+                            {/* <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tempo (BPM)</label>
                                 <input
                                     { ...register("BPM", validationRules.bpm) }
@@ -131,8 +134,8 @@ const ManageLevels: NextPage = () => {
                                     placeholder="bijv: 60"
                                     required />
                                 <p className='text-red-600'>{ errors.BPM?.message }</p>
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Het aantal goede antwoord voor een level is gehaald</label>
                                 <input
                                     { ...register("correctAnswers", validationRules.correctAnswers) }
@@ -142,8 +145,8 @@ const ManageLevels: NextPage = () => {
                                     placeholder="bijv: 10"
                                     required />
                                 <p className='text-red-600'>{ errors.correctAnswers?.message }</p>
-                            </div>
-                            <div>
+                            </div> */}
+                            {/* <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Aantal zichtbare fragmenten in Scene</label>
                                 <input
                                     { ...register("fragmentToShow", validationRules.fragmentsToShow) }
@@ -152,8 +155,20 @@ const ManageLevels: NextPage = () => {
                                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="bijv: 2"
                                     required />
                                 <p className='text-red-600'>{ errors.fragmentToShow?.message }</p>
-                            </div>
+                            </div> */}
                             <h3 className="my-2 text-xl text-white">
+                                Toegevoegde fragmenten
+                            </h3>
+                            <ul>
+                                { addedSublevelsList }
+                            </ul>
+                            <h3 className="my-2 text-xl text-white">
+                                Sublevels toevoegen
+                            </h3>
+                            <ul>
+                                { AllsublevelsFromDB }
+                            </ul>
+                            {/* <h3 className="my-2 text-xl text-white">
                                 Toegevoegde fragmenten
                             </h3>
                             <ul>
@@ -164,7 +179,7 @@ const ManageLevels: NextPage = () => {
                             </h3>
                             <ul>
                                 { fragmentsfromDBList }
-                            </ul>
+                            </ul> */}
                         </div>
                         <button
                             type="submit"
