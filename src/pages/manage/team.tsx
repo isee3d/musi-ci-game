@@ -29,6 +29,8 @@ const ManageTeam: NextPage = () => {
         }
     );
 
+    const { mutate: deleteTeam } = api.team.deleteTeam.useMutation();
+
     const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
         return (
             <li key={ user.id } className="flex items-center justify-between">
@@ -117,13 +119,32 @@ const ManageTeam: NextPage = () => {
                         <h3 className="my-2 text-xl text-white">
                             User toevoegen aan team
                         </h3>
+                        <ul>
+                            { usersWithoutTeamList }
+                        </ul>
+                        <h3 className="my-2 text-xl text-white">
+                            Alle teams
+                        </h3>
+                        { teamQuery.data?.map((team) => {
+                            return (
+                                <div key={ team.id } className="flex items-center justify-center space-x-4">
+                                    <h3 className="text-2xl font-bold text-white">{ team.name }</h3>
+                                    <p className="text-xl text-white">{ team.description }</p>
+                                    <button
+                                        onClick={ () => deleteTeam({ id: team.id }) }
+                                        className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
+                                        Delete
+                                    </button>
+                                    <button className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                        Update
+                                    </button>
+                                </div>
+                            );
+                        }) }
 
                     </form>
 
                 </div>
-                <ul>
-                    { usersWithoutTeamList }
-                </ul>
             </main>
         </>
     );

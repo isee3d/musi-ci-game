@@ -18,6 +18,7 @@ const ManageFragments: NextPage = () => {
     const { notes, resetNotes } = useNoteStore();
     const [newNotes, setNewNotes] = useState<Note[]>([]);
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur' });
+
     const { mutate } = api.fragmentNote.createFragment.useMutation({
         onSuccess: () => {
             toast.success("Fragment created!");
@@ -26,6 +27,9 @@ const ManageFragments: NextPage = () => {
             toast.error("Failed to upload new fragment! Please try again.");
         }
     });
+
+    const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
+    const { mutate: deleteFragment } = api.fragmentNote.deleteFragment.useMutation();
 
     const onSubmit: SubmitHandler<Fragment> = (data) => {
         mutate({ ...data, notes });
@@ -93,6 +97,23 @@ const ManageFragments: NextPage = () => {
                             Noten toevoegen of verwijderen
                         </h3>
                         <NoteCreator setNewNotes={ setNewNotes } />
+                    </div>
+                    {/* Show all exisiting fragments with a delete button and a update button */ }
+                    <div className="h-fit w-full border-4 text-white">
+                        { fragmentQuery.data?.map((fragment) => (
+                            <div key={ fragment.id } className="flex items-center justify-center space-x-4">
+                                <h3 className="text-2xl font-bold">{ fragment.name }</h3>
+                                <p className="text-xl">{ fragment.description }</p>
+                                <button
+                                    onClick={ () => deleteFragment({ id: fragment.id }) }
+                                    className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
+                                    Delete
+                                </button>
+                                <button className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                    Update
+                                </button>
+                            </div>
+                        )) }
                     </div>
                 </div>
             </main>
