@@ -1,10 +1,15 @@
 import Head from 'next/head';
 import { type NextPage } from 'next';
 import { api } from '~/utils/api';
+import { useState } from 'react';
+import UpdateUsersModal from '~/components/manage/updateUsersModal';
+import { User } from '@prisma/client';
 
 const ManageUsers: NextPage = () => {
     const usersQuery = api.user.getAllUsers.useQuery();
     const { mutate: deleteUser } = api.user.deleteUser.useMutation();
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     return (
         <>
@@ -28,9 +33,17 @@ const ManageUsers: NextPage = () => {
                                     className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
                                     Delete
                                 </button>
-                                <button className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                <button
+                                    onClick={ () => {
+                                        setSelectedUser(user);
+                                        setShowModal(true);
+                                    } }
+                                className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
                                     Update
                                 </button>
+                                { showModal && selectedUser?.id === user.id && <UpdateUsersModal
+                                    setmodal={ setShowModal }
+                                    user={ selectedUser } /> }
                             </div>
                         );
                     }) }

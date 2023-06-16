@@ -38,7 +38,7 @@ export const usersRouter = createTRPCRouter({
                 },
             },
         });
-        if(!userTeamGames || !userTeamGames.team){
+        if (!userTeamGames || !userTeamGames.team) {
             throw new TRPCError({ code: 'NOT_FOUND', message: 'User has no team' });
         }
         return userTeamGames.team.game;
@@ -70,7 +70,7 @@ export const usersRouter = createTRPCRouter({
                 },
             });
         }),
-        
+
 
     deleteUser: publicProcedure.input(UserSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
         const { id } = input;
@@ -78,4 +78,15 @@ export const usersRouter = createTRPCRouter({
             where: { id },
         });
     }),
+
+    updateUserRole: publicProcedure.input(z.object({ id: z.string(), role: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const { id, role } = input;
+            return await ctx.prisma.user.update({
+                where: { id },
+                data: {
+                    role: role,
+                },
+            });
+        }),
 });

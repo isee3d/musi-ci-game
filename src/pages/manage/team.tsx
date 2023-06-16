@@ -140,9 +140,7 @@ const ManageTeam: NextPage = () => {
                                         Delete
                                     </button>
                                     <button
-                                        onClick={ () => {
-                                            setShowModal(true);
-                                        } }
+                                        onClick={ () => setShowModal(true) }
                                         className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
                                         Update
                                     </button>
