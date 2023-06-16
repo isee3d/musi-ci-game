@@ -5,25 +5,35 @@ import { api } from "~/utils/api";
 interface BaseStaticModalProps {
     setmodal: React.Dispatch<React.SetStateAction<boolean>>;
     level: Level;
+    sublevelsOfLevel: SubLevel[];
 }
 
 const UpdateLevelModal: React.FC<BaseStaticModalProps> = ({ level, setmodal }) => {
     const [levelName, setLevelName] = useState(level.name);
     const [levelDescription, setLevelDescription] = useState(level.description);
-    const subLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId: level.id.toString() });
-    const [addedSublevels, setAddedSublevels] =
-        useState<SubLevel[]>(subLevelQuery.data ?? []);
-    // prefetch sublevelquery
+    const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId: level.id.toString() },
+        { onSuccess: (data) => setAddedSublevels(data)});
+    const otherSubLevelsQuery = api.level.getAllRemainingSubLevelsOfLevel.useQuery({ levelId: level.id.toString()},
+        { onSuccess: (data) => setRemainingSublevels(data) });
+    const [addedSublevels, setAddedSublevels] = useState<SubLevel[]>([]);
+    const [remainingSubLevels, setRemainingSublevels] = useState<SubLevel[]>([]);
+
     const { mutate: updateLevel } = api.level.updateLevel.useMutation();
     const { mutate: updateSublevelsOfLevel } = api.level.setSubLevelsToLevel.useMutation();
 
+
+
     const onAddSublevelButtonClick = (sublevel: SubLevel) => {
         setAddedSublevels([...addedSublevels, sublevel]);
+        setRemainingSublevels(remainingSubLevels.filter(s => s.id !== sublevel.id));
     }
 
     const onRemoveSublevelButtonClick = (sublevel: SubLevel) => {
         setAddedSublevels(addedSublevels.filter(s => s.id !== sublevel.id));
+        setRemainingSublevels([...remainingSubLevels, sublevel]);
     }
+
+
 
     function updateLevelValues() {
         updateLevel({
@@ -38,8 +48,7 @@ const UpdateLevelModal: React.FC<BaseStaticModalProps> = ({ level, setmodal }) =
         setmodal(false);
     }
 
-    const AllsublevelsFromDB = subLevelQuery.data?.map(sublevel => {
-        if (addedSublevels.find(addedSublevel => addedSublevel.id === sublevel.id)) return null;
+    const sublevelsNotCOnnectedToLevel = remainingSubLevels.map(sublevel => {
         return (
             <li key={ sublevel.id } className="flex items-center justify-between">
                 <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-black">{ sublevel.name }</label>
@@ -107,7 +116,7 @@ const UpdateLevelModal: React.FC<BaseStaticModalProps> = ({ level, setmodal }) =
                             Sublevels toevoegen
                         </h3>
                         <ul>
-                            { AllsublevelsFromDB }
+                            { sublevelsNotCOnnectedToLevel }
                         </ul>
                         <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
                             <button
