@@ -34,6 +34,7 @@ const ManageTeam: NextPage = () => {
     const { mutate: deleteTeam } = api.team.deleteTeam.useMutation();
 
     const [showModal, setShowModal] = useState(false);
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
     const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
         return (
@@ -140,11 +141,14 @@ const ManageTeam: NextPage = () => {
                                         Delete
                                     </button>
                                     <button
-                                        onClick={ () => setShowModal(true) }
+                                        onClick={ () => {
+                                            setSelectedTeam(team);
+                                            setShowModal(true);
+                                        }}
                                         className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
                                         Update
                                     </button>
-                                    { showModal && <UpdateTeamModal
+                                    { showModal && selectedTeam?.id === team.id && <UpdateTeamModal
                                         setmodal={ setShowModal }
                                         team={ team } /> }
                                 </div>
