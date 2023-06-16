@@ -11,7 +11,7 @@ const UpdateTeamModal: React.FC<BaseStaticModalProps> = ({ setmodal, team }) => 
     const [teamName, setTeamName] = useState(team.name);
     const [teamDescription, setTeamDescription] = useState(team.description);
     const { mutate: updateTeam } = api.team.updateTeam.useMutation();
-    console.log("team: " + teamName)
+
     function updateTeamValues() {
         updateTeam({
             id: team.id,

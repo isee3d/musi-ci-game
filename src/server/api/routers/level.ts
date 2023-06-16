@@ -46,6 +46,46 @@ export const levelRouter = createTRPCRouter({
         return subLevels.subLevels;
     }),
 
+    setSubLevelsToLevel: publicProcedure
+        .input(z.object({ levelId: z.string(), sublevels: z.array(z.number().int()) }))
+        .mutation(async ({ ctx, input }) => {
+            const { levelId, sublevels } = input;
+            const level = await ctx.prisma.level.findFirst({
+                where: {
+                    id: parseInt(levelId),
+                },
+                select: {
+                    subLevels: true,
+                },
+            });
+            if (!level) {
+                throw new TRPCError({ code: 'NOT_FOUND', message: 'Level does not exist' });
+            }
+
+            const newSubLevels = await ctx.prisma.subLevel.findMany({
+                where: {
+                    id: {
+                        in: sublevels,
+                    },
+                },
+            });
+            if (newSubLevels.length !== sublevels.length) {
+                throw new TRPCError({ code: 'NOT_FOUND', message: 'Not all sublevels were found' });
+            }
+
+            return await ctx.prisma.level.update({
+                where: {
+                    id: parseInt(levelId),
+                },
+                data: {
+                    subLevels: {
+                        set: newSubLevels,
+                    },
+                },
+            });
+        }),
+
+
     updateLevel: publicProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {
         const { id } = input;
         return await ctx.prisma.level.update({

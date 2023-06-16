@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NoteCreator from "~/components/creators/noteCreator";
+import UpdateLevelModal from "~/components/manage/updateLevelModal";
 import Sublevel from "~/components/subLevel";
 import { api } from "~/utils/api";
 
@@ -36,9 +37,13 @@ const ManageLevels: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<SubLevel>({ mode: 'onBlur' });
     // const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
     const { mutate: addLevel } = api.level.createLevel.useMutation();
+    const { mutate: deleteLevel } = api.level.deleteLevel.useMutation();
     const subLevelQuery = api.sublevel.getAllSubLevels.useQuery();
+    const levelQuery = api.level.getAllLevels.useQuery();
     // const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
     const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([]);
+    const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
     const onSubmit: SubmitHandler<SubLevel> = (data) => {
         addLevel({ ...data, sublevels: addedSubLevels.map(sublevel => sublevel.id) });
@@ -157,7 +162,7 @@ const ManageLevels: NextPage = () => {
                                 <p className='text-red-600'>{ errors.fragmentToShow?.message }</p>
                             </div> */}
                             <h3 className="my-2 text-xl text-white">
-                                Toegevoegde fragmenten
+                                Toegevoegde sublevels
                             </h3>
                             <ul>
                                 { addedSublevelsList }
@@ -180,6 +185,30 @@ const ManageLevels: NextPage = () => {
                             <ul>
                                 { fragmentsfromDBList }
                             </ul> */}
+                            { levelQuery.data?.map((level) => {
+                                return (
+                                    <div key={ level.id } className="flex items-center justify-center space-x-4">
+                                        <h3 className="text-2xl font-bold text-white">{ level.name }</h3>
+                                        <p className="text-xl text-white">{ level.description }</p>
+                                        <button
+                                            onClick={ () => deleteLevel({ id: level.id }) }
+                                            className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
+                                            Delete
+                                        </button>
+                                        <button
+                                            onClick={ () => {
+                                                setSelectedLevel(level);
+                                                setShowModal(true);
+                                            } }
+                                            className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                            Update
+                                        </button>
+                                        { showModal && selectedLevel?.id === level.id && <UpdateLevelModal
+                                            setmodal={ setShowModal }
+                                            level={ level } /> }
+                                    </div>
+                                );
+                            }) }
                         </div>
                         <button
                             type="submit"
