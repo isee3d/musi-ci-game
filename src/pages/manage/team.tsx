@@ -4,6 +4,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Game, GameMode, Kliniek, Team, User } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useState } from 'react';
+import UpdateTeamModal from '~/components/manage/updateTeamModal';
 
 const validationRules = {
     name: { required: 'Field is required.' },
@@ -12,6 +14,7 @@ const validationRules = {
 
 const ManageTeam: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Team>({ mode: 'onBlur' });
+    const ctx = api.useContext();
     const teamQuery = api.team.getAllTeams.useQuery();
     const getUsersWithoutTeamQuery = api.user.getAllUsersWithoutTeam.useQuery();
     const { mutate: setUserToTeam } = api.user.setUserToTeam.useMutation({
@@ -20,7 +23,6 @@ const ManageTeam: NextPage = () => {
             ctx.user.getAllUsersWithoutTeam.invalidate();
         },
     });
-    const ctx = api.useContext();
     const { mutate: addTeam } = api.team.createTeam.useMutation(
         {
             onSuccess: () => {
@@ -30,6 +32,8 @@ const ManageTeam: NextPage = () => {
     );
 
     const { mutate: deleteTeam } = api.team.deleteTeam.useMutation();
+
+    const [showModal, setShowModal] = useState(false);
 
     const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
         return (
@@ -135,13 +139,19 @@ const ManageTeam: NextPage = () => {
                                         className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
                                         Delete
                                     </button>
-                                    <button className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                    <button
+                                        onClick={ () => {
+                                            setShowModal(true);
+                                        } }
+                                        className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
                                         Update
                                     </button>
+                                    { showModal && <UpdateTeamModal
+                                        setmodal={ setShowModal }
+                                        team={ team } /> }
                                 </div>
                             );
                         }) }
-
                     </form>
 
                 </div>
