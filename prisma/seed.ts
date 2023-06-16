@@ -51,7 +51,7 @@ async function main() {
     where: { email: 'john.doe@example.com' },
     update: {},
     create: {
-      id: '1',
+      id: 'ckry3i9q20000rnokcau72egt',
       id_Team: 1,
       // id_Role: adminRole.id,
       name: 'John Doe',
@@ -67,7 +67,7 @@ async function main() {
     where: { email: 'jane.smith@example.com' },
     update: {},
     create: {
-      id: '2',
+      id: 'ckry3pjp70001lnokee5le6hs',
       id_Team: 2,
       // id_Role: userRole.id,
       name: 'Jane Smith',
@@ -85,7 +85,7 @@ async function main() {
     update: {},
     create: {
       id: 1,
-      user: { connect: { id: '1' } },
+      user: { connect: { id: 'ckry3pjp70001lnokee5le6hs' } },
       restGehoor: 60,
     },
   })
@@ -95,7 +95,7 @@ async function main() {
     update: {},
     create: {
       id: 2,
-      user: { connect: { id: '1' } },
+      user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
       restGehoor: 40,
     },
   })
@@ -105,7 +105,7 @@ async function main() {
     update: {},
     create: {
       id: 1,
-      user: { connect: { id: '1' } },
+      user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
       name: 'Type CI 1',
       merk: 'Merk 1',
     },
@@ -265,7 +265,7 @@ async function main() {
     where: { id: 1 },
     update: {},
     create: {
-      user: { connect: { id: "1" } },
+      user: { connect: { id: "ckry3i9q20000rnokcau72egt" } },
       Level: { connect: { id: 1 } },
       subLevel: { connect: { id: 1 } },
       gameMode: { connect: { id: 1 } },
