@@ -34,7 +34,7 @@ const validationRules = {
 };
 
 const ManageLevels: NextPage = () => {
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<SubLevel>({ mode: 'onBlur' });
+    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Level>({ mode: 'onBlur' });
     // const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
     const { mutate: addLevel } = api.level.createLevel.useMutation();
     const { mutate: deleteLevel } = api.level.deleteLevel.useMutation();
@@ -45,7 +45,7 @@ const ManageLevels: NextPage = () => {
     const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
     const [showModal, setShowModal] = useState(false);
 
-    const onSubmit: SubmitHandler<SubLevel> = (data) => {
+    const onSubmit: SubmitHandler<Level> = (data) => {
         addLevel({ ...data, sublevels: addedSubLevels.map(sublevel => sublevel.id) });
         toast.success("Level created!")
         setAddedSubLevels([]);
@@ -56,7 +56,7 @@ const ManageLevels: NextPage = () => {
         setAddedSubLevels([...addedSubLevels, sublevel]);
     }
 
-    const onRemoveFragmentButtonClick = (fragment: Fragment) => {
+    const onRemoveFragmentButtonClick = (fragment: SubLevel) => {
         setAddedSubLevels(addedSubLevels.filter(f => f.id !== fragment.id));
     }
 

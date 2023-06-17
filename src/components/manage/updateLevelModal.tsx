@@ -5,7 +5,6 @@ import { api } from "~/utils/api";
 interface BaseStaticModalProps {
     setmodal: React.Dispatch<React.SetStateAction<boolean>>;
     level: Level;
-    sublevelsOfLevel: SubLevel[];
 }
 
 const UpdateLevelModal: React.FC<BaseStaticModalProps> = ({ level, setmodal }) => {
