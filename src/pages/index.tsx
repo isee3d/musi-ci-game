@@ -4,13 +4,7 @@ import Link from "next/link";
 import Image from 'next/image';
 
 
-const Welcome: NextPage = () => {
-  // const { data: session } = useSession();
-
-  // if (!session) {
-  //   // Handle unauthenticated state, e.g. render a SignIn component
-  //   return <h2>Hello world! this is protected route now hehe</h2>;
-  // }
+const WelcomePage: NextPage = () => {
   return (<>
     <Head>
       <title>Welkom Musi-CI</title>
@@ -38,4 +32,4 @@ const Welcome: NextPage = () => {
   </>)
 };
 
-export default Welcome;
+export default WelcomePage;

@@ -9,12 +9,12 @@ const NavMenu: React.FC = () => {
     };
 
     return (
-        <nav className="flex flex-wrap items-center justify-between bg-white p-6 dark:bg-gray-900">
+        <nav className="flex flex-wrap items-center justify-between bg-primary p-6 ">
             <Link
-            href={"/"}>
-            <div className="mr-6 flex shrink-0 items-center dark:text-white">
-                <span className="text-xl font-bold">Logo</span>
-            </div>
+                href={ "/" }>
+                <div className="mr-6 flex shrink-0 items-center text-white">
+                    <span className="text-xl font-bold">Logo</span>
+                </div>
             </Link>
             <div className="block lg:hidden">
                 <button
@@ -54,25 +54,25 @@ const NavMenu: React.FC = () => {
             >
                 <div className="flex justify-end pr-12 text-sm lg:grow lg:space-x-7">
                     <Link
-                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/"
                     >
                         Manage users
                     </Link>
                     <Link
-                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/manage/fragments"
                     >
                         manage fragments
                     </Link>
                     <Link
-                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/manage/levels"
                     >
                         Manage levels
                     </Link>
                     <Link
-                        className="mt-4 block hover:text-gray-200 dark:text-white lg:mt-0 lg:inline-block"
+                        className="mt-4 block text-white hover:text-gray-200 lg:mt-0 lg:inline-block"
                         href="/contact"
                     >
                         Manage results
