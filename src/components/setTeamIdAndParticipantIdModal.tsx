@@ -2,10 +2,6 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
-// interface BaseStaticModalProps {
-//     setmodal: React.Dispatch<React.SetStateAction<boolean>>;
-//     showModal: boolean;
-// }
 
 const InitializeSoundModal: React.FC = () => {
     const { data: sessionData } = useSession();
@@ -25,7 +21,6 @@ const InitializeSoundModal: React.FC = () => {
     }
 
     useEffect(() => {
-        console.log("logging: " + sessionData?.user)
         if(sessionData?.user === undefined) {
             setShowModal(false);
             return;
@@ -36,7 +31,7 @@ const InitializeSoundModal: React.FC = () => {
         } else {
             setShowModal(true);
         }
-    }, [sessionData?.user.participantId, sessionData?.user.id_Team]);
+    }, [sessionData?.user]);
 
 
 
