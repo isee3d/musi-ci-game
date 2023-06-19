@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import NoteCreator from "~/components/creators/noteCreator";
 import { ExistingNote } from "~/components/existingNote";
+import UpdateFragmentModal from "~/components/manage/updateFragmentModal";
 import { useNoteStore } from "~/stores/useNotesStore";
 import { api } from "~/utils/api";
 
@@ -15,7 +16,6 @@ const validationRules = {
 };
 
 const ManageFragments: NextPage = () => {
-    const { notes, resetNotes } = useNoteStore();
     const [newNotes, setNewNotes] = useState<Note[]>([]);
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Fragment>({ mode: 'onBlur' });
 
@@ -30,10 +30,12 @@ const ManageFragments: NextPage = () => {
 
     const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
     const { mutate: deleteFragment } = api.fragmentNote.deleteFragment.useMutation();
+    const [selectedFragment, setSelectedFragment] = useState<Fragment | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
     const onSubmit: SubmitHandler<Fragment> = (data) => {
-        mutate({ ...data, notes });
-        resetNotes();
+        mutate({ ...data, notes: newNotes });
+        setNewNotes([]);
         reset();
     }
 
@@ -79,15 +81,13 @@ const ManageFragments: NextPage = () => {
                                 <p className='text-red-600'>{ errors.description?.message }</p>
                             </div>
                         </div>
-                        {/* get all notes... */ }
                         { newNotes?.map((note) => (
                             <ExistingNote key={ note.id + Math.random() * 58 } { ...note } />
                         )) }
-                        {/* Noten toevoegen */ }
                         <button
                             type='submit'
-                            disabled={ !isValid && notes.length > 0 }
-                            className={ `m-2 min-w-[50vh] rounded-xl text-white  ${(isValid && notes.length > 0) ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
+                            disabled={ !isValid && newNotes.length > 0 }
+                            className={ `m-2 min-w-[50vh] rounded-xl text-white  ${(isValid && newNotes.length > 0) ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
                         >
                             <h3 className="text-center text-2xl font-bold">Fragment opslaan</h3>
                         </button>
@@ -98,6 +98,8 @@ const ManageFragments: NextPage = () => {
                         </h3>
                         <NoteCreator setNewNotes={ setNewNotes } />
                     </div>
+
+
                     {/* Show all exisiting fragments with a delete button and a update button */ }
                     <div className="h-fit w-full border-4 text-white">
                         { fragmentQuery.data?.map((fragment) => (
@@ -109,9 +111,17 @@ const ManageFragments: NextPage = () => {
                                     className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
                                     Delete
                                 </button>
-                                <button className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
+                                <button
+                                    onClick={ () => {
+                                        setSelectedFragment(fragment);
+                                        setShowModal(true);
+                                    } }
+                                className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
                                     Update
                                 </button>
+                                { showModal && selectedFragment?.id === fragment.id && <UpdateFragmentModal
+                                    setmodal={ setShowModal }
+                                    fragment={ fragment } /> }
                             </div>
                         )) }
                     </div>

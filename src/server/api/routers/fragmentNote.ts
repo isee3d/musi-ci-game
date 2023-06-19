@@ -27,7 +27,7 @@ export const fragmentNoteRouter = createTRPCRouter({
     });
   }),
 
-  createFragment: publicProcedure.input(FragmentOptionalDefaultsSchema.extend({notes: z.array(Note)}))
+  createFragment: publicProcedure.input(FragmentOptionalDefaultsSchema.extend({ notes: z.array(Note) }))
     .mutation(async ({ ctx, input }) => {
       const { notes, ...newInput } = input;
 
@@ -52,11 +52,28 @@ export const fragmentNoteRouter = createTRPCRouter({
     });
   }),
 
-  updateFragment: publicProcedure.input(FragmentSchema).mutation(async ({ ctx, input }) => {
-    const { id, name, description } = input;
-    return await ctx.prisma.fragment.update({
-      where: { id },
-      data: { name, description },
-    });
-  }),
+  updateFragment: publicProcedure
+    .input(FragmentOptionalDefaultsSchema.extend({ notes: z.array(Note) }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, name, description, notes } = input;
+      return await ctx.prisma.fragment.update({
+        where: { id },
+        data: {
+          name,
+          description,
+          notes: {
+            deleteMany: {},
+            create: notes,
+          }
+        },
+      });
+    }),
+
+    getNotesOfFragment: publicProcedure.input(FragmentSchema.pick({ id: true })).query(async ({ ctx, input }) => {
+      const { id } = input;
+      return await ctx.prisma.note.findMany({
+        where: { id_Fragment: id }
+      });
+    }
+    ),
 });
