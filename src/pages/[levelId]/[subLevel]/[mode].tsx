@@ -139,5 +139,3 @@ export const getStaticPaths = () => {
 
 export default Mode;
 
-//  Create component for when user finished game percentage and time played
-//  Create component or conditional rendering for start button, countdown
