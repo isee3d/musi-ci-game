@@ -1,35 +1,30 @@
 import { type NextPage } from "next";
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from 'next/image';
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-import InitializeSoundModal from "~/components/initializeSoundModal";
+import { Button } from "~/components/ui/button";
 
 
 const TutorialPage: NextPage = () => {
     return (<>
         <Head>
-            <title>Welkom Musi-CI</title>
+            <title>Tutorial</title>
             <meta name="description" content="Voortgang levels" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
         <main className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
             <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
-                <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
+                <h1 className="text-5xl font-extrabold tracking-tight text-secondary-foreground sm:text-[5rem] ">
                     Tutorial
                 </h1>
-                <h3 className="text-xl font-extrabold text-white">
+                <h3 className="text-7xl font-extrabold text-secondary-foreground">
                     Hier cinie uitleg
                 </h3>
-                <Link
-                    className="flex max-w-xs flex-col gap-4 rounded bg-gray-600 p-4 hover:bg-gray-800 dark:text-white "
-                    href="/podium"
-                >
-                    <h3 className="text-2xl font-bold">Aan de slag</h3>
-                </Link>
+                <Button size={'lg'} asChild>
+                    <Link href="/podium">
+                        <h3 className="text-xl">Ga door naar podium</h3>
+                    </Link>
+                </Button>
             </div>
         </main>
     </>)
