@@ -3,6 +3,8 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import { inspect } from '@xstate/inspect';
+import { Inter as FontSans } from "next/font/google"
+import localFont from "next/font/local"
 
 import { api } from "~/utils/api";
 
@@ -16,6 +18,18 @@ import InitializeSoundModal from "~/components/initializeSoundModal";
 import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 import { env } from "~/env.mjs";
 import SetTeamIdAndParticipantIdModal from "~/components/setTeamIdAndParticipantIdModal";
+import { cn } from "~/lib/utils";
+
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
+
+// Font files can be colocated inside of `pages`
+const fontHeading = localFont({
+  src: "../assets/fonts/CalSans-SemiBold.woff2",
+  variable: "--font-heading",
+})
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -44,13 +58,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <meta name="description" content="The Musi CI web game" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout>
-        { showModal && <InitializeSoundModal showModal={ showModal } setmodal={ setShowModal } /> }
-        <SetTeamIdAndParticipantIdModal />
-        <TailwindIndicator />
-        <Toaster position="bottom-center" />
-        <Component { ...pageProps } />
-      </Layout>
+      <main className={ cn("min-h-screen font-sans antialiased", fontSans.variable, fontHeading.variable) }>
+        <Layout>
+          { showModal && <InitializeSoundModal showModal={ showModal } setmodal={ setShowModal } /> }
+          <SetTeamIdAndParticipantIdModal />
+          <TailwindIndicator />
+          <Toaster position="bottom-center" />
+
+          <Component { ...pageProps } />
+        </Layout>
+      </main >
     </SessionProvider>
   );
 };

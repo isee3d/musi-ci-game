@@ -11,6 +11,9 @@ dependencies:
   '@prisma/client':
     specifier: ^4.15.0
     version: 4.15.0(prisma@4.15.0)
+  '@radix-ui/react-slot':
+    specifier: ^1.0.2
+    version: 1.0.2(@types/react@18.2.12)(react@18.2.0)
   '@react-three/drei':
     specifier: ^9.76.1
     version: 9.76.1(@react-three/fiber@8.13.3)(@types/three@0.152.1)(react-dom@18.2.0)(react@18.2.0)(three@0.153.0)
@@ -713,6 +716,35 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@radix-ui/react-compose-refs@1.0.1(@types/react@18.2.12)(react@18.2.0):
+    resolution: {integrity: sha512-fDSBgd44FKHa1FRMU59qBMPFcl2PZE+2nmqunj+BWFyYYjnhIDWL2ItDs3rrbJDQOtzt5nIebLCQc4QRfz6LJw==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.22.5
+      '@types/react': 18.2.12
+      react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-slot@1.0.2(@types/react@18.2.12)(react@18.2.0):
+    resolution: {integrity: sha512-YeTpuq4deV+6DusvVUW4ivBgnkHwECUu0BiN43L5UCDFgdhsRUWAghhTF5MbvNTPzmiFOx90asDSUjWuCNapwg==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.22.5
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.12)(react@18.2.0)
+      '@types/react': 18.2.12
+      react: 18.2.0
+    dev: false
 
   /@react-spring/animated@9.6.1(react@18.2.0):
     resolution: {integrity: sha512-ls/rJBrAqiAYozjLo5EPPLLOb1LM0lNVQcXODTC1SMtS6DbuBCPaKco5svFUQFMP2dso3O+qcC4k9FsKc0KxMQ==}

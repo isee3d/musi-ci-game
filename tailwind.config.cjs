@@ -1,3 +1,5 @@
+import { fontFamily } from "tailwindcss/defaultTheme"
+
 /** @type {import('tailwindcss').Config} */
 const config = {
   mode: "jit",
@@ -54,13 +56,17 @@ const config = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+        heading: ["var(--font-heading)", ...fontFamily.sans],
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -68,6 +74,8 @@ const config = {
       },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   plugins: [require("tailwindcss-animate")],
 }
 
