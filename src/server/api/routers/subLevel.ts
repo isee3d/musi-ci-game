@@ -29,6 +29,20 @@ export const subLevelRouter = createTRPCRouter({
         return ctx.prisma.subLevel.findMany();
     }),
 
+    getSublevelById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+        const { id } = input;
+        const subLevel = await ctx.prisma.subLevel.findFirst({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        if (!subLevel) {
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'SubLevel not found' });
+        }
+
+        return subLevel;
+    }),
+
     getGameModesOfSublevel: publicProcedure.input(z.object({ subLevelId: z.string() }))
         .query(async ({ ctx, input }) => {
             const { subLevelId } = input;
