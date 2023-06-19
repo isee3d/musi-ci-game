@@ -3,16 +3,16 @@ import Head from "next/head";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 
-
 const TutorialPage: NextPage = () => {
-    return (<>
+    return (
+    <>
         <Head>
             <title>Tutorial</title>
             <meta name="description" content="Voortgang levels" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
+        <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
             <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
                 <h1 className="text-5xl font-extrabold tracking-tight text-secondary-foreground sm:text-[5rem] ">
                     Tutorial
@@ -26,8 +26,9 @@ const TutorialPage: NextPage = () => {
                     </Link>
                 </Button>
             </div>
-        </main>
-    </>)
+        </section>
+    </>
+    )
 };
 
 export default TutorialPage;
