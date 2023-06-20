@@ -13,16 +13,16 @@ const TutorialPage: NextPage = () => {
         </Head>
 
         <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-            <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
-                <h1 className="text-5xl font-extrabold tracking-tight text-secondary-foreground sm:text-[5rem] ">
+            <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
+                <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] ">
                     Tutorial
                 </h1>
-                <h3 className="text-7xl font-extrabold text-secondary-foreground">
+                <h3 className="text-7xl font-extrabold">
                     Hier cinie uitleg
                 </h3>
                 <Button size={'lg'} asChild>
                     <Link href="/podium">
-                        <h3 className="text-xl">Ga door naar podium</h3>
+                        <h3>Ga door naar podium</h3>
                     </Link>
                 </Button>
             </div>

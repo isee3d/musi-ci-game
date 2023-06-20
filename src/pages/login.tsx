@@ -15,7 +15,7 @@ const LoginPage: NextPage = () => {
 
             <section className="flex grow flex-col items-center justify-center">
                 <div className="container flex flex-col items-center justify-center gap-4 px-4 py-16 ">
-                    <h2 className="font-heading text-3xl tracking-tight dark:text-white sm:text-[5rem]">
+                    <h2 className="font-heading text-3xl tracking-tight sm:text-[5rem]">
                         Musi-CI Melody Game
                     </h2>
                     <h2 className="text-3xl leading-normal tracking-tight text-muted-foreground">
@@ -24,7 +24,7 @@ const LoginPage: NextPage = () => {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
                     </div>
                     <div className="flex flex-col items-center gap-2">
-                        <p className="text-2xl text-secondary-foreground">
+                        <p className="text-2xl">
                             Log hier in om te starten
                         </p>
                         <div className="flex gap-5">

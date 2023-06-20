@@ -19,7 +19,7 @@ const Level: NextPage<{ subLevelId: string, levelId: string, sublevel: string }>
             </Head>
             <section className=" flex grow flex-col items-center justify-center">
                 <div className="container flex flex-col items-center justify-center rounded-2xl border-4 border-primary p-0">
-                    <h1 className="w-full  border-b-4 border-primary py-3 text-center text-3xl font-extrabold tracking-tight text-primary">
+                    <h1 className="w-full  border-b-4 border-primary py-3 text-center text-3xl font-extrabold tracking-tight ">
                         { sublevelQuery?.data?.name }
                     </h1>
                     <div className="flex min-h-[60vh] min-w-[40vh] flex-col justify-center gap-y-8">

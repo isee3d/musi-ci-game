@@ -21,7 +21,7 @@ const SublevelsPage: NextPage<{ levelId: string }> = ({ levelId }) => {
 
             <section className="flex grow flex-col items-center justify-center">
                 <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-2xl border-4 border-primary">
-                    <h2 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight text-primary">
+                    <h2 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight">
                         Voortgang Musi-CI Sublevels
                     </h2>
                     <div className=" flex w-full flex-col justify-between space-y-8 py-4 pl-8">

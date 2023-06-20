@@ -13,11 +13,11 @@ const PodiumPage: NextPage = () => {
             </Head>
 
             <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-                <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
-                    <h2 className="text-5xl  tracking-tight text-secondary-foreground sm:text-[5rem] ">
+                <div className="container mx-auto flex flex-col items-center justify-center space-y-8 ">
+                    <h2 className="text-5xl  tracking-tight sm:text-[5rem] ">
                         Podium
                     </h2>
-                    <h2 className="text-xl  text-secondary-foreground">
+                    <h2 className="text-xl">
                         Hier komt het podium
                     </h2>
                     <Button asChild>
