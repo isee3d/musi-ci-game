@@ -45,14 +45,14 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
                                 </div>
                                 {/*body*/ }
                                 <div className="relative flex justify-center p-6">
-                                    <p className="my-4 text-lg leading-relaxed text-slate-500">
+                                    <p className="my-4 text-lg leading-relaxed ">
                                         Klik op de knop hieronder om het geluid in te schakelen.
                                     </p>
                                 </div>
                                 {/*footer*/ }
                                 <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
                                     <button
-                                        className="mb-1 mr-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
+                                        className="mb-1 mr-1 rounded bg-primary px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-primary"
                                         type="button"
                                         onClick={ initializeAudio }
                                     >
@@ -62,7 +62,8 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
                             </div>
                         </div>
                     </div>
-                    <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
+                    {/* Cover for the background so its a bit blurred out */}
+                    <div className="fixed inset-0 z-40 backdrop-blur-3xl bg-black opacity-50"></div>
                 </>
             ) : null }
         </>
