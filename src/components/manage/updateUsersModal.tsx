@@ -17,7 +17,6 @@ interface BaseStaticModalProps {
   user: User
 }
 
-type UserRole = 'USER' | 'ADMIN'
 const userRoles = ['USER', 'ADMIN']
 
 const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) => {
