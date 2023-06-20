@@ -12,13 +12,14 @@ const validationRules = {
   description: { required: 'Field is required.' },
 }
 
-const ManageTeam: NextPage = () => {
+const ManageTeamPage: NextPage = () => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isValid },
   } = useForm<Team>({ mode: 'onBlur' })
+
   const ctx = api.useContext()
   const teamQuery = api.team.getAllTeams.useQuery()
   const getUsersWithoutTeamQuery = api.user.getAllUsersWithoutTeam.useQuery()
@@ -84,7 +85,8 @@ const ManageTeam: NextPage = () => {
         <meta name="description" content="manage team" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+
+      <section className="flex grow flex-col items-center justify-center">
         <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
           Teams beheren
         </h1>
@@ -162,9 +164,9 @@ const ManageTeam: NextPage = () => {
             })}
           </form>
         </div>
-      </main>
+      </section>
     </>
   )
 }
 
-export default ManageTeam
+export default ManageTeamPage
