@@ -2,9 +2,9 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
-import { inspect } from '@xstate/inspect';
-import { Inter as FontSans } from "next/font/google"
-import localFont from "next/font/local"
+import { inspect } from "@xstate/inspect";
+import { Inter as FontSans } from "next/font/google";
+import localFont from "next/font/local";
 
 import { api } from "~/utils/api";
 
@@ -23,13 +23,13 @@ import { cn } from "~/lib/utils";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
 // Font files can be colocated inside of `pages`
 const fontHeading = localFont({
   src: "../assets/fonts/CalSans-SemiBold.woff2",
   variable: "--font-heading",
-})
+});
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -39,35 +39,49 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const { init: initAudio } = useAudioServiceStore.getState();
 
   useEffect(() => {
-    if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
+    if (env.NEXT_PUBLIC_ENABLE_AUDIO === "true") {
       initAudio();
     }
-    if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return;
-    if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
+    if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === "false") return;
+    if (
+      typeof window !== "undefined" &&
+      env.NEXT_PUBLIC_NODE_ENV === "development"
+    ) {
       inspect({
-        url: 'https://statecharts.io/inspect', // (default)
-        iframe: false
+        url: "https://statecharts.io/inspect", // (default)
+        iframe: false,
       });
     }
   }, []);
 
   return (
-    <SessionProvider session={ session }>
+    <SessionProvider session={session}>
       <Head>
         <title>Musi CI</title>
         <meta name="description" content="The Musi CI web game" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={ cn("min-h-screen font-sans antialiased", fontSans.variable, fontHeading.variable) }>
+      <main
+        className={cn(
+          "min-h-screen font-sans antialiased",
+          fontSans.variable,
+          fontHeading.variable
+        )}
+      >
         <Layout>
-          { showModal && <InitializeSoundModal showModal={ showModal } setmodal={ setShowModal } /> }
+          {showModal && (
+            <InitializeSoundModal
+              showModal={showModal}
+              setmodal={setShowModal}
+            />
+          )}
           <SetTeamIdAndParticipantIdModal />
           <TailwindIndicator />
           <Toaster position="bottom-center" />
 
-          <Component { ...pageProps } />
+          <Component {...pageProps} />
         </Layout>
-      </main >
+      </main>
     </SessionProvider>
   );
 };

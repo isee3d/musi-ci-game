@@ -1,5 +1,5 @@
 {
-  "prettier.enable": false,
+  "prettier.enable": true,
   // Github Copilot settings
   "github.copilot.enable": {
     "*": true,
@@ -27,8 +27,9 @@
   "editor.formatOnPaste": true,
   "editor.foldingImportsByDefault": true,
   "editor.codeActionsOnSave": {
-    "eslint.format.enable": true,
-    "source.fixAll.eslint": true,
+    // "eslint.format.enable": true,
+    // "source.fixAll.eslint": true,
+    "pretter.formatOnSave": true,
     "addMissingImports": true,
   },
   // Getting used to this one, don't know if I like it yet
@@ -40,7 +41,7 @@
   "editor.minimap.renderCharacters": false,
   "editor.minimap.maxColumn": 200,
   "editor.minimap.showSlider": "always",
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Breadcrumbs settings
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "on",
@@ -74,10 +75,11 @@
   },
   "typescript.tsdk": "node_modules/.pnpm/typescript@4.9.5/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  // "[typescriptreact]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // },
+  // "[typescript]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // },
+  // "[jav]"
 }

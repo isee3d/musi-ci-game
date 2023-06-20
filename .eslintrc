@@ -51,6 +51,7 @@
     "next/core-web-vitals",
     "plugin:tailwindcss/recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
   ],
   "rules": {
     "max-len": [
