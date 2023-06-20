@@ -36,11 +36,11 @@ const ModePage: NextPage<{ levelId: string; subLevel: string; mode: string }> = 
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  // useEffect(() => {
-  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-  //     router.push(`/modeSelect/${levelId}/${subLevel}`)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+      router.push(`/modeSelect/${levelId}/${subLevel}`)
+    }
+  }, [])
 
   function renderGameMode(mode: string) {
     switch (mode) {
@@ -118,7 +118,7 @@ const ModePage: NextPage<{ levelId: string; subLevel: string; mode: string }> = 
               </Button>
             ))}
           </div>
-          <div className="flex w-1/2 flex-col justify-center space-y-8 p-5">
+          <div className="relative flex w-1/2 flex-col justify-center gap-y-8 p-5">
             {renderGameMode(mode)}
           </div>
         </div>

@@ -1,11 +1,12 @@
-import dynamic from 'next/dynamic';
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
-import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils';
-import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { Ortho, View } from '~/components/3D/canvas/View';
-import { FragmentCircle, FragmentLine } from '~/components/3D/canvas/Examples';
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils'
+import { start } from '~/components/fragmentPlayer/audio/AudioControls'
+import { Ortho, View } from '~/components/3D/canvas/View'
+import { FragmentCircle, FragmentLine } from '~/components/3D/canvas/Examples'
+import { cn } from '~/lib/utils'
 
 // const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
 // const FragmentLine = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.FragmentLine), { ssr: false })
@@ -27,76 +28,85 @@ import { FragmentCircle, FragmentLine } from '~/components/3D/canvas/Examples';
 //   ),
 // })
 
-function getAnimationClass(options: AnimationPlayerOptions | undefined, thisFragment: FragmentWithNotes){
-  let borderColorClass = 'border-transparent';
-  let bgColorClass = 'bg-zinc-500';
-  let cursorClass = 'cursor-not-allowed bg-gray-400';
+function getAnimationClass(
+  options: AnimationPlayerOptions | undefined,
+  thisFragment: FragmentWithNotes
+) {
+  const borderColorClass = options?.showCorrectOutline
+    ? options?.isCorrect
+      ? 'border-green-500'
+      : 'border-red-500'
+    : 'border-transparent'
 
-  if (options?.showCorrectOutline) {
-    borderColorClass = options?.isCorrect ? 'border-green-500' : 'border-red-500';
-    if (thisFragment.id === options?.guessedFragment?.id) {
-      bgColorClass = options?.isCorrect ? 'bg-green-500' : 'bg-red-500';
-    }
-  }
+  const bgColorClass =
+    options?.showCorrectOutline && thisFragment.id === options?.guessedFragment?.id
+      ? options?.isCorrect
+        ? 'bg-green-500'
+        : 'bg-red-500'
+      : 'bg-zinc-500'
 
-  if (!options?.isAnimating && options?.isClickable) {
-    cursorClass = 'cursor-pointer hover:bg-slate-200/20';
-  }
+  const cursorClass =
+    !options?.isAnimating && options?.isClickable
+      ? 'cursor-pointer hover:bg-primary/40'
+      : 'cursor-not-allowed bg-gray-400'
 
-  return `rounded-2xl border-4 shadow shadow-slate-600 ${borderColorClass} ${bgColorClass} ${cursorClass}`;
+  return cn(
+    'rounded-2xl border-4 border-purple-500 shadow-md',
+    borderColorClass,
+    bgColorClass,
+    cursorClass
+  )
 }
 
 function findMinMaxX(pointsArray: NotePositionTime[]): [number, number] {
-  let minX = Infinity;
-  let maxX = -Infinity;
+  let minX = Infinity
+  let maxX = -Infinity
 
   for (const points of pointsArray) {
     for (const point of points.position) {
-      minX = Math.min(minX, point.x);
-      maxX = Math.max(maxX, point.x);
+      minX = Math.min(minX, point.x)
+      maxX = Math.max(maxX, point.x)
     }
   }
 
-  return [minX, maxX];
+  return [minX, maxX]
 }
 
 interface AnimationPlayerOptions {
-  isClickable?: boolean;
-  isLooping?: boolean;
-  isAnimating: boolean;
-  showCorrectOutline?: boolean;
-  guessedFragment?: FragmentWithNotes;
-  isCorrect?: boolean;
-  onAnimationClicked?: (fragment: FragmentWithNotes) => void;
-  onAnimationComplete?: (fragment?: FragmentWithNotes) => void;
+  isClickable?: boolean
+  isLooping?: boolean
+  isAnimating: boolean
+  showCorrectOutline?: boolean
+  guessedFragment?: FragmentWithNotes
+  isCorrect?: boolean
+  onAnimationClicked?: (fragment: FragmentWithNotes) => void
+  onAnimationComplete?: (fragment?: FragmentWithNotes) => void
 }
 
 interface AnimationPlayerProps {
-  animationFragment: FragmentWithNotes;
-  options?: AnimationPlayerOptions;
+  animationFragment: FragmentWithNotes
+  options?: AnimationPlayerOptions
 }
 
 export interface NotePositionTime {
-  position: THREE.Vector3[];
-  time: number;
+  position: THREE.Vector3[]
+  time: number
 }
 
-const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
-  animationFragment, options
-}) => {
-  const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0);
-  const [notePositions, setNotePositions] = useState<NotePositionTime[]>([]);
-  const containerRef = useRef<HTMLButtonElement>(null);
+const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, options }) => {
+  const [positionZeroPoint, setPositionZeroPoint] = useState<number>(0)
+  const [notePositions, setNotePositions] = useState<NotePositionTime[]>([])
+  const containerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (containerRef.current) {
-      resizeWindow();
-      window.addEventListener('resize', resizeWindow);
+      resizeWindow()
+      window.addEventListener('resize', resizeWindow)
     }
     return () => {
-      window.removeEventListener('resize', resizeWindow);
-    };
-  }, []);
+      window.removeEventListener('resize', resizeWindow)
+    }
+  }, [])
 
   function resizeWindow(): void {
     if (containerRef.current) {
@@ -105,65 +115,61 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({
         containerRef.current.clientWidth,
         containerRef.current.clientHeight,
         8
-      );
+      )
 
-      setNotePositions(latestNotePositions => {
-        const minMax = findMinMaxX(latestNotePositions);
-        setPositionZeroPoint((minMax[1] - minMax[0]) / 2 * -1);
-        return notePositions;
-      });
+      setNotePositions((latestNotePositions) => {
+        const minMax = findMinMaxX(latestNotePositions)
+        setPositionZeroPoint(((minMax[1] - minMax[0]) / 2) * -1)
+        return notePositions
+      })
     }
   }
 
   function handleAnimationClicked() {
     if (options?.onAnimationClicked) {
-      options.onAnimationClicked(animationFragment);
+      options.onAnimationClicked(animationFragment)
     }
   }
 
   function handleAnimationComplete() {
     if (options?.onAnimationComplete) {
-      options.onAnimationComplete(animationFragment);
+      options.onAnimationComplete(animationFragment)
     }
   }
 
   return (
     <button
-      disabled={ (!options?.isAnimating && !options?.isClickable) }
-      onClick={ handleAnimationClicked }
-      ref={ containerRef }
-      // className={
-      //   `rounded-2xl border-4 bg-zinc-500 shadow shadow-slate-600
-      //  ${options?.showCorrectOutline ? (options?.isCorrect ? 'border-green-500' : 'border-red-500') : 'border-transparent'}
-      //  ${(!options?.isAnimating && options?.isClickable) ? 'cursor-pointer hover:bg-slate-200' : 'cursor-not-allowed bg-gray-400'}
-      //      `}
-      className={ `${getAnimationClass(options, animationFragment)}`}
+      disabled={!options?.isAnimating && !options?.isClickable}
+      onClick={handleAnimationClicked}
+      ref={containerRef}
+      className={`${getAnimationClass(options, animationFragment)}`}
     >
-      <View useOrbit className='h-48 w-full'>
-        <Suspense fallback={ null }>
-          { notePositions.map((points, index) => (
+      <View useOrbit className="h-48 w-full">
+        <Suspense fallback={null}>
+          {notePositions.map((points, index) => (
             <FragmentLine
-              key={ index }
-              position={ new THREE.Vector3(positionZeroPoint, 0, 0) }
-              lineWidth={ 8 }
-              color={ "black" }
-              points={ points.position }
+              key={index}
+              position={new THREE.Vector3(positionZeroPoint, 0, 0)}
+              lineWidth={8}
+              color={'black'}
+              points={points.position}
             />
-          )) }
+          ))}
           <FragmentCircle
-            pointsList={ notePositions }
-            segments={ 32 }
-            xCorrection={ positionZeroPoint }
-            radius={ 10 }
-            color={ "red" }
-            onComplete={ handleAnimationComplete }
-            isAnimating={ options?.isAnimating }
-            loop={ options?.isLooping } />
+            pointsList={notePositions}
+            segments={32}
+            xCorrection={positionZeroPoint}
+            radius={10}
+            color={'red'}
+            onComplete={handleAnimationComplete}
+            isAnimating={options?.isAnimating}
+            loop={options?.isLooping}
+          />
           <Ortho />
         </Suspense>
       </View>
     </button>
-  );
-};
+  )
+}
 
-export default AnimationPlayer;
+export default AnimationPlayer

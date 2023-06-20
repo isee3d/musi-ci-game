@@ -49,7 +49,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId,
 
     return (
         <>
-            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+            <h3 className="text-center text-4xl font-extrabold pb-16 tracking-tight">
                 Kijk en luister
             </h3>
             { startRoundState && <StartRoundUI levelId={ levelId } sublevelId={ sublevelId} /> }

@@ -36,9 +36,9 @@ const Luisteren: React.FC<LuisterenProps> = ({ fragments, fragmentsToShow, suble
 
     return (
         <>
-            <h3 className="text-center text-4xl font-extrabold tracking-tight text-white">
+            <h2 className="text-center text-4xl font-extrabold tracking-tight">
                 Kijk en luister
-            </h3>
+            </h2>
             { isPlayingState && <LuisterenfragmentPlayerRenderer /> }
             { isfinishedPlayingState && <LuisterenFeedback time={ time } /> }
             <div className=" flex justify-center space-x-5">
