@@ -8,6 +8,7 @@ import { api } from '~/utils/api'
 
 const UserGamesPage: NextPage = () => {
   const { data: session } = useSession()
+  // Add loading to retrieve this data, cause it can't be prefetched
   const gamesOfUserQuery = api.user.getGamesOfUser.useQuery({ id: session?.user.id })
 
   return (
