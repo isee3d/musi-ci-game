@@ -1,9 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
-import { Parser, parseAsync } from 'json2csv';
-import { delimiter } from "path";
-
+import { Parser } from 'json2csv';
+import { Button } from "~/components/ui/button";
 
 const DownloadPage: NextPage = () => {
     const downloadQuery = api.download.getAll.useQuery();
@@ -28,22 +27,19 @@ const DownloadPage: NextPage = () => {
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
+        <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
             <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-t-md border-black">
-                <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem] ">
+                <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] ">
                     Download CSV
                 </h1>
-                <h3 className="text-xl font-extrabold text-white">
+                <h3 className="text-xl font-extrabold">
                     TEST Download
                 </h3>
-                <button
-                    onClick={ downloadCSV }
-                    className="flex max-w-xs flex-col gap-4 rounded bg-gray-600 p-4 hover:bg-gray-800 dark:text-white "
-                >
-                    <h3 className="text-2xl font-bold">Start</h3>
-                </button>
+                <Button onClick={ downloadCSV } size={ "lg" }>
+                    <h3>Download nu</h3>
+                </Button>
             </div>
-        </main>
+        </section>
     </>)
 };
 
