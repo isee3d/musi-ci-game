@@ -38,6 +38,15 @@ const Level: NextPage<{ subLevelId: string; levelId: string; sublevel: string }>
                 </Link>
               </Button>
             ))}
+
+            <Button
+              asChild
+              className={cn(buttonVariants({ size: 'lg' }), 'h-16 mt-10 rounded-xl')}
+            >
+              <Link href={`/progress/level/${levelId}`}>
+                <h3 className="text-3xl">Terug</h3>
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
