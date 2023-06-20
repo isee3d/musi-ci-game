@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes';
 import StartRoundUI from '~/components/gameModes/spelen/startRoundUI';
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer';
@@ -16,24 +16,21 @@ interface SpelenProps {
     mode: string | undefined;
 }
 
+    const countdownTimings: CountdownTimings = {
+      one: 1000,
+      two: 1000,
+      three: 1000,
+      go: 1000,
+      soundInitialized: 1000,
+    }
+
 const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId, levelId, mode }) => {
     const { send } = SpelenMachineContext.useActorRef();
+    const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore();
     const startRoundState = SpelenMachineContext.useSelector(state => state.matches('startRound'));
     const countdownState = SpelenMachineContext.useSelector(state => state.matches('countdown'));
     const playingState = SpelenMachineContext.useSelector(state => state.matches('playing'));
     const finishedState = SpelenMachineContext.useSelector(state => state.matches('FinishedPlayingSpelenMode'));
-
-    const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore();
-
-    const time = useRef(Date.now());
-
-    const countdownTimings: CountdownTimings = {
-        one: 1000,
-        two: 1000,
-        three: 1000,
-        go: 1000,
-        soundInitialized: 1000
-    }
 
     useEffect(() => {
         reset();
@@ -55,7 +52,7 @@ const Spelen: React.FC<SpelenProps> = ({ fragments, fragmentsToShow, sublevelId,
             { startRoundState && <StartRoundUI levelId={ levelId } sublevelId={ sublevelId} /> }
             { countdownState && <CountdownPlayer /> }
             { (playingState || countdownState) && <FragmentPlayerRenderer /> }
-            { finishedState && <SpelenFeedback time={ time } levelId={ levelId } sublevelId={sublevelId} /> }
+            { finishedState && <SpelenFeedback levelId={ levelId } sublevelId={sublevelId} /> }
         </>
     );
 };
