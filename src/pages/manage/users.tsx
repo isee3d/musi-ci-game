@@ -33,9 +33,10 @@ const ManageUsersPage: NextPage = () => {
             return (
               <div
                 key={user.id}
-                className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
               >
-                <h3 className="text-2xl font-bold">{user.name}</h3>
+                <h2 className="text-2xl font-bold">{user.name}</h2>
+                <h2 className="text-xl">{user.role}</h2>
                 <p className="text-xl">{user.participantId}</p>
                 <Button
                   onClick={() => deleteUser({ id: user.id })}
