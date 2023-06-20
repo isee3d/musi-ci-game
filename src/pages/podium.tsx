@@ -14,7 +14,7 @@ const PodiumPage: NextPage = () => {
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8 ">
-          <h2 className="text-5xl  sm:text-[5rem]  tracking-tight ">Podium</h2>
+          <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Podium</h2>
           <h2 className="text-xl">Hier komt het podium</h2>
           <Button asChild>
             <Link href="/progress/games">

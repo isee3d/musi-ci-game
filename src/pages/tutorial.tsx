@@ -1,7 +1,7 @@
-import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { type NextPage } from 'next'
+import Head from 'next/head'
+import Link from 'next/link'
+import { Button } from '~/components/ui/button'
 
 const TutorialPage: NextPage = () => {
   return (
@@ -14,11 +14,9 @@ const TutorialPage: NextPage = () => {
 
       <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] ">
-            Tutorial
-          </h1>
+          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] ">Tutorial</h1>
           <h3 className="text-7xl font-extrabold">Hier cinie uitleg</h3>
-          <Button size={"lg"} asChild>
+          <Button size={'lg'} asChild>
             <Link href="/podium">
               <h3>Ga door naar podium</h3>
             </Link>
@@ -26,7 +24,7 @@ const TutorialPage: NextPage = () => {
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default TutorialPage;
+export default TutorialPage
