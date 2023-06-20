@@ -14,7 +14,7 @@ export default function Scene({ ...props }) {
       <PerformanceMonitor onIncline={ () => setDpr(2) } onDecline={ () => setDpr(1) } ></PerformanceMonitor>
       <r3f.Out />
       <Preload all />
-      {/* <Stats showPanel={ 0 } className="stats" { ...props } /> */}
+      <Stats showPanel={ 0 } className="stats" { ...props } />
     </Canvas>
   )
 }
