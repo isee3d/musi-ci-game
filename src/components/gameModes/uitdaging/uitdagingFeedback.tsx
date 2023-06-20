@@ -1,40 +1,36 @@
-import Link from 'next/link';
-import { useLuisterenStore } from '~/stores/gameModes/luisterenStore';
-import { formatTime } from '~/utils/time';
+import Link from 'next/link'
+import { Button } from '~/components/ui/button'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { formatTime } from '~/utils/time'
 
 interface UitdagingFeedbackProps {
-    levelId: string;
-    sublevelId: string;
+  levelId: string
+  sublevelId: string
 }
 
 const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ levelId, sublevelId }) => {
-    const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore();
+  const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore()
 
-    return (
-        <>
-            <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>
-                You played for { formatTime(endTime - startTime) }
-            </h3>
+  return (
+    <>
+      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+        You played for {formatTime(endTime - startTime)}
+      </h3>
+      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+        You have {getPercentageCorrectlyAnswered()} % correct!
+      </h3>
+      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+        Felicitaties! -- gebaseerd op % en config
+      </h3>
+      <div className="flex justify-center">
+        <Button asChild>
+          <Link onClick={() => reset()} href={`/modeSelect/${levelId}/${sublevelId}`}>
+            <h3>Terug naar overzicht</h3>
+          </Link>
+        </Button>
+      </div>
+    </>
+  )
+}
 
-            <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>
-                You have { getPercentageCorrectlyAnswered() } % correct!
-            </h3>
-
-            <h3 className='text-center text-4xl font-extrabold tracking-tight text-white'>
-                Felicitaties! -- gebaseerd op % en config
-            </h3>
-
-            <div className='flex justify-center'>
-                <Link
-                    onClick={ () => reset() }
-                    className={ `rounded-xl bg-white/10 p-4 text-center text-xl font-bold text-white hover:bg-white/20` }
-                    href={ `/modeSelect/${levelId}/${sublevelId}` }
-                >
-                    <h3>Terug naar overzicht</h3>
-                </Link>
-            </div>
-        </>
-    );
-};
-
-export default UitdagingFeedback;
+export default UitdagingFeedback
