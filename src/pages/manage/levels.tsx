@@ -6,6 +6,7 @@ import CreateLevelModal from '~/components/manage/createLevelModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateLevelModal from '~/components/manage/updateLevelModal'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -38,6 +39,7 @@ const ManageLevels: NextPage = () => {
               <CreateLevelModal setmodal={setCreateModal} />
             </ManageBaseModal>
           )}
+          <Label className="text-3xl font-bold">Bestaande Levels</Label>
           {levelQuery.data?.map((level) => {
             return (
               <div
