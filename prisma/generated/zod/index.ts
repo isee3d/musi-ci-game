@@ -10,47 +10,49 @@ import type { Prisma } from '@prisma/client';
 // ENUMS
 /////////////////////////////////////////
 
+export const TransactionIsolationLevelSchema = z.enum(['Serializable']);
+
 export const AccountScalarFieldEnumSchema = z.enum(['id','userId','type','provider','providerAccountId','refresh_token','access_token','expires_at','token_type','scope','id_token','session_state']);
-
-export const FragmentScalarFieldEnumSchema = z.enum(['id','name','description']);
-
-export const GameModeScalarFieldEnumSchema = z.enum(['id','name']);
-
-export const GameScalarFieldEnumSchema = z.enum(['id','name','description']);
-
-export const KliniekScalarFieldEnumSchema = z.enum(['id','name']);
-
-export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','id_level','id_subLevel','id_gameMode','startTime','endTime','score']);
-
-export const LevelScalarFieldEnumSchema = z.enum(['id','name','description','id_Game']);
-
-export const NoteScalarFieldEnumSchema = z.enum(['id','id_Fragment','name','time','duration','speed']);
-
-export const RelistenFragmentScalarFieldEnumSchema = z.enum(['id','id_fragment','id_scene','relistenCount']);
-
-export const RestGehoorScalarFieldEnumSchema = z.enum(['id','created_at','restGehoor']);
-
-export const RoleScalarFieldEnumSchema = z.enum(['id','name']);
-
-export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fragment','fragmentIndex','groundTone']);
-
-export const SceneScalarFieldEnumSchema = z.enum(['id','id_chosenFragment','id_levelResult','id_playedFragment','chosenFragmentLatency','answeredCorrectly']);
 
 export const SessionScalarFieldEnumSchema = z.enum(['id','sessionToken','userId','expires']);
 
-export const SortOrderSchema = z.enum(['asc','desc']);
-
-export const SubLevelScalarFieldEnumSchema = z.enum(['id','name','description','BPM','correctAnswers','cooldownTime','playTime','fragmentToShow']);
-
-export const TeamScalarFieldEnumSchema = z.enum(['id','id_Kliniek','name','description']);
-
-export const TransactionIsolationLevelSchema = z.enum(['Serializable']);
-
-export const TypeCIScalarFieldEnumSchema = z.enum(['id','name','merk']);
+export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','participantId','name','email','emailVerified','image','id_restGehoor','id_TypeCI','role','id_Team','hadTraining','experience','processor','entreeVragenLijst','createdAt']);
 
-export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires']);
+export const RestGehoorScalarFieldEnumSchema = z.enum(['id','created_at','restGehoor']);
+
+export const TypeCIScalarFieldEnumSchema = z.enum(['id','name','merk']);
+
+export const RoleScalarFieldEnumSchema = z.enum(['id','name']);
+
+export const KliniekScalarFieldEnumSchema = z.enum(['id','name']);
+
+export const TeamScalarFieldEnumSchema = z.enum(['id','id_Kliniek','name','description']);
+
+export const GameScalarFieldEnumSchema = z.enum(['id','name','description']);
+
+export const LevelScalarFieldEnumSchema = z.enum(['id','name','description','id_Game']);
+
+export const SubLevelScalarFieldEnumSchema = z.enum(['id','name','description','BPM','correctAnswers','cooldownTime','playTime','fragmentToShow']);
+
+export const FragmentScalarFieldEnumSchema = z.enum(['id','name','description']);
+
+export const NoteScalarFieldEnumSchema = z.enum(['id','id_Fragment','name','time','duration','speed']);
+
+export const GameModeScalarFieldEnumSchema = z.enum(['id','name']);
+
+export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','id_level','id_subLevel','id_gameMode','startTime','endTime','score']);
+
+export const SceneScalarFieldEnumSchema = z.enum(['id','id_chosenFragment','id_levelResult','id_playedFragment','chosenFragmentLatency','answeredCorrectly']);
+
+export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fragment','fragmentIndex','groundTone']);
+
+export const RelistenFragmentScalarFieldEnumSchema = z.enum(['id','id_fragment','id_scene','relistenCount']);
+
+export const SortOrderSchema = z.enum(['asc','desc']);
+
+export const NullsOrderSchema = z.enum(['first','last']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -1664,13 +1666,13 @@ export const AccountOrderByWithRelationInputSchema: z.ZodType<Prisma.AccountOrde
   type: z.lazy(() => SortOrderSchema).optional(),
   provider: z.lazy(() => SortOrderSchema).optional(),
   providerAccountId: z.lazy(() => SortOrderSchema).optional(),
-  refresh_token: z.lazy(() => SortOrderSchema).optional(),
-  access_token: z.lazy(() => SortOrderSchema).optional(),
-  expires_at: z.lazy(() => SortOrderSchema).optional(),
-  token_type: z.lazy(() => SortOrderSchema).optional(),
-  scope: z.lazy(() => SortOrderSchema).optional(),
-  id_token: z.lazy(() => SortOrderSchema).optional(),
-  session_state: z.lazy(() => SortOrderSchema).optional(),
+  refresh_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  access_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  expires_at: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  token_type: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  scope: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  session_state: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
@@ -1685,13 +1687,13 @@ export const AccountOrderByWithAggregationInputSchema: z.ZodType<Prisma.AccountO
   type: z.lazy(() => SortOrderSchema).optional(),
   provider: z.lazy(() => SortOrderSchema).optional(),
   providerAccountId: z.lazy(() => SortOrderSchema).optional(),
-  refresh_token: z.lazy(() => SortOrderSchema).optional(),
-  access_token: z.lazy(() => SortOrderSchema).optional(),
-  expires_at: z.lazy(() => SortOrderSchema).optional(),
-  token_type: z.lazy(() => SortOrderSchema).optional(),
-  scope: z.lazy(() => SortOrderSchema).optional(),
-  id_token: z.lazy(() => SortOrderSchema).optional(),
-  session_state: z.lazy(() => SortOrderSchema).optional(),
+  refresh_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  access_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  expires_at: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  token_type: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  scope: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  session_state: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => AccountCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => AccountAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => AccountMaxOrderByAggregateInputSchema).optional(),
@@ -1828,19 +1830,19 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
 
 export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  participantId: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  email: z.lazy(() => SortOrderSchema).optional(),
-  emailVerified: z.lazy(() => SortOrderSchema).optional(),
-  image: z.lazy(() => SortOrderSchema).optional(),
-  id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
-  id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  role: z.lazy(() => SortOrderSchema).optional(),
-  id_Team: z.lazy(() => SortOrderSchema).optional(),
-  hadTraining: z.lazy(() => SortOrderSchema).optional(),
-  experience: z.lazy(() => SortOrderSchema).optional(),
-  processor: z.lazy(() => SortOrderSchema).optional(),
-  entreeVragenLijst: z.lazy(() => SortOrderSchema).optional(),
+  participantId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  name: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  emailVerified: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  image: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_restGehoor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_TypeCI: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  role: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_Team: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  hadTraining: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  experience: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  processor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  entreeVragenLijst: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   accounts: z.lazy(() => AccountOrderByRelationAggregateInputSchema).optional(),
   sessions: z.lazy(() => SessionOrderByRelationAggregateInputSchema).optional(),
@@ -1857,19 +1859,19 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
 
 export const UserOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  participantId: z.lazy(() => SortOrderSchema).optional(),
-  name: z.lazy(() => SortOrderSchema).optional(),
-  email: z.lazy(() => SortOrderSchema).optional(),
-  emailVerified: z.lazy(() => SortOrderSchema).optional(),
-  image: z.lazy(() => SortOrderSchema).optional(),
-  id_restGehoor: z.lazy(() => SortOrderSchema).optional(),
-  id_TypeCI: z.lazy(() => SortOrderSchema).optional(),
-  role: z.lazy(() => SortOrderSchema).optional(),
-  id_Team: z.lazy(() => SortOrderSchema).optional(),
-  hadTraining: z.lazy(() => SortOrderSchema).optional(),
-  experience: z.lazy(() => SortOrderSchema).optional(),
-  processor: z.lazy(() => SortOrderSchema).optional(),
-  entreeVragenLijst: z.lazy(() => SortOrderSchema).optional(),
+  participantId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  name: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  email: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  emailVerified: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  image: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_restGehoor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_TypeCI: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  role: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_Team: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  hadTraining: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  experience: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  processor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  entreeVragenLijst: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => UserCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => UserAvgOrderByAggregateInputSchema).optional(),
@@ -2071,9 +2073,9 @@ export const TeamWhereInputSchema: z.ZodType<Prisma.TeamWhereInput> = z.object({
 
 export const TeamOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_Kliniek: z.lazy(() => SortOrderSchema).optional(),
+  id_Kliniek: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   kliniek: z.lazy(() => KliniekOrderByWithRelationInputSchema).optional(),
   users: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional(),
   game: z.lazy(() => GameOrderByRelationAggregateInputSchema).optional()
@@ -2085,9 +2087,9 @@ export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> 
 
 export const TeamOrderByWithAggregationInputSchema: z.ZodType<Prisma.TeamOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_Kliniek: z.lazy(() => SortOrderSchema).optional(),
+  id_Kliniek: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => TeamCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => TeamAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => TeamMaxOrderByAggregateInputSchema).optional(),
@@ -2119,7 +2121,7 @@ export const GameWhereInputSchema: z.ZodType<Prisma.GameWhereInput> = z.object({
 export const GameOrderByWithRelationInputSchema: z.ZodType<Prisma.GameOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
   levels: z.lazy(() => LevelOrderByRelationAggregateInputSchema).optional()
 }).strict();
@@ -2132,7 +2134,7 @@ export const GameWhereUniqueInputSchema: z.ZodType<Prisma.GameWhereUniqueInput> 
 export const GameOrderByWithAggregationInputSchema: z.ZodType<Prisma.GameOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => GameCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => GameAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => GameMaxOrderByAggregateInputSchema).optional(),
@@ -2165,8 +2167,8 @@ export const LevelWhereInputSchema: z.ZodType<Prisma.LevelWhereInput> = z.object
 export const LevelOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
-  id_Game: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_Game: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   game: z.lazy(() => GameOrderByWithRelationInputSchema).optional(),
   subLevels: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional()
@@ -2180,8 +2182,8 @@ export const LevelWhereUniqueInputSchema: z.ZodType<Prisma.LevelWhereUniqueInput
 export const LevelOrderByWithAggregationInputSchema: z.ZodType<Prisma.LevelOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
-  id_Game: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_Game: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => LevelCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => LevelAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => LevelMaxOrderByAggregateInputSchema).optional(),
@@ -2220,11 +2222,11 @@ export const SubLevelWhereInputSchema: z.ZodType<Prisma.SubLevelWhereInput> = z.
 export const SubLevelOrderByWithRelationInputSchema: z.ZodType<Prisma.SubLevelOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
-  cooldownTime: z.lazy(() => SortOrderSchema).optional(),
-  playTime: z.lazy(() => SortOrderSchema).optional(),
+  cooldownTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  playTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional(),
   levels: z.lazy(() => LevelOrderByRelationAggregateInputSchema).optional(),
   fragments: z.lazy(() => FragmentOrderByRelationAggregateInputSchema).optional(),
@@ -2239,11 +2241,11 @@ export const SubLevelWhereUniqueInputSchema: z.ZodType<Prisma.SubLevelWhereUniqu
 export const SubLevelOrderByWithAggregationInputSchema: z.ZodType<Prisma.SubLevelOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   BPM: z.lazy(() => SortOrderSchema).optional(),
   correctAnswers: z.lazy(() => SortOrderSchema).optional(),
-  cooldownTime: z.lazy(() => SortOrderSchema).optional(),
-  playTime: z.lazy(() => SortOrderSchema).optional(),
+  cooldownTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  playTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   fragmentToShow: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SubLevelCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => SubLevelAvgOrderByAggregateInputSchema).optional(),
@@ -2284,7 +2286,7 @@ export const FragmentWhereInputSchema: z.ZodType<Prisma.FragmentWhereInput> = z.
 export const FragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.FragmentOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   notes: z.lazy(() => NoteOrderByRelationAggregateInputSchema).optional(),
   level: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
   chosenScene: z.lazy(() => SceneOrderByRelationAggregateInputSchema).optional(),
@@ -2300,7 +2302,7 @@ export const FragmentWhereUniqueInputSchema: z.ZodType<Prisma.FragmentWhereUniqu
 export const FragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.FragmentOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
-  description: z.lazy(() => SortOrderSchema).optional(),
+  description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => FragmentCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => FragmentAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => FragmentMaxOrderByAggregateInputSchema).optional(),
@@ -2435,9 +2437,9 @@ export const LevelResultOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelRe
   id_level: z.lazy(() => SortOrderSchema).optional(),
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
-  startTime: z.lazy(() => SortOrderSchema).optional(),
-  endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional(),
+  startTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  endTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  score: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   Level: z.lazy(() => LevelOrderByWithRelationInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional(),
@@ -2455,9 +2457,9 @@ export const LevelResultOrderByWithAggregationInputSchema: z.ZodType<Prisma.Leve
   id_level: z.lazy(() => SortOrderSchema).optional(),
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
-  startTime: z.lazy(() => SortOrderSchema).optional(),
-  endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional(),
+  startTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  endTime: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  score: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => LevelResultCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => LevelResultAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => LevelResultMaxOrderByAggregateInputSchema).optional(),
@@ -2498,11 +2500,11 @@ export const SceneWhereInputSchema: z.ZodType<Prisma.SceneWhereInput> = z.object
 
 export const SceneOrderByWithRelationInputSchema: z.ZodType<Prisma.SceneOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_chosenFragment: z.lazy(() => SortOrderSchema).optional(),
-  id_levelResult: z.lazy(() => SortOrderSchema).optional(),
-  id_playedFragment: z.lazy(() => SortOrderSchema).optional(),
-  chosenFragmentLatency: z.lazy(() => SortOrderSchema).optional(),
-  answeredCorrectly: z.lazy(() => SortOrderSchema).optional(),
+  id_chosenFragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_levelResult: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_playedFragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  answeredCorrectly: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   chosenFragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional(),
   sceneFragments: z.lazy(() => SceneFragmentOrderByRelationAggregateInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultOrderByWithRelationInputSchema).optional(),
@@ -2516,11 +2518,11 @@ export const SceneWhereUniqueInputSchema: z.ZodType<Prisma.SceneWhereUniqueInput
 
 export const SceneOrderByWithAggregationInputSchema: z.ZodType<Prisma.SceneOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_chosenFragment: z.lazy(() => SortOrderSchema).optional(),
-  id_levelResult: z.lazy(() => SortOrderSchema).optional(),
-  id_playedFragment: z.lazy(() => SortOrderSchema).optional(),
-  chosenFragmentLatency: z.lazy(() => SortOrderSchema).optional(),
-  answeredCorrectly: z.lazy(() => SortOrderSchema).optional(),
+  id_chosenFragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_levelResult: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_playedFragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  chosenFragmentLatency: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  answeredCorrectly: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => SceneCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => SceneAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SceneMaxOrderByAggregateInputSchema).optional(),
@@ -2555,10 +2557,10 @@ export const SceneFragmentWhereInputSchema: z.ZodType<Prisma.SceneFragmentWhereI
 
 export const SceneFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_Scene: z.lazy(() => SortOrderSchema).optional(),
-  id_fragment: z.lazy(() => SortOrderSchema).optional(),
-  fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  id_Scene: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_fragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  fragmentIndex: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  groundTone: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional(),
   fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -2569,10 +2571,10 @@ export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragment
 
 export const SceneFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_Scene: z.lazy(() => SortOrderSchema).optional(),
-  id_fragment: z.lazy(() => SortOrderSchema).optional(),
-  fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  id_Scene: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  id_fragment: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  fragmentIndex: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  groundTone: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => SceneFragmentCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => SceneFragmentAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SceneFragmentMaxOrderByAggregateInputSchema).optional(),
@@ -2606,8 +2608,8 @@ export const RelistenFragmentWhereInputSchema: z.ZodType<Prisma.RelistenFragment
 export const RelistenFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.RelistenFragmentOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
-  id_scene: z.lazy(() => SortOrderSchema).optional(),
-  relistenCount: z.lazy(() => SortOrderSchema).optional(),
+  id_scene: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  relistenCount: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional(),
   scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -2619,8 +2621,8 @@ export const RelistenFragmentWhereUniqueInputSchema: z.ZodType<Prisma.RelistenFr
 export const RelistenFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.RelistenFragmentOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
-  id_scene: z.lazy(() => SortOrderSchema).optional(),
-  relistenCount: z.lazy(() => SortOrderSchema).optional(),
+  id_scene: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  relistenCount: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => RelistenFragmentCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => RelistenFragmentAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => RelistenFragmentMaxOrderByAggregateInputSchema).optional(),
@@ -3646,8 +3648,13 @@ export const IntNullableFilterSchema: z.ZodType<Prisma.IntNullableFilter> = z.ob
 }).strict();
 
 export const UserRelationFilterSchema: z.ZodType<Prisma.UserRelationFilter> = z.object({
-  is: z.lazy(() => UserWhereInputSchema).optional(),
-  isNot: z.lazy(() => UserWhereInputSchema).optional()
+  is: z.lazy(() => UserWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => UserWhereInputSchema).optional().nullable()
+}).strict();
+
+export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z.object({
+  sort: z.lazy(() => SortOrderSchema),
+  nulls: z.lazy(() => NullsOrderSchema).optional()
 }).strict();
 
 export const AccountProviderProviderAccountIdCompoundUniqueInputSchema: z.ZodType<Prisma.AccountProviderProviderAccountIdCompoundUniqueInput> = z.object({
@@ -4391,8 +4398,8 @@ export const FragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.FragmentSu
 }).strict();
 
 export const FragmentRelationFilterSchema: z.ZodType<Prisma.FragmentRelationFilter> = z.object({
-  is: z.lazy(() => FragmentWhereInputSchema).optional(),
-  isNot: z.lazy(() => FragmentWhereInputSchema).optional()
+  is: z.lazy(() => FragmentWhereInputSchema).optional().nullable(),
+  isNot: z.lazy(() => FragmentWhereInputSchema).optional().nullable()
 }).strict();
 
 export const NoteCountOrderByAggregateInputSchema: z.ZodType<Prisma.NoteCountOrderByAggregateInput> = z.object({
@@ -9244,7 +9251,7 @@ export const AccountFindFirstArgsSchema: z.ZodType<Prisma.AccountFindFirstArgs> 
   cursor: AccountWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: AccountScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const AccountFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AccountFindFirstOrThrowArgs> = z.object({
@@ -9255,7 +9262,7 @@ export const AccountFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AccountFindFirs
   cursor: AccountWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: AccountScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const AccountFindManyArgsSchema: z.ZodType<Prisma.AccountFindManyArgs> = z.object({
@@ -9266,7 +9273,7 @@ export const AccountFindManyArgsSchema: z.ZodType<Prisma.AccountFindManyArgs> = 
   cursor: AccountWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: AccountScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const AccountAggregateArgsSchema: z.ZodType<Prisma.AccountAggregateArgs> = z.object({
@@ -9306,7 +9313,7 @@ export const SessionFindFirstArgsSchema: z.ZodType<Prisma.SessionFindFirstArgs> 
   cursor: SessionWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SessionScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SessionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SessionFindFirstOrThrowArgs> = z.object({
@@ -9317,7 +9324,7 @@ export const SessionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SessionFindFirs
   cursor: SessionWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SessionScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SessionFindManyArgsSchema: z.ZodType<Prisma.SessionFindManyArgs> = z.object({
@@ -9328,7 +9335,7 @@ export const SessionFindManyArgsSchema: z.ZodType<Prisma.SessionFindManyArgs> = 
   cursor: SessionWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SessionScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SessionAggregateArgsSchema: z.ZodType<Prisma.SessionAggregateArgs> = z.object({
@@ -9367,7 +9374,7 @@ export const VerificationTokenFindFirstArgsSchema: z.ZodType<Prisma.Verification
   cursor: VerificationTokenWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: VerificationTokenScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const VerificationTokenFindFirstOrThrowArgsSchema: z.ZodType<Prisma.VerificationTokenFindFirstOrThrowArgs> = z.object({
@@ -9377,7 +9384,7 @@ export const VerificationTokenFindFirstOrThrowArgsSchema: z.ZodType<Prisma.Verif
   cursor: VerificationTokenWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: VerificationTokenScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const VerificationTokenFindManyArgsSchema: z.ZodType<Prisma.VerificationTokenFindManyArgs> = z.object({
@@ -9387,7 +9394,7 @@ export const VerificationTokenFindManyArgsSchema: z.ZodType<Prisma.VerificationT
   cursor: VerificationTokenWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: VerificationTokenScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const VerificationTokenAggregateArgsSchema: z.ZodType<Prisma.VerificationTokenAggregateArgs> = z.object({
@@ -9425,7 +9432,7 @@ export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.ob
   cursor: UserWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: UserScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThrowArgs> = z.object({
@@ -9436,7 +9443,7 @@ export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThr
   cursor: UserWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: UserScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.object({
@@ -9447,7 +9454,7 @@ export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.obje
   cursor: UserWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: UserScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const UserAggregateArgsSchema: z.ZodType<Prisma.UserAggregateArgs> = z.object({
@@ -9487,7 +9494,7 @@ export const RestGehoorFindFirstArgsSchema: z.ZodType<Prisma.RestGehoorFindFirst
   cursor: RestGehoorWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RestGehoorScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RestGehoorScalarFieldEnumSchema,RestGehoorScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RestGehoorFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RestGehoorFindFirstOrThrowArgs> = z.object({
@@ -9498,7 +9505,7 @@ export const RestGehoorFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RestGehoorFi
   cursor: RestGehoorWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RestGehoorScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RestGehoorScalarFieldEnumSchema,RestGehoorScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RestGehoorFindManyArgsSchema: z.ZodType<Prisma.RestGehoorFindManyArgs> = z.object({
@@ -9509,7 +9516,7 @@ export const RestGehoorFindManyArgsSchema: z.ZodType<Prisma.RestGehoorFindManyAr
   cursor: RestGehoorWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RestGehoorScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RestGehoorScalarFieldEnumSchema,RestGehoorScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RestGehoorAggregateArgsSchema: z.ZodType<Prisma.RestGehoorAggregateArgs> = z.object({
@@ -9549,7 +9556,7 @@ export const TypeCIFindFirstArgsSchema: z.ZodType<Prisma.TypeCIFindFirstArgs> = 
   cursor: TypeCIWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TypeCIScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TypeCIScalarFieldEnumSchema,TypeCIScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TypeCIFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TypeCIFindFirstOrThrowArgs> = z.object({
@@ -9560,7 +9567,7 @@ export const TypeCIFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TypeCIFindFirstO
   cursor: TypeCIWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TypeCIScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TypeCIScalarFieldEnumSchema,TypeCIScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TypeCIFindManyArgsSchema: z.ZodType<Prisma.TypeCIFindManyArgs> = z.object({
@@ -9571,7 +9578,7 @@ export const TypeCIFindManyArgsSchema: z.ZodType<Prisma.TypeCIFindManyArgs> = z.
   cursor: TypeCIWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TypeCIScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TypeCIScalarFieldEnumSchema,TypeCIScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TypeCIAggregateArgsSchema: z.ZodType<Prisma.TypeCIAggregateArgs> = z.object({
@@ -9610,7 +9617,7 @@ export const RoleFindFirstArgsSchema: z.ZodType<Prisma.RoleFindFirstArgs> = z.ob
   cursor: RoleWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RoleScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RoleScalarFieldEnumSchema,RoleScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RoleFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RoleFindFirstOrThrowArgs> = z.object({
@@ -9620,7 +9627,7 @@ export const RoleFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RoleFindFirstOrThr
   cursor: RoleWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RoleScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RoleScalarFieldEnumSchema,RoleScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RoleFindManyArgsSchema: z.ZodType<Prisma.RoleFindManyArgs> = z.object({
@@ -9630,7 +9637,7 @@ export const RoleFindManyArgsSchema: z.ZodType<Prisma.RoleFindManyArgs> = z.obje
   cursor: RoleWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RoleScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RoleScalarFieldEnumSchema,RoleScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RoleAggregateArgsSchema: z.ZodType<Prisma.RoleAggregateArgs> = z.object({
@@ -9668,7 +9675,7 @@ export const KliniekFindFirstArgsSchema: z.ZodType<Prisma.KliniekFindFirstArgs> 
   cursor: KliniekWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: KliniekScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ KliniekScalarFieldEnumSchema,KliniekScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const KliniekFindFirstOrThrowArgsSchema: z.ZodType<Prisma.KliniekFindFirstOrThrowArgs> = z.object({
@@ -9679,7 +9686,7 @@ export const KliniekFindFirstOrThrowArgsSchema: z.ZodType<Prisma.KliniekFindFirs
   cursor: KliniekWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: KliniekScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ KliniekScalarFieldEnumSchema,KliniekScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const KliniekFindManyArgsSchema: z.ZodType<Prisma.KliniekFindManyArgs> = z.object({
@@ -9690,7 +9697,7 @@ export const KliniekFindManyArgsSchema: z.ZodType<Prisma.KliniekFindManyArgs> = 
   cursor: KliniekWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: KliniekScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ KliniekScalarFieldEnumSchema,KliniekScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const KliniekAggregateArgsSchema: z.ZodType<Prisma.KliniekAggregateArgs> = z.object({
@@ -9730,7 +9737,7 @@ export const TeamFindFirstArgsSchema: z.ZodType<Prisma.TeamFindFirstArgs> = z.ob
   cursor: TeamWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TeamScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TeamFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamFindFirstOrThrowArgs> = z.object({
@@ -9741,7 +9748,7 @@ export const TeamFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamFindFirstOrThr
   cursor: TeamWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TeamScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TeamFindManyArgsSchema: z.ZodType<Prisma.TeamFindManyArgs> = z.object({
@@ -9752,7 +9759,7 @@ export const TeamFindManyArgsSchema: z.ZodType<Prisma.TeamFindManyArgs> = z.obje
   cursor: TeamWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: TeamScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const TeamAggregateArgsSchema: z.ZodType<Prisma.TeamAggregateArgs> = z.object({
@@ -9792,7 +9799,7 @@ export const GameFindFirstArgsSchema: z.ZodType<Prisma.GameFindFirstArgs> = z.ob
   cursor: GameWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameFindFirstOrThrowArgs> = z.object({
@@ -9803,7 +9810,7 @@ export const GameFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameFindFirstOrThr
   cursor: GameWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameFindManyArgsSchema: z.ZodType<Prisma.GameFindManyArgs> = z.object({
@@ -9814,7 +9821,7 @@ export const GameFindManyArgsSchema: z.ZodType<Prisma.GameFindManyArgs> = z.obje
   cursor: GameWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameAggregateArgsSchema: z.ZodType<Prisma.GameAggregateArgs> = z.object({
@@ -9854,7 +9861,7 @@ export const LevelFindFirstArgsSchema: z.ZodType<Prisma.LevelFindFirstArgs> = z.
   cursor: LevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelFindFirstOrThrowArgs> = z.object({
@@ -9865,7 +9872,7 @@ export const LevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelFindFirstOrT
   cursor: LevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelFindManyArgsSchema: z.ZodType<Prisma.LevelFindManyArgs> = z.object({
@@ -9876,7 +9883,7 @@ export const LevelFindManyArgsSchema: z.ZodType<Prisma.LevelFindManyArgs> = z.ob
   cursor: LevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelAggregateArgsSchema: z.ZodType<Prisma.LevelAggregateArgs> = z.object({
@@ -9916,7 +9923,7 @@ export const SubLevelFindFirstArgsSchema: z.ZodType<Prisma.SubLevelFindFirstArgs
   cursor: SubLevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SubLevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SubLevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SubLevelFindFirstOrThrowArgs> = z.object({
@@ -9927,7 +9934,7 @@ export const SubLevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SubLevelFindFi
   cursor: SubLevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SubLevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SubLevelFindManyArgsSchema: z.ZodType<Prisma.SubLevelFindManyArgs> = z.object({
@@ -9938,7 +9945,7 @@ export const SubLevelFindManyArgsSchema: z.ZodType<Prisma.SubLevelFindManyArgs> 
   cursor: SubLevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SubLevelScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SubLevelAggregateArgsSchema: z.ZodType<Prisma.SubLevelAggregateArgs> = z.object({
@@ -9978,7 +9985,7 @@ export const FragmentFindFirstArgsSchema: z.ZodType<Prisma.FragmentFindFirstArgs
   cursor: FragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: FragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const FragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentFindFirstOrThrowArgs> = z.object({
@@ -9989,7 +9996,7 @@ export const FragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentFindFi
   cursor: FragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: FragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const FragmentFindManyArgsSchema: z.ZodType<Prisma.FragmentFindManyArgs> = z.object({
@@ -10000,7 +10007,7 @@ export const FragmentFindManyArgsSchema: z.ZodType<Prisma.FragmentFindManyArgs> 
   cursor: FragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: FragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const FragmentAggregateArgsSchema: z.ZodType<Prisma.FragmentAggregateArgs> = z.object({
@@ -10040,7 +10047,7 @@ export const NoteFindFirstArgsSchema: z.ZodType<Prisma.NoteFindFirstArgs> = z.ob
   cursor: NoteWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: NoteScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const NoteFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NoteFindFirstOrThrowArgs> = z.object({
@@ -10051,7 +10058,7 @@ export const NoteFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NoteFindFirstOrThr
   cursor: NoteWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: NoteScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const NoteFindManyArgsSchema: z.ZodType<Prisma.NoteFindManyArgs> = z.object({
@@ -10062,7 +10069,7 @@ export const NoteFindManyArgsSchema: z.ZodType<Prisma.NoteFindManyArgs> = z.obje
   cursor: NoteWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: NoteScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const NoteAggregateArgsSchema: z.ZodType<Prisma.NoteAggregateArgs> = z.object({
@@ -10102,7 +10109,7 @@ export const GameModeFindFirstArgsSchema: z.ZodType<Prisma.GameModeFindFirstArgs
   cursor: GameModeWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameModeScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameModeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameModeFindFirstOrThrowArgs> = z.object({
@@ -10113,7 +10120,7 @@ export const GameModeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameModeFindFi
   cursor: GameModeWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameModeScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameModeFindManyArgsSchema: z.ZodType<Prisma.GameModeFindManyArgs> = z.object({
@@ -10124,7 +10131,7 @@ export const GameModeFindManyArgsSchema: z.ZodType<Prisma.GameModeFindManyArgs> 
   cursor: GameModeWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: GameModeScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const GameModeAggregateArgsSchema: z.ZodType<Prisma.GameModeAggregateArgs> = z.object({
@@ -10164,7 +10171,7 @@ export const LevelResultFindFirstArgsSchema: z.ZodType<Prisma.LevelResultFindFir
   cursor: LevelResultWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelResultScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelResultFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelResultFindFirstOrThrowArgs> = z.object({
@@ -10175,7 +10182,7 @@ export const LevelResultFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelResult
   cursor: LevelResultWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelResultScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelResultFindManyArgsSchema: z.ZodType<Prisma.LevelResultFindManyArgs> = z.object({
@@ -10186,7 +10193,7 @@ export const LevelResultFindManyArgsSchema: z.ZodType<Prisma.LevelResultFindMany
   cursor: LevelResultWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: LevelResultScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const LevelResultAggregateArgsSchema: z.ZodType<Prisma.LevelResultAggregateArgs> = z.object({
@@ -10226,7 +10233,7 @@ export const SceneFindFirstArgsSchema: z.ZodType<Prisma.SceneFindFirstArgs> = z.
   cursor: SceneWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFindFirstOrThrowArgs> = z.object({
@@ -10237,7 +10244,7 @@ export const SceneFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFindFirstOrT
   cursor: SceneWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneFindManyArgsSchema: z.ZodType<Prisma.SceneFindManyArgs> = z.object({
@@ -10248,7 +10255,7 @@ export const SceneFindManyArgsSchema: z.ZodType<Prisma.SceneFindManyArgs> = z.ob
   cursor: SceneWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneAggregateArgsSchema: z.ZodType<Prisma.SceneAggregateArgs> = z.object({
@@ -10288,7 +10295,7 @@ export const SceneFragmentFindFirstArgsSchema: z.ZodType<Prisma.SceneFragmentFin
   cursor: SceneFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFragmentFindFirstOrThrowArgs> = z.object({
@@ -10299,7 +10306,7 @@ export const SceneFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFrag
   cursor: SceneFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneFragmentFindManyArgsSchema: z.ZodType<Prisma.SceneFragmentFindManyArgs> = z.object({
@@ -10310,7 +10317,7 @@ export const SceneFragmentFindManyArgsSchema: z.ZodType<Prisma.SceneFragmentFind
   cursor: SceneFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: SceneFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const SceneFragmentAggregateArgsSchema: z.ZodType<Prisma.SceneFragmentAggregateArgs> = z.object({
@@ -10350,7 +10357,7 @@ export const RelistenFragmentFindFirstArgsSchema: z.ZodType<Prisma.RelistenFragm
   cursor: RelistenFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RelistenFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RelistenFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RelistenFragmentFindFirstOrThrowArgs> = z.object({
@@ -10361,7 +10368,7 @@ export const RelistenFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.Relist
   cursor: RelistenFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RelistenFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RelistenFragmentFindManyArgsSchema: z.ZodType<Prisma.RelistenFragmentFindManyArgs> = z.object({
@@ -10372,7 +10379,7 @@ export const RelistenFragmentFindManyArgsSchema: z.ZodType<Prisma.RelistenFragme
   cursor: RelistenFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-  distinct: RelistenFragmentScalarFieldEnumSchema.array().optional(),
+  distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
 }).strict()
 
 export const RelistenFragmentAggregateArgsSchema: z.ZodType<Prisma.RelistenFragmentAggregateArgs> = z.object({
@@ -10511,7 +10518,7 @@ export const VerificationTokenDeleteManyArgsSchema: z.ZodType<Prisma.Verificatio
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z.object({
   select: UserSelectSchema.optional(),
   include: UserIncludeSchema.optional(),
-  data: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
+  data: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]).optional(),
 }).strict()
 
 export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
@@ -10975,7 +10982,7 @@ export const LevelResultDeleteManyArgsSchema: z.ZodType<Prisma.LevelResultDelete
 export const SceneCreateArgsSchema: z.ZodType<Prisma.SceneCreateArgs> = z.object({
   select: SceneSelectSchema.optional(),
   include: SceneIncludeSchema.optional(),
-  data: z.union([ SceneCreateInputSchema,SceneUncheckedCreateInputSchema ]),
+  data: z.union([ SceneCreateInputSchema,SceneUncheckedCreateInputSchema ]).optional(),
 }).strict()
 
 export const SceneUpsertArgsSchema: z.ZodType<Prisma.SceneUpsertArgs> = z.object({
@@ -11011,7 +11018,7 @@ export const SceneDeleteManyArgsSchema: z.ZodType<Prisma.SceneDeleteManyArgs> = 
 export const SceneFragmentCreateArgsSchema: z.ZodType<Prisma.SceneFragmentCreateArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
   include: SceneFragmentIncludeSchema.optional(),
-  data: z.union([ SceneFragmentCreateInputSchema,SceneFragmentUncheckedCreateInputSchema ]),
+  data: z.union([ SceneFragmentCreateInputSchema,SceneFragmentUncheckedCreateInputSchema ]).optional(),
 }).strict()
 
 export const SceneFragmentUpsertArgsSchema: z.ZodType<Prisma.SceneFragmentUpsertArgs> = z.object({

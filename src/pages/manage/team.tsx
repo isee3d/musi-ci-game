@@ -6,6 +6,18 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useState } from 'react'
 import UpdateTeamModal from '~/components/manage/updateTeamModal'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '@radix-ui/react-dialog'
+import { DialogFooter, DialogHeader } from '~/components/ui/dialog'
+import { Button } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
+import { Input } from '~/components/ui/input'
+import CreateTeamModal from '~/components/manage/createTeamModal'
 
 const validationRules = {
   name: { required: 'Field is required.' },
@@ -39,6 +51,7 @@ const ManageTeamPage: NextPage = () => {
   const { mutate: deleteTeam } = api.team.deleteTeam.useMutation()
 
   const [showModal, setShowModal] = useState(false)
+  const [createModal, setCreateModal] = useState(false)
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
 
   const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
@@ -87,17 +100,15 @@ const ManageTeamPage: NextPage = () => {
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
+        <h2 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight">
           Teams beheren
-        </h1>
+        </h2>
 
-        <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 border-white p-4 shadow ">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 p-4 shadow">
+          {/* <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid w-full gap-6 md:grid-cols-1">
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  Naam
-                </label>
+                <label className="mb-2 block text-sm font-medium">Naam</label>
                 <input
                   {...register('name', validationRules.name)}
                   type="text"
@@ -110,9 +121,7 @@ const ManageTeamPage: NextPage = () => {
                 <p className="text-red-600">{errors.name?.message}</p>
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  Omschrijving
-                </label>
+                <label className="mb-2 block text-sm font-medium">Omschrijving</label>
                 <textarea
                   {...register('description', validationRules.description)}
                   autoComplete="off"
@@ -126,43 +135,47 @@ const ManageTeamPage: NextPage = () => {
             <button
               type="submit"
               disabled={!isValid}
-              className={`mt-4 rounded-xl p-4 text-white ${
+              className={`mt-4 w-full  rounded-xl p-4 text-white ${
                 isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'
               }`}
             >
               <h3 className="text-center text-2xl font-bold">Nieuwe team opslaan</h3>
             </button>
+          </form> */}
+          <Button onClick={() => setCreateModal(true)} variant="outline">
+            Maak nieuw Team
+          </Button>
+          {createModal && <CreateTeamModal setmodal={setCreateModal} />}
 
-            <h3 className="my-2 text-xl text-white">User toevoegen aan team</h3>
-            <ul>{usersWithoutTeamList}</ul>
-            <h3 className="my-2 text-xl text-white">Alle teams</h3>
-            {teamQuery.data?.map((team) => {
-              return (
-                <div key={team.id} className="flex items-center justify-center space-x-4">
-                  <h3 className="text-2xl font-bold text-white">{team.name}</h3>
-                  <p className="text-xl text-white">{team.description}</p>
-                  <button
-                    onClick={() => deleteTeam({ id: team.id })}
-                    className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedTeam(team)
-                      setShowModal(true)
-                    }}
-                    className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600"
-                  >
-                    Update
-                  </button>
-                  {showModal && selectedTeam?.id === team.id && (
-                    <UpdateTeamModal setmodal={setShowModal} team={team} />
-                  )}
-                </div>
-              )
-            })}
-          </form>
+          <h3 className="my-2 text-xl">User toevoegen aan team</h3>
+          <ul>{usersWithoutTeamList}</ul>
+          <h3 className="my-2 text-xl">Alle teams</h3>
+          {teamQuery.data?.map((team) => {
+            return (
+              <div key={team.id} className="flex items-center justify-center space-x-4">
+                <h3 className="text-2xl font-bold ">{team.name}</h3>
+                <p className="text-xl">{team.description}</p>
+                <button
+                  onClick={() => deleteTeam({ id: team.id })}
+                  className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedTeam(team)
+                    setShowModal(true)
+                  }}
+                  className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600"
+                >
+                  Update
+                </button>
+                {showModal && selectedTeam?.id === team.id && (
+                  <UpdateTeamModal setmodal={setShowModal} team={team} />
+                )}
+              </div>
+            )
+          })}
         </div>
       </section>
     </>
