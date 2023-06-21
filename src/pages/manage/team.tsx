@@ -14,10 +14,12 @@ import {
   DialogTrigger,
 } from '@radix-ui/react-dialog'
 import { DialogFooter, DialogHeader } from '~/components/ui/dialog'
-import { Button } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { Input } from '~/components/ui/input'
 import CreateTeamModal from '~/components/manage/createTeamModal'
+import { cn } from '~/lib/utils'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
 
 const validationRules = {
   name: { required: 'Field is required.' },
@@ -42,11 +44,11 @@ const ManageTeamPage: NextPage = () => {
       ctx.user.getAllUsersWithoutTeam.invalidate()
     },
   })
-  const { mutate: addTeam } = api.team.createTeam.useMutation({
-    onSuccess: () => {
-      ctx.game.getAllGames.invalidate()
-    },
-  })
+  // const { mutate: addTeam } = api.team.createTeam.useMutation({
+  //   onSuccess: () => {
+  //     ctx.game.getAllGames.invalidate()
+  //   },
+  // })
 
   const { mutate: deleteTeam } = api.team.deleteTeam.useMutation()
 
@@ -84,12 +86,12 @@ const ManageTeamPage: NextPage = () => {
     )
   })
 
-  const onSubmit: SubmitHandler<Team> = (data) => {
-    const exists = teamQuery.data?.find((team) => team.name === data.name)
-    const toastMessage = exists ? 'Team already exists!' : 'team created!'
-    exists ? toast.error(toastMessage) : (addTeam(data), toast.success(toastMessage))
-    reset()
-  }
+  // const onSubmit: SubmitHandler<Team> = (data) => {
+  //   const exists = teamQuery.data?.find((team) => team.name === data.name)
+  //   const toastMessage = exists ? 'Team already exists!' : 'team created!'
+  //   exists ? toast.error(toastMessage) : (addTeam(data), toast.success(toastMessage))
+  //   reset()
+  // }
 
   return (
     <>
@@ -105,52 +107,53 @@ const ManageTeamPage: NextPage = () => {
         </h2>
 
         <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 p-4 shadow">
-          {/* <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid w-full gap-6 md:grid-cols-1">
-              <div>
-                <label className="mb-2 block text-sm font-medium">Naam</label>
-                <input
-                  {...register('name', validationRules.name)}
-                  type="text"
-                  id="name"
-                  autoComplete="off"
-                  placeholder="bijv: Team 1"
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  required
-                />
-                <p className="text-red-600">{errors.name?.message}</p>
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium">Omschrijving</label>
-                <textarea
-                  {...register('description', validationRules.description)}
-                  autoComplete="off"
-                  placeholder="Vul hier een omschrijving in"
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                  required
-                />
-                <p className="text-red-600">{errors.description?.message}</p>
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={!isValid}
-              className={`mt-4 w-full  rounded-xl p-4 text-white ${
-                isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'
-              }`}
-            >
-              <h3 className="text-center text-2xl font-bold">Nieuwe team opslaan</h3>
-            </button>
-          </form> */}
           <Button onClick={() => setCreateModal(true)} variant="outline">
             Maak nieuw Team
           </Button>
-          {createModal && <CreateTeamModal setmodal={setCreateModal} />}
+          {createModal && (
+            <ManageBaseModal title="Nieuw Team maken">
+              <CreateTeamModal setmodal={setCreateModal} />
+            </ManageBaseModal>
+          )}
 
           <h3 className="my-2 text-xl">User toevoegen aan team</h3>
           <ul>{usersWithoutTeamList}</ul>
-          <h3 className="my-2 text-xl">Alle teams</h3>
-          {teamQuery.data?.map((team) => {
+          <h2 className="py-3 text-center text-4xl font-extrabold tracking-tight ">Alle Teams</h2>
+          <div className="flex flex-col gap-y-4">
+            {teamQuery.data?.map((team) => {
+              return (
+                <div
+                  key={team.id}
+                  className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                >
+                  <h2 className="text-2xl font-bold">{team.name}</h2>
+                  <h2 className="text-xl">{team.description}</h2>
+                  <Button
+                    onClick={() => deleteTeam({ id: team.id })}
+                    className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+                  >
+                    verwijderen
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedTeam(team)
+                      setShowModal(true)
+                    }}
+                    className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                  >
+                    Aanpassen
+                  </Button>
+                  {showModal && selectedTeam?.id === team.id && (
+                    <ManageBaseModal title='Team aanpassen'>
+                      <UpdateTeamModal setmodal={setShowModal} team={team} />
+                    </ManageBaseModal>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* {teamQuery.data?.map((team) => {
             return (
               <div key={team.id} className="flex items-center justify-center space-x-4">
                 <h3 className="text-2xl font-bold ">{team.name}</h3>
@@ -175,7 +178,7 @@ const ManageTeamPage: NextPage = () => {
                 )}
               </div>
             )
-          })}
+          })} */}
         </div>
       </section>
     </>
