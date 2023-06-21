@@ -1,39 +1,17 @@
 import Head from 'next/head'
 import { type NextPage } from 'next'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { Game, GameMode, Kliniek, Team, User } from '@prisma/client'
+import {Team, User } from '@prisma/client'
 import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useState } from 'react'
 import UpdateTeamModal from '~/components/manage/updateTeamModal'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from '@radix-ui/react-dialog'
-import { DialogFooter, DialogHeader } from '~/components/ui/dialog'
 import { Button, buttonVariants } from '~/components/ui/button'
-import { Label } from '~/components/ui/label'
-import { Input } from '~/components/ui/input'
 import CreateTeamModal from '~/components/manage/createTeamModal'
 import { cn } from '~/lib/utils'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 
-const validationRules = {
-  name: { required: 'Field is required.' },
-  description: { required: 'Field is required.' },
-}
 
 const ManageTeamPage: NextPage = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isValid },
-  } = useForm<Team>({ mode: 'onBlur' })
-
   const ctx = api.useContext()
   const teamQuery = api.team.getAllTeams.useQuery()
   const getUsersWithoutTeamQuery = api.user.getAllUsersWithoutTeam.useQuery()
@@ -44,11 +22,6 @@ const ManageTeamPage: NextPage = () => {
       ctx.user.getAllUsersWithoutTeam.invalidate()
     },
   })
-  // const { mutate: addTeam } = api.team.createTeam.useMutation({
-  //   onSuccess: () => {
-  //     ctx.game.getAllGames.invalidate()
-  //   },
-  // })
 
   const { mutate: deleteTeam } = api.team.deleteTeam.useMutation()
 
@@ -145,33 +118,6 @@ const ManageTeamPage: NextPage = () => {
               )
             })}
           </div>
-
-          {/* {teamQuery.data?.map((team) => {
-            return (
-              <div key={team.id} className="flex items-center justify-center space-x-4">
-                <h3 className="text-2xl font-bold ">{team.name}</h3>
-                <p className="text-xl">{team.description}</p>
-                <button
-                  onClick={() => deleteTeam({ id: team.id })}
-                  className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedTeam(team)
-                    setShowModal(true)
-                  }}
-                  className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600"
-                >
-                  Update
-                </button>
-                {showModal && selectedTeam?.id === team.id && (
-                  <UpdateTeamModal setmodal={setShowModal} team={team} />
-                )}
-              </div>
-            )
-          })} */}
         </div>
       </section>
     </>
