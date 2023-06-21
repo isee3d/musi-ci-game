@@ -86,13 +86,6 @@ const ManageTeamPage: NextPage = () => {
     )
   })
 
-  // const onSubmit: SubmitHandler<Team> = (data) => {
-  //   const exists = teamQuery.data?.find((team) => team.name === data.name)
-  //   const toastMessage = exists ? 'Team already exists!' : 'team created!'
-  //   exists ? toast.error(toastMessage) : (addTeam(data), toast.success(toastMessage))
-  //   reset()
-  // }
-
   return (
     <>
       <Head>

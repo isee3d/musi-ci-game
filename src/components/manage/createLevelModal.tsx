@@ -18,68 +18,43 @@ import { LevelOptionalDefaultsSchema, SubLevel } from 'prisma/generated/zod'
 import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import { Label } from '@radix-ui/react-label'
-import { Level } from '@prisma/client'
 
-const UpdateLevelModal: React.FC<{
-  setmodal: React.Dispatch<React.SetStateAction<boolean>>
-  level: Level
-}> = ({ setmodal, level }) => {
+const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
+  setmodal,
+}) => {
   const ctx = api.useContext()
+  const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([])
   const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
   const levelQuery = api.level.getAllLevels.useQuery()
-  const [addedSublevels, setAddedSublevels] = useState<SubLevel[]>([])
-  const [remainingSubLevels, setRemainingSublevels] = useState<SubLevel[]>([])
-
-  const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery(
-    { levelId: level.id.toString() },
-    { onSuccess: (data) => setAddedSublevels(data) }
-  )
-
-  const otherSubLevelsQuery = api.level.getAllRemainingSubLevelsOfLevel.useQuery(
-    { levelId: level.id.toString() },
-    { onSuccess: (data) => setRemainingSublevels(data) }
-  )
-
-  const { mutate: updateLevel } = api.level.updateLevel.useMutation({
-    onSuccess: () => {
-      ctx.level.getAllLevels.invalidate()
-    },
-  })
-  const { mutate: updateSublevelsOfLevel } = api.level.setSubLevelsToLevel.useMutation({
+  const { mutate: addLevel } = api.level.createLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
     },
   })
 
   const onAddSublevelButtonClick = (sublevel: SubLevel) => {
-    setAddedSublevels([...addedSublevels, sublevel])
-    setRemainingSublevels(remainingSubLevels.filter((s) => s.id !== sublevel.id))
+    setAddedSubLevels([...addedSubLevels, sublevel])
   }
 
-  const onRemoveSubLevelButtonClick = (sublevel: SubLevel) => {
-    setAddedSublevels(addedSublevels.filter((s) => s.id !== sublevel.id))
-    setRemainingSublevels([...remainingSubLevels, sublevel])
+  const onRemoveSubLevelButtonClick = (fragment: SubLevel) => {
+    setAddedSubLevels(addedSubLevels.filter((f) => f.id !== fragment.id))
   }
 
   const form = useForm<z.infer<typeof LevelOptionalDefaultsSchema>>({
     mode: 'onBlur',
     resolver: zodResolver(LevelOptionalDefaultsSchema),
     defaultValues: {
-      name: level.name,
-      description: level.description,
+      name: '',
     },
   })
 
   function onSubmit(data: z.infer<typeof LevelOptionalDefaultsSchema>) {
-    updateLevel({
-      id: level.id,
-      name: data.name,
-      description: data.description,
-    })
-    updateSublevelsOfLevel({
-      levelId: level.id.toString(),
-      sublevels: addedSublevels.map((s) => s.id),
-    })
+    const exists = levelQuery.data?.find((team) => team.name === data.name)
+    const toastMessage = exists ? 'Level already exists!' : 'Level created!'
+    console.log(data);
+    // exists
+    //   ? toast.error(toastMessage)
+    //   : (addLevel({ ...data, sublevels: [] }), toast.success(toastMessage))
     form.reset()
     setmodal(false)
   }
@@ -121,7 +96,7 @@ const UpdateLevelModal: React.FC<{
         {/* The available sublevels */}
         <div className="flex w-full flex-col">
           <Label>Toegevoegde Sublevels</Label>
-          {addedSublevels.map((sublevel) => {
+          {addedSubLevels.map((sublevel) => {
             return (
               <div
                 key={sublevel.id}
@@ -138,7 +113,9 @@ const UpdateLevelModal: React.FC<{
             )
           })}
           <Label>Beschikbare Sublevels</Label>
-          {remainingSubLevels.map((sublevel) => {
+          {subLevelQuery.data?.map((sublevel) => {
+            if (addedSubLevels.find((addedSublevel) => addedSublevel.id === sublevel.id))
+              return null
             return (
               <div
                 key={sublevel.id}
@@ -156,8 +133,8 @@ const UpdateLevelModal: React.FC<{
           })}
         </div>
 
-        <Button disabled={!form.formState.isValid} type="submit">
-          Wijzigingen opslaan
+        <Button type="submit">
+          Sla nieuw Level op
         </Button>
         <Button
           onClick={() => {
@@ -174,4 +151,4 @@ const UpdateLevelModal: React.FC<{
   )
 }
 
-export default UpdateLevelModal
+export default CreateLevelModal

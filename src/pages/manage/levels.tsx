@@ -1,228 +1,96 @@
-import { Fragment, Level, SubLevel } from "@prisma/client";
-import { NextPage } from "next";
-import Head from "next/head";
-import { FragmentOptionalDefaultsWithRelations, FragmentWithRelations } from "prisma/generated/zod";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import NoteCreator from "~/components/creators/noteCreator";
-import UpdateLevelModal from "~/components/manage/updateLevelModal";
-import Sublevel from "~/components/subLevel";
-import { api } from "~/utils/api";
+import { Fragment, Level, SubLevel } from '@prisma/client'
+import { NextPage } from 'next'
+import Head from 'next/head'
+import { FragmentOptionalDefaultsWithRelations, FragmentWithRelations } from 'prisma/generated/zod'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import NoteCreator from '~/components/creators/noteCreator'
+import CreateLevelModal from '~/components/manage/createLevelModal'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
+import UpdateLevelModal from '~/components/manage/updateLevelModal'
+import { Button, buttonVariants } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
+import { api } from '~/utils/api'
 
 const validationRules = {
-    name: { required: 'Note is required.' },
-    description: { required: 'Description is required.' },
-    // bpm: {
-    //     required: 'BPM is required.',
-    //     pattern: { value: /^[0-9]+$/, message: 'BPM must be a number.' },
-    //     min: { value: 0, message: 'BPM must be higher than 0' },
-    //     setValueAs: (value: any) => parseInt(value),
-    // },
-    // correctAnswers: {
-    //     required: 'Field is required.',
-    //     pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
-    //     min: { value: 0, message: 'Field must be higher than 0' },
-    //     setValueAs: (value: any) => parseInt(value),
-    // },
-    // fragmentsToShow: {
-    //     required: 'Field is required.',
-    //     pattern: { value: /^[0-9]+$/, message: 'Field must be a number.' },
-    //     min: { value: 0, message: 'Field must be higher than 0' },
-    //     setValueAs: (value: any) => parseInt(value),
-    // },
-};
+  name: { required: 'Note is required.' },
+  description: { required: 'Description is required.' },
+}
 
 const ManageLevels: NextPage = () => {
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Level>({ mode: 'onBlur' });
-    // const fragmentQuery = api.fragmentNote.getAllFragments.useQuery();
-    const { mutate: addLevel } = api.level.createLevel.useMutation();
-    const { mutate: deleteLevel } = api.level.deleteLevel.useMutation();
-    const subLevelQuery = api.sublevel.getAllSubLevels.useQuery();
-    const levelQuery = api.level.getAllLevels.useQuery();
-    // const [addedFragments, setAddedFragments] = useState<Fragment[]>([]);
-    const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([]);
-    const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
-    const [showModal, setShowModal] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<Level>({ mode: 'onBlur' })
+  const { mutate: addLevel } = api.level.createLevel.useMutation()
+  const { mutate: deleteLevel } = api.level.deleteLevel.useMutation()
+  const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
+  const levelQuery = api.level.getAllLevels.useQuery()
+  const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([])
+  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null)
+  const [showModal, setShowModal] = useState(false)
+  const [createModal, setCreateModal] = useState(false)
 
-    const onSubmit: SubmitHandler<Level> = (data) => {
-        addLevel({ ...data, sublevels: addedSubLevels.map(sublevel => sublevel.id) });
-        toast.success("Level created!")
-        setAddedSubLevels([]);
-        reset();
-    }
+  return (
+    <>
+      <Head>
+        <title>Manage levels</title>
+        <meta name="description" content="Level name here" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-    const onAddSublevelButtonClick = (sublevel: SubLevel) => {
-        setAddedSubLevels([...addedSubLevels, sublevel]);
-    }
+      <section className="flex grow flex-col items-center justify-center">
+        <h2 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight">
+          Levels beheren
+        </h2>
 
-    const onRemoveFragmentButtonClick = (fragment: SubLevel) => {
-        setAddedSubLevels(addedSubLevels.filter(f => f.id !== fragment.id));
-    }
+        <div className="container mx-auto flex w-1/2 flex-col items-center gap-4 rounded border-2 p-4 shadow">
+          <Button onClick={() => setCreateModal(true)} variant="outline">
+            Maak nieuw Level
+          </Button>
+          {createModal && (
+            <ManageBaseModal title="Nieuw Level maken">
+              <CreateLevelModal setmodal={setCreateModal} />
+            </ManageBaseModal>
+          )}
+          {levelQuery.data?.map((level) => {
+            return (
+              <div
+                key={level.id}
+                className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+              >
+                <h2 className="text-2xl font-bold">{level.name}</h2>
+                <h2 className="text-xl">{level.description}</h2>
+                <Button
+                  onClick={() => deleteLevel({ id: level.id })}
+                  className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+                >
+                  verwijderen
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSelectedLevel(level)
+                    setShowModal(true)
+                  }}
+                  className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                >
+                  Aanpassen
+                </Button>
+                {showModal && selectedLevel?.id === level.id && (
+                  <ManageBaseModal title="Level aanpassen">
+                    <UpdateLevelModal setmodal={setShowModal} level={selectedLevel} />
+                  </ManageBaseModal>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </section>
+    </>
+  )
+}
 
-
-    const AllsublevelsFromDB = subLevelQuery.data?.map(sublevel => {
-        if (addedSubLevels.find(addedSublevel => addedSublevel.id === sublevel.id)) return null;
-        return (
-            <li key={ sublevel.id } className="flex items-center justify-between">
-                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ sublevel.name }</label>
-                <button
-                    type="button"
-                    className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
-                    onClick={ () => onAddSublevelButtonClick(sublevel) }>
-                    Add
-                </button>
-            </li>
-        );
-    });
-
-    const addedSublevelsList = addedSubLevels.map((sublevel) => {
-        return (
-            <li key={ sublevel.id } className="flex items-center justify-between">
-                <label className="mb-2 block p-4 text-center text-sm font-medium text-gray-900 dark:text-white">{ sublevel.name }</label>
-                <button
-                    type="button"
-                    className="rounded bg-red-500 p-4 font-bold text-white active:bg-red-800"
-                    onClick={ () => onRemoveFragmentButtonClick(sublevel) }>
-                    Remove
-                </button>
-            </li>
-        )
-    })
-
-    return (
-        <>
-            <Head>
-                <title>Manage fragments</title>
-                <meta name="description" content="Level name here" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
-            <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-                <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
-                    Levels beheren
-                </h1>
-
-                <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 border-white p-4 shadow ">
-                    <form onSubmit={ handleSubmit(onSubmit) }>
-                        <div className="grid w-full gap-6 md:grid-cols-1">
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Naam</label>
-                                <input
-                                    { ...register("name", validationRules.name) }
-                                    type="text"
-                                    id="name"
-                                    autoComplete='off'
-                                    placeholder="bijv: level 1"
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    required />
-                                <p className='text-red-600'>{ errors.name?.message }</p>
-                            </div>
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Omschrijving</label>
-                                <textarea
-                                    { ...register("description", validationRules.description) }
-                                    autoComplete='off'
-                                    placeholder="Vul hier een omschrijving in"
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    required />
-                                <p className='text-red-600'>{ errors.description?.message }</p>
-                            </div>
-                            {/* <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tempo (BPM)</label>
-                                <input
-                                    { ...register("BPM", validationRules.bpm) }
-                                    type="number"
-                                    autoComplete='off'
-                                    id="bpm"
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    placeholder="bijv: 60"
-                                    required />
-                                <p className='text-red-600'>{ errors.BPM?.message }</p>
-                            </div> */}
-                            {/* <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Het aantal goede antwoord voor een level is gehaald</label>
-                                <input
-                                    { ...register("correctAnswers", validationRules.correctAnswers) }
-                                    type="number"
-                                    autoComplete='off'
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    placeholder="bijv: 10"
-                                    required />
-                                <p className='text-red-600'>{ errors.correctAnswers?.message }</p>
-                            </div> */}
-                            {/* <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Aantal zichtbare fragmenten in Scene</label>
-                                <input
-                                    { ...register("fragmentToShow", validationRules.fragmentsToShow) }
-                                    type="number"
-                                    autoComplete='off'
-                                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="bijv: 2"
-                                    required />
-                                <p className='text-red-600'>{ errors.fragmentToShow?.message }</p>
-                            </div> */}
-                            <h3 className="my-2 text-xl text-white">
-                                Toegevoegde sublevels
-                            </h3>
-                            <ul>
-                                { addedSublevelsList }
-                            </ul>
-                            <h3 className="my-2 text-xl text-white">
-                                Sublevels toevoegen
-                            </h3>
-                            <ul>
-                                { AllsublevelsFromDB }
-                            </ul>
-                            {/* <h3 className="my-2 text-xl text-white">
-                                Toegevoegde fragmenten
-                            </h3>
-                            <ul>
-                                { addedFragmentsList }
-                            </ul>
-                            <h3 className="my-2 text-xl text-white">
-                                Fragmenten toevoegen
-                            </h3>
-                            <ul>
-                                { fragmentsfromDBList }
-                            </ul> */}
-                            { levelQuery.data?.map((level) => {
-                                return (
-                                    <div key={ level.id } className="flex items-center justify-center space-x-4">
-                                        <h3 className="text-2xl font-bold text-white">{ level.name }</h3>
-                                        <p className="text-xl text-white">{ level.description }</p>
-                                        <button
-                                            onClick={ () => deleteLevel({ id: level.id }) }
-                                            className="rounded-xl bg-red-500 p-2 text-white hover:bg-red-600">
-                                            Delete
-                                        </button>
-                                        <button
-                                            onClick={ () => {
-                                                setSelectedLevel(level);
-                                                setShowModal(true);
-                                            } }
-                                            className="rounded-xl bg-green-500 p-2 text-white hover:bg-green-600">
-                                            Update
-                                        </button>
-                                        { showModal && selectedLevel?.id === level.id && <UpdateLevelModal
-                                            setmodal={ setShowModal }
-                                            level={ level } /> }
-                                    </div>
-                                );
-                            }) }
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={ !isValid }
-                            className={ `mt-4 rounded-xl p-4 text-white ${isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }
-                        >
-                            <h3 className="text-center text-2xl font-bold">Nieuw level opslaan</h3>
-                        </button>
-                    </form>
-
-                </div>
-            </main>
-        </>
-    );
-};
-
-export default ManageLevels;
+export default ManageLevels
