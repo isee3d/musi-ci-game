@@ -51,10 +51,10 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
   function onSubmit(data: z.infer<typeof LevelOptionalDefaultsSchema>) {
     const exists = levelQuery.data?.find((team) => team.name === data.name)
     const toastMessage = exists ? 'Level already exists!' : 'Level created!'
-    console.log(data);
-    // exists
-    //   ? toast.error(toastMessage)
-    //   : (addLevel({ ...data, sublevels: [] }), toast.success(toastMessage))
+    console.log(data)
+    exists
+      ? toast.error(toastMessage)
+      : (addLevel({ ...data, sublevels: [] }), toast.success(toastMessage))
     form.reset()
     setmodal(false)
   }
@@ -133,9 +133,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
           })}
         </div>
 
-        <Button type="submit">
-          Sla nieuw Level op
-        </Button>
+        <Button type="submit">Sla nieuw Level op</Button>
         <Button
           onClick={() => {
             form.reset()

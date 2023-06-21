@@ -1,11 +1,7 @@
-import { Fragment, Level, SubLevel } from '@prisma/client'
+import { Level } from '@prisma/client'
 import { NextPage } from 'next'
 import Head from 'next/head'
-import { FragmentOptionalDefaultsWithRelations, FragmentWithRelations } from 'prisma/generated/zod'
 import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
-import NoteCreator from '~/components/creators/noteCreator'
 import CreateLevelModal from '~/components/manage/createLevelModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateLevelModal from '~/components/manage/updateLevelModal'
@@ -13,23 +9,9 @@ import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
-const validationRules = {
-  name: { required: 'Note is required.' },
-  description: { required: 'Description is required.' },
-}
-
 const ManageLevels: NextPage = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isValid },
-  } = useForm<Level>({ mode: 'onBlur' })
-  const { mutate: addLevel } = api.level.createLevel.useMutation()
   const { mutate: deleteLevel } = api.level.deleteLevel.useMutation()
-  const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
   const levelQuery = api.level.getAllLevels.useQuery()
-  const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([])
   const [selectedLevel, setSelectedLevel] = useState<Level | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [createModal, setCreateModal] = useState(false)

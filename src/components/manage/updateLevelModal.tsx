@@ -42,6 +42,7 @@ const UpdateLevelModal: React.FC<{
 
   const { mutate: updateLevel } = api.level.updateLevel.useMutation({
     onSuccess: () => {
+      toast.success('Level updated!')
       ctx.level.getAllLevels.invalidate()
     },
   })
@@ -117,8 +118,6 @@ const UpdateLevelModal: React.FC<{
             </FormItem>
           )}
         />
-        {/* The two lists, the usblevels to add and all the sublevels to choose from */}
-        {/* The available sublevels */}
         <div className="flex w-full flex-col">
           <Label>Toegevoegde Sublevels</Label>
           {addedSublevels.map((sublevel) => {
