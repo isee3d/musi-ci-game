@@ -45,7 +45,14 @@ const AuthProvider: React.FC = () => {
   const { data: sessionData } = useSession()
 
   return (
-    <Button size={'lg'} onClick={sessionData ? () => void signOut() : () => void signIn()}>
+    <Button
+      size={'lg'}
+      onClick={
+        sessionData
+          ? () => void signOut()
+          : () => void signIn('google', { callbackUrl: 'http://localhost:3000/podium' })
+      }
+    >
       {sessionData ? 'Uitloggen' : 'Inloggen'}
     </Button>
   )
