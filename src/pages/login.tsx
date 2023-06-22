@@ -50,7 +50,7 @@ const AuthProvider: React.FC = () => {
       onClick={
         sessionData
           ? () => void signOut()
-          : () => void signIn('google', { callbackUrl: 'http://localhost:3000/podium' })
+          : () => void signIn(undefined, { callbackUrl: 'http://localhost:3000/podium' })
       }
     >
       {sessionData ? 'Uitloggen' : 'Inloggen'}
