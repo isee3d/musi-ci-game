@@ -38,8 +38,9 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "tailwind.config.cjs"
-, "next.config.mjs"  ],
+    "tailwind.config.cjs",
+    "next.config.mjs"
+  ],
   "exclude": [
     "node_modules"
   ]

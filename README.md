@@ -36,9 +36,9 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Retrieve the levels of the selected game
 - [x] Improve Note + fragment creation into one prisma transaction
 - [x] Use UseState instead of Zustand
-- [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user*
+- [ ] Add Game progress (So levels completed for a game) as data to the DB to keep the progress of the user\*
 
- Build the level Item logic so:
+Build the level Item logic so:
 
 - [ ] Create sound
 - [ ] Create pixi animation for the sound
@@ -47,6 +47,5 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [ ] Add luisteren logic
 - [ ] Add spelen logic
 - [ ] Add uitdaging logic
-
 
 pnpx prisma db push --force-reset

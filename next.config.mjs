@@ -1,21 +1,21 @@
 /**
-* Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
+ * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
-await import("./src/env.mjs");
+await import('./src/env.mjs')
 
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
 
- typescript: {
+  typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-   eslint: {
+  eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
@@ -27,20 +27,20 @@ const config = {
    * @see https://github.com/vercel/next.js/issues/41980
    */
   i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
+    locales: ['en'],
+    defaultLocale: 'en',
   },
-    webpack(config, { isServer }) {
+  webpack(config, { isServer }) {
     // audio support
     config.module.rules.push({
       test: /\.(ogg|mp3|wav|mpe?g)$/i,
       exclude: config.exclude,
       use: [
         {
-          loader: "url-Loader",
+          loader: 'url-Loader',
           options: {
             limit: config.inlineImageLimit,
-            fallback: "file-Loader",
+            fallback: 'file-Loader',
             publicPath: `${config.assetPrefix}/_next/static/images/`,
             outputPath: `${isServer ? '../' : ''}static/images/`,
             name: '[name]-[hash].[ext]',
@@ -59,6 +59,6 @@ const config = {
 
     return config
   },
-};
+}
 
-export default config;
+export default config

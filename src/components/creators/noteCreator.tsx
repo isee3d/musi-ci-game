@@ -1,4 +1,3 @@
-import { useNoteStore } from '~/stores/useNotesStore'
 import { api } from '~/utils/api'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
