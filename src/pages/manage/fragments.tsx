@@ -1,6 +1,7 @@
-import { Fragment, Note } from '@prisma/client'
+// import { Fragment, Note } from '@prisma/client'
 import { NextPage } from 'next'
 import Head from 'next/head'
+import { Fragment, Note } from 'prisma/generated/zod'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -123,14 +124,10 @@ const ManageFragments: NextPage = () => {
               <h3 className="text-center text-2xl font-bold">Fragment opslaan</h3>
             </button>
           </form> */}
-          <div className="mt-4 flex flex-col space-y-3 border-4 pt-1 shadow-xl shadow-fuchsia-500">
-            <h3 className="text-2xl">Noten toevoegen of verwijderen</h3>
-            <NoteCreator setNewNotes={setNewNotes} />
-          </div>
 
           {/* Show all exisiting fragments with a delete button and a update button */}
           <div className="h-fit w-full border-4">
-            {fragmentQuery.data?.map((fragment) => (
+            {fragmentQuery.data?.map((fragment: Fragment) => (
               <div key={fragment.id} className="flex items-center justify-center space-x-4">
                 <h3 className="text-2xl font-bold">{fragment.name}</h3>
                 <p className="text-xl">{fragment.description}</p>

@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 
 const InitializeSoundModal: React.FC = () => {
-    const { data: sessionData } = useSession();
+    const { data: sessionData, status } = useSession();
     const { mutate: setUserToTeam } = api.user.setUserToTeam.useMutation();
     const { mutate: setParticipantIdToUser } = api.user.setParticipantIdToUser.useMutation();
 
