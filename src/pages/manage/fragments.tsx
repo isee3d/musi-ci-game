@@ -69,7 +69,9 @@ const ManageFragments: NextPage = () => {
                     Aanpassen
                   </Button>
                   {showModal && selectedFragment?.id === fragment.id && (
-                    <UpdateFragmentModal setmodal={setShowModal} fragment={fragment} />
+                    <ManageBaseModal title="Fragment updaten">
+                      <UpdateFragmentModal setmodal={setShowModal} fragment={fragment} />
+                    </ManageBaseModal>
                   )}
                 </div>
               )
