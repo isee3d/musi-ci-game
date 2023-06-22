@@ -1,18 +1,23 @@
 import Head from 'next/head';
 import { type NextPage } from 'next';
 import { SubLevel } from '@prisma/client';
-import { useForm } from 'react-hook-form';
 import { api } from '~/utils/api';
 import { Button, buttonVariants } from '~/components/ui/button';
 import { useState } from 'react';
 import ManageBaseModal from '~/components/manage/manageBaseModal';
 import { cn } from '~/lib/utils';
 import CreateSublevelModal from '~/components/manage/createSublevelModal';
+import UpdateSublevelModal from '~/components/manage/updateSublevelModal';
+import toast from 'react-hot-toast';
 
 const ManageSublevels: NextPage = () => {
-    const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<SubLevel>({ mode: 'onBlur' });
-    const { mutate: addSubLevel } = api.sublevel.createSubLevel.useMutation();
-    const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation();
+  const ctx = api.useContext();
+    const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation({
+        onSuccess: () => {
+            toast.success('Sublevel verwijderd!');
+            ctx.sublevel.getAllSubLevels.invalidate();
+        }
+    });
     const subLevelQuery = api.sublevel.getAllSubLevels.useQuery();
 
     const [createModal, setCreateModal] = useState(false)
@@ -65,8 +70,8 @@ const ManageSublevels: NextPage = () => {
                     Aanpassen
                   </Button>
                   {showModal && selectedSubLevel?.id === sublevel.id && (
-                    <ManageBaseModal title="Fragment updaten">
-                      <UpdateFragmentModal setmodal={setShowModal} fragment={sublevel} />
+                    <ManageBaseModal title="Sublevel updaten">
+                      <UpdateSublevelModal setmodal={setShowModal} sublevel={sublevel} />
                     </ManageBaseModal>
                   )}
                 </div>

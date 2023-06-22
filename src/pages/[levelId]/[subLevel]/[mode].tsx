@@ -27,7 +27,7 @@ const ModePage: NextPage<{ levelId: string; subLevel: string; mode: string }> = 
   subLevel,
   mode,
 }) => {
-  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ subLevelId: subLevel })
+  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ sublevelId: subLevel })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: subLevel })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
   const router = useRouter()
@@ -136,7 +136,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (typeof mode !== 'string') throw new Error('No mode')
   if (typeof subLevel !== 'string') throw new Error('No sublevel')
 
-  await ssg.sublevel.getFragmentsOfSublevel.prefetch({ subLevelId: subLevel })
+  await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: subLevel })
   await ssg.gameMode.getGameMode.prefetch({ name: mode })
 
   return {

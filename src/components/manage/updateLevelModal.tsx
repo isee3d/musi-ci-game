@@ -25,8 +25,8 @@ const UpdateLevelModal: React.FC<{
   level: Level
 }> = ({ setmodal, level }) => {
   const ctx = api.useContext()
-  const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
-  const levelQuery = api.level.getAllLevels.useQuery()
+  // const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
+  // const levelQuery = api.level.getAllLevels.useQuery()
   const [addedSublevels, setAddedSublevels] = useState<SubLevel[]>([])
   const [remainingSubLevels, setRemainingSublevels] = useState<SubLevel[]>([])
 

@@ -17,19 +17,20 @@ import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { useState } from 'react'
 import { cn } from '~/lib/utils'
-import { Fragment, GameMode } from '@prisma/client'
+import { Fragment, GameMode, SubLevel } from '@prisma/client'
 import { Label } from '~/components/ui/label'
 
-const CreateSublevelModal: React.FC<{
+const UpdateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
-}> = ({ setmodal }) => {
+  sublevel: SubLevel
+}> = ({ setmodal, sublevel }) => {
   const ctx = api.useContext()
   const [addedGameModes, setAddedGameModes] = useState<GameMode[]>([])
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
 
-  const { mutate: addSublevel } = api.sublevel.createSubLevel.useMutation({
+  const { mutate: updateSublevel } = api.sublevel.updateSubLevel.useMutation({
     onSuccess: () => {
       toast.success('Sublevel created!')
       ctx.sublevel.getAllSubLevels.invalidate()
@@ -38,6 +39,16 @@ const CreateSublevelModal: React.FC<{
       toast.error('Failed to upload new Sublevel! Please try again.')
     },
   })
+
+  const gameModesOfSublevel = api.sublevel.getGameModesOfSublevel.useQuery(
+    { sublevelId: sublevel.id.toString() },
+    { onSuccess: (data) => setAddedGameModes(data) }
+  )
+
+  const fragmentsOfSublevel = api.sublevel.getFragmentsOfSublevel.useQuery(
+    { sublevelId: sublevel.id.toString() },
+    { onSuccess: (data) => setAddedFragments(data.fragments)}
+  )
 
   const onAddGameModeButtonClick = (gameMode: GameMode) => {
     setAddedGameModes([...addedGameModes, gameMode])
@@ -59,15 +70,16 @@ const CreateSublevelModal: React.FC<{
     mode: 'onBlur',
     resolver: zodResolver(SubLevelOptionalDefaultsSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      fragmentToShow: 0,
+      name: sublevel.name,
+      description: sublevel.description,
+      fragmentToShow: sublevel.fragmentToShow,
     },
   })
 
   function onSubmit(data: z.infer<typeof SubLevelOptionalDefaultsSchema>) {
-    addSublevel({
+    updateSublevel({
       ...data,
+      id: sublevel.id,
       fragments: addedFragments.map((f) => f.id),
       gameModes: addedGameModes.map((g) => g.id),
     })
@@ -217,7 +229,7 @@ const CreateSublevelModal: React.FC<{
             </div>
           </div>
           <Button type="submit" className="mx-3">
-            Sla nieuw sublevel op
+            Sla aangepaste sublevel op
           </Button>
           <Button
             onClick={() => {
@@ -235,4 +247,4 @@ const CreateSublevelModal: React.FC<{
   )
 }
 
-export default CreateSublevelModal
+export default UpdateSublevelModal

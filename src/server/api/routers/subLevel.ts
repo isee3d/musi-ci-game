@@ -49,12 +49,12 @@ export const subLevelRouter = createTRPCRouter({
     }),
 
   getGameModesOfSublevel: publicProcedure
-    .input(z.object({ subLevelId: z.string() }))
+    .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const { subLevelId } = input
+      const { sublevelId } = input
       const gameModes = await ctx.prisma.subLevel.findFirst({
         where: {
-          id: parseInt(subLevelId),
+          id: parseInt(sublevelId),
         },
         select: {
           gameModes: true,
@@ -68,9 +68,9 @@ export const subLevelRouter = createTRPCRouter({
     }),
 
   getFragmentsOfSublevel: publicProcedure
-    .input(z.object({ subLevelId: z.string() }))
+    .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const { subLevelId } = input
+      const { sublevelId: subLevelId } = input
       const fragments = await ctx.prisma.subLevel.findFirst({
         where: {
           id: parseInt(subLevelId),
@@ -95,13 +95,28 @@ export const subLevelRouter = createTRPCRouter({
       return fragments
     }),
 
-  updateSubLevel: publicProcedure.input(SubLevelSchema).mutation(async ({ ctx, input }) => {
-    const { id } = input
-    return await ctx.prisma.subLevel.update({
-      where: { id },
-      data: input,
-    })
-  }),
+  updateSubLevel: publicProcedure
+    .input(
+      SubLevelSchema.extend({
+        fragments: z.array(z.number().int()),
+        gameModes: z.array(z.number().int()),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, gameModes, fragments } = input
+      return await ctx.prisma.subLevel.update({
+        where: { id },
+        data: {
+          ...input,
+          fragments: {
+            set: fragments.map((id) => ({ id })),
+          },
+          gameModes: {
+            set: gameModes.map((id) => ({ id })),
+          },
+        },
+      })
+    }),
 
   deleteSubLevel: publicProcedure
     .input(SubLevelSchema.pick({ id: true }))
