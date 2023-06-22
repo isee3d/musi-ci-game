@@ -26,11 +26,6 @@ const LoginPage: NextPage = () => {
             <p className="text-2xl">Log hier in om te starten</p>
             <div className="flex gap-5">
               <AuthProvider />
-              <Button asChild size={'lg'}>
-                <Link href="/tutorial">
-                  <h3>Ga naar Tutorial</h3>
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
@@ -50,7 +45,7 @@ const AuthProvider: React.FC = () => {
       onClick={
         sessionData
           ? () => void signOut()
-          : () => void signIn(undefined, { callbackUrl: 'http://localhost:3000/podium' })
+          : () => void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
       }
     >
       {sessionData ? 'Uitloggen' : 'Inloggen'}
