@@ -1,9 +1,8 @@
-import { Note } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
-import { api, RouterOutputs } from '~/utils/api';
+import { NoteCreate } from 'types/Note';
 
-export const ExistingNote = (props: Note) => {
-    const { id, name, time, duration, speed } = props;
+export const ExistingNote = (props: NoteCreate) => {
+    const { name, time, duration, speed } = props;
 
     const [noteValue, setNoteValue] = useState<string>(name);
     const [startTimeValue, setStartTimeValue] = useState<number>(time);
@@ -83,10 +82,10 @@ export const ExistingNote = (props: Note) => {
                 <input type="number" placeholder="John" value={ volumeValue } onChange={ handleVolumeChange } className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" required />
             </div>
 
-            <button onClick={ onDeleteNote } className='mt-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20'>
+            <button onClick={ onDeleteNote } className='mt-4 rounded-xl bg-white/10 p-4 hover:bg-white/20'>
                 Remove
             </button>
-            <button onClick={ onUpdateNote } className='mt-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20'>
+            <button onClick={ onUpdateNote } className='mt-4 rounded-xl bg-white/10 p-4 hover:bg-white/20'>
                 Update
             </button>
         </div>
