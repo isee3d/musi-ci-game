@@ -165,8 +165,6 @@ async function main() {
       name: 'gelijk anders',
       description: 'een gelijk fragment en een anders fragment',
       playTime: 60,
-      BPM: 60,
-      correctAnswers: 10,
       cooldownTime: 0,
       fragmentToShow: 2,
       gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },

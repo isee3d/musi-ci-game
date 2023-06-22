@@ -151,8 +151,6 @@ model SubLevel {
 
   name              String
   description       String?
-  BPM               Int
-  correctAnswers    Int
   cooldownTime      Int?
   playTime          Int?
   fragmentToShow    Int

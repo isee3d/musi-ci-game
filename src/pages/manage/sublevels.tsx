@@ -7,6 +7,7 @@ import { Button, buttonVariants } from '~/components/ui/button';
 import { useState } from 'react';
 import ManageBaseModal from '~/components/manage/manageBaseModal';
 import { cn } from '~/lib/utils';
+import CreateSublevelModal from '~/components/manage/createSublevelModal';
 
 const ManageSublevels: NextPage = () => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<SubLevel>({ mode: 'onBlur' });
@@ -36,7 +37,7 @@ const ManageSublevels: NextPage = () => {
           </Button>
           {createModal && (
             <ManageBaseModal title="Nieuw Sublevel maken">
-              <CreateFragmentModal setmodal={setCreateModal} />
+              <CreateSublevelModal setmodal={setCreateModal} />
             </ManageBaseModal>
           )}
           <div className="flex w-full flex-col gap-y-4 py-4">
