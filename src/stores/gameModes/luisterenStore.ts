@@ -50,8 +50,6 @@ const initialRoundState: Partial<LuisterenState> = {
     sceneData: {},
 }
 
-// TODO: Add saveToDB action that then only resets a certain part of the store
-
 export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set, get) => ({
     timePlayed: 0,
     score: 0,

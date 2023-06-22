@@ -2,7 +2,8 @@ import { type NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { buttonVariants } from '~/components/ui/button'
+import { useRouter } from 'next/router'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -10,6 +11,7 @@ const UserGamesPage: NextPage = () => {
   const { data: session } = useSession()
   // Add loading to retrieve this data, cause it can't be prefetched
   const gamesOfUserQuery = api.user.getGamesOfUser.useQuery({ id: session?.user.id })
+  const router = useRouter()
 
   return (
     <>
@@ -49,6 +51,14 @@ const UserGamesPage: NextPage = () => {
                 </div>
               </Link>
             ))}
+            <Button
+              onClick={() => {
+                router.push('/podium')
+              }}
+              className={cn(buttonVariants({ size: 'lg' }), 'mt-10 h-16 rounded-xl')}
+            >
+              <h3 className="text-3xl">Terug</h3>
+            </Button>
           </div>
         </div>
       </section>

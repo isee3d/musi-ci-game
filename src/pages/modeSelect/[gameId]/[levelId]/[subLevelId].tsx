@@ -1,23 +1,25 @@
 import { GetStaticProps, type NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 
-const Level: NextPage<{ subLevelId: string; levelId: string; sublevel: string }> = ({
+const Level: NextPage<{ subLevelId: string; levelId: string; gameId: string }> = ({
   subLevelId,
   levelId,
-  sublevel,
+  gameId,
 }) => {
-  const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ subLevelId: subLevelId })
+  const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ sublevelId: subLevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: subLevelId })
+  const router = useRouter()
 
   return (
     <>
       <Head>
-        <title>{sublevel}</title>
+        <title>{subLevelId}</title>
         <meta name="description" content="Level name here" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -38,14 +40,13 @@ const Level: NextPage<{ subLevelId: string; levelId: string; sublevel: string }>
                 </Link>
               </Button>
             ))}
-
             <Button
-              asChild
-              className={cn(buttonVariants({ size: 'lg' }), 'h-16 mt-10 rounded-xl')}
+              onClick={() => {
+                router.push(`/progress/${gameId}/${levelId}`)
+              }}
+              className={cn(buttonVariants({ size: 'lg' }), 'mt-10 h-16 rounded-xl')}
             >
-              <Link href={`/progress/level/${levelId}`}>
-                <h3 className="text-3xl">Terug</h3>
-              </Link>
+              <h3 className="text-3xl">Terug</h3>
             </Button>
           </div>
         </div>
@@ -58,16 +59,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateServerSideHelper()
   const subLevelId = context.params?.subLevelId
   const levelId = context.params?.levelId
+  const gameId = context.params?.gameId
   if (typeof subLevelId !== 'string') throw new Error('No subLevel')
   if (typeof levelId !== 'string') throw new Error('No levelId')
+  if (typeof gameId !== 'string') throw new Error('No gameId')
 
-  await ssg.sublevel.getGameModesOfSublevel.prefetch({ subLevelId: subLevelId })
+  await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: subLevelId })
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
       subLevelId: subLevelId,
       levelId: levelId,
+      gameId: gameId,
     },
   }
 }

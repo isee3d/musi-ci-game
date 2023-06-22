@@ -2,7 +2,8 @@ import { GetStaticProps, type NextPage } from 'next'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { buttonVariants } from '~/components/ui/button'
+import { useRouter } from 'next/router'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
@@ -10,6 +11,7 @@ import { api } from '~/utils/api'
 const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
   const { data: sessiondata } = useSession()
   const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
+  const router = useRouter()
 
   return (
     <>
@@ -20,7 +22,7 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-2xl border-4 border-primary">
+        <div className="container mx-auto flex flex-col items-center justify-center space-y-8 rounded-2xl border-4 border-primary p-4">
           <h2 className="w-full border-b-2 py-2 text-center text-3xl font-extrabold tracking-tight">
             Voortgang Musi-CI Levels
           </h2>
@@ -29,7 +31,7 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
               <Link
                 key={level.id}
                 className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
-                href={`/progress/level/${level.id}`}
+                href={`/progress/${gameId}/${level.id}`}
               >
                 <div className="flex w-full items-center justify-between">
                   <div className="flex justify-start space-x-4">
@@ -46,6 +48,14 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
                 </div>
               </Link>
             ))}
+            <Button
+              onClick={() => {
+                router.push('/progress/games')
+              }}
+              className={cn(buttonVariants({ size: 'lg' }), 'mt-10 h-16 rounded-xl')}
+            >
+              <h3 className="text-3xl">Terug</h3>
+            </Button>
           </div>
         </div>
       </section>
