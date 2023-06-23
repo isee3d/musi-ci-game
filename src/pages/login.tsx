@@ -5,6 +5,17 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
 
 const LoginPage: NextPage = () => {
+  const { data: sessionData } = useSession()
+
+  function getLoginText() {
+    if(!sessionData?.user){
+      return 'Log hier in om te starten'
+    }
+    else{
+      return 'Druk hieronder om uit te loggen'
+    }
+  }
+
   return (
     <>
       <Head>
@@ -23,9 +34,19 @@ const LoginPage: NextPage = () => {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl">Log hier in om te starten</p>
+            <p className="text-2xl">{getLoginText()}</p>
             <div className="flex gap-5">
-              <AuthProvider />
+              <Button
+                size={'lg'}
+                onClick={
+                  sessionData
+                    ? () => void signOut()
+                    : () =>
+                        void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
+                }
+              >
+                {sessionData ? 'Uitloggen' : 'Inloggen'}
+              </Button>
             </div>
           </div>
         </div>
@@ -35,20 +56,3 @@ const LoginPage: NextPage = () => {
 }
 
 export default LoginPage
-
-const AuthProvider: React.FC = () => {
-  const { data: sessionData } = useSession()
-
-  return (
-    <Button
-      size={'lg'}
-      onClick={
-        sessionData
-          ? () => void signOut()
-          : () => void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
-      }
-    >
-      {sessionData ? 'Uitloggen' : 'Inloggen'}
-    </Button>
-  )
-}

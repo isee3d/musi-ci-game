@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { UserRole } from 'types/role'
+import { UserRole } from 'types/Role'
 
 export const useRequireAdminRole = () => {
   const { data: sessionData } = useSession()
