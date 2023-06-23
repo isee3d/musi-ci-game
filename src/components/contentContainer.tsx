@@ -25,7 +25,7 @@ const ContentContainer: React.FC<Props> = ({ children, title, backPath }) => {
           <h2 className="w-full border-b-2 border-primary py-4 text-center text-3xl font-extrabold tracking-tight">
             {title}
           </h2>
-          <div className=" flex w-full flex-col justify-between space-y-8 px-12 py-4">
+          <div className=" flex w-full flex-col justify-center items-center space-y-8 px-12 py-4">
             {children}
           </div>
         </div>
@@ -33,7 +33,7 @@ const ContentContainer: React.FC<Props> = ({ children, title, backPath }) => {
           onClick={() => {
             router.push(backPath)
           }}
-          className={cn(buttonVariants({ size: 'lg' }), 'mt-10 h-16 rounded-xl')}
+          className={cn(buttonVariants({ size: 'lg' }), 'my-5 h-16 rounded-xl')}
         >
           <h3 className="text-xl">Terug</h3>
         </Button>

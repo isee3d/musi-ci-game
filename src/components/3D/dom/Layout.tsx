@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Footer from '~/components/footer'
-import Link from 'next/link'
+import { testSound } from '~/components/fragmentPlayer/audio/AudioControls'
 import { cn } from '~/lib/utils'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { MainNav } from '~/components/mainNav'
@@ -42,6 +42,7 @@ const navitemsTemplate: NavItem[] = [
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
   const { data: sessionData } = useSession()
+  const ref = useRef(null)
 
   useEffect(() => {
     if (sessionData?.user?.role === 'ADMIN') {
@@ -51,7 +52,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [sessionData])
 
-  const ref = useRef(null)
+  async function runTestSound() {
+    await testSound()
+  }
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
@@ -59,7 +62,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav className="flex gap-2">
+            <nav className="flex gap-4">
+              <Button
+                onClick={() => runTestSound()}
+                className={cn(buttonVariants({ variant: 'ghost' }))}
+              >
+                Test geluid
+              </Button>
               <Button
                 onClick={sessionData ? () => void signOut() : () => void signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-4')}

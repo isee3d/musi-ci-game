@@ -34,7 +34,6 @@ export async function stopAll(onAllStopped?: () => void) {
 
 export async function initializeSound() {
     const { piano } = useAudioServiceStore.getState();
-    console.log('Initializing sound');
     if (!piano) return;
     await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
     await piano?.play({
@@ -44,4 +43,33 @@ export async function initializeSound() {
         releaseMs: 1000,
         delay: 300,
     });
+}
+
+export async function testSound() {
+    const { piano } = useAudioServiceStore.getState();
+    if (!piano) return;
+    await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
+    await piano?.play({
+        note: 'C5',
+        volume: 1,
+        sustain: 400,
+        releaseMs: 1850,
+        delay: 50,
+    });
+    await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 });
+    await piano?.play({
+        note: 'A5',
+        volume: 1,
+        sustain: 400,
+        releaseMs: 1378,
+        delay: 300,
+    });
+    await piano?.play({ note: 'C2', volume: 1, sustain: 400, releaseMs: 1000 })
+    await piano?.play({
+      note: 'A4',
+      volume: 1,
+      sustain: 400,
+      releaseMs: 1378,
+      delay: 300,
+    })
 }

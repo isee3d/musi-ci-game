@@ -12,24 +12,27 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
   levelId,
   gameId,
 }) => {
-   const session = useRequireAuth()
+  const session = useRequireAuth()
   const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ sublevelId: sublevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
   return (
-    <ContentContainer title={sublevelQuery?.data?.name ?? 'Naam ophalen...'} backPath={`/progress/${gameId}/${levelId}`}>
-           {gameModesQuery.data?.map((gameMode) => (
-              <Button
-                asChild
-                key={gameMode.id}
-                className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
-              >
-                <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
-                  <h3 className="text-3xl">{gameMode.name}</h3>
-                </Link>
-              </Button>
-            ))}
-      </ContentContainer>
+    <ContentContainer
+      title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
+      backPath={`/progress/${gameId}/${levelId}`}
+    >
+      {gameModesQuery.data?.map((gameMode) => (
+        <Button
+          asChild
+          key={gameMode.id}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-1/2  rounded-xl')}
+        >
+          <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
+            <h3 className="text-3xl">{gameMode.name}</h3>
+          </Link>
+        </Button>
+      ))}
+    </ContentContainer>
   )
 }
 
