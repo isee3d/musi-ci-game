@@ -31,7 +31,7 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
               <Link
                 key={sublevel.id}
                 className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
-                href={`/modeSelect/${gameId}/${levelId}/${sublevel.id}`}
+                href={`/progress/${gameId}/${levelId}/${sublevel.id}`}
               >
                 <div className="flex w-full items-center justify-between">
                   <div className="flex justify-start space-x-4">

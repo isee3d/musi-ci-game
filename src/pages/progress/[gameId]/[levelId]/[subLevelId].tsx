@@ -35,7 +35,7 @@ const Level: NextPage<{ subLevelId: string; levelId: string; gameId: string }> =
                 key={gameMode.id}
                 className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
               >
-                <Link href={`/${levelId}/${subLevelId}/${gameMode.name}`}>
+                <Link href={`/progress/${gameId}/${levelId}/${subLevelId}/${gameMode.name}`}>
                   <h3 className="text-3xl">{gameMode.name}</h3>
                 </Link>
               </Button>

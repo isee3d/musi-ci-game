@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '~/components/ui/button'
-import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]'
+import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 const StartUitdagingUI: React.FC = () => {

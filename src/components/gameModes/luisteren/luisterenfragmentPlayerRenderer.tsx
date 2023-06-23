@@ -3,7 +3,7 @@ import { FragmentSceneData } from 'types/SceneData'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { LuisterenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]'
+import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 const LuisterenfragmentPlayerRenderer: React.FC = () => {

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { Button } from '~/components/ui/button'
-import { SpelenMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]'
+import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface StartUIProps {

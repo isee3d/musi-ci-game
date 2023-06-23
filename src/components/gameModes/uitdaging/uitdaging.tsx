@@ -7,7 +7,7 @@ import StartUitdagingUI from '~/components/gameModes/uitdaging/startUitdagingRou
 import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdagingCountdownPlayer'
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback'
 import useStopwatch from '~/hooks/useStopwatch'
-import { UitdagingMachineContext } from '~/pages/[levelId]/[subLevel]/[mode]'
+import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface UitdagingProps {
