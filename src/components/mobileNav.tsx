@@ -1,4 +1,6 @@
 import Link from "next/link"
+import { Icons } from "~/components/icons"
+import { Button } from "~/components/ui/button"
 import { useLockBody } from "~/hooks/use-lock-body"
 import { cn } from "~/lib/utils"
 
@@ -10,10 +12,11 @@ export type NavItem = {
 
 interface MobileNavProps {
   items: NavItem[]
+  setShowMobileNav: React.Dispatch<React.SetStateAction<boolean>>
   children?: React.ReactNode
 }
 
-export function MobileNav({ items, children }: MobileNavProps) {
+export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps) {
   useLockBody()
 
   return (
@@ -24,21 +27,22 @@ export function MobileNav({ items, children }: MobileNavProps) {
     >
       <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md">
         <Link href="/" className="flex items-center space-x-2">
-          {/* <Icons.logo /> */}
+          <Icons.logo />
           <span className="font-bold">Musi Ci</span>
         </Link>
         <nav className="grid grid-flow-row auto-rows-max text-sm">
           {items.map((item, index) => (
-            <Link
-              key={index}
-              href={item.disabled ? '#' : item.href}
-              className={cn(
-                'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
-                item.disabled && 'cursor-not-allowed opacity-60'
-              )}
-            >
-              {item.title}
-            </Link>
+              <Link
+                onClick={() => setShowMobileNav(false)}
+                key={index}
+                href={item.disabled ? '#' : item.href}
+                className={cn(
+                  'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
+                  item.disabled && 'cursor-not-allowed opacity-60'
+                )}
+              >
+                {item.title}
+              </Link>
           ))}
         </nav>
         {children}

@@ -18,12 +18,24 @@ type LayoutProps = {
 
 const mainNavItems: NavItem[] = [
   {
-    title: 'Home',
-    href: '/',
+    title: 'Levels beheren',
+    href: '/manage/levels',
   },
   {
-    title: 'About',
-    href: '/about',
+    title: 'Sublevels beheren',
+    href: '/manage/sublevels',
+  },
+  {
+    title: 'Fragmenten beheren',
+    href: '/manage/fragments',
+  },
+  {
+    title: 'Spelers beheren',
+    href: '/manage/users',
+  },
+  {
+    title: 'Team beheren',
+    href: '/manage/teams',
   },
 ]
 
@@ -36,14 +48,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav className='flex gap-2'>
-              <Link
-                href="/login"
-                className={cn(buttonVariants({ variant: 'secondary' }), 'px-4')}
-              >
+            <nav className="flex gap-2">
+              <Link href="/login" className={cn(buttonVariants({ variant: 'secondary' }), 'px-4')}>
                 Login
               </Link>
-            <ModeToggle />
+              <ModeToggle />
             </nav>
           </div>
         </header>

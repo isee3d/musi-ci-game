@@ -30,7 +30,7 @@ import {
 export type Icon = LucideIcon
 
 export const Icons = {
-  logo: Command,
+  logo: Music,
   close: X,
   spinner: Loader2,
   chevronLeft: ChevronLeft,

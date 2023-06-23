@@ -1,10 +1,8 @@
-
 import * as React from 'react'
 import Link from 'next/link'
 import { MobileNav, NavItem } from '~/components/mobileNav'
 import { cn } from '~/lib/utils'
 import { Icons } from '~/components/icons'
-
 
 interface MainNavProps {
   items?: NavItem[]
@@ -17,7 +15,7 @@ export function MainNav({ items, children }: MainNavProps) {
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
-        {/* <Icons.logo /> */}
+        <Icons.logo />
         <span className="hidden font-bold sm:inline-block">Musi Ci</span>
       </Link>
       {items?.length ? (
@@ -41,10 +39,14 @@ export function MainNav({ items, children }: MainNavProps) {
         className="flex items-center space-x-2 md:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}
       >
-        {/* {showMobileMenu ? <Icons.close /> : <Icons.logo />} */}
+        {showMobileMenu ? <Icons.close /> : <Icons.logo />}
         <span className="font-bold">Menu</span>
       </button>
-      {showMobileMenu && items && <MobileNav items={items}>{children}</MobileNav>}
+      {showMobileMenu && items && (
+        <MobileNav setShowMobileNav={setShowMobileMenu} items={items}>
+          {children}
+        </MobileNav>
+      )}
     </div>
   )
 }
