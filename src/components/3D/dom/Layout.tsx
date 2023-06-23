@@ -2,18 +2,18 @@
 
 import { ReactNode, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import NavMenu from '~/components/navbar';
-import Footer from '~/components/footer';
-import Link from 'next/link';
-import { cn } from '~/lib/utils';
-import { buttonVariants } from '~/components/ui/button';
-import { MainNav } from '~/components/mainNav';
-import { NavItem } from '~/components/mobileNav';
+import NavMenu from '~/components/navbar'
+import Footer from '~/components/footer'
+import Link from 'next/link'
+import { cn } from '~/lib/utils'
+import { buttonVariants } from '~/components/ui/button'
+import { MainNav } from '~/components/mainNav'
+import { NavItem } from '~/components/mobileNav'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 const mainNavItems: NavItem[] = [
   {
@@ -32,7 +32,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
       <div className=" flex min-h-screen flex-col overflow-y-hidden">
-        <header className="container rounded-b-xl z-40 bg-background">
+        <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
             <nav>
