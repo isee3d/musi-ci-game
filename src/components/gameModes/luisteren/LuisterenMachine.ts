@@ -78,6 +78,7 @@ export const luisterenMachine = createMachine(
         }
       }),
       initializeShownFragments: assign((context) => {
+        console.log('context.allLevelFragments', context.allLevelFragments)
         const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow)
         return {
           shownFragments: transposedFragments,

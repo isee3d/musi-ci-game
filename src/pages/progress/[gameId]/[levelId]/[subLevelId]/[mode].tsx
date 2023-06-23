@@ -15,7 +15,7 @@ import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
-import { useEffect} from 'react'
+import { useEffect } from 'react'
 import { env } from '~/env.mjs'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
@@ -31,7 +31,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   useRequireAuth()
   const router = useRouter()
   const { audioContext } = useAudioServiceStore()
-  const { isPlaying } = useLuisterenStore()
+  const { isPlaying, setIsPlaying } = useLuisterenStore()
 
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
     sublevelId: sublevelId,
@@ -49,6 +49,8 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
       router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
     }
+
+    setIsPlaying(false)
   }, [])
 
   function renderGameMode(mode: string) {

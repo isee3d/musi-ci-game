@@ -29,6 +29,8 @@ const Luisteren: React.FC<LuisterenProps> = ({
   )
   const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
 
+  console.log('fragments', fragments)
+
   useEffect(() => {
     reset()
     setStartTime(Date.now())
