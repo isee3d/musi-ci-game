@@ -43,7 +43,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
               </p>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
-              <Button type="button" onClick={initializeAudio}>
+              <Button type="button" size={'lg'} onClick={initializeAudio}>
                 <Icons.music />
               </Button>
             </div>
