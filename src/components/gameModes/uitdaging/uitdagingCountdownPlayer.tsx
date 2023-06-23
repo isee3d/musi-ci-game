@@ -2,7 +2,7 @@ import React from 'react'
 import {
   SpelenMachineContext,
   UitdagingMachineContext,
-} from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
+} from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 
 const UitdagingCountdownPlayer: React.FC = () => {
   const spelenStates = UitdagingMachineContext.useSelector((state) => state.toStrings())

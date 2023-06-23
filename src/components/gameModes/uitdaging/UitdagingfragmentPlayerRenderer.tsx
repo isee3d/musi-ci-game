@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
+import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { shallowEqual } from '@xstate/react'
 import { FragmentSceneData } from 'types/SceneData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'

@@ -4,7 +4,7 @@ import BackToOverView from '~/components/gameModes/luisteren/backToOverView'
 import PlayButtonsRenderer from '~/components/gameModes/luisteren/playButtonsRenderer'
 import LuisterenFeedback from '~/components/gameModes/luisteren/luisterenFeedback'
 import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/luisterenfragmentPlayerRenderer'
-import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
+import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface LuisterenProps {

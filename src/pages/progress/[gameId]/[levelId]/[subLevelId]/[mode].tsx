@@ -22,13 +22,13 @@ export const LuisterenMachineContext = createActorContext(luisterenMachine, { de
 
 const tabs = ['Luisteren', 'Spelen', 'Uitdaging']
 
-const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> = ({
+const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> = ({
   levelId,
-  subLevelId,
+  sublevelId,
   mode,
 }) => {
-  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ sublevelId: subLevelId })
-  const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: subLevelId })
+  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ sublevelId: sublevelId })
+  const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
   const router = useRouter()
   const { audioContext } = useAudioServiceStore()
@@ -38,7 +38,7 @@ const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> 
 
   useEffect(() => {
     if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/modeSelect/${levelId}/${subLevelId}`)
+      router.push(`/modeSelect/${levelId}/${sublevelId}`)
     }
   }, [])
 
@@ -51,7 +51,7 @@ const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> 
               fragmentsToShow={fragmentsToShow}
               fragments={fragments}
               levelId={levelId}
-              sublevelId={subLevelId}
+              sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
             ;
@@ -64,7 +64,7 @@ const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> 
               fragmentsToShow={fragmentsToShow}
               fragments={fragments}
               levelId={levelId}
-              sublevelId={subLevelId}
+              sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
             ;
@@ -78,7 +78,7 @@ const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> 
               fragments={fragments}
               levelId={levelId}
               playTime={playTime}
-              sublevelId={subLevelId}
+              sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
             ;
@@ -130,19 +130,21 @@ const ModePage: NextPage<{ levelId: string; subLevelId: string; mode: string }> 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateServerSideHelper()
   const mode = context.params?.mode
-  const subLevelId = context.params?.subLevel
+  const sublevelId = context.params?.sublevelId
   const levelId = context.params?.levelId
 
   if (typeof mode !== 'string') throw new Error('No mode')
-  if (typeof subLevelId !== 'string') throw new Error('No sublevel')
+  if (typeof levelId !== 'string') throw new Error('No level')
+  if (typeof sublevelId !== 'string') throw new Error('No sublevel')
 
-  await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: subLevelId })
+  await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: sublevelId })
+  await ssg.sublevel.getSublevelById.prefetch({ id: sublevelId })
   await ssg.gameMode.getGameMode.prefetch({ name: mode })
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      subLevelId,
+      sublevelId,
       levelId,
       mode,
     },

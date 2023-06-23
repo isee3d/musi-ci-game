@@ -3,7 +3,7 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import StartRoundUI from '~/components/gameModes/spelen/startRoundUI'
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer'
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer'
-import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[subLevelId]/[mode]'
+import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine'
 import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
