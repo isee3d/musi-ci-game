@@ -12,7 +12,7 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
   levelId,
   gameId,
 }) => {
-  const session = useRequireAuth()
+  useRequireAuth()
   const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ sublevelId: sublevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
@@ -22,15 +22,25 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
       backPath={`/progress/${gameId}/${levelId}`}
     >
       {gameModesQuery.data?.map((gameMode) => (
-        <Button
-          asChild
+        <Link
           key={gameMode.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-1/2  rounded-xl')}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
+          href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
         >
-          <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
-            <h3 className="text-3xl">{gameMode.name}</h3>
-          </Link>
-        </Button>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex justify-start space-x-4">
+              <div
+                className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
+                style={{ borderColor: 'green' }}
+              >
+                {gameMode.id}
+              </div>
+              <div className=" flex h-16 w-48 items-center justify-center text-2xl font-medium">
+                {gameMode.name}
+              </div>
+            </div>
+          </div>
+        </Link>
       ))}
     </ContentContainer>
   )

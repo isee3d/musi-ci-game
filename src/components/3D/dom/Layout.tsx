@@ -10,6 +10,7 @@ import { MainNav } from '~/components/mainNav'
 import { NavItem } from '~/components/mobileNav'
 import { ModeToggle } from '~/components/modeToggle'
 import { signIn, signOut, useSession } from 'next-auth/react'
+import { Icons } from '~/components/icons'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
@@ -62,12 +63,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav className="flex gap-4">
+            <nav className="flex gap-3">
               <Button
                 onClick={() => runTestSound()}
                 className={cn(buttonVariants({ variant: 'ghost' }))}
               >
-                Test geluid
+                <Icons.music />
               </Button>
               <Button
                 onClick={sessionData ? () => void signOut() : () => void signIn()}

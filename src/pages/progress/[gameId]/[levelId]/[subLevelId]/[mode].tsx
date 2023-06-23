@@ -3,6 +3,7 @@ import { GetStaticProps, type NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import ContentContainer from '~/components/contentContainer'
 import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
 import Spelen from '~/components/gameModes/spelen/spelen'
@@ -42,11 +43,11 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  useEffect(() => {
-    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+  //     router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
+  //   }
+  // }, [])
 
   function renderGameMode(mode: string) {
     switch (mode) {
@@ -95,40 +96,32 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   }
 
   return (
-    <>
-      <Head>
-        <title>{mode}</title>
-        <meta name="description" content="Level name here" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <ContentContainer
+      title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
+      backPath={`/progress/${gameId}/${levelId}/${sublevelId}`}
+      classNameParent="w-full px-0 mt-0 space-y-0"
+    >
+      <div className="flex w-full">
+        {tabs.map((tab, index) => (
+          <Button
+            key={index}
+            size={'lg'}
+            className={cn(
+              'h-16 w-1/3 rounded-none bg-gray-500 py-3 text-center text-3xl font-extrabold tracking-tight hover:bg-gray-800',
+              mode === tab ? 'bg-background text-red-500 border-xl' : 'text-primary',
+              // index === 0 && '',
+              // index === tabs.length - 1 && ''
+            )}
+          >
+            {tab}
+          </Button>
+        ))}
+      </div>
 
-      <section className="flex grow flex-col items-center justify-center">
-        <h2 className="mb-10 py-3 text-center text-8xl font-extrabold tracking-tight">
-          {sublevelQuery?.data?.name}
-        </h2>
-        <div className="container mx-auto flex flex-col items-center justify-center rounded-2xl border-4 border-primary p-0">
-          <div className="mb-4 flex w-full justify-around">
-            {tabs.map((tab, index) => (
-              <Button
-                key={index}
-                size={'lg'}
-                className={cn(
-                  'h-16 grow border-4 border-primary bg-gray-400 py-3 text-center text-3xl font-extrabold tracking-tight',
-                  mode === tab ? 'text-red-500' : 'text-primary',
-                  index === 0 && 'rounded-l-xl',
-                  index === tabs.length - 1 && 'rounded-r-xl'
-                )}
-              >
-                {tab}
-              </Button>
-            ))}
-          </div>
-          <div className="relative flex w-1/2 flex-col justify-center gap-y-8 p-5">
-            {renderGameMode(mode)}
-          </div>
-        </div>
-      </section>
-    </>
+      <div className="relative flex w-1/2 flex-col justify-center gap-y-8 pt-4">
+        {renderGameMode(mode)}
+      </div>
+    </ContentContainer>
   )
 }
 

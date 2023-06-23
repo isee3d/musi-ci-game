@@ -7,9 +7,10 @@ interface Props {
   children: React.ReactNode
   title: string
   backPath: string
+  classNameParent?: string
 }
 
-const ContentContainer: React.FC<Props> = ({ children, title, backPath }) => {
+const ContentContainer: React.FC<Props> = ({ children, title, backPath, classNameParent }) => {
   const router = useRouter()
 
   return (
@@ -21,11 +22,16 @@ const ContentContainer: React.FC<Props> = ({ children, title, backPath }) => {
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex min-h-[50vh] flex-col items-center justify-start space-y-8 rounded-2xl border-4 border-primary p-0">
+        <div className="container mx-auto flex min-h-fit max-w-7xl flex-col items-center justify-start rounded-2xl border-4 border-primary p-0">
           <h2 className="w-full border-b-2 border-primary py-4 text-center text-3xl font-extrabold tracking-tight">
             {title}
           </h2>
-          <div className=" flex w-full flex-col justify-center items-center space-y-8 px-12 py-4">
+          <div
+            className={cn(
+              'flex w-1/2 flex-col items-center justify-between mt-8 gap-8 px-12 pb-8',
+              classNameParent
+            )}
+          >
             {children}
           </div>
         </div>
