@@ -4,12 +4,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { GameMode } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useRequireAuth } from '~/hooks/useRequireAuth';
 
 const validationRules = {
     name: { required: 'Note is required.' },
 };
 
 const ManageGameMode: NextPage = () => {
+ const session = useRequireAuth()
+
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<GameMode>({ mode: 'onBlur' });
     const ctx = api.useContext();
     const { mutate: addGameMode } = api.gameMode.createGameMode.useMutation({

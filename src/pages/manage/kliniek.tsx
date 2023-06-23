@@ -4,12 +4,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { GameMode, Kliniek } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useRequireAuth } from '~/hooks/useRequireAuth';
 
 const validationRules = {
     name: { required: 'Note is required.' },
 };
 
 const ManageKliniek: NextPage = () => {
+     const session = useRequireAuth()
+
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Kliniek>({ mode: 'onBlur' });
     const kliniekQuery = api.kliniek.getAllKlinieks.useQuery();
     const ctx = api.useContext();

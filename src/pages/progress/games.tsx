@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import ContentContainer from '~/components/contentContainer'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 const UserGamesPage: NextPage = () => {
-  const { data: session } = useSession()
+  const session = useRequireAuth()
   // Add loading to retrieve this data, cause it can't be prefetched
   const gamesOfUserQuery = api.user.getGamesOfUser.useQuery({ id: session?.user.id })
 

@@ -2,6 +2,7 @@ import { GetStaticProps, type NextPage } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
@@ -11,6 +12,7 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
   levelId,
   gameId,
 }) => {
+   const session = useRequireAuth()
   const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ sublevelId: sublevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 

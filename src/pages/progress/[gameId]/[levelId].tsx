@@ -3,12 +3,13 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
 import { buttonVariants } from '~/components/ui/button'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 
 const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId, gameId }) => {
-  const { data: sessiondata } = useSession()
+  const session = useRequireAuth()
   const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId })
 
   return (

@@ -11,6 +11,7 @@ import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
 import { Button } from '~/components/ui/button'
 import { env } from '~/env.mjs'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -27,6 +28,8 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> 
   sublevelId,
   mode,
 }) => {
+ const session = useRequireAuth()
+
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ sublevelId: sublevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })

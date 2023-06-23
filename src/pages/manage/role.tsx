@@ -4,12 +4,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { GameMode, Kliniek, Role } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useRequireAuth } from '~/hooks/useRequireAuth';
 
 const validationRules = {
     name: { required: 'Role is required.' },
 };
 
 const ManageRole: NextPage = () => {
+     const session = useRequireAuth()
+
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Role>({ mode: 'onBlur' });
     const roleQuery = api.role.getAllRoles.useQuery();
     const ctx = api.useContext();

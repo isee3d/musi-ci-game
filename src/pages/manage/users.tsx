@@ -6,8 +6,11 @@ import UpdateUsersModal from '~/components/manage/updateUsersModal'
 import { User } from '@prisma/client'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 
 const ManageUsersPage: NextPage = () => {
+   const session = useRequireAuth()
+
   const usersQuery = api.user.getAllUsers.useQuery()
   const { mutate: deleteUser } = api.user.deleteUser.useMutation()
   const [showModal, setShowModal] = useState(false)

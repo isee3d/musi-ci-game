@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { TypeCI } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { api } from '~/utils/api';
+import { useRequireAuth } from '~/hooks/useRequireAuth';
 
 const validationRules = {
     name: { required: 'Field is required.' },
@@ -11,6 +12,8 @@ const validationRules = {
 };
 
 const ManageTypeCI: NextPage = () => {
+     const session = useRequireAuth()
+
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<TypeCI>({ mode: 'onBlur' });
     const typeCIQuery = api.typeCI.getAllTypeCI.useQuery();
     const ctx = api.useContext();

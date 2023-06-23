@@ -9,8 +9,11 @@ import { cn } from '~/lib/utils';
 import CreateSublevelModal from '~/components/manage/createSublevelModal';
 import UpdateSublevelModal from '~/components/manage/updateSublevelModal';
 import toast from 'react-hot-toast';
+import { useRequireAuth } from '~/hooks/useRequireAuth';
 
 const ManageSublevels: NextPage = () => {
+   const session = useRequireAuth()
+
   const ctx = api.useContext();
     const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation({
         onSuccess: () => {

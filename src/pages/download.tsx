@@ -3,8 +3,11 @@ import Head from 'next/head'
 import { api } from '~/utils/api'
 import { Parser } from 'json2csv'
 import { Button } from '~/components/ui/button'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 
 const DownloadPage: NextPage = () => {
+  useRequireAuth()
+
   const downloadQuery = api.download.getAll.useQuery()
 
   const downloadCSV = async () => {

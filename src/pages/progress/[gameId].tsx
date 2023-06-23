@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import ContentContainer from '~/components/contentContainer'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 
 const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
-  const { data: sessiondata } = useSession()
+   const session = useRequireAuth()
   const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
 
   return (

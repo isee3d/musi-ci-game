@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { type NextPage } from 'next'
-import {Team, User } from '@prisma/client'
+import { Team, User } from '@prisma/client'
 import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useState } from 'react'
@@ -9,9 +9,11 @@ import { Button, buttonVariants } from '~/components/ui/button'
 import CreateTeamModal from '~/components/manage/createTeamModal'
 import { cn } from '~/lib/utils'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
-
+import { useRequireAuth } from '~/hooks/useRequireAuth'
 
 const ManageTeamPage: NextPage = () => {
+  const session = useRequireAuth()
+
   const ctx = api.useContext()
   const teamQuery = api.team.getAllTeams.useQuery()
   const getUsersWithoutTeamQuery = api.user.getAllUsersWithoutTeam.useQuery()
@@ -110,7 +112,7 @@ const ManageTeamPage: NextPage = () => {
                     Aanpassen
                   </Button>
                   {showModal && selectedTeam?.id === team.id && (
-                    <ManageBaseModal title='Team aanpassen'>
+                    <ManageBaseModal title="Team aanpassen">
                       <UpdateTeamModal setmodal={setShowModal} team={team} />
                     </ManageBaseModal>
                   )}
