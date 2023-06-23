@@ -7,39 +7,41 @@ import {
 } from "~/server/api/trpc";
 
 export const gameModeRouter = createTRPCRouter({
-    createGameMode: publicProcedure
-        .input(GameModeOptionalDefaultsSchema)
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.gameMode.create({
-                data: input,
-            });
-        }),
-
-    getAllGameModes: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.gameMode.findMany();
+  createGameMode: protectedProcedure
+    .input(GameModeOptionalDefaultsSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.gameMode.create({
+        data: input,
+      })
     }),
 
-    getGameMode: publicProcedure.input(GameModeSchema.pick({ name: true })).query(
-        async ({ ctx, input }) => {
-            const { name } = input;
-            return await ctx.prisma.gameMode.findUnique({
-                where: { name },
-            });
-        }
-    ),
+  getAllGameModes: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.gameMode.findMany()
+  }),
 
-    updateGameMode: publicProcedure.input(GameModeSchema).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.gameMode.update({
-            where: { id },
-            data: input,
-        });
+  getGameMode: protectedProcedure
+    .input(GameModeSchema.pick({ name: true }))
+    .query(async ({ ctx, input }) => {
+      const { name } = input
+      return await ctx.prisma.gameMode.findUnique({
+        where: { name },
+      })
     }),
 
-    deleteGameMode: publicProcedure.input(GameModeSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.gameMode.delete({
-            where: { id },
-        });
+  updateGameMode: protectedProcedure.input(GameModeSchema).mutation(async ({ ctx, input }) => {
+    const { id } = input
+    return await ctx.prisma.gameMode.update({
+      where: { id },
+      data: input,
+    })
+  }),
+
+  deleteGameMode: protectedProcedure
+    .input(GameModeSchema.pick({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.gameMode.delete({
+        where: { id },
+      })
     }),
-});
+})

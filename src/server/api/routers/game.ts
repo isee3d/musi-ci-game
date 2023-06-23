@@ -9,42 +9,46 @@ import {
 } from "~/server/api/trpc";
 
 export const gameRouter = createTRPCRouter({
-    createGame: publicProcedure
-        .input(GameModeOptionalDefaultsSchema)
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.game.create({
-                data: input,
-            });
-        }),
-
-    getAllGames: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.game.findMany();
+  createGame: protectedProcedure
+    .input(GameModeOptionalDefaultsSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.game.create({
+        data: input,
+      })
     }),
 
-    updateGame: publicProcedure.input(GameSchema).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.game.update({
-            where: { id },
-            data: input,
-        });
+  getAllGames: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.game.findMany()
+  }),
+
+  updateGame: protectedProcedure.input(GameSchema).mutation(async ({ ctx, input }) => {
+    const { id } = input
+    return await ctx.prisma.game.update({
+      where: { id },
+      data: input,
+    })
+  }),
+
+  deleteGame: protectedProcedure
+    .input(GameSchema.pick({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.game.delete({
+        where: { id },
+      })
     }),
 
-    deleteGame: publicProcedure.input(GameSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.game.delete({
-            where: { id },
-        });
+  getLevelsOfGame: protectedProcedure
+    .input(z.object({ gameId: z.number().int() }))
+    .query(async ({ ctx, input }) => {
+      const { gameId } = input
+      const gameLevels = await ctx.prisma.game.findUnique({
+        where: { id: gameId },
+        select: {
+          levels: true,
+        },
+      })
+      if (!gameLevels) throw new TRPCError({ code: 'NOT_FOUND', message: 'Game has no levels' })
+      return gameLevels.levels
     }),
-
-    getLevelsOfGame: publicProcedure.input(z.object({gameId: z.number().int()})).query(async ({ ctx, input }) => {
-        const { gameId } = input;
-        const gameLevels = await ctx.prisma.game.findUnique({
-            where: { id: gameId },
-            select: {
-                levels: true,
-            },
-        });
-        if (!gameLevels) throw new TRPCError({ code: 'NOT_FOUND', message: 'Game has no levels' });
-        return gameLevels.levels;
-    }),
-});
+})

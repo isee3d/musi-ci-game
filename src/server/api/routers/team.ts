@@ -7,30 +7,32 @@ import {
 } from "~/server/api/trpc";
 
 export const teamRouter = createTRPCRouter({
-    createTeam: publicProcedure
-        .input(TeamOptionalDefaultsSchema)
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.team.create({
-                data: input,
-            });
-        }),
-
-    getAllTeams: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.team.findMany();
+  createTeam: protectedProcedure
+    .input(TeamOptionalDefaultsSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.team.create({
+        data: input,
+      })
     }),
 
-    updateTeam: publicProcedure.input(TeamSchema).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.team.update({
-            where: { id },
-            data: input,
-        });
-    }),
+  getAllTeams: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.team.findMany()
+  }),
 
-    deleteTeam: publicProcedure.input(TeamSchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.team.delete({
-            where: { id },
-        });
+  updateTeam: protectedProcedure.input(TeamSchema).mutation(async ({ ctx, input }) => {
+    const { id } = input
+    return await ctx.prisma.team.update({
+      where: { id },
+      data: input,
+    })
+  }),
+
+  deleteTeam: protectedProcedure
+    .input(TeamSchema.pick({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.team.delete({
+        where: { id },
+      })
     }),
-});
+})

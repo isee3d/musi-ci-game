@@ -7,7 +7,7 @@ import {
 } from "~/server/api/trpc";
 
 export const downloadRouter = createTRPCRouter({
-    getAll: publicProcedure.query(({ ctx }) => {
+    getAll: protectedProcedure.query(({ ctx }) => {
         return ctx.prisma.user.findMany();
     }),
 });

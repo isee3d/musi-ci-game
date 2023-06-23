@@ -7,30 +7,32 @@ import {
 } from "~/server/api/trpc";
 
 export const typeCIRouter = createTRPCRouter({
-    createTypeCI: publicProcedure
-        .input(TypeCIOptionalDefaultsSchema)
-        .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.typeCI.create({
-                data: input,
-            });
-        }),
-
-    getAllTypeCI: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.typeCI.findMany();
+  createTypeCI: protectedProcedure
+    .input(TypeCIOptionalDefaultsSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.typeCI.create({
+        data: input,
+      })
     }),
 
-    updateTypeCI: publicProcedure.input(TypeCISchema).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.typeCI.update({
-            where: { id },
-            data: input,
-        });
-    }),
+  getAllTypeCI: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.typeCI.findMany()
+  }),
 
-    deleteTypeCI: publicProcedure.input(TypeCISchema.pick({ id: true })).mutation(async ({ ctx, input }) => {
-        const { id } = input;
-        return await ctx.prisma.typeCI.delete({
-            where: { id },
-        });
+  updateTypeCI: protectedProcedure.input(TypeCISchema).mutation(async ({ ctx, input }) => {
+    const { id } = input
+    return await ctx.prisma.typeCI.update({
+      where: { id },
+      data: input,
+    })
+  }),
+
+  deleteTypeCI: protectedProcedure
+    .input(TypeCISchema.pick({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.typeCI.delete({
+        where: { id },
+      })
     }),
-});
+})

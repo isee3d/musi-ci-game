@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const levelRouter = createTRPCRouter({
-  createLevel: publicProcedure
+  createLevel: protectedProcedure
     .input(LevelOptionalDefaultsSchema.extend({ sublevels: z.array(z.number().int()) }))
     .mutation(async ({ ctx, input }) => {
       const { sublevels, ...newInput } = input
@@ -21,11 +21,11 @@ export const levelRouter = createTRPCRouter({
       })
     }),
 
-  getAllLevels: publicProcedure.query(({ ctx }) => {
+  getAllLevels: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.level.findMany()
   }),
 
-  getSubLevelsOfLevel: publicProcedure
+  getSubLevelsOfLevel: protectedProcedure
     .input(z.object({ levelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { levelId } = input
@@ -44,7 +44,7 @@ export const levelRouter = createTRPCRouter({
       return subLevels.subLevels
     }),
 
-  getAllRemainingSubLevelsOfLevel: publicProcedure
+  getAllRemainingSubLevelsOfLevel: protectedProcedure
     .input(z.object({ levelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { levelId } = input
@@ -67,7 +67,7 @@ export const levelRouter = createTRPCRouter({
       return remainingSubLevels
     }),
 
-  setSubLevelsToLevel: publicProcedure
+  setSubLevelsToLevel: protectedProcedure
     .input(z.object({ levelId: z.string(), sublevels: z.array(z.number().int()) }))
     .mutation(async ({ ctx, input }) => {
       const { levelId, sublevels } = input
@@ -106,7 +106,7 @@ export const levelRouter = createTRPCRouter({
       })
     }),
 
-  updateLevel: publicProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {
+  updateLevel: protectedProcedure.input(LevelSchema).mutation(async ({ ctx, input }) => {
     const { id } = input
     return await ctx.prisma.level.update({
       where: { id },
@@ -114,7 +114,7 @@ export const levelRouter = createTRPCRouter({
     })
   }),
 
-  deleteLevel: publicProcedure
+  deleteLevel: protectedProcedure
     .input(SubLevelSchema.pick({ id: true }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input

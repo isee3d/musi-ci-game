@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const subLevelRouter = createTRPCRouter({
-  createSubLevel: publicProcedure
+  createSubLevel: protectedProcedure
     .input(
       SubLevelOptionalDefaultsSchema.extend({
         fragments: z.array(z.number().int()),
@@ -28,11 +28,11 @@ export const subLevelRouter = createTRPCRouter({
       })
     }),
 
-  getAllSubLevels: publicProcedure.query(({ ctx }) => {
+  getAllSubLevels: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.subLevel.findMany()
   }),
 
-  getSublevelById: publicProcedure
+  getSublevelById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input
@@ -48,7 +48,7 @@ export const subLevelRouter = createTRPCRouter({
       return subLevel
     }),
 
-  getGameModesOfSublevel: publicProcedure
+  getGameModesOfSublevel: protectedProcedure
     .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { sublevelId } = input
@@ -67,7 +67,7 @@ export const subLevelRouter = createTRPCRouter({
       return gameModes.gameModes
     }),
 
-  getFragmentsOfSublevel: publicProcedure
+  getFragmentsOfSublevel: protectedProcedure
     .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { sublevelId: subLevelId } = input
@@ -95,7 +95,7 @@ export const subLevelRouter = createTRPCRouter({
       return fragments
     }),
 
-  updateSubLevel: publicProcedure
+  updateSubLevel: protectedProcedure
     .input(
       SubLevelSchema.extend({
         fragments: z.array(z.number().int()),
@@ -118,7 +118,7 @@ export const subLevelRouter = createTRPCRouter({
       })
     }),
 
-  deleteSubLevel: publicProcedure
+  deleteSubLevel: protectedProcedure
     .input(SubLevelSchema.pick({ id: true }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input
