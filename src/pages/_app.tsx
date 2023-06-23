@@ -19,6 +19,7 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { env } from '~/env.mjs'
 import SetTeamIdAndParticipantIdModal from '~/components/setTeamIdAndParticipantIdModal'
 import { cn } from '~/lib/utils'
+import { ThemeProvider } from '~/components/themeProvider'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -65,14 +66,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
           fontHeading.variable
         )}
       >
-        <Layout>
-          {showModal && <InitializeSoundModal showModal={showModal} setmodal={setShowModal} />}
-          <SetTeamIdAndParticipantIdModal />
-          <TailwindIndicator />
-          <Toaster position="bottom-center" />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Layout>
+            {showModal && <InitializeSoundModal showModal={showModal} setmodal={setShowModal} />}
+            <SetTeamIdAndParticipantIdModal />
+            <TailwindIndicator />
+            <Toaster position="bottom-center" />
 
-          <Component {...pageProps} />
-        </Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ThemeProvider>
       </main>
     </SessionProvider>
   )
