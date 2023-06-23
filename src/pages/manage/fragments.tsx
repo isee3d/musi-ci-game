@@ -7,12 +7,14 @@ import CreateFragmentModal from '~/components/manage/createFragmentModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateFragmentModal from '~/components/manage/updateFragmentModal'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 const ManageFragments: NextPage = () => {
-  const session = useRequireAuth()
+  useRequireAuth()
+  useRequireAdminRole()
 
   const ctx = api.useContext()
   const [createModal, setCreateModal] = useState(false)

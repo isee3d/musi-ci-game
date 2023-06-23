@@ -1,31 +1,33 @@
-import Head from 'next/head';
-import { type NextPage } from 'next';
-import { SubLevel } from '@prisma/client';
-import { api } from '~/utils/api';
-import { Button, buttonVariants } from '~/components/ui/button';
-import { useState } from 'react';
-import ManageBaseModal from '~/components/manage/manageBaseModal';
-import { cn } from '~/lib/utils';
-import CreateSublevelModal from '~/components/manage/createSublevelModal';
-import UpdateSublevelModal from '~/components/manage/updateSublevelModal';
-import toast from 'react-hot-toast';
-import { useRequireAuth } from '~/hooks/useRequireAuth';
+import Head from 'next/head'
+import { type NextPage } from 'next'
+import { SubLevel } from '@prisma/client'
+import { api } from '~/utils/api'
+import { Button, buttonVariants } from '~/components/ui/button'
+import { useState } from 'react'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
+import { cn } from '~/lib/utils'
+import CreateSublevelModal from '~/components/manage/createSublevelModal'
+import UpdateSublevelModal from '~/components/manage/updateSublevelModal'
+import toast from 'react-hot-toast'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 
 const ManageSublevels: NextPage = () => {
-   const session = useRequireAuth()
+  useRequireAuth()
+  useRequireAdminRole()
 
-  const ctx = api.useContext();
-    const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation({
-        onSuccess: () => {
-            toast.success('Sublevel verwijderd!');
-            ctx.sublevel.getAllSubLevels.invalidate();
-        }
-    });
-    const subLevelQuery = api.sublevel.getAllSubLevels.useQuery();
+  const ctx = api.useContext()
+  const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation({
+    onSuccess: () => {
+      toast.success('Sublevel verwijderd!')
+      ctx.sublevel.getAllSubLevels.invalidate()
+    },
+  })
+  const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
 
-    const [createModal, setCreateModal] = useState(false)
-    const [showModal, setShowModal] = useState(false)
-     const [selectedSubLevel, setSelectedSubLevel] = useState<SubLevel | null>(null)
+  const [createModal, setCreateModal] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [selectedSubLevel, setSelectedSubLevel] = useState<SubLevel | null>(null)
 
   return (
     <>
@@ -85,6 +87,6 @@ const ManageSublevels: NextPage = () => {
       </section>
     </>
   )
-};
+}
 
-export default ManageSublevels;
+export default ManageSublevels

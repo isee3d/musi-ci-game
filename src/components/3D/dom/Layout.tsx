@@ -1,8 +1,7 @@
 // 'use client'
 
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import NavMenu from '~/components/navbar'
 import Footer from '~/components/footer'
 import Link from 'next/link'
 import { cn } from '~/lib/utils'
@@ -10,13 +9,14 @@ import { buttonVariants } from '~/components/ui/button'
 import { MainNav } from '~/components/mainNav'
 import { NavItem } from '~/components/mobileNav'
 import { ModeToggle } from '~/components/modeToggle'
+import { useSession } from 'next-auth/react'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
   children: ReactNode
 }
 
-const mainNavItems: NavItem[] = [
+const navitemsTemplate: NavItem[] = [
   {
     title: 'Levels beheren',
     href: '/manage/levels',
@@ -40,7 +40,20 @@ const mainNavItems: NavItem[] = [
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
+  const { data: sessionData } = useSession()
+
+useEffect(() => {
+  if (sessionData?.user?.role === 'ADMIN') {
+    setMainNavItems(navitemsTemplate)
+  } else {
+    setMainNavItems([])
+  }
+}, [sessionData])
+
+
   const ref = useRef(null)
+
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
@@ -57,7 +70,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        {/* <NavMenu /> */}
         {children}
         <Footer />
         <Scene

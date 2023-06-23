@@ -7,12 +7,14 @@ import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateLevelModal from '~/components/manage/updateLevelModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
+import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 const ManageLevels: NextPage = () => {
-   const session = useRequireAuth()
+  useRequireAuth()
+  useRequireAdminRole()
 
   const { mutate: deleteLevel } = api.level.deleteLevel.useMutation()
   const levelQuery = api.level.getAllLevels.useQuery()

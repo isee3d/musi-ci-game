@@ -5,6 +5,7 @@ import { Game, GameMode, Kliniek } from '@prisma/client'
 import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 
 const validationRules = {
   name: { required: 'Field is required.' },
@@ -12,7 +13,8 @@ const validationRules = {
 }
 
 const ManageGame: NextPage = () => {
-  const session = useRequireAuth()
+  useRequireAuth()
+  useRequireAdminRole()
 
   const {
     register,

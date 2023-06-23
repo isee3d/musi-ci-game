@@ -10,9 +10,11 @@ import CreateTeamModal from '~/components/manage/createTeamModal'
 import { cn } from '~/lib/utils'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 
 const ManageTeamPage: NextPage = () => {
-  const session = useRequireAuth()
+  useRequireAuth()
+  useRequireAdminRole()
 
   const ctx = api.useContext()
   const teamQuery = api.team.getAllTeams.useQuery()
