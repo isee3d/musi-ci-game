@@ -23,7 +23,8 @@ export const LuisterenMachineContext = createActorContext(luisterenMachine, { de
 
 const tabs = ['Luisteren', 'Spelen', 'Uitdaging']
 
-const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> = ({
+const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, gameId: string }> = ({
+  gameId,
   levelId,
   sublevelId,
   mode,
@@ -41,7 +42,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> 
 
   useEffect(() => {
     if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/modeSelect/${levelId}/${sublevelId}`)
+      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
     }
   }, [])
 
@@ -57,7 +58,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> 
               sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
-            ;
+            
           </LuisterenMachineContext.Provider>
         )
       case 'Spelen':
@@ -70,7 +71,6 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> 
               sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
-            ;
           </SpelenMachineContext.Provider>
         )
       case 'Uitdaging':
@@ -84,7 +84,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string }> 
               sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
-            ;
+
           </UitdagingMachineContext.Provider>
         )
       default:
@@ -135,10 +135,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const mode = context.params?.mode
   const sublevelId = context.params?.sublevelId
   const levelId = context.params?.levelId
+  const gameId = context.params?.gameId
 
   if (typeof mode !== 'string') throw new Error('No mode')
   if (typeof levelId !== 'string') throw new Error('No level')
   if (typeof sublevelId !== 'string') throw new Error('No sublevel')
+  if (typeof gameId !== 'string') throw new Error('No game')
 
   await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: sublevelId })
   await ssg.sublevel.getSublevelById.prefetch({ id: sublevelId })
@@ -149,6 +151,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       trpcState: ssg.dehydrate(),
       sublevelId,
       levelId,
+      gameId,
       mode,
     },
   }
