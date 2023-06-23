@@ -29,8 +29,6 @@ const Luisteren: React.FC<LuisterenProps> = ({
   )
   const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
 
-  const time = useRef(Date.now())
-
   useEffect(() => {
     reset()
     setStartTime(Date.now())
@@ -46,7 +44,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
     <>
       <h2 className="text-center text-4xl font-extrabold tracking-tight">Kijk en luister</h2>
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
-      {isfinishedPlayingState && <LuisterenFeedback time={time} />}
+      {isfinishedPlayingState && <LuisterenFeedback />}
       <div className=" flex justify-center space-x-5">
         {isPlayingState && <PlayButtonsRenderer />}
         {isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}

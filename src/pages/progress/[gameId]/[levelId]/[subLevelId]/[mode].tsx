@@ -1,8 +1,6 @@
 import { createActorContext } from '@xstate/react'
 import { GetStaticProps, type NextPage } from 'next'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import ContentContainer from '~/components/contentContainer'
 import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
@@ -11,18 +9,18 @@ import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
 import { Button } from '~/components/ui/button'
-import { env } from '~/env.mjs'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
+import { useEffect} from 'react'
+import { env } from '~/env.mjs'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })
-
-const tabs = ['Luisteren', 'Spelen', 'Uitdaging']
 
 const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; gameId: string }> = ({
   gameId,
@@ -31,23 +29,27 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   mode,
 }) => {
   useRequireAuth()
+  const router = useRouter()
+  const { audioContext } = useAudioServiceStore()
+  const { isPlaying } = useLuisterenStore()
 
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
+  const gameModesOfSublevelQuery = api.sublevel.getGameModesOfSublevel.useQuery({
+    sublevelId: sublevelId,
+  })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
-  const router = useRouter()
-  const { audioContext } = useAudioServiceStore()
   const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  // useEffect(() => {
-  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-  //     router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
+    }
+  }, [])
 
   function renderGameMode(mode: string) {
     switch (mode) {
@@ -95,6 +97,8 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     }
   }
 
+  console.log('isPlaying', isPlaying)
+
   return (
     <ContentContainer
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
@@ -102,22 +106,23 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
       classNameParent="w-full px-0 mt-0 space-y-0"
     >
       <div className="flex w-full">
-        {tabs.map((tab, index) => (
+        {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (
           <Button
             key={index}
             size={'lg'}
+            disabled={mode === gameMode.name || isPlaying}
             className={cn(
               'h-16 w-1/3 rounded-none bg-gray-500 py-3 text-center text-3xl font-extrabold tracking-tight hover:bg-gray-800',
-              mode === tab ? 'bg-background text-red-500 border-xl' : 'text-primary',
-              // index === 0 && '',
-              // index === tabs.length - 1 && ''
+              mode === gameMode.name ? 'border-xl bg-background text-red-500' : 'text-primary'
             )}
+            onClick={() =>
+              router.push(`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`)
+            }
           >
-            {tab}
+            {gameMode.name}
           </Button>
         ))}
       </div>
-
       <div className="relative flex w-1/2 flex-col justify-center gap-y-8 pt-4">
         {renderGameMode(mode)}
       </div>
@@ -140,6 +145,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: sublevelId })
   await ssg.sublevel.getSublevelById.prefetch({ id: sublevelId })
   await ssg.gameMode.getGameMode.prefetch({ name: mode })
+  await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
 
   return {
     props: {

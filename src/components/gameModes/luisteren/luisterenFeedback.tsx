@@ -1,12 +1,8 @@
-import { useEffect } from 'react'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
 
-interface LuisterenFeedbackProps {
-  time: React.MutableRefObject<number>
-}
 
-const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ time }) => {
+const LuisterenFeedback: React.FC = () => {
   const { score, endTime, startTime } = useLuisterenStore()
 
   return (

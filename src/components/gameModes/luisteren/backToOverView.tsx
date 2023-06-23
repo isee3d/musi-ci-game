@@ -12,7 +12,12 @@ const BackToOverView: React.FC<BackToOverViewProps> = ({ levelId, sublevelId }) 
   const { reset } = useLuisterenStore()
   return (
     <Button asChild>
-      <Link onClick={() => reset} href={`/progress/${levelId}/${sublevelId}`}>
+      <Link
+        onClick={() => {
+          reset
+        }}
+        href={`/progress/${levelId}/${sublevelId}`}
+      >
         <h3>Terug naar overzicht</h3>
       </Link>
     </Button>

@@ -61,7 +61,7 @@ export const subLevelRouter = createTRPCRouter({
         },
       })
       if (!gameModes) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Level has no game modes' })
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sublevel has no game modes' })
       }
 
       return gameModes.gameModes

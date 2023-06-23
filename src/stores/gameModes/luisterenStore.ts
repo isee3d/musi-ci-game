@@ -12,6 +12,7 @@ type LuisterenState = {
     mode: number;
     allPlayedScenes: Scene[];
     sceneData: Scene;
+    isPlaying: boolean;
 };
 
 type LuisterenActions = {
@@ -32,6 +33,7 @@ type LuisterenActions = {
     resetSceneRelatedData: () => void;
     getRelistenCounts: () => { [key: number]: number };
     reset: () => void;
+    setIsPlaying: (isPlaying: boolean) => void;
 };
 
 const initialState: LuisterenState = {
@@ -44,6 +46,7 @@ const initialState: LuisterenState = {
     mode: 0,
     sceneData: {},
     allPlayedScenes: [],
+    isPlaying: false,
 };
 
 const initialRoundState: Partial<LuisterenState> = {
@@ -58,6 +61,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     level: 0,
     subLevel: 0,
     mode: 0,
+    isPlaying: false,
     sceneData: {},
     allPlayedScenes: [],
     addScene: (scene: Scene) => set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
@@ -95,6 +99,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         newScene.answeredCorrectly = isCorrect;
         return { sceneData: newScene };
     }),
+    setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
     addScore: (score: number) => set((state) => ({ score: state.score + score })),
     setStartTime: (time: number) => set((state) => ({ startTime: time })),
     setEndTime: (time: number) => set((state) => ({ endTime: time })),
