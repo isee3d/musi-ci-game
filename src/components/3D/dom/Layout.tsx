@@ -9,6 +9,7 @@ import { cn } from '~/lib/utils'
 import { buttonVariants } from '~/components/ui/button'
 import { MainNav } from '~/components/mainNav'
 import { NavItem } from '~/components/mobileNav'
+import { ModeToggle } from '~/components/modeToggle'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
@@ -35,13 +36,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav>
+            <nav className='flex gap-2'>
               <Link
                 href="/login"
-                className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'px-4')}
+                className={cn(buttonVariants({ variant: 'secondary' }), 'px-4')}
               >
                 Login
               </Link>
+            <ModeToggle />
             </nav>
           </div>
         </header>
