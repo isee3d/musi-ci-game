@@ -23,15 +23,17 @@ export const LuisterenMachineContext = createActorContext(luisterenMachine, { de
 
 const tabs = ['Luisteren', 'Spelen', 'Uitdaging']
 
-const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, gameId: string }> = ({
+const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; gameId: string }> = ({
   gameId,
   levelId,
   sublevelId,
   mode,
 }) => {
- const session = useRequireAuth()
+  useRequireAuth()
 
-  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({ sublevelId: sublevelId })
+  const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
+    sublevelId: sublevelId,
+  })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
   const router = useRouter()
@@ -58,7 +60,6 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, ga
               sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
-            
           </LuisterenMachineContext.Provider>
         )
       case 'Spelen':
@@ -69,6 +70,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, ga
               fragments={fragments}
               levelId={levelId}
               sublevelId={sublevelId}
+              gameId={gameId}
               mode={modeQuery?.data?.id.toString()}
             />
           </SpelenMachineContext.Provider>
@@ -77,6 +79,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, ga
         return (
           <UitdagingMachineContext.Provider>
             <Uitdaging
+              gameId={gameId}
               fragmentsToShow={fragmentsToShow}
               fragments={fragments}
               levelId={levelId}
@@ -84,7 +87,6 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string, ga
               sublevelId={sublevelId}
               mode={modeQuery?.data?.id.toString()}
             />
-
           </UitdagingMachineContext.Provider>
         )
       default:

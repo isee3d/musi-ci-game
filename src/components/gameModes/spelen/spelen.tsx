@@ -11,6 +11,7 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 interface SpelenProps {
   fragments: FragmentWithNotes[]
   levelId: string
+  gameId: string
   sublevelId: string
   fragmentsToShow: number
   mode: string | undefined
@@ -29,6 +30,7 @@ const Spelen: React.FC<SpelenProps> = ({
   fragmentsToShow,
   sublevelId,
   levelId,
+  gameId,
   mode,
 }) => {
   const { send } = SpelenMachineContext.useActorRef()
@@ -55,10 +57,10 @@ const Spelen: React.FC<SpelenProps> = ({
   return (
     <>
       <h3 className="pb-16 text-center text-4xl font-extrabold tracking-tight">Kijk en luister</h3>
-      {startRoundState && <StartRoundUI levelId={levelId} sublevelId={sublevelId} />}
+      {startRoundState && <StartRoundUI gameId={gameId} levelId={levelId} sublevelId={sublevelId} />}
       {countdownState && <CountdownPlayer />}
       {(playingState || countdownState) && <FragmentPlayerRenderer />}
-      {finishedState && <SpelenFeedback levelId={levelId} sublevelId={sublevelId} />}
+      {finishedState && <SpelenFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />}
     </>
   )
 }

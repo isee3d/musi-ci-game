@@ -6,9 +6,10 @@ import { formatTime } from '~/utils/time'
 interface SpelenFeedbackProps {
   levelId: string
   sublevelId: string
+  gameId: string
 }
 
-const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId }) => {
+const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId, gameId }) => {
   const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore()
 
   return (
@@ -24,7 +25,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId }) 
       </h3>
       <div className="flex justify-center">
         <Button onClick={() => reset()} asChild>
-          <Link href={`/modeSelect/${levelId}/${sublevelId}`}>
+          <Link href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
             <h3>Terug naar overzicht</h3>
           </Link>
         </Button>

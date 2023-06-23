@@ -14,6 +14,7 @@ interface UitdagingProps {
   fragments: FragmentWithNotes[]
   levelId: string
   sublevelId: string
+  gameId: string
   fragmentsToShow: number
   playTime: number | null | undefined
   mode: string | undefined
@@ -21,6 +22,7 @@ interface UitdagingProps {
 
 const Uitdaging: React.FC<UitdagingProps> = ({
   fragments,
+  gameId,
   levelId,
   sublevelId,
   fragmentsToShow,
@@ -77,7 +79,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
       {startRoundState && <StartUitdagingUI />}
       {countdownState && <UitdagingCountdownPlayer />}
       {(playingState || countdownState) && <UitdagingFragmentPlayerRenderer />}
-      {isFinishedState && <UitdagingFeedback levelId={levelId} sublevelId={sublevelId} />}
+      {isFinishedState && <UitdagingFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />}
     </>
   )
 }

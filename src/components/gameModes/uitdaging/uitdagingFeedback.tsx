@@ -6,9 +6,10 @@ import { formatTime } from '~/utils/time'
 interface UitdagingFeedbackProps {
   levelId: string
   sublevelId: string
+  gameId: string
 }
 
-const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ levelId, sublevelId }) => {
+const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
   const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore()
 
   return (

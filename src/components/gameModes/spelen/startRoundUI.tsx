@@ -7,9 +7,10 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 interface StartUIProps {
   levelId: string
   sublevelId: string
+  gameId: string
 }
 
-const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId }) => {
+const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId, gameId }) => {
   const { send } = SpelenMachineContext.useActorRef()
   const { reset } = useLuisterenStore()
 
@@ -25,7 +26,7 @@ const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId }) => {
         }}
         asChild
       >
-        <Link href={`/modeSelect/${levelId}/${sublevelId}`}>
+        <Link href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
           <h3 className="text-center text-xl font-bold">Annuleren</h3>
         </Link>
       </Button>
