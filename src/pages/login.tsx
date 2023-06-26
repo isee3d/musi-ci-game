@@ -3,15 +3,20 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
+import { useRouter } from 'next/router'
 
 const LoginPage: NextPage = () => {
   const { data: sessionData } = useSession()
+  const router = useRouter()
+
+  if (sessionData?.user) {
+    router.push('/tutorial')
+  }
 
   function getLoginText() {
-    if(!sessionData?.user){
+    if (!sessionData?.user) {
       return 'Log hier in om te starten'
-    }
-    else{
+    } else {
       return 'Druk hieronder om uit te loggen'
     }
   }
