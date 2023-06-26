@@ -13,8 +13,13 @@ const ManageUsersPage: NextPage = () => {
   useRequireAuth()
   useRequireAdminRole()
 
+  const ctx = api.useContext()
   const usersQuery = api.user.getAllUsers.useQuery()
-  const { mutate: deleteUser } = api.user.deleteUser.useMutation()
+  const { mutate: deleteUser } = api.user.deleteUser.useMutation({
+    onSuccess: () => {
+      ctx.user.getAllUsers.invalidate()
+    }
+  })
   const [showModal, setShowModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 

@@ -15,10 +15,11 @@ import {
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { LevelOptionalDefaultsSchema, SubLevel } from 'prisma/generated/zod'
+import {  SubLevel } from 'prisma/generated/zod'
 import { useRef, useState } from 'react'
 import { cn } from '~/lib/utils'
 import { Label } from '@radix-ui/react-label'
+import { levelFormSchema } from 'types/FormSchema'
 
 const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
@@ -42,15 +43,15 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
     setAddedSubLevels(addedSubLevels.filter((f) => f.id !== fragment.id))
   }
 
-  const form = useForm<z.infer<typeof LevelOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof levelFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(LevelOptionalDefaultsSchema),
+    resolver: zodResolver(levelFormSchema),
     defaultValues: {
       name: '',
     },
   })
 
-  function onSubmit(data: z.infer<typeof LevelOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof levelFormSchema>) {
     const exists = levelQuery.data?.find((team) => team.name === data.name)
     const toastMessage = exists ? 'Level already exists!' : 'Level created!'
     exists
@@ -151,7 +152,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
             })}
           </div>
 
-          <Button type="submit">Sla nieuw Level op</Button>
+          <Button type="submit" disabled={addedSubLevels.length === 0}>Sla nieuw Level op</Button>
           <Button
             onClick={() => {
               form.reset()

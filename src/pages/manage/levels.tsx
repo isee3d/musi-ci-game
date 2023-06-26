@@ -16,7 +16,12 @@ const ManageLevels: NextPage = () => {
   useRequireAuth()
   useRequireAdminRole()
 
-  const { mutate: deleteLevel } = api.level.deleteLevel.useMutation()
+   const ctx = api.useContext()
+  const { mutate: deleteLevel } = api.level.deleteLevel.useMutation({
+    onSuccess: () => {
+      ctx.level.getAllLevels.invalidate()
+    },
+  })
   const levelQuery = api.level.getAllLevels.useQuery()
   const [selectedLevel, setSelectedLevel] = useState<Level | null>(null)
   const [showModal, setShowModal] = useState(false)
