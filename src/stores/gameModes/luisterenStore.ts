@@ -156,7 +156,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
             const relistenFragments = Object.keys(relistenCounts).map((key) => {
                 return {
                     id_fragment: parseInt(key),
-                    relistenCount: relistenCounts[parseInt(key)],
+                    relistenCount: relistenCounts[parseInt(key)] as number,
                 };
             });
 

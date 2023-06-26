@@ -17,7 +17,7 @@ interface FormattedScene {
     sceneFragments: FragmentSceneData[];
     relistenFragments: {
         id_fragment: number;
-        relistenCount: number | undefined;
+        relistenCount: number;
     }[]
     chosenFragmentlatency?: number | undefined;
     id_chosenFragment?: number | undefined;

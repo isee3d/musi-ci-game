@@ -152,7 +152,7 @@ model SubLevel {
   gameModes         GameMode[]
   levelResult       LevelResult[]
 
-  name              String
+  name              String      @unique
   description       String?
   cooldownTime      Int?
   playTime          Int?
@@ -164,7 +164,7 @@ model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
   level             SubLevel[]
-  chosenScene             Scene[]     @relation("ChosenFragment")
+  chosenScene       Scene[]     @relation("ChosenFragment")
   playedScene       Scene[]           @relation("PlayedFragment")
   relistenfragment  RelistenFragment[]
   sceneFragment     SceneFragment[]
@@ -202,21 +202,21 @@ model LevelResult {
    gameMode           GameMode?      @relation(fields: [id_gameMode], references: [id], onDelete: Cascade, onUpdate: Cascade)
    Scenes             Scene[]
 
-   startTime          DateTime?
-   endTime            DateTime?
-   score              Int?
+   startTime          DateTime
+   endTime            DateTime
+   score              Int
 }
 
 model Scene {
-  id                 Int         @id @default(autoincrement())
+  id                    Int         @id @default(autoincrement())
   id_chosenFragment     Int?
-  chosenFragment    Fragment?  @relation("ChosenFragment", fields: [id_chosenFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  sceneFragments     SceneFragment[]
-  id_levelResult     Int?
-  levelResult        LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  relistenFragments RelistenFragment[]
-  id_playedFragment Int?
-  playedFragment    Fragment?  @relation("PlayedFragment", fields: [id_playedFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chosenFragment        Fragment?  @relation("ChosenFragment", fields: [id_chosenFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sceneFragments        SceneFragment[]
+  id_levelResult        Int?
+  levelResult           LevelResult?  @relation(fields: [id_levelResult], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  relistenFragments     RelistenFragment[]
+  id_playedFragment     Int?
+  playedFragment        Fragment?  @relation("PlayedFragment", fields: [id_playedFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chosenFragmentLatency Int?
   answeredCorrectly    Boolean?
 }
@@ -225,10 +225,10 @@ model SceneFragment {
    id                 Int         @id @default(autoincrement())
    id_Scene           Int?
    scene              Scene?         @relation(fields: [id_Scene], references: [id], onDelete: Cascade, onUpdate: Cascade)
-   id_fragment        Int?
+   id_fragment        Int
    fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
-   fragmentIndex       Int?
-   groundTone          Int?
+   fragmentIndex       Int
+   groundTone          Int
 }
 
 model RelistenFragment {
@@ -238,5 +238,5 @@ model RelistenFragment {
   id_scene           Int?
   scene              Scene?       @relation(fields: [id_scene], references: [id])
 
-  relistenCount      Int?
+  relistenCount      Int
 }

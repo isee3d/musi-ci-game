@@ -9,6 +9,8 @@ import { api } from '~/utils/api'
 const PlayButtonsRenderer: React.FC = () => {
   const { data: sessionData } = useSession()
 
+  if(!sessionData?.user) return null
+  
   const { send } = LuisterenMachineContext.useActorRef()
   const { resetSceneRelatedData, setEndTime, sceneData, addScene, getFormattedStoreData } =
     useLuisterenStore()
@@ -38,7 +40,7 @@ const PlayButtonsRenderer: React.FC = () => {
         onClick={() => {
           send('FINISHEDLISTENING')
           setEndTime(Date.now())
-          saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
+          saveToDB(getFormattedStoreData(sessionData.user.id))
         }}
       >
         <h3>Stop Luisteren</h3>
