@@ -20,6 +20,7 @@ import { cn } from '~/lib/utils'
 import { Fragment, GameMode } from '@prisma/client'
 import { Label } from '~/components/ui/label'
 import { HuePicker } from 'react-color'
+import { sublevelFormSchema } from 'types/FormSchema'
 
 const CreateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -56,9 +57,9 @@ const CreateSublevelModal: React.FC<{
     setAddedFragments(addedFragments.filter((f) => f.id !== fragment.id))
   }
 
-  const form = useForm<z.infer<typeof SubLevelOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof sublevelFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(SubLevelOptionalDefaultsSchema),
+    resolver: zodResolver(sublevelFormSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -66,7 +67,7 @@ const CreateSublevelModal: React.FC<{
     },
   })
 
-  function onSubmit(data: z.infer<typeof SubLevelOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
     addSublevel({
       ...data,
       fragments: addedFragments.map((f) => f.id),
@@ -233,7 +234,11 @@ const CreateSublevelModal: React.FC<{
               })}
             </div>
           </div>
-          <Button type="submit" className="mx-3">
+          <Button
+            type="submit"
+            className="mx-3"
+            disabled={addedGameModes.length === 0 || addedFragments.length === 0}
+          >
             Sla nieuw sublevel op
           </Button>
           <Button

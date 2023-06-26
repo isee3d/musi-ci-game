@@ -16,6 +16,7 @@ import { TeamOptionalDefaultsSchema, TeamSchema } from 'prisma/generated/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { Textarea } from '~/components/ui/textarea'
+import { teamFormSchema } from 'types/FormSchema'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -31,16 +32,16 @@ const UpdateTeamModal: React.FC<BaseStaticModalProps> = ({ setmodal, team }) => 
     },
   })
 
-  const form = useForm<z.infer<typeof TeamSchema>>({
+  const form = useForm<z.infer<typeof teamFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(TeamOptionalDefaultsSchema),
+    resolver: zodResolver(teamFormSchema),
     defaultValues: {
       name: team.name,
       description: team.description,
     },
   })
 
-  function onSubmit(data: z.infer<typeof TeamSchema>) {
+  function onSubmit(data: z.infer<typeof teamFormSchema>) {
     const exists = teamQuery.data?.find((team) => team.name === data.name)
     const toastMessage = exists ? 'Team naam bestaat al!' : 'team verandert gelukt!'
     exists

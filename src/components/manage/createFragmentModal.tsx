@@ -20,6 +20,7 @@ import { cn } from '~/lib/utils'
 import NoteCreator from '~/components/creators/noteCreator'
 import { ExistingNote } from '~/components/existingNote'
 import { NoteCreate } from 'types/Note'
+import { fragmentFormSchema } from 'types/FormSchema'
 
 const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
@@ -36,15 +37,15 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
     },
   })
 
-  const form = useForm<z.infer<typeof FragmentOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof fragmentFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(FragmentOptionalDefaultsSchema),
+    resolver: zodResolver(fragmentFormSchema),
     defaultValues: {
       name: '',
     },
   })
 
-  function onSubmit(data: z.infer<typeof FragmentOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
     addFragment({ ...data, notes: newNotes })
     setNewNotes([])
     form.reset()
@@ -89,7 +90,7 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
             <ExistingNote key={index} {...note} />
           ))}
 
-          <Button type="submit" className="mx-3">
+          <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>
             Sla nieuw fragment op
           </Button>
           <Button

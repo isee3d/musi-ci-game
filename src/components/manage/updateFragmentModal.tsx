@@ -21,6 +21,7 @@ import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
+import { fragmentFormSchema } from 'types/FormSchema'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -31,9 +32,9 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   const [newNotes, setNewNotes] = useState<NoteCreate[]>([])
   const ctx = api.useContext()
 
-  const form = useForm<z.infer<typeof FragmentOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof fragmentFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(FragmentOptionalDefaultsSchema),
+    resolver: zodResolver(fragmentFormSchema),
     defaultValues: {
       name: fragment.name,
       description: fragment.description,
@@ -51,7 +52,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
     { onSuccess: (data) => setNewNotes(data) }
   )
 
-  function onSubmit(data: z.infer<typeof FragmentOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
     updateFragment({ ...data, notes: newNotes, id: fragment.id })
     setNewNotes([])
     form.reset()
@@ -96,7 +97,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
             <ExistingNote key={index} {...note} />
           ))}
 
-          <Button type="submit" className="mx-3">
+          <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>
             Sla veranderingen op
           </Button>
           <Button

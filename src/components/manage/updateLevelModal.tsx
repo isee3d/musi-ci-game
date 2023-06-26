@@ -20,6 +20,7 @@ import { cn } from '~/lib/utils'
 import { Label } from '@radix-ui/react-label'
 import { Level } from '@prisma/client'
 import { HuePicker } from 'react-color'
+import { levelFormSchema } from 'types/FormSchema'
 
 const UpdateLevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -63,16 +64,16 @@ const UpdateLevelModal: React.FC<{
     setRemainingSublevels([...remainingSubLevels, sublevel])
   }
 
-  const form = useForm<z.infer<typeof LevelOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof levelFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(LevelOptionalDefaultsSchema),
+    resolver: zodResolver(levelFormSchema),
     defaultValues: {
       name: level.name,
       description: level.description,
     },
   })
 
-  function onSubmit(data: z.infer<typeof LevelOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof levelFormSchema>) {
     updateLevel({
       id: level.id,
       name: data.name,
@@ -172,7 +173,7 @@ const UpdateLevelModal: React.FC<{
           })}
         </div>
 
-        <Button disabled={!form.formState.isValid} type="submit">
+        <Button disabled={addedSublevels.length === 0} type="submit">
           Wijzigingen opslaan
         </Button>
         <Button

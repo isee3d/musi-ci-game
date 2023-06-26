@@ -15,6 +15,7 @@ import {
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
+import { teamFormSchema } from 'types/FormSchema'
 
 const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
@@ -28,15 +29,15 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
     },
   })
 
-  const form = useForm<z.infer<typeof TeamOptionalDefaultsSchema>>({
+  const form = useForm<z.infer<typeof teamFormSchema>>({
     mode: 'onBlur',
-    resolver: zodResolver(TeamOptionalDefaultsSchema),
+    resolver: zodResolver(teamFormSchema),
     defaultValues: {
       name: '',
     },
   })
 
-  function onSubmit(data: z.infer<typeof TeamOptionalDefaultsSchema>) {
+  function onSubmit(data: z.infer<typeof teamFormSchema>) {
     const exists = teamQuery.data?.find((team) => team.name === data.name)
     const toastMessage = exists ? 'Team already exists!' : 'team created!'
     exists ? toast.error(toastMessage) : (addTeam(data), toast.success(toastMessage))
