@@ -32,7 +32,7 @@ export const subLevelRouter = createTRPCRouter({
     return ctx.prisma.subLevel.findMany()
   }),
 
-  getSublevelById: protectedProcedure
+  getSublevelById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input
@@ -48,7 +48,7 @@ export const subLevelRouter = createTRPCRouter({
       return subLevel
     }),
 
-  getGameModesOfSublevel: protectedProcedure
+  getGameModesOfSublevel: publicProcedure
     .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { sublevelId } = input
@@ -67,7 +67,7 @@ export const subLevelRouter = createTRPCRouter({
       return gameModes.gameModes
     }),
 
-  getFragmentsOfSublevel: protectedProcedure
+  getFragmentsOfSublevel: publicProcedure
     .input(z.object({ sublevelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { sublevelId: subLevelId } = input

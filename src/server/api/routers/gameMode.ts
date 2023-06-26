@@ -19,7 +19,7 @@ export const gameModeRouter = createTRPCRouter({
     return ctx.prisma.gameMode.findMany()
   }),
 
-  getGameMode: protectedProcedure
+  getGameMode: publicProcedure
     .input(GameModeSchema.pick({ name: true }))
     .query(async ({ ctx, input }) => {
       const { name } = input
