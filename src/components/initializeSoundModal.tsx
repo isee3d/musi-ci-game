@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { initializeSound } from '~/components/fragmentPlayer/audio/AudioControls'
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
@@ -11,6 +11,9 @@ interface BaseStaticModalProps {
 
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmodal }) => {
   const { audioContext } = useAudioServiceStore()
+  const [guideText, setGuideText] = useState<string>(
+    ' Klik op de knop hieronder om het geluid in te schakelen.'
+  )
 
   function handleAudiocontextChange(e: AudioContextState) {
     if (e === 'running') return
@@ -18,8 +21,9 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   }
 
   async function initializeAudio() {
-    setmodal(false)
+    setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
     await initializeSound()
+    setmodal(false)
   }
 
   useEffect(() => {
@@ -38,9 +42,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
               <h3 className="text-3xl font-semibold">Geluid is uitgeschakeld voor deze website</h3>
             </div>
             <div className="relative flex justify-center p-6">
-              <p className="my-4 text-lg leading-relaxed ">
-                Klik op de knop hieronder om het geluid in te schakelen.
-              </p>
+              <p className="my-4 text-lg leading-relaxed ">{guideText}</p>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
               <Button type="button" size={'lg'} onClick={initializeAudio}>

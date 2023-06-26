@@ -1,239 +1,236 @@
 // import { returnAudioBuffer } from '~/components/fragmentPlayer/audio/AudioServiceUtils';
 // import AudioService from './AudioService';
 
-import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
-
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 interface SampleLoadData {
   /** i.e. /media/sampler/Salamander/C3.mp3 you can omit '/public' */
-  path: string;
-  note: NoteName;
+  path: string
+  note: NoteName
   tuneNote?: {
-    closestNote: string;
-    playRate: number;
-  };
+    closestNote: string
+    playRate: number
+  }
 }
 
 interface SampleData {
   // play: (options: NotePlayOptions) => void;
-  isPlaying: boolean;
+  isPlaying: boolean
   // stop: () => void;
-  buffer?: NamedAudioBuffer;
-  source?: AudioBufferSourceNode;
+  buffer?: NamedAudioBuffer
+  source?: AudioBufferSourceNode
 }
 
 export interface NotePlayOptions {
-  note: string;
-  attackMs?: number;
-  sustain: number;
-  releaseMs: number;
-  volume: number;
+  note: string
+  attackMs?: number
+  sustain: number
+  releaseMs: number
+  volume: number
   /** in milliseconds */
-  delay?: number;
+  delay?: number
 }
 
 interface NamedAudioBuffer extends AudioBuffer {
-  name: string;
-  noteIndex: number;
-  playRate: number;
+  name: string
+  noteIndex: number
+  playRate: number
 }
 
-type SampleIndex = { [key: string]: SampleData };
+type SampleIndex = { [key: string]: SampleData }
 
-export type NoteName = string;
+export type NoteName = string
 
-export const baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+export const baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 export const generateNotes = (octaves: number): string[] => {
-  const notes = [];
+  const notes = []
   for (let i = 2; i < octaves + 1; i += 1) {
     // eslint-disable-next-line no-restricted-syntax
     for (let j = 0; j < baseNotes.length; j += 1) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      notes.push(`${baseNotes[j] + i}`);
+      notes.push(`${baseNotes[j] + i}`)
     }
   }
 
-  return notes;
-};
+  return notes
+}
 
 export default class Sampler {
-  private samples: SampleIndex = {};
+  private samples: SampleIndex = {}
 
-  private audioBuffers: NamedAudioBuffer[] = [];
+  private audioBuffers: NamedAudioBuffer[] = []
 
-  private notes = generateNotes(5);
+  private notes = generateNotes(5)
 
-  private pausedAtTime?: number;
+  private pausedAtTime?: number
+
+  public ready: Promise<void>;
 
   constructor(samples: SampleLoadData[]) {
-    Promise.all(
+    this.ready = Promise.all(
       samples.map((s) => {
-        return Sampler.setupSampleData(s, this.notes);
+        return Sampler.setupSampleData(s, this.notes)
       })
     ).then((sampleData) => {
       sampleData.forEach((s) => {
-        const { note, buffer } = s;
-        if (buffer) this.audioBuffers.push(buffer);
-        this.samples[note] = { buffer, isPlaying: false };
-      });
-    });
+        const { note, buffer } = s
+        if (buffer) this.audioBuffers.push(buffer)
+        this.samples[note] = { buffer, isPlaying: false }
+      })
+    })
   }
 
   private static async getAudioBufferFromPath(
     filepath: string,
     name: string
   ): Promise<NamedAudioBuffer> {
-    const { returnAudioBuffer } = useAudioServiceStore.getState();
-    const response = await fetch(filepath);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = (await returnAudioBuffer(arrayBuffer)) as NamedAudioBuffer;
-    audioBuffer.name = name;
+    const { returnAudioBuffer } = useAudioServiceStore.getState()
+    const response = await fetch(filepath)
+    const arrayBuffer = await response.arrayBuffer()
+    const audioBuffer = (await returnAudioBuffer(arrayBuffer)) as NamedAudioBuffer
+    audioBuffer.name = name
 
-    return audioBuffer;
+    return audioBuffer
   }
 
   private getAudioBufferByName(name: string): NamedAudioBuffer | undefined {
-    return this.audioBuffers.find((x) => x.name === name);
+    return this.audioBuffers.find((x) => x.name === name)
   }
 
   private static async setupSampleData(
     sampleData: SampleLoadData,
     notes: string[]
   ): Promise<{
-    note: string;
-    isPlaying: boolean;
-    buffer: NamedAudioBuffer;
+    note: string
+    isPlaying: boolean
+    buffer: NamedAudioBuffer
   }> {
-    const { note, path } = sampleData;
+    const { note, path } = sampleData
     // const filePath = '/media/sampler/Salamander/C3.mp3';
-    const buffer = await Sampler.getAudioBufferFromPath(path, note);
+    const buffer = await Sampler.getAudioBufferFromPath(path, note)
 
-    buffer.noteIndex = notes.findIndex((n) => n === note);
+    buffer.noteIndex = notes.findIndex((n) => n === note)
 
-    buffer.playRate = 1;
+    buffer.playRate = 1
 
-    return { note, isPlaying: false, buffer };
+    return { note, isPlaying: false, buffer }
   }
 
   private getBufferPlaybackRate(buffer: NamedAudioBuffer, note: string): number {
-    const goal = this.notes.findIndex((n) => n === note);
+    const goal = this.notes.findIndex((n) => n === note)
 
-    const difference = goal - buffer.noteIndex;
+    const difference = goal - buffer.noteIndex
 
     // same as Math.Pow(2, (1/12))
-    const playRate = 2 ** (difference / 12);
+    const playRate = 2 ** (difference / 12)
 
-    return playRate;
+    return playRate
   }
 
   private returnClosestBuffer(note: string): NamedAudioBuffer {
     // index of the 'goal' note
-    const goal = this.notes.findIndex((n) => n === note);
-
+    const goal = this.notes.findIndex((n) => n === note)
+    console.log('auduibuffers: ', this.audioBuffers)
     const closest = this.audioBuffers.reduce((prev, curr) => {
-      return Math.abs(curr.noteIndex - goal) < Math.abs(prev.noteIndex - goal) ? curr : prev;
-    });
+      return Math.abs(curr.noteIndex - goal) < Math.abs(prev.noteIndex - goal) ? curr : prev
+    })
 
-    if (!closest) throw new Error(`No Buffer for ${note} found`);
-    return closest;
+    if (!closest) throw new Error(`No Buffer for ${note} found`)
+    return closest
   }
 
   private updateSamples(note: string, sampleSource: AudioBufferSourceNode): void {
     if (!this.samples[note]) {
-      this.samples[note] = { isPlaying: false, buffer: undefined, source: undefined };
+      this.samples[note] = { isPlaying: false, buffer: undefined, source: undefined }
     }
-    if (!note) return;
+    if (!note) return
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this.samples[note].source = sampleSource || undefined;
+    this.samples[note].source = sampleSource || undefined
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this.samples[note].isPlaying = true;
+    this.samples[note].isPlaying = true
   }
 
   public async play(options: NotePlayOptions): Promise<void> {
     return new Promise(async (resolve) => {
-      const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
-      if (
-        audioContext?.state === 'closed' ||
-        audioContext?.state === 'suspended'
-      ) {
-        await audioContext.resume();
+      const { audioContext, getCurrentTime } = useAudioServiceStore.getState()
+      if (audioContext?.state === 'closed' || audioContext?.state === 'suspended') {
+        await audioContext.resume()
       }
 
-      const { note, attackMs, sustain, releaseMs, volume, delay } = options;
+      const { note, attackMs, sustain, releaseMs, volume, delay } = options
 
       setTimeout(() => {
-        if (!audioContext) return;
+        if (!audioContext) return
 
-        const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note);
+        const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note)
+        const playRate = this.getBufferPlaybackRate(buffer, note)
 
-        const playRate = this.getBufferPlaybackRate(buffer, note);
+        const noteEnvelope = audioContext.createGain() as GainNode
 
-        const noteEnvelope = audioContext.createGain() as GainNode;
+        const sampleSource = audioContext.createBufferSource()
+        sampleSource.buffer = buffer
 
-        const sampleSource = audioContext.createBufferSource();
-        sampleSource.buffer = buffer;
+        sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime())
 
-        sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime());
+        const now = getCurrentTime()
 
-        const now = getCurrentTime();
+        this.updateSamples(note, sampleSource)
 
-        this.updateSamples(note, sampleSource);
-
-        noteEnvelope.gain.cancelScheduledValues(now);
-        noteEnvelope.gain.setValueAtTime(0, now);
-        noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000);
-        noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000);
-        sampleSource.connect(noteEnvelope).connect(audioContext.destination);
-        sampleSource.start();
-        sampleSource.stop(now + sustain / 1000 + releaseMs / 1000);
+        noteEnvelope.gain.cancelScheduledValues(now)
+        noteEnvelope.gain.setValueAtTime(0, now)
+        noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000)
+        noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000)
+        sampleSource.connect(noteEnvelope).connect(audioContext.destination)
+        sampleSource.start()
+        sampleSource.stop(now + sustain / 1000 + releaseMs / 1000)
         sampleSource.onended = () => {
-          resolve();
-        };
-      }, delay || 0);
-    });
+          resolve()
+        }
+      }, delay || 0)
+    })
   }
 
   public pause(): void {
-    const { audioContext, getCurrentTime } = useAudioServiceStore.getState();
+    const { audioContext, getCurrentTime } = useAudioServiceStore.getState()
     if (audioContext?.state === 'running') {
-      audioContext.suspend();
-      this.pausedAtTime = getCurrentTime();
+      audioContext.suspend()
+      this.pausedAtTime = getCurrentTime()
     }
   }
 
   public async resume(): Promise<void> {
-    const { audioContext } = useAudioServiceStore.getState();
+    const { audioContext } = useAudioServiceStore.getState()
     if (audioContext?.state === 'suspended' && this.pausedAtTime !== undefined) {
-      await audioContext.resume();
-      this.pausedAtTime = undefined;
+      await audioContext.resume()
+      this.pausedAtTime = undefined
     }
   }
 
   public stop(note: string, onStopped?: () => void): void {
-    if (!this.samples[note]) return;
-    const { isPlaying, source } = this.samples[note] as SampleData;
+    if (!this.samples[note]) return
+    const { isPlaying, source } = this.samples[note] as SampleData
     if (isPlaying && source) {
-      source.stop();
+      source.stop()
     }
 
-    onStopped?.();
+    onStopped?.()
   }
 
   public async stopAll(onAllStopped?: () => void): Promise<void> {
     const stopPromises = Object.keys(this.samples).map((note) => {
       return new Promise<void>((resolve) => {
         this.stop(note, () => {
-          resolve();
-        });
-      });
-    });
+          resolve()
+        })
+      })
+    })
 
-    await Promise.all(stopPromises);
+    await Promise.all(stopPromises)
 
-    onAllStopped?.();
+    onAllStopped?.()
   }
 }

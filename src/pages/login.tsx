@@ -7,11 +7,6 @@ import { useRouter } from 'next/router'
 
 const LoginPage: NextPage = () => {
   const { data: sessionData } = useSession()
-  const router = useRouter()
-
-  if (sessionData?.user) {
-    router.push('/tutorial')
-  }
 
   function getLoginText() {
     if (!sessionData?.user) {

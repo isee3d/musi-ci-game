@@ -14,6 +14,7 @@ type AudioServiceState = {
     BPM: number
     PPQ: number
     hasSupport: boolean
+    isInitialized: boolean
 };
 
 type AudioserviceAction = {
@@ -42,6 +43,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     piano: undefined,
     soundBoard: undefined,
     activeFragment: undefined,
+    isInitialized: false,
     setAudioContext: (audioContext: AudioContext) => set({ audioContext }),
     setActiveFragment: (fragment: FragmentWithNotes | undefined) => set({ activeFragment: fragment }),
     setAudioTime: (audioTime: number) => set({ audioTime }),
@@ -83,7 +85,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
                     set({ audioContext });
                     const audioTime = audioContext.currentTime;
                     set({ audioTime });
-                    const piano = new Sampler([
+                    const piano = await new Sampler([
                         { note: 'C5', path: '/media/sampler/Salamander/C5.mp3' },
                         { note: 'C4', path: '/media/sampler/Salamander/C4.mp3' },
                         { note: 'C3', path: '/media/sampler/Salamander/C3.mp3' },
@@ -92,12 +94,13 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
 
                     set({ piano });
 
-                    const soundBoard = new Sampler([
+                    const soundBoard = await new Sampler([
                         { note: 'C6', path: '/media/sampler/soundboard/tick_high.mp3' },
                         { note: 'C5', path: '/media/sampler/soundboard/tick_low.mp3' },
                     ]);
 
                     set({ soundBoard });
+                    set({ isInitialized: true });
                     return resolve();
                 }, 1000);
             });
