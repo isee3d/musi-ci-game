@@ -27,10 +27,10 @@ const WelcomePage: NextPage = () => {
 
       <section className=" flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
-        <div className="container mx-auto flex min-h-[50vh] w-1/2 flex-col items-center justify-center space-y-8 rounded-xl bg-background/40 backdrop-blur-md">
+        <div className="container mx-auto flex min-h-[50vh] w-1/2 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md">
           <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Welkom</h1>
           <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-            help Cinie haar orkest te redden door de muzieknoten te herkennen
+            Help Cinie haar orkest te redden door de muzieknoten te herkennen
           </p>
           <Button size={'lg'} asChild>
             <Link href={getNextPageRoute()}>
