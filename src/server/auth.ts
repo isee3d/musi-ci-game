@@ -24,6 +24,7 @@ declare module "next-auth" {
       role: string;
       participantId: string | undefined;
       id_Team: string | undefined;
+      preferSkipTutorial: boolean;
       // role: UserRole;
     } & DefaultSession["user"];
   }
@@ -33,6 +34,7 @@ declare module "next-auth" {
     role: string;
     participantId: string | undefined;
     id_Team: string | undefined;
+    preferSkipTutorial: boolean;
   }
 }
 
@@ -51,6 +53,7 @@ export const authOptions: NextAuthOptions = {
         role: user.role,
         participantId: user.participantId,
         id_Team: user.id_Team,
+        preferSkipTutorial: user.preferSkipTutorial,
       },
     }),
   },

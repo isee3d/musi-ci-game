@@ -7,7 +7,15 @@ import { useSession } from 'next-auth/react'
 
 const WelcomePage: NextPage = () => {
   const { data: sessionData } = useSession()
-  const getNextPageRoute = (): string => (sessionData?.user.id ? '/tutorial' : '/login')
+  const getNextPageRoute = (): string => {
+    if(!sessionData?.user.id){
+      return '/login'
+    }
+    if(sessionData?.user.preferSkipTutorial){
+      return '/podium'
+    }
+    return '/tutorial'
+  }
 
   return (
     <>
@@ -19,7 +27,7 @@ const WelcomePage: NextPage = () => {
 
       <section className=" flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
-        <div className="container mx-auto flex flex-col items-center justify-center space-y-8 min-h-[50vh] w-1/2 bg-background/40 backdrop-blur-md rounded-xl">
+        <div className="container mx-auto flex min-h-[50vh] w-1/2 flex-col items-center justify-center space-y-8 rounded-xl bg-background/40 backdrop-blur-md">
           <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Welkom</h1>
           <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
             help Cinie haar orkest te redden door de muzieknoten te herkennen
