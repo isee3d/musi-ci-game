@@ -9,8 +9,6 @@ import { api } from '~/utils/api'
 const PlayButtonsRenderer: React.FC = () => {
   const { data: sessionData } = useSession()
 
-  if(!sessionData?.user) return null
-  
   const { send } = LuisterenMachineContext.useActorRef()
   const { resetSceneRelatedData, setEndTime, sceneData, addScene, getFormattedStoreData } =
     useLuisterenStore()
@@ -22,6 +20,8 @@ const PlayButtonsRenderer: React.FC = () => {
       toast.error('Failed to upload new levelresult!')
     },
   })
+
+  if (!sessionData?.user) return null
 
   return (
     <>

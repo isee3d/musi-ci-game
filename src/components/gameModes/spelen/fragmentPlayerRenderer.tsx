@@ -15,8 +15,6 @@ import { cn } from '~/lib/utils'
 const FragmentPlayerRenderer: React.FC = () => {
   const { data: sessionData } = useSession()
 
-    if (!sessionData?.user) return null
-
   const { send } = SpelenMachineContext.useActorRef()
   const isAnimating = SpelenMachineContext.useSelector((state) => state.context.isAnimating)
   const isClickable = SpelenMachineContext.useSelector((state) => state.context.isClickable)
@@ -39,6 +37,8 @@ const FragmentPlayerRenderer: React.FC = () => {
   const listenToFragmentsState = SpelenMachineContext.useSelector((state) =>
     state.matches('playing.listenToFragments')
   )
+
+   if (!sessionData?.user) return null
 
   const {
     addNewUserSceneAnswer,

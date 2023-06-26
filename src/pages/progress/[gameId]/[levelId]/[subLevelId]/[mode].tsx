@@ -125,7 +125,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
           </Button>
         ))}
       </div>
-      <div className="relative flex w-1/2 flex-col justify-center gap-y-8 pt-4">
+      <div className="relative flex w-5/6 flex-col justify-center gap-y-8 pt-4">
         {renderGameMode(mode)}
       </div>
     </ContentContainer>
