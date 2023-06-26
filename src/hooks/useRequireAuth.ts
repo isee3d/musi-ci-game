@@ -4,8 +4,12 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 export const useRequireAuth = () => {
-  const { status, data: sessionData } = useSession()
+  const { status, data: sessionData, update } = useSession()
   const router = useRouter()
+
+  useEffect(() => {
+    update()
+  }, [])
 
   useEffect(() => {
     if (status === 'loading') return // Wait for loading to complete
