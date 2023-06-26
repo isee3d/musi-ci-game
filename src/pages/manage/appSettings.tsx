@@ -45,7 +45,8 @@ const ManageAppSettingsPage: NextPage = () => {
             </ManageBaseModal>
           )}
 
-
+            {/* maybe the colors for the fragmentplayers */}
+            {/* maybe the timings in the game modes which are still hardcoded */}
 
         </div>
       </section>
