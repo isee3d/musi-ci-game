@@ -79,6 +79,7 @@ model User {
   experience        Int?             @default(0)
   processor         String?
   entreeVragenLijst String?
+  preferSkipTutorial Boolean?        @default(false)
   createdAt         DateTime         @default(now())
 }
 

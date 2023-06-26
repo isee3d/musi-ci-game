@@ -1,12 +1,8 @@
-import { TRPCError } from "@trpc/server";
-import { UserSchema } from "prisma/generated/zod";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server'
+import { UserSchema } from 'prisma/generated/zod'
+import { z } from 'zod'
 
-import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const usersRouter = createTRPCRouter({
   getAllUsersWithoutTeam: protectedProcedure.query(async ({ ctx }) => {
@@ -24,6 +20,27 @@ export const usersRouter = createTRPCRouter({
       },
     })
   }),
+
+  getUserById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.user.findUnique({
+        where: { id },
+      })
+    }),
+
+  setUserTutorialPreference: protectedProcedure
+    .input(z.object({ id: z.string(), preferSkipTutorial: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, preferSkipTutorial } = input
+      return await ctx.prisma.user.update({
+        where: { id },
+        data: {
+          preferSkipTutorial: preferSkipTutorial,
+        },
+      })
+    }),
 
   getGamesOfUser: protectedProcedure
     .input(z.object({ id: z.string().optional() }))
