@@ -38,6 +38,10 @@ const navitemsTemplate: NavItem[] = [
     title: 'Team beheren',
     href: '/manage/teams',
   },
+  {
+    title: 'App instellingen',
+    href: '/manage/appSettings',
+  },
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
