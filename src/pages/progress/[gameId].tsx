@@ -26,7 +26,7 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
             <div className="flex justify-start space-x-4">
               <div
                 className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
-                style={{ borderColor: 'green' }}
+                style={{ borderColor: level.color ?? 'bg-background' }}
               >
                 {level.id}
               </div>

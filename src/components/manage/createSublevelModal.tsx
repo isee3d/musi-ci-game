@@ -19,6 +19,7 @@ import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import { Fragment, GameMode } from '@prisma/client'
 import { Label } from '~/components/ui/label'
+import { HuePicker } from 'react-color'
 
 const CreateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -126,6 +127,22 @@ const CreateSublevelModal: React.FC<{
                     placeholder="fragments to show"
                     {...field}
                     onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Level kleur</FormLabel>
+                <FormControl>
+                  <HuePicker
+                    color={field.value || 'FFF'}
+                    onChangeComplete={(color) => field.onChange(color.hex)}
                   />
                 </FormControl>
                 <FormMessage />

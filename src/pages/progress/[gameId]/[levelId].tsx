@@ -24,7 +24,7 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
             <div className="flex justify-start space-x-4">
               <div
                 className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
-                style={{ borderColor: 'green' }}
+                style={{ borderColor: sublevel.color ?? 'bg-background' }}
               >
                 {sublevel.id}
               </div>

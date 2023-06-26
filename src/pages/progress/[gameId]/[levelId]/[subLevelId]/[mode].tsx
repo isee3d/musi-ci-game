@@ -42,7 +42,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
   const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0
-  const fragments = fragmentLevelQuery?.data?.fragments
+  const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
   useEffect(() => {

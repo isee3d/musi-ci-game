@@ -178,6 +178,7 @@ async function main() {
       // id: 1,
       name: 'Level 1',
       description: 'Een level',
+      color: 'red',
       game: { connect: { id: 1 } },
       subLevels: { connect: [{ id: 1 }] },
     },

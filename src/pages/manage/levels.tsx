@@ -53,6 +53,7 @@ const ManageLevels: NextPage = () => {
               >
                 <h2 className="text-2xl font-bold">{level.name}</h2>
                 <h2 className="text-xl">{level.description}</h2>
+                <h2 className="text-xl">Kleur: {level.color}</h2>
                 <Button
                   onClick={() => deleteLevel({ id: level.id })}
                   className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

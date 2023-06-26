@@ -59,6 +59,7 @@ const ManageSublevels: NextPage = () => {
                 >
                   <h2 className="text-2xl font-bold">{sublevel.name}</h2>
                   <h2 className="text-xl">{sublevel.description}</h2>
+                  <h2 className="text-xl">Kleur: {sublevel.color}</h2>
                   <Button
                     onClick={() => deleteSubLevel({ id: sublevel.id })}
                     className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

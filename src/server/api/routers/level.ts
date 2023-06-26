@@ -67,6 +67,17 @@ export const levelRouter = createTRPCRouter({
       return remainingSubLevels
     }),
 
+  getLevelById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.level.findFirst({
+        where: {
+          id: parseInt(id),
+        },
+      })
+    }),
+
   setSubLevelsToLevel: protectedProcedure
     .input(z.object({ levelId: z.string(), sublevels: z.array(z.number().int()) }))
     .mutation(async ({ ctx, input }) => {

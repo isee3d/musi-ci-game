@@ -19,6 +19,7 @@ import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import { Label } from '@radix-ui/react-label'
 import { Level } from '@prisma/client'
+import { HuePicker } from 'react-color'
 
 const UpdateLevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -112,6 +113,22 @@ const UpdateLevelModal: React.FC<{
                   placeholder="Beschrijving"
                   value={field.value || ''}
                   onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Level kleur</FormLabel>
+              <FormControl>
+                <HuePicker
+                  color={field.value || 'FFF'}
+                  onChangeComplete={(color) => field.onChange(color.hex)}
                 />
               </FormControl>
               <FormMessage />
