@@ -12,7 +12,6 @@ import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TeamOptionalDefaultsSchema, TeamSchema } from 'prisma/generated/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { Textarea } from '~/components/ui/textarea'
@@ -28,7 +27,11 @@ const UpdateTeamModal: React.FC<BaseStaticModalProps> = ({ setmodal, team }) => 
   const teamQuery = api.team.getAllTeams.useQuery()
   const { mutate: updateTeam } = api.team.updateTeam.useMutation({
     onSuccess: () => {
+      toast.success('Team updated!')
       ctx.team.getAllTeams.invalidate()
+    },
+    onError: () => {
+      toast.error('Something went wrong!')
     },
   })
 
@@ -43,17 +46,15 @@ const UpdateTeamModal: React.FC<BaseStaticModalProps> = ({ setmodal, team }) => 
 
   function onSubmit(data: z.infer<typeof teamFormSchema>) {
     const exists = teamQuery.data?.find((team) => team.name === data.name)
-    const toastMessage = exists ? 'Team naam bestaat al!' : 'team verandert gelukt!'
-    exists
-      ? toast.error(toastMessage)
-      : (updateTeam({
-          id: team.id,
-          name: data.name,
-          description: data.description,
-        }),
-        toast.success(toastMessage))
-    form.reset()
-    setmodal(false)
+    if (!exists) {
+      updateTeam({
+        id: team.id,
+        name: data.name,
+        description: data.description,
+      })
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (

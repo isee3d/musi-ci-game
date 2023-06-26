@@ -25,7 +25,11 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
 
   const { mutate: addTeam } = api.team.createTeam.useMutation({
     onSuccess: () => {
+      toast.success('Team created!')
       ctx.team.getAllTeams.invalidate()
+    },
+    onError: () => {
+      toast.error('Something went wrong!')
     },
   })
 
@@ -39,10 +43,11 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
 
   function onSubmit(data: z.infer<typeof teamFormSchema>) {
     const exists = teamQuery.data?.find((team) => team.name === data.name)
-    const toastMessage = exists ? 'Team already exists!' : 'team created!'
-    exists ? toast.error(toastMessage) : (addTeam(data), toast.success(toastMessage))
-    form.reset()
-    setmodal(false)
+    if (!exists) {
+      addTeam(data)
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (

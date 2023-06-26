@@ -30,6 +30,7 @@ const CreateSublevelModal: React.FC<{
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
+  const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
 
   const { mutate: addSublevel } = api.sublevel.createSubLevel.useMutation({
     onSuccess: () => {
@@ -68,15 +69,18 @@ const CreateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    addSublevel({
-      ...data,
-      fragments: addedFragments.map((f) => f.id),
-      gameModes: addedGameModes.map((g) => g.id),
-    })
-    setAddedGameModes([])
-    setAddedFragments([])
-    form.reset()
-    setmodal(false)
+    const exists = sublevelQuery?.data?.find((s) => s.name === data.name)
+    if (!exists) {
+      addSublevel({
+        ...data,
+        fragments: addedFragments.map((f) => f.id),
+        gameModes: addedGameModes.map((g) => g.id),
+      })
+      setAddedGameModes([])
+      setAddedFragments([])
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (

@@ -1,4 +1,3 @@
-import { SubLevelOptionalDefaultsSchema } from 'prisma/generated/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -31,14 +30,15 @@ const UpdateSublevelModal: React.FC<{
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
+  const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
 
   const { mutate: updateSublevel } = api.sublevel.updateSubLevel.useMutation({
     onSuccess: () => {
-      toast.success('Sublevel created!')
+      toast.success('Sublevel updated!')
       ctx.sublevel.getAllSubLevels.invalidate()
     },
     onError: () => {
-      toast.error('Failed to upload new Sublevel! Please try again.')
+      toast.error('Failed to update Sublevel! Please try again.')
     },
   })
 
@@ -49,7 +49,7 @@ const UpdateSublevelModal: React.FC<{
 
   const fragmentsOfSublevel = api.sublevel.getFragmentsOfSublevel.useQuery(
     { sublevelId: sublevel.id.toString() },
-    { onSuccess: (data) => setAddedFragments(data.fragments)}
+    { onSuccess: (data) => setAddedFragments(data.fragments) }
   )
 
   const onAddGameModeButtonClick = (gameMode: GameMode) => {
@@ -79,16 +79,19 @@ const UpdateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    updateSublevel({
-      ...data,
-      id: sublevel.id,
-      fragments: addedFragments.map((f) => f.id),
-      gameModes: addedGameModes.map((g) => g.id),
-    })
-    setAddedGameModes([])
-    setAddedFragments([])
-    form.reset()
-    setmodal(false)
+    const exists = sublevelQuery.data?.find((s) => s.name === data.name)
+    if (!exists) {
+      updateSublevel({
+        ...data,
+        id: sublevel.id,
+        fragments: addedFragments.map((f) => f.id),
+        gameModes: addedGameModes.map((g) => g.id),
+      })
+      setAddedGameModes([])
+      setAddedFragments([])
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (

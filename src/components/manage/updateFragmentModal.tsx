@@ -32,6 +32,8 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   const [newNotes, setNewNotes] = useState<NoteCreate[]>([])
   const ctx = api.useContext()
 
+  const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
+
   const form = useForm<z.infer<typeof fragmentFormSchema>>({
     mode: 'onBlur',
     resolver: zodResolver(fragmentFormSchema),
@@ -46,6 +48,9 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
       toast.success('Fragment updated!')
       ctx.fragmentNote.getAllFragments.invalidate()
     },
+    onError: () => {
+      toast.error('Failed to update fragment! Please try again.')
+    },
   })
   const notesOfFragmentQuery = api.fragmentNote.getNotesOfFragment.useQuery(
     { id: fragment.id },
@@ -53,10 +58,13 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   )
 
   function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
-    updateFragment({ ...data, notes: newNotes, id: fragment.id })
-    setNewNotes([])
-    form.reset()
-    setmodal(false)
+    const exists = fragmentQuery.data?.find((f) => f.name === data.name)
+    if (!exists) {
+      updateFragment({ ...data, notes: newNotes, id: fragment.id })
+      setNewNotes([])
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (

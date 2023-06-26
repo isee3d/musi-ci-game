@@ -22,11 +22,14 @@ import { ExistingNote } from '~/components/existingNote'
 import { NoteCreate } from 'types/Note'
 import { fragmentFormSchema } from 'types/FormSchema'
 
-const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
-  setmodal,
-}) => {
+const CreateFragmentModal: React.FC<{
+  setmodal: React.Dispatch<React.SetStateAction<boolean>>
+}> = ({ setmodal }) => {
   const [newNotes, setNewNotes] = useState<NoteCreate[]>([])
   const ctx = api.useContext()
+
+  const FragmentQuery = api.fragmentNote.getAllFragments.useQuery()
+
   const { mutate: addFragment } = api.fragmentNote.createFragment.useMutation({
     onSuccess: () => {
       toast.success('Fragment created!')
@@ -46,10 +49,13 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
   })
 
   function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
-    addFragment({ ...data, notes: newNotes })
-    setNewNotes([])
-    form.reset()
-    setmodal(false)
+    const exists = FragmentQuery.data?.find((fragment) => fragment.name === data.name)
+    if (!exists) {
+      addFragment({ ...data, notes: newNotes })
+      setNewNotes([])
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (
@@ -120,4 +126,4 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
   )
 }
 
-export default CreateTeamModal
+export default CreateFragmentModal

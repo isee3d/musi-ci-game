@@ -15,8 +15,8 @@ import {
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import {  SubLevel } from 'prisma/generated/zod'
-import { useRef, useState } from 'react'
+import { SubLevel } from 'prisma/generated/zod'
+import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import { Label } from '@radix-ui/react-label'
 import { levelFormSchema } from 'types/FormSchema'
@@ -26,13 +26,16 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
 }) => {
   const ctx = api.useContext()
   const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([])
-  const levelColor = useRef<string>('ffffff')
   const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
   const levelQuery = api.level.getAllLevels.useQuery()
   const { mutate: addLevel } = api.level.createLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
+        toast.success('level created!')
     },
+    onError: (error) => {
+      toast.error(error.message)
+    }
   })
 
   const onAddSublevelButtonClick = (sublevel: SubLevel) => {
@@ -52,13 +55,13 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
   })
 
   function onSubmit(data: z.infer<typeof levelFormSchema>) {
-    const exists = levelQuery.data?.find((team) => team.name === data.name)
-    const toastMessage = exists ? 'Level already exists!' : 'Level created!'
-    exists
-      ? toast.error(toastMessage)
-      : (addLevel({ ...data, sublevels: [] }), toast.success(toastMessage))
-    form.reset()
-    setmodal(false)
+    const exists = levelQuery.data?.find((level) => level.name === data.name)
+    if (!exists) {
+      addLevel({ ...data, sublevels: addedSubLevels.map((s) => s.id) })
+      setAddedSubLevels([])
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (
@@ -152,7 +155,9 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
             })}
           </div>
 
-          <Button type="submit" disabled={addedSubLevels.length === 0}>Sla nieuw Level op</Button>
+          <Button type="submit" disabled={addedSubLevels.length === 0}>
+            Sla nieuw Level op
+          </Button>
           <Button
             onClick={() => {
               form.reset()

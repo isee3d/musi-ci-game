@@ -27,8 +27,7 @@ const UpdateLevelModal: React.FC<{
   level: Level
 }> = ({ setmodal, level }) => {
   const ctx = api.useContext()
-  // const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
-  // const levelQuery = api.level.getAllLevels.useQuery()
+  const levelQuery = api.level.getAllLevels.useQuery()
   const [addedSublevels, setAddedSublevels] = useState<SubLevel[]>([])
   const [remainingSubLevels, setRemainingSublevels] = useState<SubLevel[]>([])
 
@@ -47,10 +46,17 @@ const UpdateLevelModal: React.FC<{
       toast.success('Level updated!')
       ctx.level.getAllLevels.invalidate()
     },
+    onError: () => {
+      toast.error('Failed to update level! Please try again.')
+    },
   })
   const { mutate: updateSublevelsOfLevel } = api.level.setSubLevelsToLevel.useMutation({
     onSuccess: () => {
+      toast.success('Sublevels of level updated!')
       ctx.level.getAllLevels.invalidate()
+    },
+    onError: () => {
+      toast.error('Failed to update sublevels of level! Please try again.')
     },
   })
 
@@ -74,17 +80,20 @@ const UpdateLevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof levelFormSchema>) {
-    updateLevel({
-      id: level.id,
-      name: data.name,
-      description: data.description,
-    })
-    updateSublevelsOfLevel({
-      levelId: level.id.toString(),
-      sublevels: addedSublevels.map((s) => s.id),
-    })
-    form.reset()
-    setmodal(false)
+    const exists = levelQuery.data?.find((l) => l.name === data.name)
+    if (!exists) {
+      updateLevel({
+        id: level.id,
+        name: data.name,
+        description: data.description,
+      })
+      updateSublevelsOfLevel({
+        levelId: level.id.toString(),
+        sublevels: addedSublevels.map((s) => s.id),
+      })
+      form.reset()
+      setmodal(false)
+    }
   }
 
   return (
