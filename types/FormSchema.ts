@@ -30,3 +30,8 @@ export const gameModeFormSchema = z.object({
   three: z.number().optional(),
   go: z.number().optional(),
 })
+
+export const appSettingsFormSchema = z.object({
+  fragmentDotColor: z.string().min(1),
+  fragmentDotLineColor: z.string().min(1),
+})

@@ -1,4 +1,4 @@
-import { prisma } from "../src/server/db";
+import { prisma } from '../src/server/db'
 
 async function main() {
   // const adminRole = await prisma.role.upsert({
@@ -9,6 +9,13 @@ async function main() {
   //   },
   // });
 
+  // Create App Settings
+  const appSettings = await prisma.appSettings.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {},
+  })
+
   // // Create teams
   const team1 = await prisma.team.upsert({
     where: { id: 1 },
@@ -18,7 +25,7 @@ async function main() {
       name: 'Team A',
       description: 'First team',
     },
-  });
+  })
 
   const team2 = await prisma.team.upsert({
     where: { id: 2 },
@@ -28,7 +35,7 @@ async function main() {
       name: 'Team B',
       description: 'Second team',
     },
-  });
+  })
 
   // const trainerRole = await prisma.role.upsert({
   //   where: { name: 'trainer' },
@@ -61,7 +68,7 @@ async function main() {
       processor: 'Intel i7',
       entreeVragenLijst: 'questions',
     },
-  });
+  })
 
   const user2 = await prisma.user.upsert({
     where: { email: 'jane.smith@example.com' },
@@ -77,7 +84,7 @@ async function main() {
       processor: 'AMD Ryzen 5',
       entreeVragenLijst: 'questions',
     },
-  });
+  })
 
   // create restgehoor
   const restgehoor1 = await prisma.restGehoor.upsert({
@@ -266,13 +273,11 @@ async function main() {
     },
   })
 
-
-
   const levelResult = await prisma.levelResult.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      user: { connect: { id: "ckry3i9q20000rnokcau72egt" } },
+      user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
       Level: { connect: { id: 1 } },
       subLevel: { connect: { id: 1 } },
       gameMode: { connect: { id: 1 } },
@@ -297,12 +302,12 @@ async function main() {
   })
 }
 
-  main()
-    .then(async () => {
-      await prisma.$disconnect();
-    })
-    .catch(async (e) => {
-      console.error(e);
-      await prisma.$disconnect();
-      process.exit(1);
-    });
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

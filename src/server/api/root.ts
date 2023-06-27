@@ -12,6 +12,7 @@ import { usersRouter } from "~/server/api/routers/users";
 import { levelRouter } from "~/server/api/routers/level";
 import { levelResultRouter } from "~/server/api/routers/levelResult";
 import { downloadRouter } from "~/server/api/routers/download";
+import { appSettingsRouter } from "~/server/api/routers/appSettings";
 
 /**
  * This is the primary router for your server.
@@ -19,6 +20,7 @@ import { downloadRouter } from "~/server/api/routers/download";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  appSettings: appSettingsRouter,
   example: exampleRouter,
   fragmentNote: fragmentNoteRouter,
   game: gameRouter,

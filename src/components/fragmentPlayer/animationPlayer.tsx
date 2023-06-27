@@ -7,6 +7,7 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { Ortho, View } from '~/components/3D/canvas/View'
 import { FragmentCircle, FragmentLine } from '~/components/3D/canvas/Examples'
 import { cn } from '~/lib/utils'
+import { api } from '~/utils/api'
 
 // const Ortho = dynamic(() => import('~/components/3D/canvas/View').then((mod) => mod.Ortho), { ssr: false })
 // const FragmentLine = dynamic(() => import('~/components/3D/canvas/Examples').then((mod) => mod.FragmentLine), { ssr: false })
@@ -98,6 +99,8 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
   const [notePositions, setNotePositions] = useState<NotePositionTime[]>([])
   const containerRef = useRef<HTMLButtonElement>(null)
 
+  const appSettingsQuery = api.appSettings.getAllSettings.useQuery()
+
   useEffect(() => {
     if (containerRef.current) {
       resizeWindow()
@@ -151,7 +154,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
               key={index}
               position={new THREE.Vector3(positionZeroPoint, 0, 0)}
               lineWidth={8}
-              color={'black'}
+              color={appSettingsQuery?.data?.[0]?.fragmentDotLineColor ?? 'black'}
               points={points.position}
             />
           ))}
@@ -160,7 +163,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
             segments={32}
             xCorrection={positionZeroPoint}
             radius={10}
-            color={'red'}
+            color={appSettingsQuery?.data?.[0]?.fragmentDotColor ?? 'red'}
             onComplete={handleAnimationComplete}
             isAnimating={options?.isAnimating}
             loop={options?.isLooping}

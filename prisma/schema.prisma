@@ -246,3 +246,10 @@ model RelistenFragment {
 
   relistenCount      Int
 }
+
+model AppSettings {
+  id                 Int         @id @default(autoincrement())
+  fragmentDotColor    String?     @default("red")
+  fragmentDotLineColor String?  @default("black")
+
+}

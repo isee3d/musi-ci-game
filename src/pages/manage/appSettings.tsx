@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { type NextPage } from 'next'
-import { GameMode, Team, User } from '@prisma/client'
+import { AppSettings, GameMode, Team, User } from '@prisma/client'
 import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ import ManageBaseModal from '~/components/manage/manageBaseModal'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import UpdateGameModeModal from '~/components/manage/updateGameModeModal'
+import UpdateAppSettingsModal from '~/components/manage/updateAppSettingsModal'
 
 const ManageAppSettingsPage: NextPage = () => {
   useRequireAuth()
@@ -20,10 +21,12 @@ const ManageAppSettingsPage: NextPage = () => {
   const ctx = api.useContext()
 
   const gameModesQuery = api.gameMode.getAllGameModes.useQuery()
+  const appSettingsQuery = api.appSettings.getAllSettings.useQuery()
 
   const [showModal, setShowModal] = useState(false)
-  const [createModal, setCreateModal] = useState(false)
+  const [showAppSettingsModal, setShowAppSettingsModal] = useState(false)
   const [selectedGameMode, setSelectedGameMode] = useState<GameMode | null>(null)
+  const [selectedAppSettings, setSelectedAppSettings] = useState<AppSettings | null>(null)
 
   return (
     <>
@@ -73,7 +76,40 @@ const ManageAppSettingsPage: NextPage = () => {
             })}
           </div>
 
-          {/* maybe the colors for the fragmentplayers */}
+          <h2 className="py-3 text-center text-4xl font-extrabold tracking-tight ">
+            Fragment speler instellingen
+          </h2>
+          <div className="flex w-4/6 flex-col gap-y-4">
+            {appSettingsQuery.data?.map((appSettings) => {
+              return (
+                <div
+                  key={appSettings.id}
+                  className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                >
+                  {/* <h2 className="text-2xl font-bold">{appSettings.name}</h2> */}
+                  <h2>Fragment speler bolletje kleur: {appSettings.fragmentDotColor} Hex</h2>
+                  <h2>fragment speler lijntje kleur : {appSettings.fragmentDotLineColor} Hex</h2>
+                  <Button
+                    onClick={() => {
+                      setSelectedAppSettings(appSettings)
+                      setShowAppSettingsModal(true)
+                    }}
+                    className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                  >
+                    Aanpassen
+                  </Button>
+                  {showAppSettingsModal && selectedAppSettings?.id === appSettings.id && (
+                    <ManageBaseModal title="App instellingen aanpassen">
+                      <UpdateAppSettingsModal
+                        setmodal={setShowAppSettingsModal}
+                        appSettings={appSettings}
+                      />
+                    </ManageBaseModal>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </section>
     </>

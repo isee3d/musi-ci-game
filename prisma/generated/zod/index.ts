@@ -50,6 +50,8 @@ export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fr
 
 export const RelistenFragmentScalarFieldEnumSchema = z.enum(['id','id_fragment','id_scene','relistenCount']);
 
+export const AppSettingsScalarFieldEnumSchema = z.enum(['id','fragmentDotColor','fragmentDotLineColor']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullsOrderSchema = z.enum(['first','last']);
@@ -1066,6 +1068,29 @@ export const RelistenFragmentOptionalDefaultsWithRelationsSchema: z.ZodType<Reli
 }))
 
 /////////////////////////////////////////
+// APP SETTINGS SCHEMA
+/////////////////////////////////////////
+
+export const AppSettingsSchema = z.object({
+  id: z.number().int(),
+  fragmentDotColor: z.string(),
+  fragmentDotLineColor: z.string(),
+})
+
+export type AppSettings = z.infer<typeof AppSettingsSchema>
+
+// APP SETTINGS OPTIONAL DEFAULTS SCHEMA
+//------------------------------------------------------
+
+export const AppSettingsOptionalDefaultsSchema = AppSettingsSchema.merge(z.object({
+  id: z.number().int().optional(),
+  fragmentDotColor: z.string().optional(),
+  fragmentDotLineColor: z.string().optional(),
+}))
+
+export type AppSettingsOptionalDefaults = z.infer<typeof AppSettingsOptionalDefaultsSchema>
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -1647,6 +1672,15 @@ export const RelistenFragmentSelectSchema: z.ZodType<Prisma.RelistenFragmentSele
   relistenCount: z.boolean().optional(),
   fragment: z.union([z.boolean(),z.lazy(() => FragmentArgsSchema)]).optional(),
   scene: z.union([z.boolean(),z.lazy(() => SceneArgsSchema)]).optional(),
+}).strict()
+
+// APP SETTINGS
+//------------------------------------------------------
+
+export const AppSettingsSelectSchema: z.ZodType<Prisma.AppSettingsSelect> = z.object({
+  id: z.boolean().optional(),
+  fragmentDotColor: z.boolean().optional(),
+  fragmentDotLineColor: z.boolean().optional(),
 }).strict()
 
 
@@ -2678,6 +2712,45 @@ export const RelistenFragmentScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
   relistenCount: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
+export const AppSettingsWhereInputSchema: z.ZodType<Prisma.AppSettingsWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => AppSettingsWhereInputSchema),z.lazy(() => AppSettingsWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => AppSettingsWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => AppSettingsWhereInputSchema),z.lazy(() => AppSettingsWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  fragmentDotColor: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
+export const AppSettingsOrderByWithRelationInputSchema: z.ZodType<Prisma.AppSettingsOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  fragmentDotLineColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+}).strict();
+
+export const AppSettingsWhereUniqueInputSchema: z.ZodType<Prisma.AppSettingsWhereUniqueInput> = z.object({
+  id: z.number().int().optional()
+}).strict();
+
+export const AppSettingsOrderByWithAggregationInputSchema: z.ZodType<Prisma.AppSettingsOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  fragmentDotLineColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  _count: z.lazy(() => AppSettingsCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => AppSettingsAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => AppSettingsMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => AppSettingsMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => AppSettingsSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const AppSettingsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.AppSettingsScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => AppSettingsScalarWhereWithAggregatesInputSchema),z.lazy(() => AppSettingsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => AppSettingsScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => AppSettingsScalarWhereWithAggregatesInputSchema),z.lazy(() => AppSettingsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  fragmentDotColor: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
 export const AccountCreateInputSchema: z.ZodType<Prisma.AccountCreateInput> = z.object({
   id: z.string().cuid().optional(),
   type: z.string(),
@@ -3680,6 +3753,39 @@ export const RelistenFragmentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Re
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   id_scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   relistenCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const AppSettingsCreateInputSchema: z.ZodType<Prisma.AppSettingsCreateInput> = z.object({
+  fragmentDotColor: z.string().optional().nullable(),
+  fragmentDotLineColor: z.string().optional().nullable()
+}).strict();
+
+export const AppSettingsUncheckedCreateInputSchema: z.ZodType<Prisma.AppSettingsUncheckedCreateInput> = z.object({
+  id: z.number().int().optional(),
+  fragmentDotColor: z.string().optional().nullable(),
+  fragmentDotLineColor: z.string().optional().nullable()
+}).strict();
+
+export const AppSettingsUpdateInputSchema: z.ZodType<Prisma.AppSettingsUpdateInput> = z.object({
+  fragmentDotColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const AppSettingsUncheckedUpdateInputSchema: z.ZodType<Prisma.AppSettingsUncheckedUpdateInput> = z.object({
+  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  fragmentDotColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const AppSettingsUpdateManyMutationInputSchema: z.ZodType<Prisma.AppSettingsUpdateManyMutationInput> = z.object({
+  fragmentDotColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const AppSettingsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.AppSettingsUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  fragmentDotColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  fragmentDotLineColor: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
@@ -4754,6 +4860,32 @@ export const RelistenFragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.Re
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   id_scene: z.lazy(() => SortOrderSchema).optional(),
   relistenCount: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const AppSettingsCountOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotColor: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotLineColor: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const AppSettingsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsAvgOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const AppSettingsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotColor: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotLineColor: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const AppSettingsMinOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotColor: z.lazy(() => SortOrderSchema).optional(),
+  fragmentDotLineColor: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const AppSettingsSumOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsSumOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const UserCreateNestedOneWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateNestedOneWithoutAccountsInput> = z.object({
@@ -10578,6 +10710,63 @@ export const RelistenFragmentFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.Relis
   where: RelistenFragmentWhereUniqueInputSchema,
 }).strict()
 
+export const AppSettingsFindFirstArgsSchema: z.ZodType<Prisma.AppSettingsFindFirstArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereInputSchema.optional(),
+  orderBy: z.union([ AppSettingsOrderByWithRelationInputSchema.array(),AppSettingsOrderByWithRelationInputSchema ]).optional(),
+  cursor: AppSettingsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const AppSettingsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AppSettingsFindFirstOrThrowArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereInputSchema.optional(),
+  orderBy: z.union([ AppSettingsOrderByWithRelationInputSchema.array(),AppSettingsOrderByWithRelationInputSchema ]).optional(),
+  cursor: AppSettingsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const AppSettingsFindManyArgsSchema: z.ZodType<Prisma.AppSettingsFindManyArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereInputSchema.optional(),
+  orderBy: z.union([ AppSettingsOrderByWithRelationInputSchema.array(),AppSettingsOrderByWithRelationInputSchema ]).optional(),
+  cursor: AppSettingsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const AppSettingsAggregateArgsSchema: z.ZodType<Prisma.AppSettingsAggregateArgs> = z.object({
+  where: AppSettingsWhereInputSchema.optional(),
+  orderBy: z.union([ AppSettingsOrderByWithRelationInputSchema.array(),AppSettingsOrderByWithRelationInputSchema ]).optional(),
+  cursor: AppSettingsWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const AppSettingsGroupByArgsSchema: z.ZodType<Prisma.AppSettingsGroupByArgs> = z.object({
+  where: AppSettingsWhereInputSchema.optional(),
+  orderBy: z.union([ AppSettingsOrderByWithAggregationInputSchema.array(),AppSettingsOrderByWithAggregationInputSchema ]).optional(),
+  by: AppSettingsScalarFieldEnumSchema.array(),
+  having: AppSettingsScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const AppSettingsFindUniqueArgsSchema: z.ZodType<Prisma.AppSettingsFindUniqueArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereUniqueInputSchema,
+}).strict()
+
+export const AppSettingsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.AppSettingsFindUniqueOrThrowArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereUniqueInputSchema,
+}).strict()
+
 export const AccountCreateArgsSchema: z.ZodType<Prisma.AccountCreateArgs> = z.object({
   select: AccountSelectSchema.optional(),
   include: AccountIncludeSchema.optional(),
@@ -11252,4 +11441,36 @@ export const RelistenFragmentUpdateManyArgsSchema: z.ZodType<Prisma.RelistenFrag
 
 export const RelistenFragmentDeleteManyArgsSchema: z.ZodType<Prisma.RelistenFragmentDeleteManyArgs> = z.object({
   where: RelistenFragmentWhereInputSchema.optional(),
+}).strict()
+
+export const AppSettingsCreateArgsSchema: z.ZodType<Prisma.AppSettingsCreateArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  data: z.union([ AppSettingsCreateInputSchema,AppSettingsUncheckedCreateInputSchema ]).optional(),
+}).strict()
+
+export const AppSettingsUpsertArgsSchema: z.ZodType<Prisma.AppSettingsUpsertArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereUniqueInputSchema,
+  create: z.union([ AppSettingsCreateInputSchema,AppSettingsUncheckedCreateInputSchema ]),
+  update: z.union([ AppSettingsUpdateInputSchema,AppSettingsUncheckedUpdateInputSchema ]),
+}).strict()
+
+export const AppSettingsDeleteArgsSchema: z.ZodType<Prisma.AppSettingsDeleteArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  where: AppSettingsWhereUniqueInputSchema,
+}).strict()
+
+export const AppSettingsUpdateArgsSchema: z.ZodType<Prisma.AppSettingsUpdateArgs> = z.object({
+  select: AppSettingsSelectSchema.optional(),
+  data: z.union([ AppSettingsUpdateInputSchema,AppSettingsUncheckedUpdateInputSchema ]),
+  where: AppSettingsWhereUniqueInputSchema,
+}).strict()
+
+export const AppSettingsUpdateManyArgsSchema: z.ZodType<Prisma.AppSettingsUpdateManyArgs> = z.object({
+  data: z.union([ AppSettingsUpdateManyMutationInputSchema,AppSettingsUncheckedUpdateManyInputSchema ]),
+  where: AppSettingsWhereInputSchema.optional(),
+}).strict()
+
+export const AppSettingsDeleteManyArgsSchema: z.ZodType<Prisma.AppSettingsDeleteManyArgs> = z.object({
+  where: AppSettingsWhereInputSchema.optional(),
 }).strict()
