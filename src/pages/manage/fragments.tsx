@@ -7,6 +7,7 @@ import CreateFragmentModal from '~/components/manage/createFragmentModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateFragmentModal from '~/components/manage/updateFragmentModal'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
 import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
@@ -38,41 +39,44 @@ const ManageFragments: NextPage = () => {
 
       <section className="flex grow flex-col items-center justify-center">
         <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight ">
-          Fragment maken
+          Fragment beheren
         </h1>
-        <div className="container mx-auto flex flex-col items-center justify-center rounded-2xl border-4">
+        <div className="container mx-auto flex flex-col items-center justify-center gap-4 rounded-2xl border-4">
           <Button onClick={() => setCreateModal(true)} variant="outline">
-            Maak Een nieuw fragment
+            Maak een nieuw fragment
           </Button>
           {createModal && (
             <ManageBaseModal title="Nieuw Fragment maken">
               <CreateFragmentModal setmodal={setCreateModal} />
             </ManageBaseModal>
           )}
-          <div className="flex w-full flex-col gap-y-4 py-4">
+          <Label className="text-center text-3xl font-bold">Bestaande fragmenten</Label>
+          <div className="flex w-full flex-col justify-around gap-2">
             {fragmentQuery.data?.map((fragment) => {
               return (
                 <div
                   key={fragment.id}
-                  className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  className="flex w-full min-w-fit flex-col items-center justify-around gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center md:flex-row"
                 >
                   <h2 className="text-2xl font-bold">{fragment.name}</h2>
                   <h2 className="text-xl">{fragment.description}</h2>
-                  <Button
-                    onClick={() => deleteFragment({ id: fragment.id })}
-                    className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
-                  >
-                    verwijderen
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setSelectedFragment(fragment)
-                      setShowModal(true)
-                    }}
-                    className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
-                  >
-                    Aanpassen
-                  </Button>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      onClick={() => deleteFragment({ id: fragment.id })}
+                      className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+                    >
+                      verwijderen
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSelectedFragment(fragment)
+                        setShowModal(true)
+                      }}
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                    >
+                      Aanpassen
+                    </Button>
+                  </div>
                   {showModal && selectedFragment?.id === fragment.id && (
                     <ManageBaseModal title="Fragment updaten">
                       <UpdateFragmentModal setmodal={setShowModal} fragment={fragment} />

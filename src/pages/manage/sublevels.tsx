@@ -52,12 +52,12 @@ const ManageSublevels: NextPage = () => {
             </ManageBaseModal>
           )}
           <Label className="text-center text-3xl font-bold">Bestaande sublevels</Label>
-          <div className="flex w-full items-center justify-center">
+          <div className="flex w-full flex-col items-center justify-center gap-2">
             {subLevelQuery.data?.map((sublevel) => {
               return (
                 <div
                   key={sublevel.id}
-                  className="flex w-full min-w-fit flex-col items-center justify-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center md:flex-row"
+                  className="flex w-full min-w-fit flex-col items-center justify-around gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center md:flex-row"
                 >
                   <h2 className="text-2xl font-bold">{sublevel.name}</h2>
                   <h2 className="text-xl">{sublevel.description}</h2>

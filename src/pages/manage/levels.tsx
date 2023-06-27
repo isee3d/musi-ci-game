@@ -16,7 +16,7 @@ const ManageLevels: NextPage = () => {
   useRequireAuth()
   useRequireAdminRole()
 
-   const ctx = api.useContext()
+  const ctx = api.useContext()
   const { mutate: deleteLevel } = api.level.deleteLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
@@ -49,18 +49,18 @@ const ManageLevels: NextPage = () => {
               <CreateLevelModal setmodal={setCreateModal} />
             </ManageBaseModal>
           )}
-          <Label className="text-3xl text-center font-bold">Bestaande Levels</Label>
-          <div className="w-full flex justify-center items-center">
+          <Label className="text-center text-3xl font-bold">Bestaande Levels</Label>
+          <div className="flex w-full flex-col items-center justify-center gap-2">
             {levelQuery.data?.map((level) => {
               return (
                 <div
                   key={level.id}
-                  className="flex min-w-fit w-full flex-col md:flex-row items-center justify-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
+                  className="flex w-full min-w-fit flex-col items-center justify-around gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center md:flex-row"
                 >
                   <h2 className="text-2xl font-bold">{level.name}</h2>
                   <h2 className="text-xl">{level.description}</h2>
                   <h2 className="text-xl">Kleur: {level.color}</h2>
-                  <div className="flex flex-col md:flex-row gap-3">
+                  <div className="flex flex-col gap-3 md:flex-row">
                     <Button
                       onClick={() => deleteLevel({ id: level.id })}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
