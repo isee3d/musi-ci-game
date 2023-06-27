@@ -48,7 +48,7 @@ function getAnimationClass(
 
   const cursorClass =
     !options?.isAnimating && options?.isClickable
-      ? 'cursor-pointer hover:bg-primary/40'
+      ? 'cursor-pointer hover:opacity-60'
       : 'cursor-not-allowed bg-gray-400'
 
   return cn(

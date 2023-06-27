@@ -46,13 +46,13 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  // useEffect(() => {
-  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-  //     router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
-  //   }
+  useEffect(() => {
+    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
+    }
 
-  //   setIsPlaying(false)
-  // }, [])
+    setIsPlaying(false)
+  }, [])
 
   function renderGameMode(mode: string) {
     switch (mode) {
