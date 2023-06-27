@@ -15,14 +15,14 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, 
   return (
     <>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
-        You played for {formatTime(endTime - startTime)}
+        je hebt {formatTime(endTime - startTime)} gespeeld!
       </h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
-        You have {getPercentageCorrectlyAnswered()} % correct!
+        Je hebt {getPercentageCorrectlyAnswered()} % correct!
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Felicitaties! -- gebaseerd op % en config
-      </h3>
+      </h3> */}
       <div className="flex justify-center">
         <Button asChild>
           <Link onClick={() => reset()} href={`/modeSelect/${levelId}/${sublevelId}`}>

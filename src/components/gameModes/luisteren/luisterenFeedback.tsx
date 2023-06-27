@@ -8,11 +8,11 @@ const LuisterenFeedback: React.FC = () => {
   return (
     <>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        You played for {formatTime(endTime - startTime)}
+        Je speelde voor {formatTime(endTime - startTime)}
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         You scored {score} points!
-      </h3>
+      </h3> */}
     </>
   )
 }

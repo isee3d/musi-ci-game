@@ -15,14 +15,14 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId, ga
   return (
     <>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        You played for {formatTime(endTime - startTime)}
+        Je hebt voor {formatTime(endTime - startTime)} gespeeld!
       </h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        You have {getPercentageCorrectlyAnswered()} % correct!
+        Je hebt {getPercentageCorrectlyAnswered()} % correct!
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight ">
         Felicitaties! -- gebaseerd op % en config
-      </h3>
+      </h3> */}
       <div className="flex justify-center">
         <Button onClick={() => reset()} asChild>
           <Link href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
