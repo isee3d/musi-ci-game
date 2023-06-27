@@ -22,7 +22,7 @@ interface BaseStaticModalProps {
 }
 
 const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appSettings }) => {
-    const ctx = api.useContext()
+  const ctx = api.useContext()
   const { mutate: updateAppSettings } = api.appSettings.updateAppSettings.useMutation({
     onSuccess: () => {
       toast.success('AppSettings updated!')
@@ -54,7 +54,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 mx-auto space-y-8">
         <FormField
           control={form.control}
           name="fragmentDotColor"
@@ -63,6 +63,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
               <FormLabel>Fragment speler bolletje kleur</FormLabel>
               <FormControl>
                 <HuePicker
+                  styles={{ default: { picker: { width: '100%' } } }}
                   color={field.value || 'red'}
                   onChangeComplete={(color) => field.onChange(color.hex)}
                 />
@@ -79,6 +80,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
               <FormLabel>Fragment speler lijn kleur</FormLabel>
               <FormControl>
                 <HuePicker
+                  styles={{ default: { picker: { width: '100%' } } }}
                   color={field.value || 'red'}
                   onChangeComplete={(color) => field.onChange(color.hex)}
                 />
