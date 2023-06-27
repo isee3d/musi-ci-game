@@ -50,10 +50,10 @@ const ManageAppSettingsPage: NextPage = () => {
                   className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
                 >
                   <h2 className="text-2xl font-bold">{gameMode.name}</h2>
-                  <h2>{gameMode.one}</h2>
-                  <h2>{gameMode.two}</h2>
-                  <h2>{gameMode.three}</h2>
-                  <h2>{gameMode.go}</h2>
+                  {gameMode.one && <h2>One: {gameMode.one} millisecondes</h2>}
+                  {gameMode.two && <h2>Two: {gameMode.two} millisecondes</h2>}
+                  {gameMode.three && <h2>Three: {gameMode.three} millisecondes</h2>}
+                  {gameMode.go && <h2>Go: {gameMode.go} millisecondes</h2>}
                   <Button
                     onClick={() => {
                       setSelectedGameMode(gameMode)

@@ -11,7 +11,7 @@ export const useRequireAdminRole = () => {
   useEffect(() => {
     const userRole = sessionData?.user?.role || ''
     if (userRole !== UserRole.ADMIN) {
-      router.push('/')
+      // router.push('/')
     }
   }, [sessionData?.user, router])
 
