@@ -189,6 +189,11 @@ model GameMode {
   levels            SubLevel[]
   levelResult       LevelResult[]
   name               String         @unique
+
+  one                Int?
+  two                Int?
+  three              Int?
+  go                 Int?
 }
 
 model LevelResult {

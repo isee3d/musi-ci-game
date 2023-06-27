@@ -1,10 +1,7 @@
-import { GameModeOptionalDefaultsSchema, GameModeSchema } from "prisma/generated/zod";
+import { GameModeOptionalDefaultsSchema, GameModeSchema } from 'prisma/generated/zod'
+import { z } from 'zod'
 
-import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const gameModeRouter = createTRPCRouter({
   createGameMode: protectedProcedure
@@ -35,6 +32,24 @@ export const gameModeRouter = createTRPCRouter({
       data: input,
     })
   }),
+
+  updateGameModeTimings: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        one: z.number().min(100),
+        two: z.number().min(100),
+        three: z.number().min(100),
+        go: z.number().min(100),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+      return await ctx.prisma.gameMode.update({
+        where: { id },
+        data: { one: input.one, two: input.two, three: input.three, go: input.go },
+      })
+    }),
 
   deleteGameMode: protectedProcedure
     .input(GameModeSchema.pick({ id: true }))

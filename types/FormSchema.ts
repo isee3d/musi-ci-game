@@ -22,3 +22,11 @@ export const fragmentFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
 })
+
+export const gameModeFormSchema = z.object({
+  name: z.string().min(1),
+  one: z.number().min(100),
+  two: z.number().min(100),
+  three: z.number().min(100),
+  go: z.number().min(100),
+})

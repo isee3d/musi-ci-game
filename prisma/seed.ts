@@ -136,6 +136,10 @@ async function main() {
     create: {
       id: 2,
       name: 'Spelen',
+      one: 1000,
+      two: 1000,
+      three: 1000,
+      go: 1000,
     },
   })
 
@@ -145,6 +149,10 @@ async function main() {
     create: {
       id: 3,
       name: 'Uitdaging',
+      one: 1000,
+      two: 1000,
+      three: 1000,
+      go: 1000,
     },
   })
 

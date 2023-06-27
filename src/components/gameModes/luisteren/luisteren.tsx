@@ -6,13 +6,14 @@ import LuisterenFeedback from '~/components/gameModes/luisteren/luisterenFeedbac
 import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/luisterenfragmentPlayerRenderer'
 import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { GameMode } from '@prisma/client'
 
 interface LuisterenProps {
   fragmentsToShow: number
   fragments: FragmentWithNotes[]
   levelId: string
   sublevelId: string
-  mode: string | undefined
+  mode: GameMode | null | undefined
 }
 
 const Luisteren: React.FC<LuisterenProps> = ({
@@ -29,12 +30,10 @@ const Luisteren: React.FC<LuisterenProps> = ({
   )
   const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
 
-  console.log('fragments', fragments)
-
   useEffect(() => {
     reset()
     setStartTime(Date.now())
-    setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), parseInt(mode ?? '0'))
+    setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',
       levelFragments: fragments,

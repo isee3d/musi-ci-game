@@ -63,7 +63,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
               fragments={fragments}
               levelId={levelId}
               sublevelId={sublevelId}
-              mode={modeQuery?.data?.id.toString()}
+              mode={modeQuery?.data}
             />
           </LuisterenMachineContext.Provider>
         )
@@ -76,7 +76,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
               levelId={levelId}
               sublevelId={sublevelId}
               gameId={gameId}
-              mode={modeQuery?.data?.id.toString()}
+              mode={modeQuery?.data}
             />
           </SpelenMachineContext.Provider>
         )
@@ -90,7 +90,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
               levelId={levelId}
               playTime={playTime}
               sublevelId={sublevelId}
-              mode={modeQuery?.data?.id.toString()}
+              mode={modeQuery?.data}
             />
           </UitdagingMachineContext.Provider>
         )
@@ -99,7 +99,6 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     }
   }
 
-  console.log('isPlaying', isPlaying)
 
   return (
     <ContentContainer
