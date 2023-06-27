@@ -22,7 +22,6 @@ const countdownTimings: CountdownTimings = {
   two: 1000,
   three: 1000,
   go: 1000,
-  soundInitialized: 1000,
 }
 
 const Spelen: React.FC<SpelenProps> = ({

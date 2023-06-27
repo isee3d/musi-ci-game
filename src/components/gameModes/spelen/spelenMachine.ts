@@ -1,3 +1,4 @@
+import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { createMachine, assign } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
@@ -8,13 +9,7 @@ import {
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
-export interface CountdownTimings {
-  one: number
-  two: number
-  three: number
-  go: number
-  soundInitialized: number
-}
+
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
@@ -245,7 +240,7 @@ export const spelenMachine = createMachine(
       TWO: (context) => context.countdownTimings?.two ?? 1000,
       ONE: (context) => context.countdownTimings?.one ?? 1000,
       GO: (context) => context.countdownTimings?.go ?? 1000,
-      SOUNDTIME: (context) => context.countdownTimings?.soundInitialized ?? 1000,
+      SOUNDTIME: (context) => 1000,
     },
   }
 )

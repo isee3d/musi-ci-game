@@ -1,3 +1,4 @@
+import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { createMachine, assign } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
@@ -5,8 +6,6 @@ import {
   FragmentWithNotes,
   FragmentWithNotesAndTransposeDirection,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { CountdownTimings } from '~/components/gameModes/spelen/spelenMachine'
-// import { CountdownActions } from '~/hooks/useCountdown';
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -250,7 +249,7 @@ export const uitdagingMachine = createMachine(
       TWO: (context) => context.countdownTimings?.two ?? 1000,
       ONE: (context) => context.countdownTimings?.one ?? 1000,
       GO: (context) => context.countdownTimings?.go ?? 1000,
-      SOUNDTIME: (context) => context.countdownTimings?.soundInitialized ?? 1000,
+      SOUNDTIME: (context) => 1000,
     },
   }
 )
