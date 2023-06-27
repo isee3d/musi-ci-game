@@ -46,7 +46,7 @@ const TutorialPage: NextPage = () => {
               }}
               id="preferSkipTutorial"
             />
-            <Label htmlFor="preferSkipTutorial">Ik wil de tutorial overslaan</Label>
+            <Label htmlFor="preferSkipTutorial">Ik wil de tutorial altijd overslaan</Label>
           </div>
           <Button size={'lg'} asChild>
             <Link href="/podium">
