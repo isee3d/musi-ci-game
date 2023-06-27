@@ -18,7 +18,7 @@ import { HuePicker } from 'react-color'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
-  appSettings: AppSettings
+  appSettings: AppSettings | undefined | null
 }
 
 const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appSettings }) => {
@@ -37,14 +37,14 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
     mode: 'onBlur',
     resolver: zodResolver(appSettingsFormSchema),
     defaultValues: {
-      fragmentDotColor: appSettings.fragmentDotColor ?? undefined,
-      fragmentDotLineColor: appSettings.fragmentDotLineColor ?? undefined,
+      fragmentDotColor: appSettings?.fragmentDotColor ?? undefined,
+      fragmentDotLineColor: appSettings?.fragmentDotLineColor ?? undefined,
     },
   })
 
   function onSubmit(data: z.infer<typeof appSettingsFormSchema>) {
     updateAppSettings({
-      id: appSettings.id,
+      id: appSettings?.id ?? -1,
       fragmentDotColor: data.fragmentDotColor,
       fragmentDotLineColor: data.fragmentDotLineColor,
     })

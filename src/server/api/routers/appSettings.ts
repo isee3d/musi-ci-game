@@ -4,7 +4,11 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/
 
 export const appSettingsRouter = createTRPCRouter({
   getAllSettings: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.appSettings.findMany()
+    const settings = ctx.prisma.appSettings.findFirst()
+    if(!settings) {
+      throw new Error('No settings found')
+    }
+    return settings
   }),
 
   updateAppSettings: protectedProcedure

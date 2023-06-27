@@ -77,34 +77,33 @@ const ManageAppSettingsPage: NextPage = () => {
             Fragment speler instellingen
           </h2>
           <div className="flex w-full flex-col gap-y-4">
-            {appSettingsQuery.data?.map((appSettings) => {
-              return (
-                <div
-                  key={appSettings.id}
-                  className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
-                >
-                  <h2>Fragment speler bolletje kleur: {appSettings.fragmentDotColor} Hex</h2>
-                  <h2>fragment speler lijntje kleur : {appSettings.fragmentDotLineColor} Hex</h2>
-                  <Button
-                    onClick={() => {
-                      setSelectedAppSettings(appSettings)
-                      setShowAppSettingsModal(true)
-                    }}
-                    className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
-                  >
-                    Aanpassen
-                  </Button>
-                  {showAppSettingsModal && selectedAppSettings?.id === appSettings.id && (
-                    <ManageBaseModal title="App instellingen aanpassen">
-                      <UpdateAppSettingsModal
-                        setmodal={setShowAppSettingsModal}
-                        appSettings={appSettings}
-                      />
-                    </ManageBaseModal>
-                  )}
-                </div>
-              )
-            })}
+            <div className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center">
+              <h2>
+                Fragment speler bolletje kleur:{' '}
+                {appSettingsQuery?.data?.fragmentDotColor ?? undefined} Hex
+              </h2>
+              <h2>
+                fragment speler lijntje kleur :{' '}
+                {appSettingsQuery?.data?.fragmentDotLineColor ?? undefined} Hex
+              </h2>
+              <Button
+                onClick={() => {
+                  setSelectedAppSettings(appSettingsQuery?.data ?? null)
+                  setShowAppSettingsModal(true)
+                }}
+                className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+              >
+                Aanpassen
+              </Button>
+              {showAppSettingsModal && selectedAppSettings?.id === appSettingsQuery?.data?.id && (
+                <ManageBaseModal title="App instellingen aanpassen">
+                  <UpdateAppSettingsModal
+                    setmodal={setShowAppSettingsModal}
+                    appSettings={appSettingsQuery?.data}
+                  />
+                </ManageBaseModal>
+              )}
+            </div>
           </div>
         </div>
       </section>
