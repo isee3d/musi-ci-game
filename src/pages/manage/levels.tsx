@@ -55,7 +55,7 @@ const ManageLevels: NextPage = () => {
               return (
                 <div
                   key={level.id}
-                  className="flex w-fit  flex-col items-center justify-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
+                  className="flex min-w-fit w-full flex-col md:flex-row items-center justify-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
                 >
                   <h2 className="text-2xl font-bold">{level.name}</h2>
                   <h2 className="text-xl">{level.description}</h2>
