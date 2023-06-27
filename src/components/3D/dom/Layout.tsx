@@ -11,6 +11,8 @@ import { NavItem } from '~/components/mobileNav'
 import { ModeToggle } from '~/components/modeToggle'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { Icons } from '~/components/icons'
+import { api } from '~/utils/api'
+import { useRouter } from 'next/router'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
@@ -47,7 +49,10 @@ const navitemsTemplate: NavItem[] = [
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
   const { data: sessionData } = useSession()
+  const router = useRouter()
   const ref = useRef(null)
+
+  const { mutate: setTutorialPreference } = api.user.setUserTutorialPreference.useMutation()
 
   useEffect(() => {
     if (sessionData?.user?.role === 'ADMIN') {
@@ -67,18 +72,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav className="flex gap-3">
+            <nav className="flex gap-1">
+              <Button
+                onClick={sessionData ? () => void signOut() : () => void signIn()}
+                className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
+              >
+                {sessionData ? 'Uitloggen' : 'Inloggen'}
+              </Button>
+              {sessionData?.user && (
+                <Button
+                  onClick={() => {
+                    setTutorialPreference({
+                      id: sessionData.user.id,
+                      preferSkipTutorial: false,
+                    })
+                    router.push('/tutorial')
+                  }}
+                  className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
+                >
+                  Tutorial
+                </Button>
+              )}
               <Button
                 onClick={() => runTestSound()}
                 className={cn(buttonVariants({ variant: 'ghost' }))}
               >
                 <Icons.music />
-              </Button>
-              <Button
-                onClick={sessionData ? () => void signOut() : () => void signIn()}
-                className={cn(buttonVariants({ variant: 'secondary' }), 'px-4')}
-              >
-                {sessionData ? 'Uitloggen' : 'Inloggen'}
               </Button>
               <ModeToggle />
             </nav>
