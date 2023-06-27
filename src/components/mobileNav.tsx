@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { Icons } from "~/components/icons"
-import { Button } from "~/components/ui/button"
-import { useLockBody } from "~/hooks/use-lock-body"
-import { cn } from "~/lib/utils"
+import Link from 'next/link'
+import { Icons } from '~/components/icons'
+import { Button } from '~/components/ui/button'
+import { useLockBody } from '~/hooks/use-lock-body'
+import { cn } from '~/lib/utils'
 
 export type NavItem = {
   title: string
@@ -26,23 +26,27 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
       )}
     >
       <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link
+          href="/"
+          onClick={() => setShowMobileNav(false)}
+          className="flex items-center space-x-2"
+        >
           <Icons.logo />
           <span className="font-bold">Musi Ci</span>
         </Link>
         <nav className="grid grid-flow-row auto-rows-max text-sm">
           {items.map((item, index) => (
-              <Link
-                onClick={() => setShowMobileNav(false)}
-                key={index}
-                href={item.disabled ? '#' : item.href}
-                className={cn(
-                  'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
-                  item.disabled && 'cursor-not-allowed opacity-60'
-                )}
-              >
-                {item.title}
-              </Link>
+            <Link
+              onClick={() => setShowMobileNav(false)}
+              key={index}
+              href={item.disabled ? '#' : item.href}
+              className={cn(
+                'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
+                item.disabled && 'cursor-not-allowed opacity-60'
+              )}
+            >
+              {item.title}
+            </Link>
           ))}
         </nav>
         {children}
