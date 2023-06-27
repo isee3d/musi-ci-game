@@ -26,15 +26,13 @@ const LoginPage: NextPage = () => {
 
       <section className="flex grow flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-4 px-4 py-16 ">
-          <h2 className=" font-heading text-3xl tracking-tight sm:text-[5rem]">
-            Musi-CI Melody Game
-          </h2>
-          <h2 className="text-3xl leading-normal tracking-tight text-muted-foreground">
+          <h2 className=" font-heading text-center text-5xl tracking-tight">Musi-CI Melody Game</h2>
+          <h2 className="text-2xl md: text-center md:text-3xl leading-normal tracking-tight text-muted-foreground">
             Trainen met verschillen tussen toonhoogtes en korte melodietjes
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl">{getLoginText()}</p>
+            <p className="text-xl">{getLoginText()}</p>
             <div className="flex gap-5">
               <Button
                 size={'lg'}
