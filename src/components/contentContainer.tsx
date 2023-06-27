@@ -29,7 +29,7 @@ const ContentContainer: React.FC<Props> = ({
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex min-h-fit w-full flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 sm:w-5/6 ">
+        <div className="container mx-auto flex min-h-fit  flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 w-5/6 ">
           <h2 className="w-full border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
             {title}
           </h2>

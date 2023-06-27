@@ -68,7 +68,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Layout>
-            {showModal && <InitializeSoundModal showModal={showModal} setmodal={setShowModal} />}
+            {/* {showModal && <InitializeSoundModal showModal={showModal} setmodal={setShowModal} />} */}
             <SetTeamIdAndParticipantIdModal />
             <TailwindIndicator />
             <Toaster position="bottom-center" />

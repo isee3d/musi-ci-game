@@ -8,7 +8,7 @@ import Spelen from '~/components/gameModes/spelen/spelen'
 import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
-import { Button } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
@@ -17,6 +17,7 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
 import { useEffect } from 'react'
 import { env } from '~/env.mjs'
+import Link from 'next/link'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
@@ -45,13 +46,13 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  useEffect(() => {
-    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
-    }
+  // useEffect(() => {
+  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+  //     router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
+  //   }
 
-    setIsPlaying(false)
-  }, [])
+  //   setIsPlaying(false)
+  // }, [])
 
   function renderGameMode(mode: string) {
     switch (mode) {
@@ -99,29 +100,29 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     }
   }
 
-
   return (
     <ContentContainer
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
       backPath={`/progress/${gameId}/${levelId}/${sublevelId}`}
-      classNameParent="w-full px-0 mt-0 space-y-0"
+      classNameParent="px-0 mt-0"
       shouldRenderBackButton={false}
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (
           <Button
-            key={index}
-            size={'lg'}
-            disabled={mode === gameMode.name || isPlaying}
-            className={cn(
-              'h-16 w-1/3 rounded-none bg-gray-500 py-3 text-center text-3xl font-extrabold tracking-tight hover:bg-gray-800',
-              mode === gameMode.name ? 'border-xl bg-background text-red-500' : 'text-primary'
+            className={cn(buttonVariants({ size: 'lg' }),
+              'text-xl border border-background p-0 flex-auto rounded-none',
+              mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
             )}
-            onClick={() =>
-              router.push(`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`)
-            }
+            key={index}
+            asChild
+            disabled={mode === gameMode.name || isPlaying}
           >
-            {gameMode.name}
+            <Link
+              href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
+            >
+              {gameMode.name}
+            </Link>
           </Button>
         ))}
       </div>
