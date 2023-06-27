@@ -62,6 +62,9 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
       form.reset()
       setmodal(false)
     }
+    else {
+      toast.error('Level naam bestaat al!')
+    }
   }
 
   return (

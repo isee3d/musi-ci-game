@@ -81,6 +81,9 @@ const CreateSublevelModal: React.FC<{
       form.reset()
       setmodal(false)
     }
+    else{
+      toast.error('Sublevel naam already exists!')
+    }
   }
 
   return (

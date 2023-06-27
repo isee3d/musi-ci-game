@@ -55,6 +55,8 @@ const CreateFragmentModal: React.FC<{
       setNewNotes([])
       form.reset()
       setmodal(false)
+    } else {
+      toast.error('Fragment name already exists!')
     }
   }
 

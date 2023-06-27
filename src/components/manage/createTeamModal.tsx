@@ -48,6 +48,9 @@ const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<
       form.reset()
       setmodal(false)
     }
+    else{
+      toast.error('Team naam bestaat al!')
+    }
   }
 
   return (
