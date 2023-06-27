@@ -49,39 +49,44 @@ const ManageLevels: NextPage = () => {
               <CreateLevelModal setmodal={setCreateModal} />
             </ManageBaseModal>
           )}
-          <Label className="text-3xl font-bold">Bestaande Levels</Label>
-          {levelQuery.data?.map((level) => {
-            return (
-              <div
-                key={level.id}
-                className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
-              >
-                <h2 className="text-2xl font-bold">{level.name}</h2>
-                <h2 className="text-xl">{level.description}</h2>
-                <h2 className="text-xl">Kleur: {level.color}</h2>
-                <Button
-                  onClick={() => deleteLevel({ id: level.id })}
-                  className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+          <Label className="text-3xl text-center font-bold">Bestaande Levels</Label>
+          <div className="w-full flex justify-center items-center">
+            {levelQuery.data?.map((level) => {
+              return (
+                <div
+                  key={level.id}
+                  className="flex w-fit  flex-col items-center justify-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
                 >
-                  verwijderen
-                </Button>
-                <Button
-                  onClick={() => {
-                    setSelectedLevel(level)
-                    setShowModal(true)
-                  }}
-                  className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
-                >
-                  Aanpassen
-                </Button>
-                {showModal && selectedLevel?.id === level.id && (
-                  <ManageBaseModal title="Level aanpassen">
-                    <UpdateLevelModal setmodal={setShowModal} level={selectedLevel} />
-                  </ManageBaseModal>
-                )}
-              </div>
-            )
-          })}
+                  <h2 className="text-2xl font-bold">{level.name}</h2>
+                  <h2 className="text-xl">{level.description}</h2>
+                  <h2 className="text-xl">Kleur: {level.color}</h2>
+                  <div className="flex flex-col md:flex-row gap-3">
+                    <Button
+                      onClick={() => deleteLevel({ id: level.id })}
+                      className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+                    >
+                      verwijderen
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSelectedLevel(level)
+                        setShowModal(true)
+                      }}
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                    >
+                      Aanpassen
+                    </Button>
+                  </div>
+
+                  {showModal && selectedLevel?.id === level.id && (
+                    <ManageBaseModal title="Level aanpassen">
+                      <UpdateLevelModal setmodal={setShowModal} level={selectedLevel} />
+                    </ManageBaseModal>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </section>
     </>
