@@ -15,6 +15,8 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     ' Klik op de knop hieronder om het geluid in te schakelen.'
   )
 
+  const [clickedButton, setClickedButton] = useState<boolean>(false)
+
   function handleAudiocontextChange(e: AudioContextState) {
     if (e === 'running') return
     setmodal(true)
@@ -22,6 +24,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
 
   async function initializeAudio() {
     setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
+    setClickedButton(true)
     await initializeSound()
     setmodal(false)
   }
@@ -45,7 +48,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
               <p className="my-4 text-lg leading-relaxed ">{guideText}</p>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
-              <Button type="button" size={'lg'} onClick={initializeAudio}>
+              <Button type="button" size={'lg'} onClick={initializeAudio} disabled={clickedButton}>
                 <Icons.music />
               </Button>
             </div>
