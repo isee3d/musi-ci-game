@@ -11,6 +11,7 @@ import { cn } from '~/lib/utils'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
+import { Label } from '~/components/ui/label'
 
 const ManageTeamPage: NextPage = () => {
   useRequireAuth()
@@ -88,31 +89,33 @@ const ManageTeamPage: NextPage = () => {
 
           <h3 className="my-2 text-xl">User toevoegen aan team</h3>
           <ul>{usersWithoutTeamList}</ul>
-          <h2 className="py-3 text-center text-4xl font-extrabold tracking-tight ">Alle Teams</h2>
-          <div className="flex flex-col gap-y-4">
+          <Label className="text-center text-3xl font-bold">Bestaande Teams</Label>
+          <div className="flex w-full flex-col items-center justify-center gap-2">
             {teamQuery.data?.map((team) => {
               return (
                 <div
                   key={team.id}
-                  className="grid min-w-full grid-cols-[1fr,auto,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  className="flex w-full min-w-fit flex-col items-center justify-around gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center md:flex-row"
                 >
                   <h2 className="text-2xl font-bold">{team.name}</h2>
                   <h2 className="text-xl">{team.description}</h2>
-                  <Button
-                    onClick={() => deleteTeam({ id: team.id })}
-                    className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
-                  >
-                    verwijderen
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setSelectedTeam(team)
-                      setShowModal(true)
-                    }}
-                    className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
-                  >
-                    Aanpassen
-                  </Button>
+                  <div className="flex flex-col gap-3 md:flex-row">
+                    <Button
+                      onClick={() => deleteTeam({ id: team.id })}
+                      className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
+                    >
+                      verwijderen
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSelectedTeam(team)
+                        setShowModal(true)
+                      }}
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                    >
+                      Aanpassen
+                    </Button>
+                  </div>
                   {showModal && selectedTeam?.id === team.id && (
                     <ManageBaseModal title="Team aanpassen">
                       <UpdateTeamModal setmodal={setShowModal} team={team} />

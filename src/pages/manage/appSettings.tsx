@@ -42,15 +42,15 @@ const ManageAppSettingsPage: NextPage = () => {
         </h2>
 
         <div className="container mx-auto flex w-1/2 flex-col items-center rounded border-2 p-4 shadow">
-          <h2 className="py-3 text-center text-4xl font-extrabold tracking-tight ">
+          <h2 className="py-3 text-center text-2xl font-extrabold tracking-tight ">
             Alle Game modes
           </h2>
-          <div className="flex w-4/6 flex-col gap-y-4">
+          <div className="flex w-full flex-col gap-y-4">
             {gameModesQuery.data?.map((gameMode) => {
               return (
                 <div
                   key={gameMode.id}
-                  className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  className="flex flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
                 >
                   <h2 className="text-2xl font-bold">{gameMode.name}</h2>
                   {gameMode.one && <h2>One: {gameMode.one} millisecondes</h2>}
@@ -76,17 +76,16 @@ const ManageAppSettingsPage: NextPage = () => {
             })}
           </div>
 
-          <h2 className="py-3 text-center text-4xl font-extrabold tracking-tight ">
+          <h2 className="py-3 text-center text-2xl font-extrabold tracking-tight ">
             Fragment speler instellingen
           </h2>
-          <div className="flex w-4/6 flex-col gap-y-4">
+          <div className="flex w-full flex-col gap-y-4">
             {appSettingsQuery.data?.map((appSettings) => {
               return (
                 <div
                   key={appSettings.id}
-                  className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
                 >
-                  {/* <h2 className="text-2xl font-bold">{appSettings.name}</h2> */}
                   <h2>Fragment speler bolletje kleur: {appSettings.fragmentDotColor} Hex</h2>
                   <h2>fragment speler lijntje kleur : {appSettings.fragmentDotLineColor} Hex</h2>
                   <Button

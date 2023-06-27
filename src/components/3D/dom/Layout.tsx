@@ -36,7 +36,7 @@ const navitemsTemplate: NavItem[] = [
   },
   {
     title: 'Team beheren',
-    href: '/manage/teams',
+    href: '/manage/team',
   },
   {
     title: 'App instellingen',
