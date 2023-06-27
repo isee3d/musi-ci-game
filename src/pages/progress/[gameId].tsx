@@ -19,18 +19,18 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
       {levelsOfGameQuery.data?.map((level) => (
         <Link
           key={level.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl w-full')}
           href={`/progress/${gameId}/${level.id}`}
         >
-          <div className="flex w-full items-center justify-between">
-            <div className="flex justify-start space-x-4">
+          <div className="flex items-center w-full justify-center">
+            <div className="flex justify-start w-full space-x-4">
               <div
-                className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
+                className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 style={{ borderColor: level.color ?? 'bg-background' }}
               >
                 {level.id}
               </div>
-              <div className=" flex h-16 w-48 items-center justify-center text-2xl font-medium">
+              <div className="flex h-16 w-5/6 items-center justify-center text-2xl font-medium">
                 {level.name}
               </div>
             </div>

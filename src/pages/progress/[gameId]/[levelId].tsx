@@ -17,18 +17,18 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
       {subLevelsOfLevelQuery.data?.map((sublevel) => (
         <Link
           key={sublevel.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl')}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
           href={`/progress/${gameId}/${levelId}/${sublevel.id}`}
         >
-          <div className="flex w-full items-center justify-between">
-            <div className="flex justify-start space-x-4">
+          <div className="flex  w-full items-center justify-between">
+            <div className="flex w-full justify-start space-x-4">
               <div
-                className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
+                className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 style={{ borderColor: sublevel.color ?? 'bg-background' }}
               >
                 {sublevel.id}
               </div>
-              <div className=" flex h-16 w-48 items-center justify-center text-2xl font-medium">
+              <div className="flex h-16 w-5/6 items-center justify-center text-2xl font-medium">
                 {sublevel.name}
               </div>
             </div>

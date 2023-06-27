@@ -8,9 +8,16 @@ interface Props {
   title: string
   backPath: string
   classNameParent?: string
+  shouldRenderBackButton?: boolean
 }
 
-const ContentContainer: React.FC<Props> = ({ children, title, backPath, classNameParent }) => {
+const ContentContainer: React.FC<Props> = ({
+  children,
+  title,
+  backPath,
+  classNameParent,
+  shouldRenderBackButton = true,
+}) => {
   const router = useRouter()
 
   return (
@@ -22,27 +29,29 @@ const ContentContainer: React.FC<Props> = ({ children, title, backPath, classNam
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex min-h-fit  flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 xs:w-2/3 sm:w-2/3 md:w-3/4 lg:w-5/6 xl:w-full">
-          <h2 className="w-full border-b-2 border-primary py-4 text-center text-3xl font-extrabold tracking-tight">
+        <div className="container mx-auto flex min-h-fit w-full flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 sm:w-5/6 ">
+          <h2 className="w-full border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
             {title}
           </h2>
           <div
             className={cn(
-              'mt-8 flex w-1/2 flex-col items-center justify-between gap-8 px-12 pb-8',
+              'mt-8 flex w-full flex-col items-center justify-between gap-8 px-2 pb-8',
               classNameParent
             )}
           >
             {children}
           </div>
         </div>
-        <Button
-          onClick={() => {
-            router.push(backPath)
-          }}
-          className={cn(buttonVariants({ size: 'lg' }), 'my-5 h-16 rounded-xl')}
-        >
-          <h3 className="text-xl">Terug</h3>
-        </Button>
+        {shouldRenderBackButton && (
+          <Button
+            onClick={() => {
+              router.push(backPath)
+            }}
+            className={cn(buttonVariants({ size: 'lg' }), 'my-5 h-16 rounded-xl')}
+          >
+            <h3 className="text-xl">Terug</h3>
+          </Button>
+        )}
       </section>
     </>
   )

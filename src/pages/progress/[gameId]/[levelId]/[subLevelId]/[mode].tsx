@@ -105,6 +105,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
       backPath={`/progress/${gameId}/${levelId}/${sublevelId}`}
       classNameParent="w-full px-0 mt-0 space-y-0"
+      shouldRenderBackButton={false}
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (

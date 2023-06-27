@@ -25,8 +25,8 @@ const UserGamesPage: NextPage = () => {
           <div className="flex w-full items-center justify-between">
             <div className="flex justify-start space-x-4">
               <div
-                className=" flex h-16 w-16 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
-                style={{ borderColor: 'green' }}
+                className=" flex h-16 w-5/6 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
+                // style={{ borderColor: 'green' }}
               >
                 {game.id}
               </div>
