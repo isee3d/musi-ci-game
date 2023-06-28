@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { Toaster } from 'react-hot-toast'
 import { inspect } from '@xstate/inspect'
 import { Inter as FontSans } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 import localFont from 'next/font/local'
 
 import { api } from '~/utils/api'
@@ -24,6 +25,11 @@ import { ThemeProvider } from '~/components/themeProvider'
 const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
+})
+
+const poppins = Poppins({
+  weight: '400',
+  variable: '--font-poppins',
 })
 
 // Font files can be colocated inside of `pages`
@@ -63,7 +69,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
         className={cn(
           'min-h-screen font-sans antialiased',
           fontSans.variable,
-          fontHeading.variable
+          fontHeading.variable,
+          poppins.variable
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
