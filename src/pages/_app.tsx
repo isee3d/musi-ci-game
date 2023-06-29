@@ -29,6 +29,7 @@ const fontSans = FontSans({
 
 const poppins = Poppins({
   weight: '400',
+  subsets: ['latin'],
   variable: '--font-poppins',
 })
 
