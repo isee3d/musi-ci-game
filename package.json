@@ -16,6 +16,7 @@
     "db-seed": "prisma db seed",
     "db-clear": "pnpx prisma db push --force-reset",
     "db-update": "pnpm prisma db push && pnpm install",
+    "init-repo": "pnpm install && pnpm db-update && pnpm db-clear && pnpm db-seed && pnpm dev",
     "typecheck": "tsc --noEmit",
     "open-browser": "start http://localhost:3000"
   },
