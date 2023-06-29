@@ -1,5 +1,5 @@
 import { GameMode } from '@prisma/client'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -45,7 +45,19 @@ const TestMode: React.FC<TestModeProps> = ({
     [mode]
   )
 
-  return <></>
+  useEffect(() => {
+    reset()
+    setStartTime(Date.now())
+    setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
+    // Send logic to xstate machine
+  }, [])
+
+  return (
+    <>
+      <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
+      
+    </>
+  )
 }
 
 export default TestMode
