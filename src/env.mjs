@@ -21,7 +21,6 @@ export const env = createEnv({
     // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-    NODE_ENV: z.enum(['development', 'test', 'production']),
   },
 
   /**
@@ -32,6 +31,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_XSTATE_DEV_TOOLS: z.enum(['true', 'false']),
     NEXT_PUBLIC_ENABLE_AUDIO: z.enum(['true', 'false']),
+    NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'test', 'production']),
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   },
 
@@ -42,7 +42,7 @@ export const env = createEnv({
   runtimeEnv: {
     NEXT_PUBLIC_ENABLE_AUDIO: process.env.NEXT_PUBLIC_ENABLE_AUDIO,
     DATABASE_URL: process.env.DATABASE_URL,
-    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     NEXT_PUBLIC_XSTATE_DEV_TOOLS: process.env.NEXT_PUBLIC_XSTATE_DEV_TOOLS,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,

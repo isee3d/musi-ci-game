@@ -51,7 +51,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       initAudio()
     }
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return
-    if (typeof window !== 'undefined' && env.NODE_ENV === 'development') {
+    if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
       inspect({
         url: 'https://statecharts.io/inspect', // (default)
         iframe: false,
