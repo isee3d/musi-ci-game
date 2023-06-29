@@ -16,13 +16,15 @@
     "db-seed": "prisma db seed",
     "db-clear": "pnpx prisma db push --force-reset",
     "db-update": "pnpm prisma db push && pnpm install",
+    "init-db": "pnpm db init",
     "init-repo": " pnpm create-env && pnpm install && pnpm db-update && pnpm db-clear && pnpm db-seed && pnpm dev",
     "typecheck": "tsc --noEmit",
     "open-browser": "start http://localhost:3000",
     "create-env": "node -e \"require('fs').existsSync('.env') || require('fs').copyFileSync('.env.example', '.env');\""
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "init": "tsx prisma/initDB.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
