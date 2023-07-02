@@ -44,6 +44,10 @@ const navitemsTemplate: NavItem[] = [
     title: 'App instellingen',
     href: '/manage/appSettings',
   },
+  {
+    title: 'download data',
+    href: '/download'
+  }
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
