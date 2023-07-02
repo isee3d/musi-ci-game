@@ -169,7 +169,7 @@ async function main() {
     create: {
       id: 1,
       name: 'Game 1',
-      teams: { connect: { id: 2 } },
+      teams: { connect: { id: 1 } },
     },
   })
 

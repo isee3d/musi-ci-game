@@ -18,7 +18,8 @@ const InitializeSoundModal: React.FC = () => {
     function sendTeamIdAndParticipantId() {
         const userId = sessionData?.user?.id;
         if (!userId) throw new Error("No user id found");
-        setUserToTeam({ teamId: parseInt(teamId), userId });
+        // Here came the parseInt(teamId)
+        setUserToTeam({ teamId: 1, userId });
         setParticipantIdToUser({ participantId: participantId, userId })
         setShowModal(false);
     }
@@ -51,17 +52,17 @@ const InitializeSoundModal: React.FC = () => {
                     </Label>
                   </div>
                   <div className="relative flex flex-col justify-center gap-4 p-6">
-                    <Label>Team Id</Label>
+                    {/* <Label>Team Id</Label>
                     <Input
                       type="number"
                       placeholder="Team ID"
                       value={teamId}
                       onChange={(e) => setTeamId(e.target.value)}
-                    />
-                    <Label>Participant Id</Label>
+                    /> */}
+                    <Label>Deelnemer nummer</Label>
                     <Input
                       type="number"
-                      placeholder="Participant ID"
+                      placeholder="Vul hier uw nummer in"
                       value={participantId}
                       onChange={(e) => setParticipantId(e.target.value)}
                     />

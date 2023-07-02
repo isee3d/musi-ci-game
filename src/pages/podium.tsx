@@ -20,8 +20,9 @@ const PodiumPage: NextPage = () => {
           <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Podium</h2>
           <h2 className="text-xl">Hier komt het podium</h2>
           <Button asChild>
-            <Link href="/progress/games">
-              <h3>Door naar game pagina</h3>
+            {/* Previously /progress/games for the games page */}
+            <Link href="/progress/1">
+              <h3>Door naar levels pagina</h3>
             </Link>
           </Button>
         </div>
