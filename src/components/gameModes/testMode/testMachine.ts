@@ -76,20 +76,20 @@ export const testModeMachine = createMachine(
         description: 'The state where the context data will be initialized',
         on: {
           STARTROUND: {
-            target: 'startRound',
+            target: 'answeringQuestions',
             actions: 'setupData',
           },
         },
       },
-      // answeringQuestions: {
-      //   description: 'The state where the user is answering the questions for the test',
-      //   on: {
-      //     ANSWEREDQUESTIONS: {
-      //       target: 'startRound',
-      //       actions: 'startPlaying',
-      //     },
-      //   },
-      // },
+      answeringQuestions: {
+        description: 'The state where the user is answering the questions for the test',
+        on: {
+          ANSWEREDQUESTIONS: {
+            target: 'startRound',
+            actions: 'startPlaying',
+          },
+        },
+      },
       startRound: {
         entry: 'initializeContext',
         description: 'Starts a new round & Shows the start and back to overview button',
@@ -224,8 +224,8 @@ export const testModeMachine = createMachine(
         }
       }),
       setupData: assign((_, event) => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(true)
+        // const { setIsPlaying } = useLuisterenStore.getState()
+        // setIsPlaying(true)
         return {
           allLevelFragments: event.levelFragments,
           fragmentsToShow: event.fragmentsToShow,
@@ -233,10 +233,10 @@ export const testModeMachine = createMachine(
           countdownActions: event.countdownActions,
         }
       }),
-      // startPlaying: () => {
-      //   const { setIsPlaying } = useLuisterenStore.getState()
-      //   setIsPlaying(true)
-      // },
+      startPlaying: () => {
+        const { setIsPlaying } = useLuisterenStore.getState()
+        setIsPlaying(true)
+      },
       saveLatency: assign({
         latency: (context) => {
           if (context.latency) {

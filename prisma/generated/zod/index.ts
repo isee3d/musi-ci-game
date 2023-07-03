@@ -2918,7 +2918,7 @@ export const QuestionAnswerWhereInputSchema: z.ZodType<Prisma.QuestionAnswerWher
   id_User: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answer: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  answeredDate: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  answeredDate: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
   user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
@@ -2927,7 +2927,7 @@ export const QuestionAnswerOrderByWithRelationInputSchema: z.ZodType<Prisma.Ques
   id_User: z.lazy(() => SortOrderSchema).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
   answer: z.lazy(() => SortOrderSchema).optional(),
-  answeredDate: z.lazy(() => SortOrderSchema).optional(),
+  answeredDate: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
 
@@ -2940,7 +2940,7 @@ export const QuestionAnswerOrderByWithAggregationInputSchema: z.ZodType<Prisma.Q
   id_User: z.lazy(() => SortOrderSchema).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
   answer: z.lazy(() => SortOrderSchema).optional(),
-  answeredDate: z.lazy(() => SortOrderSchema).optional(),
+  answeredDate: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => QuestionAnswerCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => QuestionAnswerAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => QuestionAnswerMaxOrderByAggregateInputSchema).optional(),
@@ -2956,7 +2956,7 @@ export const QuestionAnswerScalarWhereWithAggregatesInputSchema: z.ZodType<Prism
   id_User: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   question: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   answer: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  answeredDate: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  answeredDate: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema),z.coerce.date() ]).optional().nullable(),
 }).strict();
 
 export const QuestionWhereInputSchema: z.ZodType<Prisma.QuestionWhereInput> = z.object({
@@ -4048,7 +4048,7 @@ export const AppSettingsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.AppSett
 export const QuestionAnswerCreateInputSchema: z.ZodType<Prisma.QuestionAnswerCreateInput> = z.object({
   question: z.string(),
   answer: z.string(),
-  answeredDate: z.coerce.date().optional(),
+  answeredDate: z.coerce.date().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutQuestionAnswersInputSchema).optional()
 }).strict();
 
@@ -4057,13 +4057,13 @@ export const QuestionAnswerUncheckedCreateInputSchema: z.ZodType<Prisma.Question
   id_User: z.string(),
   question: z.string(),
   answer: z.string(),
-  answeredDate: z.coerce.date().optional()
+  answeredDate: z.coerce.date().optional().nullable()
 }).strict();
 
 export const QuestionAnswerUpdateInputSchema: z.ZodType<Prisma.QuestionAnswerUpdateInput> = z.object({
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneWithoutQuestionAnswersNestedInputSchema).optional()
 }).strict();
 
@@ -4072,13 +4072,13 @@ export const QuestionAnswerUncheckedUpdateInputSchema: z.ZodType<Prisma.Question
   id_User: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionAnswerUpdateManyMutationInputSchema: z.ZodType<Prisma.QuestionAnswerUpdateManyMutationInput> = z.object({
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionAnswerUncheckedUpdateManyInputSchema: z.ZodType<Prisma.QuestionAnswerUncheckedUpdateManyInput> = z.object({
@@ -4086,7 +4086,7 @@ export const QuestionAnswerUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Ques
   id_User: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionCreateInputSchema: z.ZodType<Prisma.QuestionCreateInput> = z.object({
@@ -7297,14 +7297,14 @@ export const LevelResultCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.
 export const QuestionAnswerCreateWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerCreateWithoutUserInput> = z.object({
   question: z.string(),
   answer: z.string(),
-  answeredDate: z.coerce.date().optional()
+  answeredDate: z.coerce.date().optional().nullable()
 }).strict();
 
 export const QuestionAnswerUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerUncheckedCreateWithoutUserInput> = z.object({
   id: z.number().int().optional(),
   question: z.string(),
   answer: z.string(),
-  answeredDate: z.coerce.date().optional()
+  answeredDate: z.coerce.date().optional().nullable()
 }).strict();
 
 export const QuestionAnswerCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerCreateOrConnectWithoutUserInput> = z.object({
@@ -7478,7 +7478,7 @@ export const QuestionAnswerScalarWhereInputSchema: z.ZodType<Prisma.QuestionAnsw
   id_User: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answer: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  answeredDate: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  answeredDate: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
 }).strict();
 
 export const UserCreateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserCreateWithoutRestGehoorInput> = z.object({
@@ -9657,21 +9657,21 @@ export const LevelResultUncheckedUpdateManyWithoutLevelResultsInputSchema: z.Zod
 export const QuestionAnswerUpdateWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerUpdateWithoutUserInput> = z.object({
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionAnswerUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerUncheckedUpdateWithoutUserInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionAnswerUncheckedUpdateManyWithoutQuestionAnswersInputSchema: z.ZodType<Prisma.QuestionAnswerUncheckedUpdateManyWithoutQuestionAnswersInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   answer: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  answeredDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  answeredDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const UserUpdateWithoutRestGehoorInputSchema: z.ZodType<Prisma.UserUpdateWithoutRestGehoorInput> = z.object({

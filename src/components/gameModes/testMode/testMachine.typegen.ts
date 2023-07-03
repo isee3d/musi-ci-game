@@ -34,13 +34,14 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
-    initializeContext: 'STARTROUND'
+    initializeContext: 'ANSWEREDQUESTIONS'
     onCountdownStarted: 'RESUMEGAME' | 'xstate.after(GO)#testMode.countdown.GO!'
     onFinishedPlaying: 'FINISHEDPLAYING'
     saveLatency: 'GUESSEDFRAGMENT'
     saveScene: 'GUESSEDFRAGMENT' | 'xstate.after(3000)#testMode.playing.didNotAnswerFragment'
     setGuessedFragment: 'GUESSEDFRAGMENT'
     setupData: 'STARTROUND'
+    startPlaying: 'ANSWEREDQUESTIONS'
     timedOutAnswering: 'xstate.after(10000)#testMode.playing.guessHeardFragment'
   }
   eventsCausingDelays: {
@@ -54,6 +55,7 @@ export interface Typegen0 {
   eventsCausingServices: {}
   matchesStates:
     | 'FinishedPlayingTestMode'
+    | 'answeringQuestions'
     | 'countdown'
     | 'countdown.1'
     | 'countdown.2'

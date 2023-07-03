@@ -3,6 +3,7 @@ import {
   QuestionOptionalDefaultsSchema,
   QuestionSchema,
 } from 'prisma/generated/zod'
+import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 
 export const questionsRouter = createTRPCRouter({
@@ -14,12 +15,21 @@ export const questionsRouter = createTRPCRouter({
       })
     }),
 
-  createQuestionAnswer: protectedProcedure
-    .input(QuestionAnswerOptionalDefaultsSchema)
+  // This doesn't work in SQlite, but might in mySQL for planetscale
+
+  // createQuestionAnswer: protectedProcedure
+  //   .input(z.array(QuestionAnswerOptionalDefaultsSchema))
+  //   .mutation(async ({ ctx, input }) => {
+  //      return await ctx.prisma.questionAnswer.createMany({
+  //        data: input,
+  //      })
+  //   }),
+
+  createQuestionAnswers: protectedProcedure
+    .input(z.array(QuestionAnswerOptionalDefaultsSchema))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.questionAnswer.create({
-        data: input,
-      })
+      const createOperations = input.map((data) => ctx.prisma.questionAnswer.create({ data }))
+      return await ctx.prisma.$transaction(createOperations)
     }),
 
   getAllQuestions: protectedProcedure.query(({ ctx }) => {
@@ -41,5 +51,3 @@ export const questionsRouter = createTRPCRouter({
       })
     }),
 })
-
-

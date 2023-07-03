@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
+import AnswerQuestionsUI from '~/components/gameModes/testMode/answerQuestionsUI'
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
@@ -10,6 +11,7 @@ import { Button } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { api } from '~/utils/api'
 
 interface TestModeProps {
   fragments: FragmentWithNotes[]
@@ -40,6 +42,9 @@ const Test: React.FC<TestModeProps> = ({
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
+  const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
+    state.matches('answeringQuestions')
+  )
   const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode')
@@ -47,6 +52,12 @@ const Test: React.FC<TestModeProps> = ({
   const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.didNotAnswerFragment')
   )
+
+    const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery(
+      {
+        sublevelId: sublevelId,
+      },
+    )
 
   const stopwatch = useStopwatch(1000)
   const { hours, minutes, seconds } = stopwatch.convertedTime
@@ -81,16 +92,22 @@ const Test: React.FC<TestModeProps> = ({
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
-      <Button
-        onClick={() => {
-          send({
-            type: getPauseOrResumeEvent(),
-          })
-        }}
-      >
-        {isPausedState ? `Hervat` : `Pauzeer`}
-      </Button>
+      {playingState && (
+        <Button
+          onClick={() => {
+            send({
+              type: getPauseOrResumeEvent(),
+            })
+          }}
+        >
+          {isPausedState ? `Hervat` : `Pauzeer`}
+        </Button>
+      )}
+
       {startRoundState && <StartTestUI />}
+      {answeringQuestionsState && (
+        <AnswerQuestionsUI sublevelId={sublevelId} questions={QuestionsOfSublevelQuery?.data?.map(item => item.question)} />
+      )}
       {countdownState && <TestCountdownPlayer />}
       {(playingState || countdownState) && <TestFragmentPlayerRenderer />}
       {didNotAnswerState && (

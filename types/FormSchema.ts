@@ -39,3 +39,10 @@ export const appSettingsFormSchema = z.object({
 export const questionFormSchema = z.object({
   question: z.string().min(1),
 })
+
+export const questionAnswerSchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().min(1),
+})
+
+export const questionAnswerFormSchema = z.array(questionAnswerSchema)
