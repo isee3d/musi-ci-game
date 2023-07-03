@@ -74,6 +74,7 @@ model User {
   team              Team?            @relation(fields: [id_Team], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   levelResults       LevelResult[]
+  questionAnswers    QuestionAnswer[]
 
   hadTraining       Boolean?         @default(false)
   experience        Int?             @default(0)
@@ -137,7 +138,7 @@ model Game {
 model Level{
   id                Int         @id @default(autoincrement())
   id_Game           Int?
-  game              Game?      @relation(fields: [id_Game], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  game              Game?      @relation(fields: [id_Game], references: [id], onDelete: SetNull, onUpdate: SetNull)
   subLevels         SubLevel[]
   levelResult       LevelResult[]
 
@@ -152,6 +153,7 @@ model SubLevel {
   fragments         Fragment[]
   gameModes         GameMode[]
   levelResult       LevelResult[]
+  questions         Question[]
 
   name              String      @unique
   description       String?
@@ -251,5 +253,21 @@ model AppSettings {
   id                 Int         @id @default(autoincrement())
   fragmentDotColor    String?     @default("red")
   fragmentDotLineColor String?  @default("black")
+}
 
+model QuestionAnswer {
+  id                 Int         @id @default(autoincrement())
+  id_User            String
+  user               User?           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  question           String
+  answer             String
+  answeredDate       DateTime       @default(now())
+}
+
+model Question {
+  id                 Int         @id @default(autoincrement())
+  id_subLevel        Int
+  subLevel           SubLevel?     @relation(fields: [id_subLevel], references: [id])
+
+  question           String
 }

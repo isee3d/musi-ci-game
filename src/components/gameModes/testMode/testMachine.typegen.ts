@@ -35,7 +35,7 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     initializeContext: 'STARTROUND'
-    onCountdownStarted: 'xstate.after(GO)#testMode.countdown.GO!'
+    onCountdownStarted: 'RESUMEGAME' | 'xstate.after(GO)#testMode.countdown.GO!'
     onFinishedPlaying: 'FINISHEDPLAYING'
     saveLatency: 'GUESSEDFRAGMENT'
     saveScene: 'GUESSEDFRAGMENT' | 'xstate.after(3000)#testMode.playing.didNotAnswerFragment'
@@ -46,7 +46,7 @@ export interface Typegen0 {
   eventsCausingDelays: {
     GO: 'xstate.after(ONE)#testMode.countdown.1'
     ONE: 'xstate.after(TWO)#testMode.countdown.2'
-    SOUNDTIME: 'xstate.after(GO)#testMode.countdown.GO!'
+    SOUNDTIME: 'RESUMEGAME' | 'xstate.after(GO)#testMode.countdown.GO!'
     THREE: 'STARTCOUNTDOWN'
     TWO: 'xstate.after(THREE)#testMode.countdown.3'
   }
@@ -60,6 +60,7 @@ export interface Typegen0 {
     | 'countdown.3'
     | 'countdown.GO!'
     | 'idle'
+    | 'pausedGame'
     | 'playing'
     | 'playing.didNotAnswerFragment'
     | 'playing.guessHeardFragment'

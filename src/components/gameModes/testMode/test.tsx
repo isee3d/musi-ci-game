@@ -6,6 +6,7 @@ import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFrag
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
+import { Button } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -40,6 +41,7 @@ const Test: React.FC<TestModeProps> = ({
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
+  const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode')
   )
@@ -60,6 +62,10 @@ const Test: React.FC<TestModeProps> = ({
     [mode]
   )
 
+  function getPauseOrResumeEvent() {
+    return isPausedState ? `RESUMEGAME` : `PAUSEGAME`
+  }
+
   useEffect(() => {
     reset()
     setStartTime(Date.now())
@@ -76,6 +82,15 @@ const Test: React.FC<TestModeProps> = ({
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
+      <Button
+        onClick={() => {
+          send({
+            type: getPauseOrResumeEvent(),
+          })
+        }}
+      >
+        {isPausedState ? `Hervat` : `Pauzeer`}
+      </Button>
       {startRoundState && <StartTestUI />}
       {countdownState && <TestCountdownPlayer />}
       {(playingState || countdownState) && <TestFragmentPlayerRenderer />}
@@ -84,7 +99,9 @@ const Test: React.FC<TestModeProps> = ({
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
             Je hebt niet geantwoord
           </h3>
-          <p className="text-center text-2xl font-extrabold tracking-tight">Volgende fragment begint zo</p>
+          <p className="text-center text-2xl font-extrabold tracking-tight">
+            Volgende fragment begint zo
+          </p>
         </div>
       )}
       {isFinishedState && (
