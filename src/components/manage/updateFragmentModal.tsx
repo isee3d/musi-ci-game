@@ -58,12 +58,15 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   )
 
   function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
-    const exists = fragmentQuery.data?.find((f) => f.name === data.name)
+    const exists = fragmentQuery.data?.find((f) => f.name === data.name && f.id !== fragment.id)
     if (!exists) {
       updateFragment({ ...data, notes: newNotes, id: fragment.id })
       setNewNotes([])
       form.reset()
       setmodal(false)
+    }
+    else{
+      toast.error('Er is al een fragment met deze naam!')
     }
   }
 

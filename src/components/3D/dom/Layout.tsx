@@ -50,7 +50,7 @@ const navitemsTemplate: NavItem[] = [
   },
   {
     title: 'Vragen',
-    href: '/questions',
+    href: '/manage/questions',
   }
 ]
 

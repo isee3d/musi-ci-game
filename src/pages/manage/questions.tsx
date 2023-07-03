@@ -42,7 +42,7 @@ const ManageQuestionsPage: NextPage = () => {
             </ManageBaseModal>
           )}
 
-          <Label className="text-center text-3xl font-bold">Bestaande vragen</Label>
+          <Label className="text-center text-3xl py-4 font-bold">Bestaande vragen</Label>
           <div className="flex w-full flex-col items-center justify-center gap-2">
             {questionsQuery.data?.map((question) => {
               return (

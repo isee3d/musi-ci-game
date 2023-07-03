@@ -20,6 +20,7 @@ import { Fragment, GameMode, SubLevel } from '@prisma/client'
 import { Label } from '~/components/ui/label'
 import { HuePicker } from 'react-color'
 import { sublevelFormSchema } from 'types/FormSchema'
+import { Question } from 'prisma/generated/zod'
 
 const UpdateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,9 +29,11 @@ const UpdateSublevelModal: React.FC<{
   const ctx = api.useContext()
   const [addedGameModes, setAddedGameModes] = useState<GameMode[]>([])
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
+  const [addedQuestions, setAddedQuestions] = useState<Question[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
+  const questionQuery = api.question.getAllQuestions.useQuery()
 
   const { mutate: updateSublevel } = api.sublevel.updateSubLevel.useMutation({
     onSuccess: () => {
@@ -51,6 +54,19 @@ const UpdateSublevelModal: React.FC<{
     { sublevelId: sublevel.id.toString() },
     { onSuccess: (data) => setAddedFragments(data.fragments) }
   )
+
+  const questionsOfSublevel = api.sublevel.getQuestionsOfSublevel.useQuery(
+    { sublevelId: sublevel.id.toString() },
+    { onSuccess: (data) => setAddedQuestions(data) }
+  )
+
+  const onAddQuestionButtonClick = (question: Question) => {
+    setAddedQuestions([...addedQuestions, question])
+  }
+
+  const onRemoveQuestionButtonClick = (question: Question) => {
+    setAddedQuestions(addedQuestions.filter((q) => q.id !== question.id))
+  }
 
   const onAddGameModeButtonClick = (gameMode: GameMode) => {
     setAddedGameModes([...addedGameModes, gameMode])
@@ -79,7 +95,7 @@ const UpdateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    const exists = sublevelQuery.data?.find((s) => s.name === data.name)
+    const exists = sublevelQuery.data?.find((s) => s.name === data.name && s.id !== sublevel.id)
     if (!exists) {
       updateSublevel({
         ...data,
@@ -91,6 +107,9 @@ const UpdateSublevelModal: React.FC<{
       setAddedFragments([])
       form.reset()
       setmodal(false)
+    }
+    else {
+      toast.error('Sublevel naam al in gebruik!')
     }
   }
 
@@ -166,6 +185,46 @@ const UpdateSublevelModal: React.FC<{
             )}
           />
           <div className="flex w-full flex-col">
+            <Label className="text-3xl">Toegevoegde Vragen</Label>
+            <div className="flex flex-col gap-y-2">
+              {addedQuestions.map((question) => {
+                return (
+                  <div
+                    key={question.id}
+                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  >
+                    <h2 className="text-2xl font-bold">{question.question}</h2>
+                    <Button
+                      onClick={() => onRemoveQuestionButtonClick(question)}
+                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
+                    >
+                      Verwijder van sublevel
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+            <Label className="text-3xl">Beschikbare vragen</Label>
+            <div className="flex flex-col gap-y-2">
+              {questionQuery.data?.map((question) => {
+                if (addedQuestions.find((addedQuestion) => addedQuestion.id === question.id))
+                  return null
+                return (
+                  <div
+                    key={question.id}
+                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  >
+                    <h2 className="text-2xl font-bold">{question.question}</h2>
+                    <Button
+                      onClick={() => onAddQuestionButtonClick(question)}
+                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
+                    >
+                      Voeg vraag toe
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
             <Label className="text-3xl">Toegevoegde GameModes</Label>
             <div className="flex flex-col gap-y-2">
               {addedGameModes.map((gameMode) => {

@@ -45,7 +45,7 @@ const UpdateTeamModal: React.FC<BaseStaticModalProps> = ({ setmodal, team }) => 
   })
 
   function onSubmit(data: z.infer<typeof teamFormSchema>) {
-    const exists = teamQuery.data?.find((team) => team.name === data.name)
+    const exists = teamQuery.data?.find((t) => t.name === data.name && t.id !== team.id)
     if (!exists) {
       updateTeam({
         id: team.id,

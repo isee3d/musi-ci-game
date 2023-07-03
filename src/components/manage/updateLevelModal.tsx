@@ -80,7 +80,7 @@ const UpdateLevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof levelFormSchema>) {
-    const exists = levelQuery.data?.find((l) => l.name === data.name)
+    const exists = levelQuery.data?.find((l) => l.name === data.name && l.id !== level.id)
     if (!exists) {
       updateLevel({
         id: level.id,
@@ -93,6 +93,9 @@ const UpdateLevelModal: React.FC<{
       })
       form.reset()
       setmodal(false)
+    }
+    else {
+      toast.error('Level naam is al in gebruik!')
     }
   }
 

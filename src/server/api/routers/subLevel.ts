@@ -10,10 +10,11 @@ export const subLevelRouter = createTRPCRouter({
       SubLevelOptionalDefaultsSchema.extend({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
+        questions: z.array(z.number().int()),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { fragments, gameModes, ...newInput } = input
+      const { fragments, gameModes, questions, ...newInput } = input
 
       return await ctx.prisma.subLevel.create({
         data: {
@@ -23,6 +24,9 @@ export const subLevelRouter = createTRPCRouter({
           },
           gameModes: {
             connect: gameModes.map((id) => ({ id })),
+          },
+          questions: {
+            connect: questions.map((id) => ({ id })),
           },
         },
       })
@@ -93,6 +97,29 @@ export const subLevelRouter = createTRPCRouter({
       }
 
       return fragments
+    }),
+
+  getQuestionsOfSublevel: publicProcedure
+    .input(z.object({ sublevelId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { sublevelId: subLevelId } = input
+      const questions = await ctx.prisma.subLevel.findFirst({
+        where: {
+          id: parseInt(subLevelId),
+        },
+        select: {
+          questions: {
+            select: {
+              id: true,
+              question: true,
+            },
+          },
+        },
+      })
+      if (!questions) {
+        return []
+      }
+      return questions.questions
     }),
 
   updateSubLevel: protectedProcedure

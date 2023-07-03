@@ -52,3 +52,8 @@ corepack enable
 - The `prisma` folder contains the schema for how the database works, and how the relations are setup. The seed file is used to fill the DB with dummy data. Run pnpm db-seed to fill your DB if you have cleared it.
 - The `src` folder contains all the logic for the project.
 
+
+## Things to improve...
+
+- The create/update logic is verbose and could be minimised in the lines of code
+- The TRPC query's for for example the manage part could be combined into a single query for cleanness
