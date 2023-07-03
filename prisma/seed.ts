@@ -163,6 +163,19 @@ async function main() {
     },
   })
 
+  const testMode = await prisma.gameMode.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      id: 4,
+      name: 'Test',
+      one: 1000,
+      two: 1000,
+      three: 1000,
+      go: 1000,
+    },
+  })
+
   const game1 = await prisma.game.upsert({
     where: { id: 1 },
     update: {},
@@ -182,7 +195,7 @@ async function main() {
       playTime: 60,
       cooldownTime: 0,
       fragmentToShow: 2,
-      gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+      gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] },
     },
   })
 

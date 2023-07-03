@@ -67,7 +67,7 @@ export const testModeMachine = createMachine(
             countdownActions: StopwatchActions
           },
     },
-    tsTypes: {} as import("./testModeMachine.typegen").Typegen0,
+    tsTypes: {} as import("./testMachine.typegen").Typegen0,
     states: {
       idle: {
         description: 'The state where the context data will be initialized',

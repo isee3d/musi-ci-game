@@ -18,10 +18,13 @@ import { api } from '~/utils/api'
 import { useEffect } from 'react'
 import { env } from '~/env.mjs'
 import Link from 'next/link'
+import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
+import Test from '~/components/gameModes/testMode/test'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })
+export const TestModeMachineContext = createActorContext(testModeMachine, { devTools: true })
 
 const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; gameId: string }> = ({
   gameId,
@@ -95,6 +98,20 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
             />
           </UitdagingMachineContext.Provider>
         )
+      case 'Test':
+        return (
+          <TestModeMachineContext.Provider>
+            <Test
+              gameId={gameId}
+              fragmentsToShow={fragmentsToShow}
+              fragments={fragments}
+              levelId={levelId}
+              playTime={playTime}
+              sublevelId={sublevelId}
+              mode={modeQuery?.data}
+            />
+          </TestModeMachineContext.Provider>
+        )
       default:
         return null
     }
@@ -110,17 +127,16 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (
           <Button
-            className={cn(buttonVariants({ size: 'lg' }),
-              'text-xl border border-background p-0 flex-auto rounded-none',
+            className={cn(
+              buttonVariants({ size: 'lg' }),
+              'flex-auto rounded-none border border-background p-0 text-xl',
               mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
             )}
             key={index}
             asChild
             disabled={mode === gameMode.name || isPlaying}
           >
-            <Link
-              href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
-            >
+            <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
               {gameMode.name}
             </Link>
           </Button>

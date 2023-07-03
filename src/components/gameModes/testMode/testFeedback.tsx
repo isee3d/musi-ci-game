@@ -9,7 +9,7 @@ interface UitdagingFeedbackProps {
   gameId: string
 }
 
-const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
+const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
   const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore()
 
   return (
@@ -34,4 +34,4 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, 
   )
 }
 
-export default UitdagingFeedback
+export default TestFeedback

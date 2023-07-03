@@ -15,15 +15,12 @@ interface TestModeProps {
 }
 
 // TODO:
-// 1. Create a new state machine for this mode
 // 2. create vragenlijst before playing
 // 3. Create too late to answer logic (10s)
-// 4. gelijk fragment moet altijdvoorkomen, alle andere evenredig verdeeld
+// 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
 // 5. pause button
-// 6. no user feedback
-// 7. time played and score in percentage
 
-const TestMode: React.FC<TestModeProps> = ({
+const Test: React.FC<TestModeProps> = ({
   fragments,
   gameId,
   levelId,
@@ -55,9 +52,8 @@ const TestMode: React.FC<TestModeProps> = ({
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
-      
     </>
   )
 }
 
-export default TestMode
+export default Test

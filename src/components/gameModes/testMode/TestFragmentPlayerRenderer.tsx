@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 // import { start } from '~/components/fragmentPlayer/audio/AudioControls';
-import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { shallowEqual } from '@xstate/react'
 import { FragmentSceneData } from 'types/SceneData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -10,28 +10,28 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 
-const UitdagingFragmentPlayerRenderer: React.FC = () => {
+const TestFragmentPlayerRenderer: React.FC = () => {
   const { data: sessionData } = useSession()
 
-  const { send } = UitdagingMachineContext.useActorRef()
-  const isAnimating = UitdagingMachineContext.useSelector((state) => state.context.isAnimating)
-  const isClickable = UitdagingMachineContext.useSelector((state) => state.context.isClickable)
-  const activeFragment = UitdagingMachineContext.useSelector(
+  const { send } = TestModeMachineContext.useActorRef()
+  const isAnimating = TestModeMachineContext.useSelector((state) => state.context.isAnimating)
+  const isClickable = TestModeMachineContext.useSelector((state) => state.context.isClickable)
+  const activeFragment = TestModeMachineContext.useSelector(
     (state) => state.context.activeFragment,
     shallowEqual
   )
-  const guessedFragment = UitdagingMachineContext.useSelector(
+  const guessedFragment = TestModeMachineContext.useSelector(
     (state) => state.context.guessedFragment,
     shallowEqual
   )
-  const shownFragments = UitdagingMachineContext.useSelector(
+  const shownFragments = TestModeMachineContext.useSelector(
     (state) => state.context.shownFragments,
     shallowEqual
   )
-  const guessHeardFragmentState = UitdagingMachineContext.useSelector((state) =>
+  const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment')
   )
-  const amountPlayed = UitdagingMachineContext.useSelector((state) => state.context.amountPlayed)
+  const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
 
   const {
     addNewUserSceneAnswer,
@@ -133,4 +133,4 @@ const UitdagingFragmentPlayerRenderer: React.FC = () => {
   )
 }
 
-export default UitdagingFragmentPlayerRenderer
+export default TestFragmentPlayerRenderer
