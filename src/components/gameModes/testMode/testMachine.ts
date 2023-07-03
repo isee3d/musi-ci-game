@@ -58,7 +58,7 @@ export const testModeMachine = createMachine(
         | { type: 'RESTART' }
         | { type: 'SOUNDFINISHED' }
         | { type: 'FINISHEDPLAYING' }
-        | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes }
+        | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes | undefined }
         | {
             type: 'STARTROUND'
             levelFragments: FragmentWithNotes[]
@@ -67,7 +67,7 @@ export const testModeMachine = createMachine(
             countdownActions: StopwatchActions
           },
     },
-    tsTypes: {} as import("./testMachine.typegen").Typegen0,
+    tsTypes: {} as import('./testMachine.typegen').Typegen0,
     states: {
       idle: {
         description: 'The state where the context data will be initialized',
@@ -149,7 +149,17 @@ export const testModeMachine = createMachine(
                 actions: ['setGuessedFragment', 'saveLatency'],
               },
             },
-            exit: [],
+            after: {
+              10000: {
+                target: 'didNotAnswerFragment',
+                actions: 'timedOutAnswering',
+              },
+            },
+          },
+          didNotAnswerFragment: {
+            after: {
+              3000: 'restAfterAnswering',
+            },
           },
           restAfterAnswering: {
             entry: [(context) => context.countdownActions?.pause(), 'saveScene'],
@@ -166,17 +176,29 @@ export const testModeMachine = createMachine(
           },
         },
       },
-      FinishedPlayingUitdagingMode: {
+      FinishedPlayingTestMode: {
         entry: [(context) => context.countdownActions?.reset(), 'onFinishedPlaying'],
         type: 'final',
       },
     },
     on: {
-      FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
+      FINISHEDPLAYING: 'FinishedPlayingTestMode',
     },
   },
   {
     actions: {
+      timedOutAnswering: assign((context, event) => {
+        const { setChosenFragmentLatency, setChosenFragment, addNewUserSceneAnswer } = useLuisterenStore.getState()
+        context.countdownActions?.pause()
+        addNewUserSceneAnswer(undefined)
+        setChosenFragment(-1)
+        if (context.latency) {
+          setChosenFragmentLatency(-1)
+        }
+        return {
+          guessedFragment: undefined,
+        }
+      }),
       setupData: assign((_, event) => {
         const { setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
@@ -209,7 +231,7 @@ export const testModeMachine = createMachine(
       setGuessedFragment: assign((context, event) => {
         context.countdownActions?.pause()
         return {
-          guessedFragment: event.guessedFragment,
+          guessedFragment: event.guessedFragment || undefined,
         }
       }),
       onFinishedPlaying: () => {

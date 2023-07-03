@@ -2,6 +2,12 @@ import { GameMode } from '@prisma/client'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
+import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
+import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
+import TestFeedback from '~/components/gameModes/testMode/testFeedback'
+import useStopwatch from '~/hooks/useStopwatch'
+import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface TestModeProps {
@@ -16,9 +22,9 @@ interface TestModeProps {
 
 // TODO:
 // 2. create vragenlijst before playing
-// 3. Create too late to answer logic (10s)
 // 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
 // 5. pause button
+// gr4ondtoon switching after 25 fragments
 
 const Test: React.FC<TestModeProps> = ({
   fragments,
@@ -29,8 +35,20 @@ const Test: React.FC<TestModeProps> = ({
   playTime,
   mode,
 }) => {
-  // Here comes all thexstate machine logic
+  const { send } = TestModeMachineContext.useActorRef()
   const { setLevelSublevelMode, reset, setStartTime } = useLuisterenStore()
+  const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
+  const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
+  const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
+  const isFinishedState = TestModeMachineContext.useSelector((state) =>
+    state.matches('FinishedPlayingTestMode')
+  )
+  const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.didNotAnswerFragment')
+  )
+
+  const stopwatch = useStopwatch(1000)
+  const { hours, minutes, seconds } = stopwatch.convertedTime
 
   const countdownTimings: CountdownTimings = useMemo(
     () => ({
@@ -46,12 +64,32 @@ const Test: React.FC<TestModeProps> = ({
     reset()
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
-    // Send logic to xstate machine
+    send({
+      type: 'STARTROUND',
+      levelFragments: fragments,
+      fragmentsToShow: fragmentsToShow,
+      countdownTimings: countdownTimings,
+      countdownActions: stopwatch.actions,
+    })
   }, [])
 
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
+      {startRoundState && <StartTestUI />}
+      {countdownState && <TestCountdownPlayer />}
+      {(playingState || countdownState) && <TestFragmentPlayerRenderer />}
+      {didNotAnswerState && (
+        <div className="flex flex-col items-center justify-center">
+          <h3 className="text-center text-4xl font-extrabold tracking-tight">
+            Je hebt niet geantwoord
+          </h3>
+          <p className="text-center text-2xl font-extrabold tracking-tight">Volgende fragment begint zo</p>
+        </div>
+      )}
+      {isFinishedState && (
+        <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
+      )}
     </>
   )
 }

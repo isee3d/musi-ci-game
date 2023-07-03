@@ -67,7 +67,7 @@ const TestFragmentPlayerRenderer: React.FC = () => {
 
     // Make this dynamic through DB
 
-    if (amountPlayed === 2) {
+    if (amountPlayed === 5) {
       setEndTime(Date.now())
       saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
       send('FINISHEDPLAYING')

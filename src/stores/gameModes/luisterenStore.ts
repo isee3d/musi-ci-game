@@ -17,7 +17,7 @@ type LuisterenState = {
 
 type LuisterenActions = {
     setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void;
-    addNewUserSceneAnswer: (isCorrect: boolean) => void;
+    addNewUserSceneAnswer: (isCorrect: boolean | undefined) => void;
     getFormattedStoreData: (id_user: string) => FormattedData;
     addScore: (score: number) => void;
     addScene: (scene: Scene) => void;
@@ -26,7 +26,7 @@ type LuisterenActions = {
     addRelistenFragment: (fragmentId: number) => void;
     AddSceneData: (items: FragmentSceneData[]) => void;
     setChosenFragmentLatency: (latency: number) => void;
-    setChosenFragment: (fragmentId: number) => void;
+    setChosenFragment: (fragmentId: number | undefined) => void;
     getPercentageCorrectlyAnswered: () => number;
     setStartTime: (time: number) => void;
     setEndTime: (time: number) => void;
@@ -70,7 +70,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         newScene.sceneFragments = items;
         return { sceneData: newScene };
     }),
-    setChosenFragment: (fragmentId: number) => set((state) => {
+    setChosenFragment: (fragmentId: number | undefined) => set((state) => {
         const newScene = { ...state.sceneData };
         newScene.chosenFragment = fragmentId;
         return { sceneData: newScene };
@@ -94,7 +94,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         }
         return { sceneData: newScene };
     }),
-    addNewUserSceneAnswer: (isCorrect: boolean) => set((state) => {
+    addNewUserSceneAnswer: (isCorrect: boolean | undefined) => set((state) => {
         const newScene = { ...state.sceneData };
         newScene.answeredCorrectly = isCorrect;
         return { sceneData: newScene };
