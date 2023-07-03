@@ -24,7 +24,6 @@ interface TestModeProps {
 // TODO:
 // 2. create vragenlijst before playing
 // 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
-// 5. pause button
 // gr4ondtoon switching after 25 fragments
 
 const Test: React.FC<TestModeProps> = ({

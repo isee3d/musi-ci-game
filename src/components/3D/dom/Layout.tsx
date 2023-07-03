@@ -47,6 +47,10 @@ const navitemsTemplate: NavItem[] = [
   {
     title: 'download data',
     href: '/download'
+  },
+  {
+    title: 'Vragen',
+    href: '/questions',
   }
 ]
 

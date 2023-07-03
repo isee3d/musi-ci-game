@@ -176,6 +176,32 @@ async function main() {
     },
   })
 
+  const question1 = await prisma.question.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      question:
+        'Wanneer ben je je eerste hoortoestellen gaan gebruiken? Voor of na de leeftijd van 7 jaar?',
+    },
+  })
+
+  const question2 = await prisma.question.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      question:
+        'Hoeveel jaar voor je je CI kreeg heb je nog een hoortoestel gebruikt aan de kant waar nu je CI zit? Minder of meer dan 10 jaar?',
+    },
+  })
+
+  const question3 = await prisma.question.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      question: 'Aan welke kant heb je je CI? Links, rechts of aan beide oren?',
+    },
+  })
+
   const game1 = await prisma.game.upsert({
     where: { id: 1 },
     update: {},
@@ -196,6 +222,7 @@ async function main() {
       cooldownTime: 0,
       fragmentToShow: 2,
       gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] },
+      questions: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
     },
   })
 

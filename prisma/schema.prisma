@@ -266,7 +266,7 @@ model QuestionAnswer {
 
 model Question {
   id                 Int         @id @default(autoincrement())
-  id_subLevel        Int
+  id_subLevel        Int?
   subLevel           SubLevel?     @relation(fields: [id_subLevel], references: [id])
 
   question           String

@@ -1158,7 +1158,7 @@ export const QuestionAnswerOptionalDefaultsWithRelationsSchema: z.ZodType<Questi
 
 export const QuestionSchema = z.object({
   id: z.number().int(),
-  id_subLevel: z.number().int(),
+  id_subLevel: z.number().int().nullish(),
   question: z.string(),
 })
 
@@ -2964,14 +2964,14 @@ export const QuestionWhereInputSchema: z.ZodType<Prisma.QuestionWhereInput> = z.
   OR: z.lazy(() => QuestionWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => QuestionWhereInputSchema),z.lazy(() => QuestionWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  id_subLevel: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  id_subLevel: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   subLevel: z.union([ z.lazy(() => SubLevelRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionOrderByWithRelationInputSchema: z.ZodType<Prisma.QuestionOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_subLevel: z.lazy(() => SortOrderSchema).optional(),
+  id_subLevel: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
   subLevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -2982,7 +2982,7 @@ export const QuestionWhereUniqueInputSchema: z.ZodType<Prisma.QuestionWhereUniqu
 
 export const QuestionOrderByWithAggregationInputSchema: z.ZodType<Prisma.QuestionOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  id_subLevel: z.lazy(() => SortOrderSchema).optional(),
+  id_subLevel: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => QuestionCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => QuestionAvgOrderByAggregateInputSchema).optional(),
@@ -2996,7 +2996,7 @@ export const QuestionScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Ques
   OR: z.lazy(() => QuestionScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => QuestionScalarWhereWithAggregatesInputSchema),z.lazy(() => QuestionScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  id_subLevel: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  id_subLevel: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   question: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -4096,7 +4096,7 @@ export const QuestionCreateInputSchema: z.ZodType<Prisma.QuestionCreateInput> = 
 
 export const QuestionUncheckedCreateInputSchema: z.ZodType<Prisma.QuestionUncheckedCreateInput> = z.object({
   id: z.number().int().optional(),
-  id_subLevel: z.number().int(),
+  id_subLevel: z.number().int().optional().nullable(),
   question: z.string()
 }).strict();
 
@@ -4107,7 +4107,7 @@ export const QuestionUpdateInputSchema: z.ZodType<Prisma.QuestionUpdateInput> = 
 
 export const QuestionUncheckedUpdateInputSchema: z.ZodType<Prisma.QuestionUncheckedUpdateInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  id_subLevel: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_subLevel: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -4117,7 +4117,7 @@ export const QuestionUpdateManyMutationInputSchema: z.ZodType<Prisma.QuestionUpd
 
 export const QuestionUncheckedUpdateManyInputSchema: z.ZodType<Prisma.QuestionUncheckedUpdateManyInput> = z.object({
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  id_subLevel: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id_subLevel: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   question: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -8264,7 +8264,7 @@ export const QuestionScalarWhereInputSchema: z.ZodType<Prisma.QuestionScalarWher
   OR: z.lazy(() => QuestionScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => QuestionScalarWhereInputSchema),z.lazy(() => QuestionScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  id_subLevel: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  id_subLevel: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 

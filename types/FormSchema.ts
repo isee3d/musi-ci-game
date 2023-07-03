@@ -35,3 +35,7 @@ export const appSettingsFormSchema = z.object({
   fragmentDotColor: z.string().min(1),
   fragmentDotLineColor: z.string().min(1),
 })
+
+export const questionFormSchema = z.object({
+  question: z.string().min(1),
+})
