@@ -24,7 +24,7 @@ interface TestModeProps {
 }
 
 // TODO:
-// 2. create vragenlijst before playing
+// questions answered send next statemachine
 // 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
 // gr4ondtoon switching after 25 fragments
 
