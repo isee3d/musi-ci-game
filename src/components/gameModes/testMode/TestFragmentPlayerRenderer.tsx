@@ -9,8 +9,13 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
+import { GameMode } from '@prisma/client'
 
-const TestFragmentPlayerRenderer: React.FC = () => {
+interface TestFragmentPlayerRendererProps {
+  mode: GameMode | null | undefined
+}
+
+const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({ mode }) => {
   const { data: sessionData } = useSession()
 
   const { send } = TestModeMachineContext.useActorRef()
@@ -65,9 +70,12 @@ const TestFragmentPlayerRenderer: React.FC = () => {
     })
     AddSceneData(sceneData)
 
-    // Make this dynamic through DB
+    if(mode?.amountOfScenes === null) {
+      toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
+      throw new Error('Het aantal scenes is niet gespecificeerd for deze game mode')
+    }
 
-    if (amountPlayed === 5) {
+    if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
       saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
       send('FINISHEDPLAYING')

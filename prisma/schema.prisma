@@ -193,6 +193,7 @@ model GameMode {
   levels            SubLevel[]
   levelResult       LevelResult[]
   name               String         @unique
+  amountOfScenes     Int?
 
   one                Int?
   two                Int?

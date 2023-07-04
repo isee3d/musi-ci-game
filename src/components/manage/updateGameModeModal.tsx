@@ -39,6 +39,7 @@ const UpdateGameModeModal: React.FC<BaseStaticModalProps> = ({ setmodal, gameMod
     resolver: zodResolver(gameModeFormSchema),
     defaultValues: {
       name: gameMode.name,
+      amountOfScenes: gameMode.amountOfScenes ?? undefined,
       one: gameMode.one ?? undefined,
       two: gameMode.two ?? undefined,
       three: gameMode.three ?? undefined,
@@ -69,7 +70,20 @@ const UpdateGameModeModal: React.FC<BaseStaticModalProps> = ({ setmodal, gameMod
             <FormItem>
               <FormLabel>Gamemode naam</FormLabel>
               <FormControl>
-                <Input placeholder="Team 1" {...field} />
+                <Input placeholder="Gamemode naam" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="amountOfScenes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Aantal Scenes</FormLabel>
+              <FormControl>
+                <Input placeholder="Aantal scenes" type='number' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

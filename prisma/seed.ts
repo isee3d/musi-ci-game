@@ -156,6 +156,7 @@ async function main() {
     create: {
       id: 3,
       name: 'Uitdaging',
+      amountOfScenes: 5,
       one: 1000,
       two: 1000,
       three: 1000,
@@ -169,6 +170,7 @@ async function main() {
     create: {
       id: 4,
       name: 'Test',
+      amountOfScenes: 300,
       one: 1000,
       two: 1000,
       three: 1000,

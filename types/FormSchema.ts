@@ -10,7 +10,7 @@ export const sublevelFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
   color: z.string().nullish(),
-  fragmentToShow: z.number().int().min(1),
+  fragmentToShow: z.number().int().positive().min(1),
 })
 
 export const teamFormSchema = z.object({
@@ -26,10 +26,11 @@ export const fragmentFormSchema = z.object({
 
 export const gameModeFormSchema = z.object({
   name: z.string().min(1),
-  one: z.number().optional(),
-  two: z.number().optional(),
-  three: z.number().optional(),
-  go: z.number().optional(),
+  amountOfScenes: z.number().int().positive().optional(),
+  one: z.number().positive().optional(),
+  two: z.number().positive().optional(),
+  three: z.number().positive().optional(),
+  go: z.number().positive().optional(),
 })
 
 export const appSettingsFormSchema = z.object({

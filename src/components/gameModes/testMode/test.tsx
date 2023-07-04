@@ -24,7 +24,6 @@ interface TestModeProps {
 }
 
 // TODO:
-// 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
 // gr4ondtoon switching after 100 fragments
 
 const Test: React.FC<TestModeProps> = ({
@@ -108,7 +107,7 @@ const Test: React.FC<TestModeProps> = ({
         <AnswerQuestionsUI sublevelId={sublevelId} questions={QuestionsOfSublevelQuery?.data?.map(item => item.question)} />
       )}
       {countdownState && <TestCountdownPlayer />}
-      {(playingState || countdownState) && <TestFragmentPlayerRenderer />}
+      {(playingState || countdownState) && <TestFragmentPlayerRenderer mode={mode}/>}
       {didNotAnswerState && (
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
