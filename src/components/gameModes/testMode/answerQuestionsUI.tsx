@@ -16,6 +16,7 @@ import {
 import { Textarea } from '~/components/ui/textarea'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
+import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 
 interface AnswerQuestionsProps {
   sublevelId: string
@@ -24,10 +25,12 @@ interface AnswerQuestionsProps {
 
 const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questions }) => {
   const { data: session } = useSession()
+  const { send } = TestModeMachineContext.useActorRef()
 
   const { mutate: sendQuestionAnswers } = api.question.createQuestionAnswers.useMutation({
     onSuccess: () => {
       form.reset()
+      send('ANSWEREDQUESTIONS')
       // send xstate event
     },
     onError: (err) => {

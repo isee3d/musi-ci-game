@@ -15,9 +15,11 @@
         "prisma.prisma",
         "yoavbls.pretty-ts-errors",
         "statelyai.stately-vscode",
-        "wix.vscode-import-cost"
+        "wix.vscode-import-cost",
+        "meganrogge.template-string-converter",
+        "esbenp.prettier-vscode",
     ],
     "unwantedRecommendations": [
-        "esbenp.prettier-vscode",
+
     ]
 }
