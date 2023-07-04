@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import Sampler from '~/components/fragmentPlayer/audio/Sampler';
 import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
-import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard';
+import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard';
 import { Note } from '@prisma/client';
 
 type AudioServiceState = {
@@ -18,19 +18,24 @@ type AudioServiceState = {
 };
 
 type AudioserviceAction = {
-    init: () => Promise<void>;
-    setAudioContext: (audioContext: AudioContext) => void;
-    setActiveFragment: (fragment: FragmentWithNotes | undefined) => void;
-    getCurrentTime: () => number;
-    setAudioTime: (audioTime: number) => void;
-    setPiano: (piano: Sampler) => void;
-    setSoundBoard: (soundBoard: Sampler) => void;
-    beatLengthInMs: () => number;
-    ticksToMS: (ticks: number) => number;
-    msToTicks: (ms: number) => number;
-    returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>;
-    transposeFragments: (fragments: FragmentWithNotes[], direction: number) => FragmentWithNotes[];
-};
+  init: () => Promise<void>
+  setAudioContext: (audioContext: AudioContext) => void
+  setActiveFragment: (fragment: FragmentWithNotes | undefined) => void
+  getCurrentTime: () => number
+  setAudioTime: (audioTime: number) => void
+  setPiano: (piano: Sampler) => void
+  setSoundBoard: (soundBoard: Sampler) => void
+  beatLengthInMs: () => number
+  ticksToMS: (ticks: number) => number
+  msToTicks: (ms: number) => number
+  returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>
+  transposeFragments: (fragments: FragmentWithNotes[], direction: number) => FragmentWithNotes[]
+  transposeFragmentsInOctave(
+    fragments: FragmentWithNotes[],
+    direction: number,
+    octave: 0 | 1 | 2
+  ): FragmentWithNotes[]
+}
 
 const MS_PER_MINUTE = 1000 * 60;
 
@@ -108,6 +113,36 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
             alert('Web Audio API not supported in this browser.');
             set({ hasSupport: false });
         }
+    },
+    transposeFragmentsInOctave: (fragments: FragmentWithNotes[], direction: number, octave: 0 | 1 | 2 = 1) => {
+         const newFragments: FragmentWithNotes[] = []
+
+         for (let i = 0; i < fragments.length; i++) {
+           const fragment = fragments[i]
+           const notes: Note[] = []
+           if (!fragment) continue
+           for (let j = 0; j < fragment.notes.length; j++) {
+             const n = fragment.notes[j]
+             if (!n) continue
+             const note = n.name.replace(/\d/, '')
+             let index = allOctaves[octave].findIndex((no) => no.replace(/\d/, '') === note)
+
+             // First try to transpose in the given direction.
+             index += direction
+             // If out of bounds, try the other direction.
+             if (index < 0) index += 12
+             if (index >= 12) index -= 12
+
+             const newNote = allOctaves[octave][index]
+             if (!newNote) continue
+
+             n.name = newNote
+             notes.push(n)
+           }
+           fragment.notes = notes
+           newFragments.push(fragment)
+         }
+         return newFragments
     },
     transposeFragments: (fragments: FragmentWithNotes[], direction: number) => {
         const helperArray: string[] = [];

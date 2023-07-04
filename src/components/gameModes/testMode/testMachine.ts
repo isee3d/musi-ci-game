@@ -14,10 +14,10 @@ const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number
 ) => {
-  const { transposeFragments } = useAudioServiceStore.getState()
+  const { transposeFragments, transposeFragmentsInOctave } = useAudioServiceStore.getState()
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
-  
+
   const shuffledOtherFragments = otherFragments.sort(() => Math.random() - 0.5)
   const selectedOtherFragments = shuffledOtherFragments.slice(
     0,

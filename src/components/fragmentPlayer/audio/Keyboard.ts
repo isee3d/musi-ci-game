@@ -104,6 +104,13 @@ export enum Keyboard {
 
 export const baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
+// Create C3, C4, and C5 octaves.
+const lowerOctave = baseNotes.map(note => note + '3');
+const middleOctave = baseNotes.map(note => note + '4');
+const upperOctave = baseNotes.map(note => note + '5');
+
+export const allOctaves: [string[], string[], string[]] = [lowerOctave, middleOctave, upperOctave]
+
 export const generateNotes = (octaves: number) => {
   const notes = [];
   for (let i = 2; i < octaves + 1; i += 1) {
