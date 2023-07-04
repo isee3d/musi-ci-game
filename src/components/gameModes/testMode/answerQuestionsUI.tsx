@@ -31,11 +31,9 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
     onSuccess: () => {
       form.reset()
       send('ANSWEREDQUESTIONS')
-      // send xstate event
     },
     onError: (err) => {
       console.log(err)
-      // send xstate event
     },
   })
 

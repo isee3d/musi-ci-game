@@ -171,8 +171,10 @@ model Fragment {
   playedScene       Scene[]           @relation("PlayedFragment")
   relistenfragment  RelistenFragment[]
   sceneFragment     SceneFragment[]
+
   name              String
   description       String?
+  useAlways         Boolean?    @default(false)
 }
 
 model Note {

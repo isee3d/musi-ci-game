@@ -246,6 +246,7 @@ async function main() {
       id: 1,
       name: 'gelijk',
       description: 'twee gelijke noten',
+      useAlways: true,
       level: { connect: { id: 1 } },
     },
   })

@@ -22,6 +22,7 @@ import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
 import { fragmentFormSchema } from 'types/FormSchema'
+import { Checkbox } from '~/components/ui/checkbox'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -40,6 +41,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
     defaultValues: {
       name: fragment.name,
       description: fragment.description,
+      useAlways: fragment.useAlways ?? undefined,
     },
   })
 
@@ -98,6 +100,22 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
                     placeholder="Beschrijving"
                     value={field.value || ''}
                     onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="useAlways"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Altijd zichtbaar</FormLabel>
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(event) => field.onChange(event as boolean)}
                   />
                 </FormControl>
                 <FormMessage />

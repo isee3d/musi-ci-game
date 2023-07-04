@@ -21,6 +21,7 @@ import NoteCreator from '~/components/creators/noteCreator'
 import { ExistingNote } from '~/components/existingNote'
 import { NoteCreate } from 'types/Note'
 import { fragmentFormSchema } from 'types/FormSchema'
+import { Checkbox } from '~/components/ui/checkbox'
 
 const CreateFragmentModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -45,6 +46,7 @@ const CreateFragmentModal: React.FC<{
     resolver: zodResolver(fragmentFormSchema),
     defaultValues: {
       name: '',
+      useAlways: false,
     },
   })
 
@@ -89,6 +91,19 @@ const CreateFragmentModal: React.FC<{
                     value={field.value || ''}
                     onChange={field.onChange}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="useAlways"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Altijd zichtbaar</FormLabel>
+                <FormControl>
+                  <Checkbox checked={field.value} onCheckedChange={(event) => field.onChange(event as boolean)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

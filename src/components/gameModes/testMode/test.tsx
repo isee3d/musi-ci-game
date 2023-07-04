@@ -24,9 +24,8 @@ interface TestModeProps {
 }
 
 // TODO:
-// questions answered send next statemachine
 // 4. gelijk fragment moet altijd voorkomen, alle andere evenredig verdeeld
-// gr4ondtoon switching after 25 fragments
+// gr4ondtoon switching after 100 fragments
 
 const Test: React.FC<TestModeProps> = ({
   fragments,
