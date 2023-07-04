@@ -12,22 +12,53 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
-  fragmentsToShow: number
+  fragmentsToShow: number,
+  amountPlayed: number,
+  amountOfScenes: number
 ) => {
-  const { transposeFragments, transposeFragmentsInOctave } = useAudioServiceStore.getState()
+  const { transposeFragmentsInOctave } = useAudioServiceStore.getState()
+  const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
+
+  // check which octave to use based on amount of scenes played
+  let octave = Math.floor(amountPlayed / (amountOfScenes / 3))
+  if (amountPlayed % (amountOfScenes / 3) === 0 && octave !== 0) {
+    resetUsedFragments()
+  }
+  if (octave > 2) octave = 2 // Cap octave at 2
+
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
 
-  const shuffledOtherFragments = otherFragments.sort(() => Math.random() - 0.5)
-  const selectedOtherFragments = shuffledOtherFragments.slice(
+  // Probabilistic threshold for maximum plays per fragment
+  const baseThreshold = Math.floor(amountOfScenes / fragments.length - alwaysUsedFragments.length)
+  const probThreshold = baseThreshold + (Math.random() < 0.5 ? 1 : 0)
+
+  const candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
+  if (candidates.length === 0) {
+    // All fragments have been played at least probThreshold times
+    console.log('All fragments have been played the maximum number of times')
+    return
+  }
+
+  const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
+  const selectedCandidates = shuffledCandidates.slice(
     0,
     fragmentsToShow - alwaysUsedFragments.length
   )
 
-  const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+  const selectedFragments = [...alwaysUsedFragments, ...selectedCandidates]
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
+  let transposedFragments: FragmentWithNotes[] = []
+  if ([0, 1, 2].includes(octave)) {
+    transposedFragments = transposeFragmentsInOctave(
+      selectedFragments,
+      randomTransposeDirection,
+      octave as 0 | 1 | 2
+    )
+  }
+
+  addUsedFragments(transposedFragments.map((f) => f.id))
 
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
     return { ...fragment, transpose: randomTransposeDirection }
@@ -53,6 +84,7 @@ export const testModeMachine = createMachine(
       countdownTimings: undefined as CountdownTimings | undefined,
       countdownActions: undefined as StopwatchActions | undefined,
       latency: undefined as Latency | undefined,
+      amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
     },
     schema: {
@@ -77,6 +109,7 @@ export const testModeMachine = createMachine(
             levelFragments: FragmentWithNotes[]
             fragmentsToShow: number
             countdownTimings: CountdownTimings
+            amountOfScenes: number
             countdownActions: StopwatchActions
           },
     },
@@ -234,11 +267,12 @@ export const testModeMachine = createMachine(
         }
       }),
       setupData: assign((_, event) => {
-        // const { setIsPlaying } = useLuisterenStore.getState()
-        // setIsPlaying(true)
+        const { setUsedFragments } = useLuisterenStore.getState()
+        setUsedFragments(new Array(event.levelFragments.length).fill(0))
         return {
           allLevelFragments: event.levelFragments,
           fragmentsToShow: event.fragmentsToShow,
+          amountOfScenes: event.amountOfScenes,
           countdownTimings: event.countdownTimings,
           countdownActions: event.countdownActions,
         }
@@ -288,15 +322,16 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
-        const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5)
-        let newActiveFragment: FragmentWithNotes | undefined = undefined
-        let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined
-        if (shuffledFragments) {
-          transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow)
-          newActiveFragment =
-            transposedFragments?.[Math.floor(Math.random() * shuffledFragments.length)]
-          setPlayedFragmentId(newActiveFragment?.id ?? 0)
-        }
+        const transposedFragments = Transpose(
+          context.allLevelFragments,
+          context.fragmentsToShow,
+          context.amountPlayed,
+          context.amountOfScenes
+        )
+
+        const newActiveFragment =
+          transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
+        setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
           guessedFragment: undefined,
           shownFragments: transposedFragments?.slice(0, context.fragmentsToShow) ?? [],

@@ -83,6 +83,7 @@ const Test: React.FC<TestModeProps> = ({
       levelFragments: fragments,
       fragmentsToShow: fragmentsToShow,
       countdownTimings: countdownTimings,
+      amountOfScenes: mode?.amountOfScenes ?? 0,
       countdownActions: stopwatch.actions,
     })
   }, [])
