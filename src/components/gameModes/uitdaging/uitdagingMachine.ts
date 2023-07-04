@@ -239,7 +239,7 @@ export const uitdagingMachine = createMachine(
         }
         return {
           guessedFragment: undefined,
-          shownFragments: transposedFragments?.slice(0, context.fragmentsToShow) ?? [],
+          shownFragments: transposedFragments,
           activeFragment: newActiveFragment,
         }
       }),
