@@ -14,6 +14,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   const [guideText, setGuideText] = useState<string>(
     ' Klik op de knop hieronder om het geluid in te schakelen.'
   )
+  const [isLoading, setLoading] = useState<boolean>(false)
 
   const [clickedButton, setClickedButton] = useState<boolean>(false)
 
@@ -23,6 +24,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   }
 
   async function initializeAudio() {
+    setLoading(true)
     setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
     setClickedButton(true)
     await initializeSound()
@@ -35,6 +37,10 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
       handleAudiocontextChange(audioContext.state)
     }
   }, [])
+
+   if (!showModal || isLoading) {
+     return null
+   }
 
   return (
     <>

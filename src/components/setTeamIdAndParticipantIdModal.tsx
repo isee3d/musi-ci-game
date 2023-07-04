@@ -12,7 +12,7 @@ const InitializeSoundModal: React.FC = () => {
     const { mutate: setParticipantIdToUser } = api.user.setParticipantIdToUser.useMutation();
 
     const [showModal, setShowModal] = useState(false);
-    const [teamId, setTeamId] = useState('');
+    // const [teamId, setTeamId] = useState('');
     const [participantId, setParticipantId] = useState('');
 
     function sendTeamIdAndParticipantId() {
