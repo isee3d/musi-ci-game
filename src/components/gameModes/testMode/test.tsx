@@ -23,9 +23,6 @@ interface TestModeProps {
   mode: GameMode | null | undefined
 }
 
-// TODO:
-// gr4ondtoon switching after 100 fragments
-
 const Test: React.FC<TestModeProps> = ({
   fragments,
   gameId,

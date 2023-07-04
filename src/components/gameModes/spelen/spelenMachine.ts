@@ -225,7 +225,7 @@ export const spelenMachine = createMachine(
           const { setPlayedFragmentId } = useLuisterenStore.getState()
           transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow)
           newActiveFragment =
-            transposedFragments?.[Math.floor(Math.random() * shuffledFragments.length)]
+            transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
           setPlayedFragmentId(newActiveFragment?.id ?? 0)
         }
         return {
