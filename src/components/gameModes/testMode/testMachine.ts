@@ -33,11 +33,11 @@ const Transpose = (
   const baseThreshold = Math.floor(amountOfScenes / fragments.length - alwaysUsedFragments.length)
   const probThreshold = baseThreshold + (Math.random() < 0.5 ? 1 : 0)
 
-  const candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
+  let candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
   if (candidates.length === 0) {
     // All fragments have been played at least probThreshold times
     console.log('All fragments have been played the maximum number of times')
-    return
+    candidates = otherFragments
   }
 
   const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
@@ -258,7 +258,7 @@ export const testModeMachine = createMachine(
           useLuisterenStore.getState()
         context.countdownActions?.pause()
         addNewUserSceneAnswer(undefined)
-        setChosenFragment(-1)
+        setChosenFragment(undefined)
         if (context.latency) {
           setChosenFragmentLatency(-1)
         }

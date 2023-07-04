@@ -72,7 +72,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
     if(mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
-      throw new Error('Het aantal scenes is niet gespecificeerd for deze game mode')
     }
 
     if (amountPlayed === mode?.amountOfScenes) {
