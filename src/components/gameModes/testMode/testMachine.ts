@@ -329,6 +329,8 @@ export const testModeMachine = createMachine(
           context.amountOfScenes
         )
 
+        console.log('transposedFragments ', transposedFragments.map((f) => f.id))
+
         const newActiveFragment =
           transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
         setPlayedFragmentId(newActiveFragment?.id ?? 0)

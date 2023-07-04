@@ -72,9 +72,8 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 space-y-8">
           {questions?.map((question, index) => (
-            <>
+            <div key={index}>
               <FormField
-                key={index}
                 control={form.control}
                 name={`${index}.question`}
                 render={({ field }) => (
@@ -104,7 +103,7 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
                   </FormItem>
                 )}
               />
-            </>
+            </div>
           ))}
 
           <Button type="submit">Verstuur uw antwoorden</Button>

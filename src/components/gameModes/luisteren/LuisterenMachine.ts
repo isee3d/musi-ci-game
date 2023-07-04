@@ -13,9 +13,9 @@ const Transpose = (
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
-  // const selectedFragments = shuffledFragments.slice(0, fragmentsToShow);
+  const selectedFragments = fragments.slice(0, fragmentsToShow);
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  const transposedFragments = transposeFragments(fragments, randomTransposeDirection)
+  const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
     return { ...fragment, transpose: randomTransposeDirection }
   })
@@ -78,7 +78,6 @@ export const luisterenMachine = createMachine(
         }
       }),
       initializeShownFragments: assign((context) => {
-        console.log('context.allLevelFragments', context.allLevelFragments)
         const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow)
         return {
           shownFragments: transposedFragments,

@@ -144,7 +144,6 @@ export default class Sampler {
   private returnClosestBuffer(note: string): NamedAudioBuffer {
     // index of the 'goal' note
     const goal = this.notes.findIndex((n) => n === note)
-    console.log('auduibuffers: ', this.audioBuffers)
     const closest = this.audioBuffers.reduce((prev, curr) => {
       return Math.abs(curr.noteIndex - goal) < Math.abs(prev.noteIndex - goal) ? curr : prev
     })

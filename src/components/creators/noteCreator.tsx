@@ -72,7 +72,6 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log('my log' + data)
     setNewNotes((prev) => [...prev, data])
     form.reset()
   }

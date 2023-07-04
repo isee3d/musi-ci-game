@@ -91,6 +91,7 @@ export function FragmentLine(props: LineProps) {
 
   //   return () => clearInterval(intervalId);
   // }, []);
+  console.log('rendering fragmentline', props)
 
   return (
     <Line
