@@ -47,7 +47,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof gameId !== 'string') throw new Error('No gameId')
 
-  await ssg.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+  // await ssg.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
 
   return {
     props: {

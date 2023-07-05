@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (typeof levelId !== 'string') throw new Error('No levelId')
   if (typeof gameId !== 'string') throw new Error('No gameId')
 
-  await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
+  // await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
 
   return {
     props: {

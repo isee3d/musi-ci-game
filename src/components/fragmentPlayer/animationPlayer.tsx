@@ -103,6 +103,10 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
     }
   }, [])
 
+  useEffect(() => {
+    resizeWindow()
+  }, [animationFragment, options])
+
   function resizeWindow(): void {
     if (containerRef.current) {
       const notePositions = getNotesPositions(
