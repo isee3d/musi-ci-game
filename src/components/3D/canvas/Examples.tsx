@@ -1,12 +1,22 @@
 // 'use client'
 
 import { Circle, Plane, useGLTF } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, extend, Object3DNode, MaterialNode } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Ref, useMemo, useRef, useState, useEffect } from 'react'
 import { Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
 import { useRouter } from 'next/navigation'
 import { NotePositionTime } from '~/components/fragmentPlayer/animationPlayer'
+import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
+
+extend({ MeshLineGeometry, MeshLineMaterial })
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    meshLineGeometry: Object3DNode<MeshLineGeometry, typeof MeshLineGeometry>
+    meshLineMaterial: MaterialNode<MeshLineMaterial, typeof MeshLineMaterial>
+  }
+}
 
 export const Blob = ({ route = '/', ...props }) => {
   const router = useRouter()
@@ -83,12 +93,16 @@ interface LineProps {
 export function FragmentLine(props: LineProps) {
 
   return (
-    <Line
-      points={ props.points }
-      color={ props.color as THREE.ColorRepresentation }
-      lineWidth={ props.lineWidth }
-      position={ props.position }
-    />
+    // <Line
+    //   points={ props.points }
+    //   color={ props.color as THREE.ColorRepresentation }
+    //   lineWidth={ props.lineWidth }
+    //   position={ props.position }
+    // />
+    <mesh position={props.position} raycast={raycast}>
+      <meshLineGeometry points={props.points.flatMap(vector => [vector.x, vector.y, vector.z])} />
+      <meshLineMaterial lineWidth={1/12} color={props.color as THREE.ColorRepresentation} />
+    </mesh>
   )
 }
 
