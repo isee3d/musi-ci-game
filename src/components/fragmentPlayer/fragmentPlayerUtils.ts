@@ -25,8 +25,8 @@ export const getNotesPositions = (notes: Note[], width: number, height: number, 
 
     const noteLines: NotePositionTime[] = [];
     notes.forEach(note => {
-        const startX = msToTicks(note.time) * pxPerTick;
-        const endX = startX + (msToTicks(note.duration) * pxPerTick);
+        const startX = msToTicks(note.time) * pxPerTick + 15;
+        const endX = startX + (msToTicks(note.duration) * pxPerTick) - 15;
         const yIndex = KeyboardToNote.getIndexFromNote(note.name);
         const noteY = yIndex * noteHeight - height / 2 + centerYCorrection;
         const line: NotePositionTime = {
