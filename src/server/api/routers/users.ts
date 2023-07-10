@@ -110,4 +110,20 @@ export const usersRouter = createTRPCRouter({
         },
       })
     }),
+
+  createUserActivity: protectedProcedure
+    .input(z.object({ userId: z.string(), activity: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId, activity } = input
+      return await ctx.prisma.activity.create({
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          activity: activity,
+        },
+      })
+    }),
 })

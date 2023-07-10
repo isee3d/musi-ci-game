@@ -75,6 +75,7 @@ model User {
 
   levelResults       LevelResult[]
   questionAnswers    QuestionAnswer[]
+  activities         Activity[]
 
   hadTraining       Boolean?         @default(false)
   experience        Int?             @default(0)
@@ -284,4 +285,13 @@ model Question {
   subLevel           SubLevel?     @relation(fields: [id_subLevel], references: [id])
 
   question           String
+}
+
+model Activity {
+  id                 Int         @id @default(autoincrement())
+  id_User            String
+  user               User?           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  activity           String
+  activity_Date      DateTime       @default(now())
 }

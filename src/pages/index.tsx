@@ -4,15 +4,46 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '~/components/ui/button'
 import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import { useSettingsStore } from '~/stores/settings'
+import { api } from '~/utils/api'
+import { EnterWebsiteMessage, LeftWebsiteMessage } from 'types/globals'
 
 const WelcomePage: NextPage = () => {
   const { data: sessionData } = useSession()
+  const { enteredWebsite, setEnteredWebsite, lastEnteredWebsite, setLastEnteredWebsite } = useSettingsStore()
+  const { mutate: createActivity } = api.user.createUserActivity.useMutation()
+
+  useEffect(() => {
+    const now = Date.now()
+    const differenceInMinutes = Math.abs(now - lastEnteredWebsite) / 1000 / 60
+
+    if (sessionData?.user.id && !enteredWebsite && differenceInMinutes > 5) {
+      setEnteredWebsite(true)
+      setLastEnteredWebsite(Date.now())
+      createActivity({ userId: sessionData.user.id, activity: EnterWebsiteMessage })
+    }
+  }, [sessionData])
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      if(!sessionData?.user.id) return
+      createActivity({ userId: sessionData.user.id, activity: LeftWebsiteMessage })
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
   const getNextPageRoute = (): string => {
-    if(!sessionData?.user.id){
+    if (!sessionData?.user.id) {
       return '/login'
     }
-    if(sessionData?.user.preferSkipTutorial){
+    if (sessionData?.user.preferSkipTutorial) {
       return '/podium'
     }
     return '/tutorial'
@@ -28,7 +59,7 @@ const WelcomePage: NextPage = () => {
 
       <section className=" flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
-        <div className="container mx-auto flex min-h-[50vh] w-5/6 md:w-1/2 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md">
+        <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md md:w-1/2">
           <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Welkom</h1>
           <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
             Help Cinie haar orkest te redden door de muzieknoten te herkennen
