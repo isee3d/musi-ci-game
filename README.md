@@ -52,6 +52,15 @@ corepack enable
 - The `prisma` folder contains the schema for how the database works, and how the relations are setup. The seed file is used to fill the DB with dummy data. Run pnpm db-seed to fill your DB if you have cleared it.
 - The `src` folder contains all the logic for the project.
 
+## Most used commands
+
+- pnpm init-repo: Initialize this repo (set the generated db types, install deps, create a .env file)
+- pnpm db-update: Update the generated prisma types and make it up to date with the latest schema
+- pnpm db-init: Initialize the DB for a production environment
+- pnpm db-clear: Completely clear your local DB (NEVER DO IN PRODUCTION!!!)
+- pnpm db-seed: Fill your local DB with dummy data
+- pnpm dev-o: Start dev server and open a new browser tab
+- pnpm preview: Create a new build and start it after locally
 
 ## Things to improve...
 
