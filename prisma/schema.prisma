@@ -154,6 +154,7 @@ model SubLevel {
   gameModes         GameMode[]
   levelResult       LevelResult[]
   questions         Question[]
+  fragmentGroups    Fragmentgroup[]
 
   name              String      @unique
   description       String?
@@ -166,6 +167,7 @@ model SubLevel {
 model Fragmentgroup {
   id                Int         @id @default(autoincrement())
   fragments         Fragment[]
+  subLevels         SubLevel[]
 
   name              String
   description       String?
