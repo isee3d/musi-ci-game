@@ -163,6 +163,14 @@ model SubLevel {
   color             String?
 }
 
+model Fragmentgroup {
+  id                Int         @id @default(autoincrement())
+  fragments         Fragment[]
+
+  name              String
+  description       String?
+}
+
 model Fragment {
   id                Int         @id @default(autoincrement())
   notes             Note[]
@@ -171,6 +179,7 @@ model Fragment {
   playedScene       Scene[]           @relation("PlayedFragment")
   relistenfragment  RelistenFragment[]
   sceneFragment     SceneFragment[]
+  fragmentgroup     Fragmentgroup[]
 
   name              String
   description       String?
