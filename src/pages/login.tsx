@@ -1,12 +1,11 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
-import { useRouter } from 'next/router'
+import { useUserActivity } from '~/hooks/useUserActivity'
 
 const LoginPage: NextPage = () => {
-  const { data: sessionData } = useSession()
+    const { sessionData } = useUserActivity()
 
   function getLoginText() {
     if (!sessionData?.user) {
