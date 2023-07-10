@@ -16,7 +16,7 @@ import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { useState } from 'react'
 import { cn } from '~/lib/utils'
-import { Fragment, GameMode, SubLevel } from '@prisma/client'
+import { Fragment, FragmentGroup, GameMode, SubLevel } from '@prisma/client'
 import { Label } from '~/components/ui/label'
 import { HuePicker } from 'react-color'
 import { sublevelFormSchema } from 'types/FormSchema'
@@ -30,10 +30,12 @@ const UpdateSublevelModal: React.FC<{
   const [addedGameModes, setAddedGameModes] = useState<GameMode[]>([])
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
   const [addedQuestions, setAddedQuestions] = useState<Question[]>([])
+  const [addedFragmentGroups, setAddedFragmentGroups] = useState<FragmentGroup[] | undefined>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
   const questionQuery = api.question.getAllQuestions.useQuery()
+  const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
 
   const { mutate: updateSublevel } = api.sublevel.updateSubLevel.useMutation({
     onSuccess: () => {
@@ -50,6 +52,11 @@ const UpdateSublevelModal: React.FC<{
     { onSuccess: (data) => setAddedGameModes(data) }
   )
 
+  const fragmentGroupsOfSublevel = api.sublevel.getFragmentGroupsOfSublevel.useQuery(
+    { sublevelId: sublevel.id.toString() },
+    { onSuccess: (data) => setAddedFragmentGroups(data?.fragmentGroups) }
+  )
+
   const fragmentsOfSublevel = api.sublevel.getFragmentsOfSublevel.useQuery(
     { sublevelId: sublevel.id.toString() },
     { onSuccess: (data) => setAddedFragments(data.fragments) }
@@ -59,6 +66,15 @@ const UpdateSublevelModal: React.FC<{
     { sublevelId: sublevel.id.toString() },
     { onSuccess: (data) => setAddedQuestions(data) }
   )
+
+   const onAddFragmentGroupButtonClick = (fragmentGroup: FragmentGroup) => {
+     setAddedFragmentGroups((prev) => [...(prev ?? []), fragmentGroup])
+   }
+
+   const onRemoveFragmentGroupButtonClick = (fragmentGroup: FragmentGroup) => {
+     setAddedFragmentGroups((prev) => (prev ?? []).filter((f) => f.id !== fragmentGroup.id))
+   }
+
 
   const onAddQuestionButtonClick = (question: Question) => {
     setAddedQuestions([...addedQuestions, question])
@@ -185,6 +201,46 @@ const UpdateSublevelModal: React.FC<{
             )}
           />
           <div className="flex w-full flex-col">
+            <Label className="text-3xl">Toegevoegde Fragment groepen</Label>
+            <div className="flex flex-col gap-y-2">
+              {addedFragmentGroups?.map((fragmentGroup) => {
+                return (
+                  <div
+                    key={fragmentGroup.id}
+                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  >
+                    <h2 className="text-2xl font-bold">{fragmentGroup.name}</h2>
+                    <Button
+                      onClick={() => onRemoveFragmentGroupButtonClick(fragmentGroup)}
+                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
+                    >
+                      Verwijder fragment groep van sublevel
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+            <Label className="text-3xl">Beschikbare fragment groepen</Label>
+            <div className="flex flex-col gap-y-2">
+              {fragmentGroupQuery.data?.map((fragmentGroup) => {
+                if (addedFragmentGroups?.find((fg) => fg.id === fragmentGroup.id)) return null
+                return (
+                  <div
+                    key={fragmentGroup.id}
+                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
+                  >
+                    <h2 className="text-2xl font-bold">{fragmentGroup.name}</h2>
+                    <Button
+                      onClick={() => onAddFragmentGroupButtonClick(fragmentGroup)}
+                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
+                    >
+                      Voeg fragment groep toe
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+
             <Label className="text-3xl">Toegevoegde Vragen</Label>
             <div className="flex flex-col gap-y-2">
               {addedQuestions.map((question) => {

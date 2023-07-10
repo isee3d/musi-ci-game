@@ -18,6 +18,12 @@ export const teamFormSchema = z.object({
   description: z.string().nullish(),
 })
 
+export const fragmentGroupFormSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().nullish(),
+  fragments: z.array(z.number().int().positive()),
+})
+
 export const fragmentFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),

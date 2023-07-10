@@ -3,7 +3,7 @@ import {
   NoteSchema,
   NoteOptionalDefaultsSchema,
   FragmentOptionalDefaultsSchema,
-  FragmentgroupOptionalDefaultsSchema,
+  FragmentGroupOptionalDefaultsSchema,
 } from 'prisma/generated/zod'
 import { z } from 'zod'
 
@@ -83,18 +83,18 @@ export const fragmentNoteRouter = createTRPCRouter({
 
   createFragmentGroup: protectedProcedure
     .input(
-      FragmentgroupOptionalDefaultsSchema.extend({
+      FragmentGroupOptionalDefaultsSchema.extend({
         fragments: z.array(z.number()),
-        sublevel: z.array(z.number()),
+        sublevel: z.array(z.number()).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { fragments, sublevel, ...newInput } = input
-      return await ctx.prisma.fragmentgroup.create({
+      return await ctx.prisma.fragmentGroup.create({
         data: {
           ...newInput,
           subLevels: {
-            connect: sublevel.map((id) => ({ id })),
+            connect: sublevel?.map((id) => ({ id })),
           },
           fragments: {
             connect: fragments.map((id) => ({ id })),
@@ -104,35 +104,56 @@ export const fragmentNoteRouter = createTRPCRouter({
     }),
 
   getAllFragmentGroups: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.fragmentgroup.findMany()
+    return await ctx.prisma.fragmentGroup.findMany()
   }),
+
+  getFragmentsOfFragmentGroup: protectedProcedure
+    .input(FragmentSchema.pick({ id: true }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input
+      const fragments = await ctx.prisma.fragmentGroup.findFirst({
+        where: { id },
+        select: {
+          fragments: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              useAlways: true,
+            },
+          },
+        },
+      })
+
+      return fragments
+    }),
 
   deleteFragmentGroup: protectedProcedure
     .input(FragmentSchema.pick({ id: true }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input
-      return await ctx.prisma.fragmentgroup.delete({
+      return await ctx.prisma.fragmentGroup.delete({
         where: { id },
       })
     }),
 
   updateFragmentGroup: protectedProcedure
     .input(
-      FragmentgroupOptionalDefaultsSchema.extend({
+      FragmentGroupOptionalDefaultsSchema.extend({
         fragments: z.array(z.number().int()),
-        sublevel: z.array(z.number().int()),
+        sublevel: z.array(z.number().int()).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { id, name, description, fragments, sublevel } = input
-      return await ctx.prisma.fragmentgroup.update({
+      return await ctx.prisma.fragmentGroup.update({
         where: { id },
         data: {
           name,
           description,
           subLevels: {
             disconnect: {},
-            connect: sublevel.map((id) => ({ id })),
+            connect: sublevel?.map((id) => ({ id })),
           },
           fragments: {
             disconnect: {},

@@ -51,6 +51,10 @@ const navitemsTemplate: NavItem[] = [
   {
     title: 'Vragen',
     href: '/manage/questions',
+  },
+  {
+    title: 'Fragment Groepen',
+    href: '/manage/fragmentGroup',
   }
 ]
 

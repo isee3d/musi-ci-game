@@ -16,7 +16,7 @@
     "start": "next start",
     "db-seed": "prisma db seed",
     "db-clear": "pnpx prisma db push --force-reset",
-    "db-update": "pnpm prisma db push && pnpm install",
+    "db-update": "pnpm prisma db push && pnpm install && pnpm db-clear && pnpm db-seed",
     "db-init": "pnpm db init",
     "init-repo": " pnpm create-env && pnpm install && pnpm db-update && pnpm db-clear && pnpm db-seed && pnpm dev",
     "typecheck": "tsc --noEmit",

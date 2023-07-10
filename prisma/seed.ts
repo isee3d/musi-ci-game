@@ -561,6 +561,30 @@ async function main() {
     },
   })
 
+  const fragmentGroup1 = await prisma.fragmentGroup.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      name: 'fragmentGroup1',
+      description: 'fragmentGroup with different fragments',
+      subLevels: { connect: { id: 1 } },
+      fragments: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+    },
+  })
+
+  const fragmentGroup2 = await prisma.fragmentGroup.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      id: 2,
+      name: 'fragmentGroup2',
+      description: 'fragmentGroup with different fragments',
+      subLevels: { connect: { id: 1 } },
+      fragments: { connect: [{ id: 4 }, { id: 5 }, { id: 6 }] },
+    },
+  })
+
   const levelResult = await prisma.levelResult.upsert({
     where: { id: 1 },
     update: {},
