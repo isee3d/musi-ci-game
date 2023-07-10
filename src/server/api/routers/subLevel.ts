@@ -114,6 +114,7 @@ export const subLevelRouter = createTRPCRouter({
               id: true,
               name: true,
               description: true,
+              fragments: true,
             },
           },
         },

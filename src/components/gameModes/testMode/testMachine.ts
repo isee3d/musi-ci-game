@@ -1,3 +1,4 @@
+import { FragmentGroup } from 'types/fragmentGroup'
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { createMachine, assign } from 'xstate'
@@ -14,17 +15,18 @@ const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number,
   amountPlayed: number,
-  amountOfScenes: number
+  amountOfScenes: number,
+  fragmentGroups?: FragmentGroup[]
 ) => {
   const { transposeFragmentsInOctave } = useAudioServiceStore.getState()
   const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
-
   // check which octave to use based on amount of scenes played
   let octave = Math.floor(amountPlayed / (amountOfScenes / 3))
   if (amountPlayed % (amountOfScenes / 3) === 0 && octave !== 0) {
     resetUsedFragments()
   }
-  if (octave > 2) octave = 2 // Cap octave at 2
+  // Cap octave at 2
+  if (octave > 2) octave = 2
 
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
@@ -33,7 +35,35 @@ const Transpose = (
   const baseThreshold = Math.floor(amountOfScenes / fragments.length - alwaysUsedFragments.length)
   const probThreshold = baseThreshold + (Math.random() < 0.5 ? 1 : 0)
 
-  let candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
+   let candidates: FragmentWithNotes[] = []
+
+   // If fragmentGroups is defined and has at least one element, select a random group
+   if (fragmentGroups && fragmentGroups.length > 0) {
+     // Create a copy of fragmentGroups to avoid modifying the original array
+     let groups = [...fragmentGroups]
+
+     while (candidates.length < fragmentsToShow - alwaysUsedFragments.length && groups.length > 0) {
+       const randomIndex = Math.floor(Math.random() * groups.length)
+       const randomGroup = groups[randomIndex]
+       if(randomGroup){
+         const groupFragmentIds = randomGroup.fragments.map((f) => f.id)
+
+         // Only keep fragments whose id exists in the selected group
+         let groupFragments = otherFragments.filter((f) => groupFragmentIds.includes(f.id))
+
+         let groupCandidates = groupFragments.filter(
+           (f) => (usedFragmentsMap[f.id] || 0) < probThreshold
+         )
+
+         // Concatenate the new candidates with the existing ones
+         candidates = [...candidates, ...groupCandidates]
+       }
+
+       // Remove the group from the list to avoid choosing it again
+       groups.splice(randomIndex, 1)
+     }
+   }
+
   if (candidates.length === 0) {
     // All fragments have been played at least probThreshold times
     console.log('All fragments have been played the maximum number of times')
@@ -86,6 +116,7 @@ export const testModeMachine = createMachine(
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
+      fragmentGroups: [] as FragmentGroup[],
     },
     schema: {
       services: {} as {
@@ -111,6 +142,7 @@ export const testModeMachine = createMachine(
             countdownTimings: CountdownTimings
             amountOfScenes: number
             countdownActions: StopwatchActions
+            fragmentGroups: FragmentGroup[]
           },
     },
     tsTypes: {} as import('./testMachine.typegen').Typegen0,
@@ -275,6 +307,7 @@ export const testModeMachine = createMachine(
           amountOfScenes: event.amountOfScenes,
           countdownTimings: event.countdownTimings,
           countdownActions: event.countdownActions,
+          fragmentGroups: event.fragmentGroups,
         }
       }),
       startPlaying: () => {

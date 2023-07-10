@@ -1,6 +1,7 @@
 import { GameMode } from '@prisma/client'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
+import { FragmentGroup } from 'types/fragmentGroup'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
 import AnswerQuestionsUI from '~/components/gameModes/testMode/answerQuestionsUI'
@@ -48,11 +49,13 @@ const Test: React.FC<TestModeProps> = ({
     state.matches('playing.didNotAnswerFragment')
   )
 
-    const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery(
-      {
-        sublevelId: sublevelId,
-      },
-    )
+  const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery({
+    sublevelId: sublevelId,
+  })
+
+  const fragmentGroups = api.sublevel.getFragmentGroupsOfSublevel.useQuery({
+    sublevelId: sublevelId,
+  })
 
   const stopwatch = useStopwatch(1000)
   const { hours, minutes, seconds } = stopwatch.convertedTime
@@ -82,6 +85,7 @@ const Test: React.FC<TestModeProps> = ({
       countdownTimings: countdownTimings,
       amountOfScenes: mode?.amountOfScenes ?? 0,
       countdownActions: stopwatch.actions,
+      fragmentGroups: fragmentGroups.data?.fragmentGroups ?? [] as FragmentGroup[],
     })
   }, [])
 
@@ -102,10 +106,13 @@ const Test: React.FC<TestModeProps> = ({
 
       {startRoundState && <StartTestUI />}
       {answeringQuestionsState && (
-        <AnswerQuestionsUI sublevelId={sublevelId} questions={QuestionsOfSublevelQuery?.data?.map(item => item.question)} />
+        <AnswerQuestionsUI
+          sublevelId={sublevelId}
+          questions={QuestionsOfSublevelQuery?.data?.map((item) => item.question)}
+        />
       )}
       {countdownState && <TestCountdownPlayer />}
-      {(playingState || countdownState) && <TestFragmentPlayerRenderer mode={mode}/>}
+      {(playingState || countdownState) && <TestFragmentPlayerRenderer mode={mode} />}
       {didNotAnswerState && (
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
