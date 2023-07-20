@@ -57,6 +57,11 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     setIsPlaying(false)
   }, [])
 
+  useEffect(() => {
+    console.log('mode', mode)
+    console.log('playing: ', isPlaying)
+  }, [mode, isPlaying])
+
   function renderGameMode(mode: string) {
     switch (mode) {
       case 'Luisteren':
@@ -126,20 +131,29 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (
-          <Button
+          // <Button
+          //   className={cn(
+          //     buttonVariants({ size: 'lg' }),
+          //     'flex-auto rounded-none border border-background p-0 text-xl',
+          //     mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
+          //   )}
+          //   key={index}
+          //   disabled={mode === gameMode.name || isPlaying}
+          //   asChild
+          // >
+          <Link
+            key={index}
+            href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
             className={cn(
               buttonVariants({ size: 'lg' }),
               'flex-auto rounded-none border border-background p-0 text-xl',
-              mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
+              mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
+              isPlaying ? 'pointer-events-none' : '',
             )}
-            key={index}
-            asChild
-            disabled={mode === gameMode.name || isPlaying}
           >
-            <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
-              {gameMode.name}
-            </Link>
-          </Button>
+            {gameMode.name}
+          </Link>
+          // </Button>
         ))}
       </div>
       <div className="relative flex w-5/6 flex-col justify-center gap-y-8 pt-4">

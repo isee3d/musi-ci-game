@@ -178,8 +178,6 @@ export const uitdagingMachine = createMachine(
   {
     actions: {
       setupData: assign((_, event) => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(true)
         return {
           allLevelFragments: event.levelFragments,
           fragmentsToShow: event.fragmentsToShow,
@@ -227,7 +225,8 @@ export const uitdagingMachine = createMachine(
         }
       }),
       onCountdownStarted: assign((context) => {
-        const { setPlayedFragmentId } = useLuisterenStore.getState()
+        const { setPlayedFragmentId, setIsPlaying } = useLuisterenStore.getState()
+        setIsPlaying(true)
         const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5)
         let newActiveFragment: FragmentWithNotes | undefined = undefined
         let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined
