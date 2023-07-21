@@ -12,8 +12,10 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
+  // provider = "sqlite"
 }
 
 model Account {
@@ -32,6 +34,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -40,6 +43,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -82,6 +87,10 @@ model User {
   entreeVragenLijst String?
   preferSkipTutorial Boolean?        @default(false)
   createdAt         DateTime         @default(now())
+
+  @@index([id_restGehoor])
+  @@index([id_TypeCI])
+  @@index([id_Team])
 }
 
 model RestGehoor {
@@ -123,6 +132,8 @@ model Team {
 
   name              String
   description       String?
+
+  @@index([id_Kliniek])
 }
 
 model Game {
@@ -145,6 +156,8 @@ model Level{
    name              String      @unique
    description       String?
    color             String?
+
+   @@index([id_Game])
 }
 
 model SubLevel {
@@ -197,6 +210,8 @@ model Note {
   time              Int
   duration          Int
   speed             Int
+
+  @@index([id_Fragment])
 }
 
 model GameMode {
@@ -227,6 +242,11 @@ model LevelResult {
    startTime          DateTime
    endTime            DateTime
    score              Int
+
+   @@index([id_User])
+   @@index([id_level])
+   @@index([id_subLevel])
+   @@index([id_gameMode])
 }
 
 model Scene {
@@ -241,6 +261,10 @@ model Scene {
   playedFragment        Fragment?  @relation("PlayedFragment", fields: [id_playedFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chosenFragmentLatency Int?
   answeredCorrectly    Boolean?
+
+  @@index([id_chosenFragment])
+  @@index([id_levelResult])
+  @@index([id_playedFragment])
 }
 
 model SceneFragment {
@@ -251,6 +275,9 @@ model SceneFragment {
    fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
    fragmentIndex       Int
    groundTone          Int
+
+   @@index([id_Scene])
+   @@index([id_fragment])
 }
 
 model RelistenFragment {
@@ -261,6 +288,9 @@ model RelistenFragment {
   scene              Scene?       @relation(fields: [id_scene], references: [id])
 
   relistenCount      Int
+
+  @@index([id_fragment])
+  @@index([id_scene])
 }
 
 model AppSettings {
@@ -276,6 +306,8 @@ model QuestionAnswer {
   question           String
   answer             String
   answeredDate       DateTime?       @default(now())
+
+  @@index([id_User])
 }
 
 model Question {
@@ -284,6 +316,8 @@ model Question {
   subLevel           SubLevel?     @relation(fields: [id_subLevel], references: [id])
 
   question           String
+
+  @@index([id_subLevel])
 }
 
 model Activity {
@@ -293,4 +327,6 @@ model Activity {
 
   activity           String
   activity_Date      DateTime       @default(now())
+
+  @@index([id_User])
 }
