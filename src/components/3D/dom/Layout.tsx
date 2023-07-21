@@ -86,7 +86,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <MainNav items={mainNavItems} />
             <nav className="flex gap-1">
               <Button
-                onClick={sessionData ? () => void signOut() : () => void signIn()}
+                onClick={sessionData ? () => void signOut() : async () => await signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
               >
                 {sessionData ? 'Uitloggen' : 'Inloggen'}

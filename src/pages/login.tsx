@@ -38,8 +38,8 @@ const LoginPage: NextPage = () => {
                 onClick={
                   sessionData
                     ? () => void signOut()
-                    : () =>
-                        void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
+                    : async () =>
+                        await signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
                 }
               >
                 {sessionData ? 'Uitloggen' : 'Inloggen'}
