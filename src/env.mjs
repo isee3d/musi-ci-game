@@ -18,7 +18,7 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string().min(1) : z.string().url()
     ),
-    // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
+    // Add `.min(1) on ID and SECRET if you want to make sure they're not empt
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
   },
