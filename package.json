@@ -2,10 +2,6 @@
   "name": "musi-ci-web-game",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=16.x.x",
-    "pnpm": ">=7.27.0"
-  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",
