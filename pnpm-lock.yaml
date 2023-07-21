@@ -78,8 +78,8 @@ dependencies:
     specifier: 6.0.0-alpha.2
     version: 6.0.0-alpha.2
   lucide-react:
-    specifier: ^0.263.0
-    version: 0.263.0(react@18.2.0)
+    specifier: ^0.92.0
+    version: 0.92.0(prop-types@15.8.1)(react@18.2.0)
   meshline:
     specifier: ^3.1.6
     version: 3.1.6(three@0.154.0)
@@ -4086,11 +4086,13 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.263.0(react@18.2.0):
-    resolution: {integrity: sha512-F+rHswbbI1xuDZ/OzofiJZJVlBPOIYVVST705cPdRLImJ5aOJNXYaFBPNo3qdUV0iEG/4nZeiUtLSHO2qU2ISw==}
+  /lucide-react@0.92.0(prop-types@15.8.1)(react@18.2.0):
+    resolution: {integrity: sha512-rKnAxjhDPvvmKvvij+oeA+qJicQwXf+4hfANIrMPlDiBKJfrDv1HGF496ZiTBevcrRJ/8/C3rrnUb77EAhHHlA==}
     peerDependencies:
+      prop-types: ^15.7.2
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
+      prop-types: 15.8.1
       react: 18.2.0
     dev: false
 
