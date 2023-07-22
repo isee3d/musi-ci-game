@@ -74,7 +74,6 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   // Custom signin page
-  debug: true,
   // pages: {
   //   signIn: "/auth/signin",
   // }
