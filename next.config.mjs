@@ -20,16 +20,6 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // Modularize Lucide icon imports; otherwise, Vercel
-  // throws 'too many open files' error (https://github.com/lucide-icons/lucide/issues/1446)
-  // @see https://nextjs.org/docs/architecture/nextjs-compiler#using-named-imports
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/{{member}}',
-      skipDefaultConversion: true,
-      preventFullImport: true,
-    },
-  },
   /**
   If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
    * out.
