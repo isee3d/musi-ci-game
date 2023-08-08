@@ -15,8 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { NoteCreate } from 'types/Note'
-
-
+import { nanoid } from 'nanoid'
 
 const NoteCreator: React.FC<{ newNotes: NoteCreate[], setNewNotes: Dispatch<SetStateAction<NoteCreate[]>> }> = ({
   setNewNotes, newNotes
@@ -42,12 +41,12 @@ const NoteCreator: React.FC<{ newNotes: NoteCreate[], setNewNotes: Dispatch<SetS
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     const newNote = {
+      noteId: nanoid(),
       name: data.name,
       speed: 1,
       duration: 120,
       time: newNotes.length > 0 ? newNotes.length * 120 : 0,
     }
-    console.log(newNote)
     setNewNotes((prev) => [...prev, newNote])
     toast.success('Note toegevoegd!')
     form.reset()

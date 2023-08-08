@@ -56,7 +56,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   })
   const notesOfFragmentQuery = api.fragmentNote.getNotesOfFragment.useQuery(
     { id: fragment.id },
-    { onSuccess: (data) => setNewNotes(data) }
+    { onSuccess: (data) => setNewNotes(data) },
   )
 
   function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
@@ -66,8 +66,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
       setNewNotes([])
       form.reset()
       setmodal(false)
-    }
-    else{
+    } else {
       toast.error('Er is al een fragment met deze naam!')
     }
   }
@@ -123,19 +122,19 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
             )}
           />
           {newNotes?.map((note, index) => (
-            <ExistingNote key={index} {...note} />
+            <ExistingNote key={index} props={note} setNewNotes={setNewNotes} />
           ))}
 
           <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>
             Sla veranderingen op
           </Button>
-          <Button
+          {/* <Button
             type="button"
             className={cn(buttonVariants({ variant: 'outline' }), 'mx-3 border-2 border-green-500')}
             onClick={() => setmodal(false)}
           >
             Luister Fragment
-          </Button>
+          </Button> */}
           <Button
             onClick={() => {
               form.reset()

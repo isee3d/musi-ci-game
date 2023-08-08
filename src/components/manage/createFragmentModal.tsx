@@ -110,7 +110,7 @@ const CreateFragmentModal: React.FC<{
             )}
           />
           {newNotes?.map((note, index) => (
-            <ExistingNote key={index} {...note} />
+            <ExistingNote key={index} props={note} setNewNotes={setNewNotes}  />
           ))}
 
           <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>
