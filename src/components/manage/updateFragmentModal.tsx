@@ -150,7 +150,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
       </Form>
       <div className="mt-4 flex flex-col space-y-3 border-4 pt-1 shadow-xl shadow-fuchsia-500">
         <h3 className="text-2xl">Noten toevoegen of verwijderen</h3>
-        <NoteCreator setNewNotes={setNewNotes} />
+        <NoteCreator newNotes={newNotes} setNewNotes={setNewNotes} />
       </div>
     </>
   )

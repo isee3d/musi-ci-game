@@ -1,4 +1,3 @@
-import { api } from '~/utils/api'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import React, { Dispatch, SetStateAction } from 'react'
@@ -17,41 +16,11 @@ import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { NoteCreate } from 'types/Note'
 
-// const validationRules = {
-//   name: { required: 'Note is required.' },
-//   time: {
-//     required: 'StartTime is required.',
-//     pattern: { value: /^[0-9]+$/, message: 'Duration must be a number.' },
-//     min: { value: 0, message: 'Duration must be higher than 0' },
-//     setValueAs: (value: any) => parseInt(value),
-//   },
-//   duration: {
-//     required: 'Note length is required.',
-//     pattern: { value: /^[0-9]+$/, message: 'Duration must be a number.' },
-//     min: { value: 0, message: 'Duration must be higher than 0' },
-//     setValueAs: (value: any) => parseInt(value),
-//   },
-//   speed: {
-//     required: 'Volume is required.',
-//     pattern: { value: /^[0-9]+$/, message: 'Volume must be a number.' },
-//     min: { value: 0, message: 'Volume must be higher than 0' },
-//     setValueAs: (value: any) => parseInt(value),
-//   },
-// };
 
-const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>> }> = ({
-  setNewNotes,
+
+const NoteCreator: React.FC<{ newNotes: NoteCreate[], setNewNotes: Dispatch<SetStateAction<NoteCreate[]>> }> = ({
+  setNewNotes, newNotes
 }) => {
-  // const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<Note>({
-  //   mode: 'onBlur',
-  // });
-
-  // const onSubmit: SubmitHandler<Note> = (data) => {
-  //   toast.success("Note created!")
-  //   // addNewNote(data);
-  //   setNewNotes((prev) => [...prev, data]);
-  //   reset();
-  // }
 
   const formSchema = z.object({
     name: z.string().min(2).max(50),
@@ -72,7 +41,15 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
   })
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    setNewNotes((prev) => [...prev, data])
+    const newNote = {
+      name: data.name,
+      speed: 1,
+      duration: 120,
+      time: newNotes.length > 0 ? newNotes.length * 120 : 0,
+    }
+    console.log(newNote)
+    setNewNotes((prev) => [...prev, newNote])
+    toast.success('Note toegevoegd!')
     form.reset()
   }
 
@@ -86,13 +63,13 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
             <FormItem>
               <FormLabel>Note naam</FormLabel>
               <FormControl>
-                <Input placeholder="C4" {...field} />
+                <Input placeholder="Bijv.. C4" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="time"
           render={({ field }) => (
@@ -112,8 +89,8 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={form.control}
           name="speed"
           render={({ field }) => (
@@ -133,8 +110,8 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={form.control}
           name="duration"
           render={({ field }) => (
@@ -154,7 +131,7 @@ const NoteCreator: React.FC<{ setNewNotes: Dispatch<SetStateAction<NoteCreate[]>
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <Button type="submit" className="mx-3">
           Voeg note toe

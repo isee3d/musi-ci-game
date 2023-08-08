@@ -116,13 +116,13 @@ const CreateFragmentModal: React.FC<{
           <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>
             Sla nieuw fragment op
           </Button>
-          <Button
+          {/* <Button
             type="button"
             className={cn(buttonVariants({ variant: 'outline' }), 'mx-3 border-2 border-green-500')}
             onClick={() => setmodal(false)}
           >
             Luister Fragment
-          </Button>
+          </Button> */}
           <Button
             onClick={() => {
               form.reset()
@@ -137,7 +137,7 @@ const CreateFragmentModal: React.FC<{
       </Form>
       <div className="mt-4 flex flex-col space-y-3 border-4 pt-1 shadow-xl shadow-fuchsia-500">
         <h3 className="text-2xl">Noten toevoegen of verwijderen</h3>
-        <NoteCreator setNewNotes={setNewNotes} />
+        <NoteCreator newNotes={newNotes} setNewNotes={setNewNotes} />
       </div>
     </>
   )

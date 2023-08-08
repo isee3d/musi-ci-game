@@ -13,7 +13,7 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
   const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId })
 
   return (
-    <ContentContainer title="Voortgang Musi-CI Sublevels" backPath={`/progress/${gameId}`}>
+    <ContentContainer title="Voortgang Musi-CI Sublevels" backPath={`/podium`}>
       {subLevelsOfLevelQuery.data?.map((sublevel) => (
         <Link
           key={sublevel.id}
