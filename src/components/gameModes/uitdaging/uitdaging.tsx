@@ -68,9 +68,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({
     })
   }, [])
 
-  // TODO: Add logic for having an Uitdaging mode for this level but not set the playtime...
-  if (isNullish(playTime)) return null
-
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Speel met de klok</h3>

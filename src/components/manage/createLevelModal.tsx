@@ -57,7 +57,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
   function onSubmit(data: z.infer<typeof levelFormSchema>) {
     const exists = levelQuery.data?.find((level) => level.name === data.name)
     if (!exists) {
-      addLevel({ ...data, sublevels: addedSubLevels.map((s) => s.id) })
+      addLevel({ ...data, id_Game: 1, sublevels: addedSubLevels.map((s) => s.id) })
       setAddedSubLevels([])
       form.reset()
       setmodal(false)
