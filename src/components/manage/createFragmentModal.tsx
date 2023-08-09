@@ -101,16 +101,19 @@ const CreateFragmentModal: React.FC<{
             name="useAlways"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Altijd zichtbaar</FormLabel>
+                <FormLabel className="px-2">Altijd zichtbaar</FormLabel>
                 <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={(event) => field.onChange(event as boolean)} />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(event) => field.onChange(event as boolean)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           {newNotes?.map((note, index) => (
-            <ExistingNote key={index} props={note} setNewNotes={setNewNotes}  />
+            <ExistingNote key={index} props={note} setNewNotes={setNewNotes} />
           ))}
 
           <Button type="submit" className="mx-3" disabled={newNotes.length === 0}>

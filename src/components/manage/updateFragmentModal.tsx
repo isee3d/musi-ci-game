@@ -23,6 +23,7 @@ import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib/utils'
 import { fragmentFormSchema } from 'types/FormSchema'
 import { Checkbox } from '~/components/ui/checkbox'
+import { nanoid } from 'nanoid'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -56,7 +57,15 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   })
   const notesOfFragmentQuery = api.fragmentNote.getNotesOfFragment.useQuery(
     { id: fragment.id },
-    { onSuccess: (data) => setNewNotes(data) },
+    {
+      onSuccess: (data) => {
+        const updatedData = data.map((item) => ({
+          ...item,
+          noteId: nanoid(),
+        }))
+        setNewNotes(updatedData)
+      },
+    },
   )
 
   function onSubmit(data: z.infer<typeof fragmentFormSchema>) {
@@ -110,7 +119,7 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
             name="useAlways"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Altijd zichtbaar</FormLabel>
+                <FormLabel className='px-2'>Altijd zichtbaar</FormLabel>
                 <FormControl>
                   <Checkbox
                     checked={field.value}

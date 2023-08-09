@@ -72,7 +72,7 @@ export const ExistingNote: React.FC<{
   }
 
   return (
-    <div className="m-2 flex w-full items-start space-x-4 rounded-lg shadow-md">
+    <div className="m-2 flex w-full items-center justify-center space-x-4 rounded-lg shadow-md">
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Noot</label>
         <input
@@ -85,7 +85,7 @@ export const ExistingNote: React.FC<{
         />
       </div>
 
-      <div>
+      {/* <div>
         <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
           Starttijd
         </label>
@@ -123,14 +123,14 @@ export const ExistingNote: React.FC<{
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           required
         />
-      </div>
+      </div> */}
 
       <button onClick={onDeleteNote} className="mt-4 rounded-xl bg-white/10 p-4 hover:bg-white/20">
         Remove
       </button>
-      <button onClick={onUpdateNote} className="mt-4 rounded-xl bg-white/10 p-4 hover:bg-white/20">
+      {/* <button onClick={onUpdateNote} className="mt-4 rounded-xl bg-white/10 p-4 hover:bg-white/20">
         Update
-      </button>
+      </button> */}
     </div>
   )
 }
