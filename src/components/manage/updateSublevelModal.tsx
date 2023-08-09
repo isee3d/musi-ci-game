@@ -107,6 +107,7 @@ const UpdateSublevelModal: React.FC<{
       name: sublevel.name,
       description: sublevel.description,
       fragmentToShow: sublevel.fragmentToShow,
+      bpm: sublevel.bpm ?? 60,
     },
   })
 
