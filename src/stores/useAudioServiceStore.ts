@@ -24,17 +24,23 @@ type AudioserviceAction = {
   getCurrentTime: () => number
   setAudioTime: (audioTime: number) => void
   setPiano: (piano: Sampler) => void
+  setBPM(bpm: number): void
   setSoundBoard: (soundBoard: Sampler) => void
   beatLengthInMs: () => number
   ticksToMS: (ticks: number) => number
   msToTicks: (ms: number) => number
+  reset: () => void
   returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>
   transposeFragments: (fragments: FragmentWithNotes[], direction: number) => FragmentWithNotes[]
   transposeFragmentsInOctave(
     fragments: FragmentWithNotes[],
     direction: number,
-    octave: 0 | 1 | 2
+    octave: 0 | 1 | 2,
   ): FragmentWithNotes[]
+}
+
+const initialState = {
+    BPM: 60,
 }
 
 const MS_PER_MINUTE = 1000 * 60;
@@ -53,6 +59,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     setActiveFragment: (fragment: FragmentWithNotes | undefined) => set({ activeFragment: fragment }),
     setAudioTime: (audioTime: number) => set({ audioTime }),
     setPiano: (piano: Sampler) => set({ piano }),
+    setBPM: (bpm: number) => set({ BPM: bpm }),
     setSoundBoard: (soundBoard: Sampler) => set({ soundBoard }),
     getCurrentTime: () => {
         const audioContext = get().audioContext;
@@ -173,7 +180,10 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
             newFragments.push(fragment);
         }
         return newFragments;
-    }
+    },
+    reset: () => {
+        set(initialState);
+    },
 }));
 
 if (process.env.NODE_ENV === 'development') {

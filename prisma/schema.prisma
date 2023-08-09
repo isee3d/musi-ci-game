@@ -24,12 +24,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String?  @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -85,6 +85,7 @@ model User {
   experience        Int?             @default(0)
   processor         String?
   entreeVragenLijst String?
+  isAllowedToPlay   Boolean?         @default(false)
   preferSkipTutorial Boolean?        @default(false)
   createdAt         DateTime         @default(now())
 
@@ -175,6 +176,7 @@ model SubLevel {
   playTime          Int?
   fragmentToShow    Int
   color             String?
+  bpm               Int?
 }
 
 model FragmentGroup {

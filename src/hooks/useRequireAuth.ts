@@ -10,6 +10,7 @@ export const useRequireAuth = () => {
   useEffect(() => {
     if (status === 'loading') return // Wait for loading to complete
     if (status === 'unauthenticated') router.push('/login')
+    if(sessionData?.user?.isAllowedToPlay === false) router.push('/login')
     // if (!sessionData?.user?.participantId) router.push('/login')
   }, [status, router])
 

@@ -10,6 +10,7 @@ export const sublevelFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
   color: z.string().nullish(),
+  bpm: z.number().int().positive().min(1),
   fragmentToShow: z.number().int().positive().min(1),
 })
 

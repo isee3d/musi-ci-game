@@ -22,7 +22,7 @@ const ParticipantIdModal: React.FC = () => {
     setUserToTeam({ teamId: 1, userId })
     setParticipantIdToUser({
       participantId:
-        sessionData?.user.role === 'ADMIN' && participantId !== '' ? '-1' : participantId,
+        sessionData?.user.role === 'ADMIN' && participantId === '' ? '-1' : participantId,
       userId,
     })
     setShowModal(false)

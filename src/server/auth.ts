@@ -19,14 +19,15 @@ import { prisma } from "~/server/db";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: string;
+      id: string
       // ...other properties
-      role: string;
-      participantId: string | undefined;
-      id_Team: string | undefined;
-      preferSkipTutorial: boolean;
+      role: string
+      participantId: string | undefined
+      id_Team: string | undefined
+      isAllowedToPlay: boolean
+      preferSkipTutorial: boolean
       // role: UserRole;
-    } & DefaultSession["user"];
+    } & DefaultSession['user']
   }
 
   interface User extends DefaultUser {
@@ -35,6 +36,7 @@ declare module "next-auth" {
     participantId: string | undefined;
     id_Team: string | undefined;
     preferSkipTutorial: boolean;
+    isAllowedToPlay: boolean;
   }
 }
 
@@ -54,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         participantId: user.participantId,
         id_Team: user.id_Team,
         preferSkipTutorial: user.preferSkipTutorial,
+        isAllowedToPlay: user.isAllowedToPlay,
       },
     }),
   },

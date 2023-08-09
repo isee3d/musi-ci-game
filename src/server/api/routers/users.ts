@@ -111,6 +111,18 @@ export const usersRouter = createTRPCRouter({
       })
     }),
 
+    updateUserIsAllowedToPlay: protectedProcedure
+    .input(z.object({ id: z.string(), isAllowedToPlay: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, isAllowedToPlay } = input
+      return await ctx.prisma.user.update({
+        where: { id },
+        data: {
+          isAllowedToPlay: isAllowedToPlay,
+        },
+      })
+    }),
+
   createUserActivity: protectedProcedure
     .input(z.object({ userId: z.string(), activity: z.string() }))
     .mutation(async ({ ctx, input }) => {

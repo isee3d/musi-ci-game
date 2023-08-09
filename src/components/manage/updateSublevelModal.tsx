@@ -186,6 +186,27 @@ const UpdateSublevelModal: React.FC<{
           />
           <FormField
             control={form.control}
+            name="bpm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>BPM</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="bijv... 60"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="color"
             render={({ field }) => (
               <FormItem>

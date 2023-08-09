@@ -1,4 +1,5 @@
 import { User } from '@prisma/client'
+import toast from 'react-hot-toast'
 import { Button, buttonVariants } from '~/components/ui/button'
 import {
   Select,
@@ -17,17 +18,25 @@ interface BaseStaticModalProps {
   user: User
 }
 
-const userRoles = ['USER', 'ADMIN']
+const userRoles = ['USER', 'ADMIN'] as const
 
 const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) => {
   const ctx = api.useContext()
   const { mutate: updateUserRole } = api.user.updateUserRole.useMutation({
     onSuccess: () => {
+      toast.success('Rol is succesvol aangepast')
       ctx.user.getAllUsers.invalidate()
     },
   })
 
-  function updateUserValues(role: string) {
+  const { mutate: updateUserIsAllowedToPlay } = api.user.updateUserIsAllowedToPlay.useMutation({
+    onSuccess: () => {
+      toast.success('De speler mag spelen is aangepast')
+      ctx.user.getAllUsers.invalidate()
+    },
+  })
+
+  function updateUserRoleValues(role: string) {
     updateUserRole({
       id: user.id,
       role: role,
@@ -35,22 +44,35 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
     setmodal(false)
   }
 
+  function updateUserIsAllowedToPlayValues(isAllowedToPlay: string) {
+    const value = isAllowedToPlay === 'true'
+    updateUserIsAllowedToPlay({
+      id: user.id,
+      isAllowedToPlay: value,
+    })
+    setmodal(false)
+  }
+
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
         <div className="relative mx-auto my-6 w-auto max-w-3xl">
           {/*content*/}
-          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+          <div className="relative flex w-full flex-col gap-3 rounded-lg border-0 bg-slate-500 shadow-lg outline-none focus:outline-none">
             {/*header*/}
-            <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
-              <h3 className="text-3xl font-semibold">Vul de nieuwe rol in voor {user.name}</h3>
+            <div className="flex items-start justify-between rounded-t border-b border-solid  p-5">
+              <h3 className="text-3xl font-semibold">
+                Verander rol en mag spelen voor {user.name}
+              </h3>
             </div>
-            <div className="relative flex justify-center p-6">
+            <h3> Kies hieronder de rol</h3>
+            <div className="relative flex justify-center px-4">
               <Select
                 defaultValue={user.role ?? userRoles[0]}
-                onValueChange={(value: string) => updateUserValues(value)}
+                onValueChange={(value: string) => updateUserRoleValues(value)}
               >
-                <SelectTrigger className="w-[180px] border-2 border-primary">
+                <SelectTrigger className="w-[180px] border-2">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -63,7 +85,25 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
+            <h3> Bepaal hieronder of de speler mag spelen</h3>
+            <div className="relative flex justify-center px-4">
+              <Select
+                defaultValue={user.isAllowedToPlay?.toString() ?? 'false'}
+                onValueChange={(value: string) => updateUserRoleValues(value)}
+              >
+                <SelectTrigger className="w-[180px] border-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Bepaal of speler mag spelen</SelectLabel>
+                    <SelectItem value={'true'}>Mag wel spelen</SelectItem>
+                    <SelectItem value={'false'}>Mag niet spelen</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center justify-center rounded-b border-t border-solid p-6">
               <Button
                 className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
                 type="button"

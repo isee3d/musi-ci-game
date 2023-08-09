@@ -34,13 +34,24 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
 }) => {
   useRequireAuth()
   const router = useRouter()
-  const { audioContext } = useAudioServiceStore()
+  const { audioContext, setBPM, reset } = useAudioServiceStore()
   const { isPlaying, setIsPlaying } = useLuisterenStore()
 
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
-  const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
+  const sublevelQuery = api.sublevel.getSublevelById.useQuery(
+    { id: sublevelId },
+    {
+      onSuccess: (data) => {
+        if (data.bpm) {
+          setBPM(data.bpm)
+        } else {
+          reset()
+        }
+      },
+    },
+  )
   const gameModesOfSublevelQuery = api.sublevel.getGameModesOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
