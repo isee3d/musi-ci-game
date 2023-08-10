@@ -7,7 +7,7 @@ import { useAudioServiceStore } from "~/stores/useAudioServiceStore";
 export const getNotesPositions = (notes: Note[], width: number, height: number, linewidth: number) => {
     const { msToTicks, ticksToMS } = useAudioServiceStore.getState();
     const range = KeyboardToNote.octaves * 12;
-    const noteHeight = height / range;
+    const noteHeight = height / range * 8;
 
     if (notes.length === 0) return [];
 
