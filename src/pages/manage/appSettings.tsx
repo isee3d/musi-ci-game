@@ -50,6 +50,9 @@ const ManageAppSettingsPage: NextPage = () => {
                   className="flex flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center"
                 >
                   <h2 className="text-2xl font-bold">{gameMode.name}</h2>
+                  {gameMode.amountOfScenes && (
+                    <h2>Amount of scenes to play: {gameMode.amountOfScenes}</h2>
+                  )}
                   {gameMode.one && <h2>One: {gameMode.one} millisecondes</h2>}
                   {gameMode.two && <h2>Two: {gameMode.two} millisecondes</h2>}
                   {gameMode.three && <h2>Three: {gameMode.three} millisecondes</h2>}
