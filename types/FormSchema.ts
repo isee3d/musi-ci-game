@@ -33,11 +33,11 @@ export const fragmentFormSchema = z.object({
 
 export const gameModeFormSchema = z.object({
   name: z.string().min(1),
-  amountOfScenes: z.number().int().positive().optional(),
-  one: z.number().positive().optional(),
-  two: z.number().positive().optional(),
-  three: z.number().positive().optional(),
-  go: z.number().positive().optional(),
+  amountOfScenes: z.number().int().min(0).optional(),
+  one: z.number().min(0).optional(),
+  two: z.number().min(0).optional(),
+  three: z.number().min(0).optional(),
+  go: z.number().min(0).optional(),
 })
 
 export const appSettingsFormSchema = z.object({

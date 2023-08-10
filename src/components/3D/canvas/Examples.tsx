@@ -24,8 +24,6 @@ interface LineProps {
 }
 
 export function FragmentLine(props: LineProps) {
-  const firstPoint = useRef(props.points[0])
-  const lastPoint = useRef(props.points[props.points.length - 1])
   const circleRadius = useRef(4)
 
   const material = new THREE.MeshBasicMaterial({
@@ -38,12 +36,15 @@ export function FragmentLine(props: LineProps) {
         <meshLineGeometry
           points={props.points.flatMap((vector) => [vector.x, vector.y, vector.z])}
         />
-        <meshLineMaterial lineWidth={1 / 12} color={props.color as THREE.ColorRepresentation} />
+        <meshLineMaterial
+          lineWidth={1 / props.lineWidth}
+          color={props.color as THREE.ColorRepresentation}
+        />
       </mesh>
-      <mesh position={firstPoint.current}>
+      <mesh position={props.points[0]}>
         <Circle args={[circleRadius.current, 32]} material={material} />
       </mesh>
-      <mesh position={lastPoint.current}>
+      <mesh position={props.points[props.points.length - 1]}>
         <Circle args={[circleRadius.current, 32]} material={material} />
       </mesh>
     </group>

@@ -22,7 +22,7 @@ function getAnimationClass(
       ? options?.isCorrect
         ? 'bg-green-500'
         : 'bg-red-500'
-      : 'bg-zinc-500'
+      : 'bg-zinc-200'
 
   const cursorClass =
     !options?.isAnimating && options?.isClickable
@@ -30,7 +30,7 @@ function getAnimationClass(
       : 'cursor-not-allowed bg-gray-400'
 
   return cn(
-    'rounded-2xl border-4 border-purple-500 shadow-md',
+    'rounded-2xl border-4 border-purple-500 shadow-md w-1/2',
     borderColorClass,
     bgColorClass,
     cursorClass
@@ -145,13 +145,13 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
       ref={containerRef}
       className={`${getAnimationClass(options, animationFragment)}`}
     >
-      <View useOrbit className="h-48 w-full">
+      <View useOrbit className="h-28 w-full">
         <Suspense fallback={null}>
           {notePositions.map((points, index) => (
             <FragmentLine
               key={index}
               position={new THREE.Vector3(positionZeroPoint, 0, 0)}
-              lineWidth={8}
+              lineWidth={7}
               color={fragmentPlayerSettings.lineColor}
               points={points.position}
             />

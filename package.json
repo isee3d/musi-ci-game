@@ -20,7 +20,7 @@
     "create-env": "node -e \"require('fs').existsSync('.env') || require('fs').copyFileSync('.env.example', '.env');\""
   },
   "prisma": {
-    "seed": "tsx prisma/initDB.ts",
+    "seed": "tsx prisma/seed.ts",
     "init": "tsx prisma/initDB.ts"
   },
   "dependencies": {
