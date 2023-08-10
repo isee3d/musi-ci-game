@@ -12,11 +12,17 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
-  fragmentsToShow: number
+  fragmentsToShow: number,
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   const shuffledFragments = fragments.sort(() => Math.random() - 0.5)
-  const selectedFragments = shuffledFragments.slice(0, fragmentsToShow)
+
+  const alwaysUsedFragments = shuffledFragments.filter((f) => f.useAlways)
+  const otherFragments = shuffledFragments.filter((f) => !f.useAlways)
+  const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
+  const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
+  const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
@@ -250,5 +256,5 @@ export const uitdagingMachine = createMachine(
       GO: (context) => context.countdownTimings?.go ?? 1000,
       SOUNDTIME: (context) => 1000,
     },
-  }
+  },
 )

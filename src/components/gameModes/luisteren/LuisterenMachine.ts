@@ -1,4 +1,3 @@
-import { Fragment } from '@prisma/client'
 import { createMachine, assign } from 'xstate'
 import {
   FragmentWithNotes,
@@ -9,11 +8,16 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
-  fragmentsToShow: number
+  fragmentsToShow: number,
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
-  const selectedFragments = fragments.slice(0, fragmentsToShow);
+  const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
+  const otherFragments = fragments.filter((f) => !f.useAlways)
+  const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
+  const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
+  const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+  
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
@@ -95,5 +99,5 @@ export const luisterenMachine = createMachine(
         }
       }),
     },
-  }
+  },
 )

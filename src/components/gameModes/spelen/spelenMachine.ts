@@ -9,15 +9,18 @@ import {
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
-
-
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
-  fragmentsToShow: number
+  fragmentsToShow: number,
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
-  const selectedFragments = fragments.slice(0, fragmentsToShow);
+
+  const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
+  const otherFragments = fragments.filter((f) => !f.useAlways)
+  const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
+  const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
+  const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
@@ -216,7 +219,7 @@ export const spelenMachine = createMachine(
         return {}
       }),
       onCountdownStarted: assign((context) => {
-             const { setIsPlaying } = useLuisterenStore.getState()
+        const { setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
         const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5)
         let newActiveFragment: FragmentWithNotes | undefined = undefined
@@ -242,5 +245,5 @@ export const spelenMachine = createMachine(
       GO: (context) => context.countdownTimings?.go ?? 1000,
       SOUNDTIME: (context) => 1000,
     },
-  }
+  },
 )
