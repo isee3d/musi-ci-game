@@ -9,8 +9,9 @@ import { api } from '~/utils/api'
 
 function getAnimationClass(
   options: AnimationPlayerOptions | undefined,
-  thisFragment: FragmentWithNotes
+  thisFragment: FragmentWithNotes,
 ) {
+  console.log(JSON.stringify(options))
   const borderColorClass = options?.showCorrectOutline
     ? options?.isCorrect
       ? 'border-green-500'
@@ -25,7 +26,7 @@ function getAnimationClass(
       : 'bg-zinc-200'
 
   const cursorClass =
-    !options?.isAnimating && options?.isClickable
+    options?.isClickable
       ? 'cursor-pointer hover:opacity-60'
       : 'cursor-not-allowed bg-gray-400'
 
@@ -33,7 +34,7 @@ function getAnimationClass(
     'rounded-2xl border-4 border-purple-500 shadow-md w-1/2',
     borderColorClass,
     bgColorClass,
-    cursorClass
+    cursorClass,
   )
 }
 
@@ -81,17 +82,14 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
     circleColor: 'red',
   })
 
-  const appSettingsQuery = api.appSettings.getAllSettings.useQuery(
-    undefined,
-    {
-      onSuccess: (data) => {
-        setFragmentPlayerSettings({
-          lineColor: data?.fragmentDotLineColor ?? 'black',
-          circleColor: data?.fragmentDotColor ?? 'red',
-        })
-      },
-    }
-  )
+  const appSettingsQuery = api.appSettings.getAllSettings.useQuery(undefined, {
+    onSuccess: (data) => {
+      setFragmentPlayerSettings({
+        lineColor: data?.fragmentDotLineColor ?? 'black',
+        circleColor: data?.fragmentDotColor ?? 'red',
+      })
+    },
+  })
 
   useEffect(() => {
     if (containerRef.current) {
@@ -113,7 +111,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
         animationFragment.notes,
         containerRef.current.clientWidth,
         containerRef.current.clientHeight,
-        8
+        8,
       )
 
       setNotePositions((latestNotePositions) => {

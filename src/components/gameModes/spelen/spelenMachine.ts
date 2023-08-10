@@ -89,6 +89,7 @@ export const spelenMachine = createMachine(
         },
       },
       countdown: {
+        entry: assign({ isClickable: false }),
         initial: '3',
         description: 'Has all the chid states for counting down before a scene starts',
         states: {
@@ -123,9 +124,16 @@ export const spelenMachine = createMachine(
             after: {
               SOUNDTIME: 'playSound',
             },
-            exit: assign({ isClickable: false, isAnimating: true }),
+            exit: assign({ isAnimating: true }),
           },
           playSound: {
+            entry: assign({ isClickable: true }),
+            on: {
+              GUESSEDFRAGMENT: {
+                target: 'listenToFragments',
+                actions: ['setGuessedFragment', 'saveLatency'],
+              },
+            },
             invoke: {
               src: async (context) => await start(context.activeFragment),
               onDone: [
@@ -135,7 +143,7 @@ export const spelenMachine = createMachine(
               ],
             },
             description: 'In this state the active fragment is played',
-            exit: assign({ isClickable: true, isAnimating: false }),
+            exit: assign({ isAnimating: false }),
           },
           guessHeardFragment: {
             entry: assign({
@@ -186,6 +194,7 @@ export const spelenMachine = createMachine(
       }),
       setGuessedFragment: assign((_, event) => {
         return {
+          isClickable: false,
           guessedFragment: event.guessedFragment,
         }
       }),

@@ -19,6 +19,10 @@ const FragmentPlayerRenderer: React.FC = () => {
   const isAnimating = SpelenMachineContext.useSelector((state) => state.context.isAnimating)
   const isClickable = SpelenMachineContext.useSelector((state) => state.context.isClickable)
 
+  const playingSound = SpelenMachineContext.useSelector((state) =>
+    state.matches('playing.playSound')
+  )
+
   const activeFragment = SpelenMachineContext.useSelector(
     (state) => state.context.activeFragment,
     shallowEqual
@@ -102,7 +106,7 @@ const FragmentPlayerRenderer: React.FC = () => {
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-    if (guessHeardFragmentState) {
+    if (guessHeardFragmentState || playingSound) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
       }
