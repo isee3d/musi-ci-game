@@ -5,7 +5,7 @@ import { NotePositionTime } from '~/components/fragmentPlayer/animationPlayer'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 const NOTES_IN_OCTAVE = 12
-const SCALE_Y_FACTOR = 1
+const SCALE_Y_FACTOR = 4
 const PADDING_IN_PERCENT = 0.1
 
 export const getNotesPositions = (
