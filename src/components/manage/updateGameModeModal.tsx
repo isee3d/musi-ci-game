@@ -83,7 +83,15 @@ const UpdateGameModeModal: React.FC<BaseStaticModalProps> = ({ setmodal, gameMod
             <FormItem>
               <FormLabel>Aantal Scenes</FormLabel>
               <FormControl>
-                <Input placeholder="Aantal scenes" type='number' {...field} />
+                <Input
+                  placeholder="Aantal scenes"
+                  onKeyDown={(evt) =>
+                    ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                  }
+                  type='number'
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
               </FormControl>
               <FormMessage />
             </FormItem>
