@@ -199,8 +199,9 @@ model Fragment {
   fragmentgroup     FragmentGroup[]
 
   name              String
+  isActive          Int         @default(1)
   description       String?
-  useAlways         Boolean?    @default(false)
+  useAlways         Boolean    @default(false)
 }
 
 model Note {

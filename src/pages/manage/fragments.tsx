@@ -24,6 +24,8 @@ const ManageFragments: NextPage = () => {
     onSuccess: () => {
       toast.success('Fragment verwijderd!')
       ctx.fragmentNote.getAllFragments.invalidate()
+      ctx.fragmentNote.getAllFragmentGroups.invalidate()
+      ctx.level.getAllLevels.invalidate()
     },
   })
   const [selectedFragment, setSelectedFragment] = useState<Fragment | null>(null)

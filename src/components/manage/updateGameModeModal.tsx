@@ -50,6 +50,7 @@ const UpdateGameModeModal: React.FC<BaseStaticModalProps> = ({ setmodal, gameMod
   function onSubmit(data: z.infer<typeof gameModeFormSchema>) {
     updateGameMode({
       id: gameMode.id,
+      amountOfScenes: data.amountOfScenes,
       name: data.name,
       one: data.one,
       two: data.two,
@@ -88,10 +89,10 @@ const UpdateGameModeModal: React.FC<BaseStaticModalProps> = ({ setmodal, gameMod
                   onKeyDown={(evt) =>
                     ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
                   }
-                  type='number'
+                  type="number"
                   {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
-                  />
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

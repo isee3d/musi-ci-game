@@ -43,26 +43,40 @@ export const fragmentNoteRouter = createTRPCRouter({
     }),
 
   getAllFragments: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.fragment.findMany()
+    return await ctx.prisma.fragment.findMany({
+      where: { isActive: 1 },
+    })
   }),
 
   deleteFragment: protectedProcedure
     .input(FragmentSchema.pick({ id: true }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input
-      return await ctx.prisma.fragment.delete({
+      // Set fragment as inactive instead of deleting it
+      // Remove all the fragment relations
+      return await ctx.prisma.fragment.update({
         where: { id },
+        data: {
+          isActive: 0,
+          fragmentgroup: {
+           set: [],
+          },
+          level: {
+            set: [],
+          }
+        },
       })
     }),
 
   updateFragment: protectedProcedure
     .input(FragmentOptionalDefaultsSchema.extend({ notes: z.array(Note) }))
     .mutation(async ({ ctx, input }) => {
-      const { id, name, description, notes } = input
+      const { id, name, description, notes, useAlways } = input
       return await ctx.prisma.fragment.update({
         where: { id },
         data: {
           name,
+          useAlways,
           description,
           notes: {
             deleteMany: {},
@@ -120,6 +134,7 @@ export const fragmentNoteRouter = createTRPCRouter({
               name: true,
               description: true,
               useAlways: true,
+              isActive: true,
             },
           },
         },
@@ -152,11 +167,11 @@ export const fragmentNoteRouter = createTRPCRouter({
           name,
           description,
           subLevels: {
-            disconnect: {},
+            disconnect: undefined,
             connect: sublevel?.map((id) => ({ id })),
           },
           fragments: {
-            disconnect: {},
+            disconnect: undefined,
             connect: fragments.map((id) => ({ id })),
           },
         },

@@ -32,7 +32,7 @@ export const subLevelRouter = createTRPCRouter({
       })
     }),
 
-  getAllSubLevels: protectedProcedure.query(({ ctx }) => {
+           getAllSubLevels: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.subLevel.findMany()
   }),
 
@@ -89,6 +89,7 @@ export const subLevelRouter = createTRPCRouter({
               description: true,
               useAlways: true,
               notes: true,
+              isActive: true,
             },
           },
         },

@@ -28,7 +28,7 @@ export const fragmentGroupFormSchema = z.object({
 export const fragmentFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
-  useAlways: z.boolean().default(false).optional(),
+  useAlways: z.boolean().default(false),
 })
 
 export const gameModeFormSchema = z.object({
