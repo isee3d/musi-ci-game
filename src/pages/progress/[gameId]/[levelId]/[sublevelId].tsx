@@ -28,14 +28,14 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
           href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
         >
           <div className="flex w-full items-center justify-center">
-            <div className="flex justify-start w-full space-x-4">
-               <div
+            <div className="flex justify-center w-full space-x-4">
+               {/* <div
                 className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 // style={{ borderColor: 'green' }}
               >
                 {gameMode.id}
-              </div>
-              <div className=" flex h-16 w-5/6 items-center justify-center text-2xl font-medium">
+              </div> */}
+              <div className=" flex h-16 w-full items-center justify-center text-2xl font-medium">
                 {gameMode.name}
               </div>
             </div>

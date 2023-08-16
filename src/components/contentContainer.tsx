@@ -29,14 +29,15 @@ const ContentContainer: React.FC<Props> = ({
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex min-h-fit  flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 w-5/6 ">
-          <h2 className="w-full border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
-            {title}
-          </h2>
+        <div className="container mx-auto flex min-h-fit  w-5/6 flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 ">
+          <div className="relative flex justify-center w-full border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
+            <h2 className='w-5/6'>{title}</h2>
+            <div className="absolute right-3 top-3 rounded-full bg-primary w-12 h-12"/>
+          </div>
           <div
             className={cn(
               'mt-8 flex w-full flex-col items-center justify-between gap-8 px-2 pb-8',
-              classNameParent
+              classNameParent,
             )}
           >
             {children}

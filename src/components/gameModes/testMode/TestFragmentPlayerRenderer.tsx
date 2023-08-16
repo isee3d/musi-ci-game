@@ -112,6 +112,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragment))
       setChosenFragment(fragment.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragment })
+      toast.success('Je hebt goed geklikt! Het volgende fragment komt eraan')
     }
   }
 

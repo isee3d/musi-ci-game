@@ -11,7 +11,7 @@ import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 
 const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
-   const session = useRequireAuth()
+  const session = useRequireAuth()
   const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
 
   return (
@@ -19,19 +19,20 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
       {levelsOfGameQuery.data?.map((level) => (
         <Link
           key={level.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl w-full')}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
           href={`/progress/${gameId}/${level.id}`}
         >
-          <div className="flex items-center w-full justify-center">
-            <div className="flex justify-start w-full space-x-4">
-              <div
+          <div className="flex w-full items-center justify-center">
+            <div className="flex w-full justify-start space-x-4">
+              {/* <div
                 className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 style={{ borderColor: level.color ?? 'bg-background' }}
               >
                 {level.id}
-              </div>
-              <div className="flex h-16 w-5/6 items-center justify-center text-2xl font-medium">
-                {level.name}
+              </div> */}
+              <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
+                <h2>{level.name}</h2>
+                <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
             </div>
           </div>

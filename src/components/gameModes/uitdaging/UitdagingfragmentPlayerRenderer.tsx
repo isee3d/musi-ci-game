@@ -15,7 +15,9 @@ interface UitdagingFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
 }
 
-const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererProps> = ({ mode }) => {
+const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererProps> = ({
+  mode,
+}) => {
   const { data: sessionData } = useSession()
 
   const { send } = UitdagingMachineContext.useActorRef()
@@ -23,18 +25,21 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   const isClickable = UitdagingMachineContext.useSelector((state) => state.context.isClickable)
   const activeFragment = UitdagingMachineContext.useSelector(
     (state) => state.context.activeFragment,
-    shallowEqual
+    shallowEqual,
   )
   const guessedFragment = UitdagingMachineContext.useSelector(
     (state) => state.context.guessedFragment,
-    shallowEqual
+    shallowEqual,
   )
   const shownFragments = UitdagingMachineContext.useSelector(
     (state) => state.context.shownFragments,
-    shallowEqual
+    shallowEqual,
+  )
+  const restAfterClicking = UitdagingMachineContext.useSelector((state) =>
+     state.matches('playing.restAfterAnswering'),
   )
   const guessHeardFragmentState = UitdagingMachineContext.useSelector((state) =>
-    state.matches('playing.guessHeardFragment')
+    state.matches('playing.guessHeardFragment'),
   )
   const amountPlayed = UitdagingMachineContext.useSelector((state) => state.context.amountPlayed)
 
@@ -47,7 +52,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
-    undefined
+    undefined,
   )
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
@@ -70,9 +75,9 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     })
     AddSceneData(sceneData)
 
-     if (mode?.amountOfScenes === null) {
-       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
-     }
+    if (mode?.amountOfScenes === null) {
+      toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
+    }
 
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
@@ -112,6 +117,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragment))
       setChosenFragment(fragment.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragment })
+      toast.success('Je hebt geklikt! Het volgende fragment komt eraan')
     }
   }
 
@@ -128,7 +134,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
           options={{
             isClickable: checkIsClickable(),
             isAnimating: checkIsAnimating(fragment),
-            showCorrectOutline: false,
+            showCorrectOutline: restAfterClicking,
             isCorrect: checkIsGuessedCorrect(fragment),
             // isLooping: true,
             onAnimationClicked: onFragmentPlayerClicked,
