@@ -1,6 +1,7 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '~/components/ui/button'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 
@@ -16,10 +17,19 @@ const PodiumPage: NextPage = () => {
       </Head>
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <div className="container mx-auto flex flex-col items-center justify-center space-y-8 ">
-          <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Podium</h2>
-          <h2 className="text-xl">Hier komt het podium</h2>
-          <Button asChild>
+        <div className="container mx-auto flex flex-col items-center justify-center gap-4">
+          <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Het podium</h2>
+          <div className="relative flex h-[20vh] lg:h-[50vh] w-[50vw] flex-col justify-center">
+            <Image
+              src="/images/podium.webp"
+              fill
+              objectFit="contain"
+              className="-z-20"
+              alt="Podium"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </div>
+          <Button className="z-20 " asChild>
             {/* Previously /progress/games for the games page */}
             <Link href="/progress/1">
               <h3>Door naar levels pagina</h3>
