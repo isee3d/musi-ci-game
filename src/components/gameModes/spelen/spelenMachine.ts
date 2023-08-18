@@ -12,6 +12,7 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number,
+  shouldTranspose: boolean = true,
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
@@ -21,12 +22,22 @@ const Transpose = (
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+  if (!shouldTranspose)
+    return selectedFragments.map((fragment) => {
+      return { ...fragment, transpose: 0 }
+    })
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
     return { ...fragment, transpose: randomTransposeDirection }
   })
 
+    const x = {
+      direction: randomTransposeDirection,
+      // selectedFragments: selectedFragments,
+      transposedFragments: transposedFragments,
+    }
+    console.log(JSON.stringify(x))
   return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
 }
 

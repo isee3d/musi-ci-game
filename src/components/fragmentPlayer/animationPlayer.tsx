@@ -11,7 +11,6 @@ function getAnimationClass(
   options: AnimationPlayerOptions | undefined,
   thisFragment: FragmentWithNotes,
 ) {
-  console.log(JSON.stringify(options))
   const borderColorClass = options?.showCorrectOutline
     ? options?.isCorrect
       ? 'border-green-500'

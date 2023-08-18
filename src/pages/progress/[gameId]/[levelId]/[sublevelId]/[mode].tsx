@@ -68,11 +68,6 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
     setIsPlaying(false)
   }, [])
 
-  useEffect(() => {
-    console.log('mode', mode)
-    console.log('playing: ', isPlaying)
-  }, [mode, isPlaying])
-
   function renderGameMode(mode: string) {
     switch (mode) {
       case 'Luisteren':
