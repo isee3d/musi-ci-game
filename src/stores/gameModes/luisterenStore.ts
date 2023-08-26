@@ -146,14 +146,12 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     const { allPlayedScenes } = get()
 
     const amountCorrect = allPlayedScenes.reduce((total, scene) => {
-      if (scene.answeredCorrectly) {
-        return total + 1
-      }
-      return total
+      return scene.answeredCorrectly ? total + 1 : total
     }, 0)
 
-    if (amountCorrect === 0) return 0
-    return Math.round((amountCorrect / allPlayedScenes.length) * 100)
+    const percentage = (amountCorrect / allPlayedScenes.length) * 100
+
+    return parseFloat(percentage.toFixed(2))
   },
   getRelistenCounts: (): { [key: number]: number } => {
     const { sceneData } = get()
