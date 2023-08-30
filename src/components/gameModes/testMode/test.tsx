@@ -92,7 +92,7 @@ const Test: React.FC<TestModeProps> = ({
   return (
     <>
       <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
-      {playingState && (
+      {(playingState || isPausedState) && (
         <Button
           onClick={() => {
             send({
