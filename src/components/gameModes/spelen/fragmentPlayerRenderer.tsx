@@ -168,8 +168,22 @@ const FragmentPlayerRenderer: React.FC = () => {
           size={'lg'}
           onClick={() => {
             setEndTime(Date.now())
+            addScene(sceneData)
             send('FINISHEDPLAYING')
             saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
+
+            // The last shown scene if Played should also be saved...
+            if(listenToFragmentsState){
+              const sceneData: FragmentSceneData[] = []
+              shownFragments.forEach((fragment, index) => {
+                sceneData.push({
+                  id_fragment: fragment.id,
+                  fragmentIndex: index,
+                  groundTone: fragment.transpose,
+                })
+              })
+              AddSceneData(sceneData)
+            }
           }}
         >
           stoppen

@@ -25,6 +25,17 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
       })
     })
     AddSceneData(sceneData)
+    return () => {
+       const sceneData: FragmentSceneData[] = []
+       shownFragments.forEach((fragment, index) => {
+         sceneData.push({
+           id_fragment: fragment.id,
+           fragmentIndex: index,
+           groundTone: fragment.transpose,
+         })
+       })
+       AddSceneData(sceneData)
+    }
   }, [shownFragments])
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
