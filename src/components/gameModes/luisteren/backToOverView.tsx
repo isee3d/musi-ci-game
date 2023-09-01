@@ -16,7 +16,7 @@ const BackToOverView: React.FC<BackToOverViewProps> = ({ levelId, sublevelId }) 
         onClick={() => {
           reset
         }}
-        href={`/progress/${levelId}/${sublevelId}`}
+        href={`/progress/1/${levelId}/${sublevelId}`}
       >
         <h3>Terug naar overzicht</h3>
       </Link>
