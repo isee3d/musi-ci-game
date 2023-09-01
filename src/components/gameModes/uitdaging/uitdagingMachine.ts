@@ -15,13 +15,28 @@ const Transpose = (
   fragmentsToShow: number,
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
-  const shuffledFragments = fragments.sort(() => Math.random() - 0.5)
+  const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
 
-  const alwaysUsedFragments = shuffledFragments.filter((f) => f.useAlways)
+  // Filter out fragments that have been played based on usedFragmentsMap
+  let candidates = fragments.filter((f) => !usedFragmentsMap[f.id])
+  const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
+
+  if (
+    Object.keys(usedFragmentsMap).length === fragments.length ||
+    candidates.length + alwaysUsedFragments.length < fragmentsToShow
+  ) {
+    resetUsedFragments()
+    candidates = fragments 
+  }
+
+  const shuffledFragments = candidates.sort(() => Math.random() - 0.5)
   const otherFragments = shuffledFragments.filter((f) => !f.useAlways)
+
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+
+  addUsedFragments(selectedFragments.map((f) => f.id))
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection)
