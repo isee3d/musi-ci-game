@@ -48,7 +48,7 @@ export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','id_level
 
 export const SceneScalarFieldEnumSchema = z.enum(['id','id_chosenFragment','id_levelResult','id_playedFragment','chosenFragmentLatency','answeredCorrectly']);
 
-export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fragment','fragmentIndex','groundTone']);
+export const SceneFragmentScalarFieldEnumSchema = z.enum(['id','id_Scene','id_fragment','fragmentIndex','groundTone','octave']);
 
 export const RelistenFragmentScalarFieldEnumSchema = z.enum(['id','id_fragment','id_scene','relistenCount']);
 
@@ -1059,6 +1059,7 @@ export const SceneFragmentSchema = z.object({
   id_fragment: z.number().int(),
   fragmentIndex: z.number().int(),
   groundTone: z.number().int(),
+  octave: z.number().int(),
 })
 
 export type SceneFragment = z.infer<typeof SceneFragmentSchema>
@@ -1068,6 +1069,7 @@ export type SceneFragment = z.infer<typeof SceneFragmentSchema>
 
 export const SceneFragmentOptionalDefaultsSchema = SceneFragmentSchema.merge(z.object({
   id: z.number().int().optional(),
+  octave: z.number().int().optional(),
 }))
 
 export type SceneFragmentOptionalDefaults = z.infer<typeof SceneFragmentOptionalDefaultsSchema>
@@ -1933,6 +1935,7 @@ export const SceneFragmentSelectSchema: z.ZodType<Prisma.SceneFragmentSelect> = 
   id_fragment: z.boolean().optional(),
   fragmentIndex: z.boolean().optional(),
   groundTone: z.boolean().optional(),
+  octave: z.boolean().optional(),
   scene: z.union([z.boolean(),z.lazy(() => SceneArgsSchema)]).optional(),
   fragment: z.union([z.boolean(),z.lazy(() => FragmentArgsSchema)]).optional(),
 }).strict()
@@ -3372,6 +3375,7 @@ export const SceneFragmentWhereInputSchema: z.ZodType<Prisma.SceneFragmentWhereI
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   groundTone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  octave: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
   fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict();
@@ -3382,6 +3386,7 @@ export const SceneFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.Scene
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional(),
   scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional(),
   fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -3398,6 +3403,7 @@ export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragment
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   groundTone: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  octave: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
   fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict());
@@ -3408,6 +3414,7 @@ export const SceneFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.Sc
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
   groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SceneFragmentCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => SceneFragmentAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SceneFragmentMaxOrderByAggregateInputSchema).optional(),
@@ -3424,6 +3431,7 @@ export const SceneFragmentScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma
   id_fragment: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   fragmentIndex: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   groundTone: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  octave: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const RelistenFragmentWhereInputSchema: z.ZodType<Prisma.RelistenFragmentWhereInput> = z.object({
@@ -4870,6 +4878,7 @@ export const SceneUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SceneUnchecke
 export const SceneFragmentCreateInputSchema: z.ZodType<Prisma.SceneFragmentCreateInput> = z.object({
   fragmentIndex: z.number().int(),
   groundTone: z.number().int(),
+  octave: z.number().int().optional(),
   scene: z.lazy(() => SceneCreateNestedOneWithoutSceneFragmentsInputSchema).optional(),
   fragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneFragmentInputSchema).optional()
 }).strict();
@@ -4879,12 +4888,14 @@ export const SceneFragmentUncheckedCreateInputSchema: z.ZodType<Prisma.SceneFrag
   id_Scene: z.number().int().optional().nullable(),
   id_fragment: z.number().int(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const SceneFragmentUpdateInputSchema: z.ZodType<Prisma.SceneFragmentUpdateInput> = z.object({
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   scene: z.lazy(() => SceneUpdateOneWithoutSceneFragmentsNestedInputSchema).optional(),
   fragment: z.lazy(() => FragmentUpdateOneWithoutSceneFragmentNestedInputSchema).optional()
 }).strict();
@@ -4895,6 +4906,7 @@ export const SceneFragmentUncheckedUpdateInputSchema: z.ZodType<Prisma.SceneFrag
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneFragmentCreateManyInputSchema: z.ZodType<Prisma.SceneFragmentCreateManyInput> = z.object({
@@ -4902,12 +4914,14 @@ export const SceneFragmentCreateManyInputSchema: z.ZodType<Prisma.SceneFragmentC
   id_Scene: z.number().int().optional().nullable(),
   id_fragment: z.number().int(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const SceneFragmentUpdateManyMutationInputSchema: z.ZodType<Prisma.SceneFragmentUpdateManyMutationInput> = z.object({
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneFragmentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyInput> = z.object({
@@ -4916,6 +4930,7 @@ export const SceneFragmentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Scene
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RelistenFragmentCreateInputSchema: z.ZodType<Prisma.RelistenFragmentCreateInput> = z.object({
@@ -6250,7 +6265,8 @@ export const SceneFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.Sce
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional()
+  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SceneFragmentAvgOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentAvgOrderByAggregateInput> = z.object({
@@ -6258,7 +6274,8 @@ export const SceneFragmentAvgOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional()
+  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SceneFragmentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentMaxOrderByAggregateInput> = z.object({
@@ -6266,7 +6283,8 @@ export const SceneFragmentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional()
+  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SceneFragmentMinOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentMinOrderByAggregateInput> = z.object({
@@ -6274,7 +6292,8 @@ export const SceneFragmentMinOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional()
+  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SceneFragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentSumOrderByAggregateInput> = z.object({
@@ -6282,7 +6301,8 @@ export const SceneFragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.Scene
   id_Scene: z.lazy(() => SortOrderSchema).optional(),
   id_fragment: z.lazy(() => SortOrderSchema).optional(),
   fragmentIndex: z.lazy(() => SortOrderSchema).optional(),
-  groundTone: z.lazy(() => SortOrderSchema).optional()
+  groundTone: z.lazy(() => SortOrderSchema).optional(),
+  octave: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const RelistenFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.RelistenFragmentCountOrderByAggregateInput> = z.object({
@@ -10193,6 +10213,7 @@ export const RelistenFragmentCreateManyFragmentInputEnvelopeSchema: z.ZodType<Pr
 export const SceneFragmentCreateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentCreateWithoutFragmentInput> = z.object({
   fragmentIndex: z.number().int(),
   groundTone: z.number().int(),
+  octave: z.number().int().optional(),
   scene: z.lazy(() => SceneCreateNestedOneWithoutSceneFragmentsInputSchema).optional()
 }).strict();
 
@@ -10200,7 +10221,8 @@ export const SceneFragmentUncheckedCreateWithoutFragmentInputSchema: z.ZodType<P
   id: z.number().int().optional(),
   id_Scene: z.number().int().optional().nullable(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const SceneFragmentCreateOrConnectWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentCreateOrConnectWithoutFragmentInput> = z.object({
@@ -10370,6 +10392,7 @@ export const SceneFragmentScalarWhereInputSchema: z.ZodType<Prisma.SceneFragment
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   groundTone: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  octave: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const FragmentGroupUpsertWithWhereUniqueWithoutFragmentsInputSchema: z.ZodType<Prisma.FragmentGroupUpsertWithWhereUniqueWithoutFragmentsInput> = z.object({
@@ -10935,6 +10958,7 @@ export const FragmentCreateOrConnectWithoutChosenSceneInputSchema: z.ZodType<Pri
 export const SceneFragmentCreateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentCreateWithoutSceneInput> = z.object({
   fragmentIndex: z.number().int(),
   groundTone: z.number().int(),
+  octave: z.number().int().optional(),
   fragment: z.lazy(() => FragmentCreateNestedOneWithoutSceneFragmentInputSchema).optional()
 }).strict();
 
@@ -10942,7 +10966,8 @@ export const SceneFragmentUncheckedCreateWithoutSceneInputSchema: z.ZodType<Pris
   id: z.number().int().optional(),
   id_fragment: z.number().int(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const SceneFragmentCreateOrConnectWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentCreateOrConnectWithoutSceneInput> = z.object({
@@ -12619,7 +12644,8 @@ export const SceneFragmentCreateManyFragmentInputSchema: z.ZodType<Prisma.SceneF
   id: z.number().int().optional(),
   id_Scene: z.number().int().optional().nullable(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const NoteUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.NoteUpdateWithoutFragmentInput> = z.object({
@@ -12761,6 +12787,7 @@ export const RelistenFragmentUncheckedUpdateManyWithoutFragmentInputSchema: z.Zo
 export const SceneFragmentUpdateWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUpdateWithoutFragmentInput> = z.object({
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   scene: z.lazy(() => SceneUpdateOneWithoutSceneFragmentsNestedInputSchema).optional()
 }).strict();
 
@@ -12769,6 +12796,7 @@ export const SceneFragmentUncheckedUpdateWithoutFragmentInputSchema: z.ZodType<P
   id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneFragmentUncheckedUpdateManyWithoutFragmentInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyWithoutFragmentInput> = z.object({
@@ -12776,6 +12804,7 @@ export const SceneFragmentUncheckedUpdateManyWithoutFragmentInputSchema: z.ZodTy
   id_Scene: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const FragmentGroupUpdateWithoutFragmentsInputSchema: z.ZodType<Prisma.FragmentGroupUpdateWithoutFragmentsInput> = z.object({
@@ -12919,7 +12948,8 @@ export const SceneFragmentCreateManySceneInputSchema: z.ZodType<Prisma.SceneFrag
   id: z.number().int().optional(),
   id_fragment: z.number().int(),
   fragmentIndex: z.number().int(),
-  groundTone: z.number().int()
+  groundTone: z.number().int(),
+  octave: z.number().int().optional()
 }).strict();
 
 export const RelistenFragmentCreateManySceneInputSchema: z.ZodType<Prisma.RelistenFragmentCreateManySceneInput> = z.object({
@@ -12931,6 +12961,7 @@ export const RelistenFragmentCreateManySceneInputSchema: z.ZodType<Prisma.Relist
 export const SceneFragmentUpdateWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUpdateWithoutSceneInput> = z.object({
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragment: z.lazy(() => FragmentUpdateOneWithoutSceneFragmentNestedInputSchema).optional()
 }).strict();
 
@@ -12939,6 +12970,7 @@ export const SceneFragmentUncheckedUpdateWithoutSceneInputSchema: z.ZodType<Pris
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneFragmentUncheckedUpdateManyWithoutSceneInputSchema: z.ZodType<Prisma.SceneFragmentUncheckedUpdateManyWithoutSceneInput> = z.object({
@@ -12946,6 +12978,7 @@ export const SceneFragmentUncheckedUpdateManyWithoutSceneInputSchema: z.ZodType<
   id_fragment: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   fragmentIndex: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   groundTone: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  octave: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RelistenFragmentUpdateWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentUpdateWithoutSceneInput> = z.object({

@@ -278,6 +278,7 @@ model SceneFragment {
    fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
    fragmentIndex       Int
    groundTone          Int
+   octave              Int          @default(1)
 
    @@index([id_Scene])
    @@index([id_fragment])

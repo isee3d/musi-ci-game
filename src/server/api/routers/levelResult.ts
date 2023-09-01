@@ -30,6 +30,7 @@ export const levelResultRouter = createTRPCRouter({
                   id_fragment: fragment.id_fragment,
                   fragmentIndex: fragment.fragmentIndex,
                   groundTone: fragment.groundTone,
+                  octave: fragment.octave,
                 })),
               },
               relistenFragments: {

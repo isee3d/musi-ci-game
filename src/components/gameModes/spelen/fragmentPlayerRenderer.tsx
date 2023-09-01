@@ -77,6 +77,7 @@ const FragmentPlayerRenderer: React.FC = () => {
         id_fragment: fragment.id,
         fragmentIndex: index,
         groundTone: fragment.transpose,
+        octave: fragment.octave,
       })
     })
     AddSceneData(sceneData)
@@ -180,6 +181,7 @@ const FragmentPlayerRenderer: React.FC = () => {
                   id_fragment: fragment.id,
                   fragmentIndex: index,
                   groundTone: fragment.transpose,
+                  octave: fragment.octave,
                 })
               })
               AddSceneData(sceneData)

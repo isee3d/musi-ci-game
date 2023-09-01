@@ -19,10 +19,12 @@ const Transpose = (
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
   console.log('selectedFragments', selectedFragments)
-  if (!shouldTranspose)
+  if (!shouldTranspose) {
     return selectedFragments.map((fragment) => {
-      return { ...fragment, transpose: 0 }
-    })
+      return { ...fragment, transpose: 0, octave: 1 }
+    }) as FragmentWithNotesAndTransposeDirection[]
+  }
+
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const randomOctave = Math.floor(Math.random() * 3) as 0 | 1 | 2
   const transposedFragments = transposeFragmentsInOctave(
@@ -31,15 +33,10 @@ const Transpose = (
     randomOctave,
   )
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection }
+    return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
   })
-  const x = {
-    direction: randomTransposeDirection,
-    // selectedFragments: selectedFragments,
-    transposedFragments: transposedFragments,
-  }
-  console.log(JSON.stringify(x))
-  return TransPosedfragmentsWithdirection
+
+  return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
 }
 
 export const luisterenMachine = createMachine(
@@ -97,7 +94,11 @@ export const luisterenMachine = createMachine(
         }
       }),
       initializeShownFragments: assign((context) => {
-        const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow, false)
+        const transposedFragments = Transpose(
+          context.allLevelFragments,
+          context.fragmentsToShow,
+          false,
+        )
         return {
           shownFragments: transposedFragments,
         }

@@ -91,7 +91,7 @@ const Transpose = (
   addUsedFragments(transposedFragments.map((f) => f.id))
 
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection }
+    return { ...fragment, transpose: randomTransposeDirection, octave: octave }
   })
 
   return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]

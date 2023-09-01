@@ -175,6 +175,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
             id_fragment: fragment.id_fragment,
             fragmentIndex: fragment.fragmentIndex,
             groundTone: fragment.groundTone,
+            octave: fragment.octave,
           }
         }) ?? []
 

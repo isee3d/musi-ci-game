@@ -8,7 +8,7 @@ export interface FragmentWithNotes {
     useAlways?: boolean | null | undefined;
 }
 
-export type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number };
+export type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number, octave: 0 | 1 | 2 };
 
 export interface FragmentToPlay extends FragmentWithNotes {
     mute: boolean;

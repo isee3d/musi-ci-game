@@ -46,7 +46,7 @@ const Transpose = (
     randomOctave,
   )
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection }
+    return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
   })
 
   return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]

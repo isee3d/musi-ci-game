@@ -8,10 +8,10 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 const LuisterenfragmentPlayerRenderer: React.FC = () => {
   const shownFragments = LuisterenMachineContext.useSelector(
-    (state) => state.context.shownFragments
+    (state) => state.context.shownFragments,
   )
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
-    undefined
+    undefined,
   )
   const { addScore, AddSceneData, addRelistenFragment } = useLuisterenStore()
 
@@ -22,19 +22,21 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
         id_fragment: fragment.id,
         fragmentIndex: index,
         groundTone: fragment.transpose,
+        octave: fragment.octave,
       })
     })
     AddSceneData(sceneData)
     return () => {
-       const sceneData: FragmentSceneData[] = []
-       shownFragments.forEach((fragment, index) => {
-         sceneData.push({
-           id_fragment: fragment.id,
-           fragmentIndex: index,
-           groundTone: fragment.transpose,
-         })
-       })
-       AddSceneData(sceneData)
+      const sceneData: FragmentSceneData[] = []
+      shownFragments.forEach((fragment, index) => {
+        sceneData.push({
+          id_fragment: fragment.id,
+          fragmentIndex: index,
+          groundTone: fragment.transpose,
+          octave: fragment.octave,
+        })
+      })
+      AddSceneData(sceneData)
     }
   }, [shownFragments])
 

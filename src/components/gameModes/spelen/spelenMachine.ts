@@ -38,10 +38,12 @@ const Transpose = (
 
   addUsedFragments(selectedFragments.map((f) => f.id))
 
-  if (!shouldTranspose)
+  if (!shouldTranspose) {
     return selectedFragments.map((fragment) => {
-      return { ...fragment, transpose: 0 }
-    })
+      return { ...fragment, transpose: 0, octave: 1 }
+    }) as FragmentWithNotesAndTransposeDirection[]
+  }
+
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const randomOctave = Math.floor(Math.random() * 3) as 0 | 1 | 2
   const transposedFragments = transposeFragmentsInOctave(
@@ -51,7 +53,7 @@ const Transpose = (
   )
 
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection }
+    return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
   })
 
   return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
