@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { signIn, signOut } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
 import { useUserActivity } from '~/hooks/useUserActivity'
+import Link from 'next/link'
 
 const LoginPage: NextPage = () => {
     const { sessionData } = useUserActivity()
@@ -26,13 +27,13 @@ const LoginPage: NextPage = () => {
       <section className="flex grow flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-4 px-4 py-16 ">
           <h2 className=" font-heading text-center text-5xl tracking-tight">Musi-CI Melody Game</h2>
-          <h2 className="text-2xl md: text-center md:text-3xl leading-normal tracking-tight text-muted-foreground">
+          <h2 className="md: text-center text-2xl leading-normal tracking-tight text-muted-foreground md:text-3xl">
             Trainen met verschillen tussen toonhoogtes en korte melodietjes
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-xl">{getLoginText()}</p>
-            <div className="flex gap-5">
+            <div className="flex flex-col gap-5">
               <Button
                 size={'lg'}
                 onClick={
@@ -43,6 +44,9 @@ const LoginPage: NextPage = () => {
                 }
               >
                 {sessionData ? 'Uitloggen' : 'Inloggen'}
+              </Button>
+              <Button size={'lg'} asChild>
+                <Link href={'/podium'}> Ga naar volgende pagina</Link>
               </Button>
             </div>
           </div>
