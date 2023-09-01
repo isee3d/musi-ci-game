@@ -95,6 +95,7 @@ const CreateSublevelModal: React.FC<{
         fragments: addedFragments.map((f) => f.id),
         gameModes: addedGameModes.map((g) => g.id),
         questions: addedQuestions.map((q) => q.id),
+        fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
       })
       setAddedGameModes([])
       setAddedFragments([])

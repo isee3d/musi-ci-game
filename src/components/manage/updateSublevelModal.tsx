@@ -30,7 +30,7 @@ const UpdateSublevelModal: React.FC<{
   const [addedGameModes, setAddedGameModes] = useState<GameMode[]>([])
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
   const [addedQuestions, setAddedQuestions] = useState<Question[]>([])
-  const [addedFragmentGroups, setAddedFragmentGroups] = useState<FragmentGroup[] | undefined>([])
+  const [addedFragmentGroups, setAddedFragmentGroups] = useState<FragmentGroup[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
@@ -54,7 +54,7 @@ const UpdateSublevelModal: React.FC<{
 
   const fragmentGroupsOfSublevel = api.sublevel.getFragmentGroupsOfSublevel.useQuery(
     { sublevelId: sublevel.id.toString() },
-    { onSuccess: (data) => setAddedFragmentGroups(data?.fragmentGroups) }
+    { onSuccess: (data) => setAddedFragmentGroups(data?.fragmentGroups ?? []) }
   )
 
   const fragmentsOfSublevel = api.sublevel.getFragmentsOfSublevel.useQuery(
@@ -119,6 +119,7 @@ const UpdateSublevelModal: React.FC<{
         id: sublevel.id,
         fragments: addedFragments.map((f) => f.id),
         gameModes: addedGameModes.map((g) => g.id),
+        fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
       })
       setAddedGameModes([])
       setAddedFragments([])

@@ -11,16 +11,20 @@ export const subLevelRouter = createTRPCRouter({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
         questions: z.array(z.number().int()),
+        fragmentGroups: z.array(z.number().int()),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { fragments, gameModes, questions, ...newInput } = input
+      const { fragments, gameModes, questions, fragmentGroups, ...newInput } = input
 
       return await ctx.prisma.subLevel.create({
         data: {
           ...newInput,
           fragments: {
             connect: fragments.map((id) => ({ id })),
+          },
+          fragmentGroups: {
+            connect: fragmentGroups.map((id) => ({ id })),
           },
           gameModes: {
             connect: gameModes.map((id) => ({ id })),
@@ -152,7 +156,7 @@ export const subLevelRouter = createTRPCRouter({
       SubLevelSchema.extend({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
-        fragmentGroups: z.array(z.number().int()).optional(),
+        fragmentGroups: z.array(z.number().int()),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -168,7 +172,7 @@ export const subLevelRouter = createTRPCRouter({
             set: gameModes.map((id) => ({ id })),
           },
           fragmentGroups: {
-            set: input.fragmentGroups?.map((id) => ({ id })),
+            set: fragmentGroups?.map((id) => ({ id })),
           },
         },
       })
