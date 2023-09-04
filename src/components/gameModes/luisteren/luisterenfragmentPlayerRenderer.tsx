@@ -5,15 +5,21 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 const LuisterenfragmentPlayerRenderer: React.FC = () => {
   const shownFragments = LuisterenMachineContext.useSelector(
     (state) => state.context.shownFragments,
   )
+
+  const allOriginalFragments = LuisterenMachineContext.useSelector(
+    (state) => state.context.allLevelFragments,
+  )
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
     undefined,
   )
   const { addScore, AddSceneData, addRelistenFragment } = useLuisterenStore()
+  const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
@@ -26,6 +32,8 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
       })
     })
     AddSceneData(sceneData)
+    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
+
     return () => {
       const sceneData: FragmentSceneData[] = []
       shownFragments.forEach((fragment, index) => {
@@ -41,17 +49,19 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
   }, [shownFragments])
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-    setactiveFragmentPlayerIndex(fragment.id)
+    const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+    if(!fragmentToPlay) return
+    setactiveFragmentPlayerIndex(fragmentToPlay.id)
     if (activeFragmentPlayerIndex === undefined) {
-      start(fragment)
+      start(fragmentToPlay)
       addScore(100)
-      addRelistenFragment(fragment.id)
+      addRelistenFragment(fragmentToPlay.id)
     }
   }
 
   return (
     <>
-      {shownFragments.map((fragment) => (
+      {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}
           animationFragment={fragment}

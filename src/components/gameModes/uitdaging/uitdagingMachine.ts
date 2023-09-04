@@ -9,12 +9,13 @@ import {
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
+import { deepCopy } from '~/utils/deepCopy'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number,
 ) => {
-  const { transposeFragmentsInOctave } = useAudioServiceStore.getState()
+  const { transposeFragments } = useAudioServiceStore.getState()
   const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
 
   // Filter out fragments that have been played based on usedFragmentsMap
@@ -39,8 +40,9 @@ const Transpose = (
   addUsedFragments(selectedFragments.map((f) => f.id))
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  const randomOctave = Math.floor(Math.random() * 3) as 0 | 1 | 2
-  const transposedFragments = transposeFragmentsInOctave(
+  const octaves = [3, 4, 5]
+  const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
+  const transposedFragments = transposeFragments(
     selectedFragments,
     randomTransposeDirection,
     randomOctave,
@@ -253,7 +255,8 @@ export const uitdagingMachine = createMachine(
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId, setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
-        const shuffledFragments = context.allLevelFragments?.sort(() => Math.random() - 0.5)
+        const copiedFragments = deepCopy(context.allLevelFragments)
+        const shuffledFragments = copiedFragments?.sort(() => Math.random() - 0.5)
         let newActiveFragment: FragmentWithNotes | undefined = undefined
         let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined
         if (shuffledFragments) {

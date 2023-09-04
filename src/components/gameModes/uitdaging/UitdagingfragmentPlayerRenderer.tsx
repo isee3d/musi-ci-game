@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
+import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 interface UitdagingFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -35,8 +36,11 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     (state) => state.context.shownFragments,
     shallowEqual,
   )
+  const allOriginalFragments = UitdagingMachineContext.useSelector(
+    (state) => state.context.allLevelFragments,
+  )
   const restAfterClicking = UitdagingMachineContext.useSelector((state) =>
-     state.matches('playing.restAfterAnswering'),
+    state.matches('playing.restAfterAnswering'),
   )
   const guessHeardFragmentState = UitdagingMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
@@ -54,6 +58,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
     undefined,
   )
+  const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
     onSuccess: () => {
@@ -75,6 +80,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       })
     })
     AddSceneData(sceneData)
+    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
 
     if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
@@ -111,13 +117,15 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
+     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+      if(!fragmentToPlay) return
     if (guessHeardFragmentState) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
       }
-      addNewUserSceneAnswer(checkIsGuessedCorrect(fragment))
-      setChosenFragment(fragment.id)
-      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragment })
+      addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
+      setChosenFragment(fragmentToPlay.id)
+      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
       toast.success('Je hebt geklikt! Het volgende fragment komt eraan')
     }
   }
@@ -128,7 +136,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
 
   return (
     <>
-      {shownFragments.map((fragment) => (
+      {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}
           animationFragment={fragment}

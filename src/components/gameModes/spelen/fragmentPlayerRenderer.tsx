@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 const FragmentPlayerRenderer: React.FC = () => {
   const { data: sessionData } = useSession()
@@ -35,6 +36,9 @@ const FragmentPlayerRenderer: React.FC = () => {
     (state) => state.context.shownFragments,
     shallowEqual
   )
+   const allOriginalFragments = SpelenMachineContext.useSelector(
+     (state) => state.context.allLevelFragments,
+   )
   const guessHeardFragmentState = SpelenMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment')
   )
@@ -69,6 +73,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     undefined
   )
   const [isPlayingFragment, setIsPlayingFragment] = useState(false)
+  const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
@@ -80,6 +85,7 @@ const FragmentPlayerRenderer: React.FC = () => {
         octave: fragment.octave,
       })
     })
+    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
     AddSceneData(sceneData)
   }, [shownFragments])
 
@@ -107,22 +113,24 @@ const FragmentPlayerRenderer: React.FC = () => {
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
+     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+     if(!fragmentToPlay) return
     if (guessHeardFragmentState || playingSound) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
       }
-      addNewUserSceneAnswer(checkIsGuessedCorrect(fragment))
-      setChosenFragment(fragment.id)
-      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragment })
+      addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
+      setChosenFragment(fragmentToPlay.id)
+      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
       return
     }
     if (listenToFragmentsState) {
       setIsPlayingFragment(true)
-      setactiveFragmentPlayerIndex(fragment.id)
+      setactiveFragmentPlayerIndex(fragmentToPlay.id)
       if (activeFragmentPlayerIndex === undefined) {
-        start(fragment)
+        start(fragmentToPlay)
       }
-      addRelistenFragment(fragment.id)
+      addRelistenFragment(fragmentToPlay.id)
     }
   }
 
@@ -133,7 +141,7 @@ const FragmentPlayerRenderer: React.FC = () => {
 
   return (
     <>
-      {shownFragments.map((fragment) => (
+      {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}
           animationFragment={fragment}
@@ -160,7 +168,7 @@ const FragmentPlayerRenderer: React.FC = () => {
           className={cn(
             listenToFragmentsState && !isPlayingFragment
               ? 'cursor-pointer'
-              : 'cursor-not-allowed bg-gray-400'
+              : 'cursor-not-allowed bg-gray-400',
           )}
         >
           <h3>Volgende</h3>
@@ -174,7 +182,7 @@ const FragmentPlayerRenderer: React.FC = () => {
             saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
 
             // The last shown scene if Played should also be saved...
-            if(listenToFragmentsState){
+            if (listenToFragmentsState) {
               const sceneData: FragmentSceneData[] = []
               shownFragments.forEach((fragment, index) => {
                 sceneData.push({

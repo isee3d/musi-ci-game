@@ -10,6 +10,7 @@ import {
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
+import { deepCopy } from '~/utils/deepCopy'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
@@ -18,15 +19,15 @@ const Transpose = (
   amountOfScenes: number,
   fragmentGroups?: FragmentGroup[],
 ) => {
-  const { transposeFragmentsInOctave } = useAudioServiceStore.getState()
+  const { transposeFragments } = useAudioServiceStore.getState()
   const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
   // check which octave to use based on amount of scenes played
-  let octave = Math.floor(amountPlayed / (amountOfScenes / 3))
+  let octave = 3 + Math.floor(amountPlayed / (amountOfScenes / 3))
   if (amountPlayed % (amountOfScenes / 3) === 0 && octave !== 0) {
     resetUsedFragments()
   }
-  // Cap octave at 2
-  if (octave > 2) octave = 2
+  // Cap octave at 5
+ if (octave > 5) octave = 5
 
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
@@ -80,11 +81,11 @@ const Transpose = (
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   let transposedFragments: FragmentWithNotes[] = []
-  if ([0, 1, 2].includes(octave)) {
-    transposedFragments = transposeFragmentsInOctave(
+  if ([3, 4, 5].includes(octave)) {
+    transposedFragments = transposeFragments(
       selectedFragments,
       randomTransposeDirection,
-      octave as 0 | 1 | 2,
+      octave,
     )
   }
 
@@ -357,8 +358,9 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
+        const copiedFragments = deepCopy(context.allLevelFragments)
         const transposedFragments = Transpose(
-          context.allLevelFragments,
+          copiedFragments,
           context.fragmentsToShow,
           context.amountPlayed,
           context.amountOfScenes,

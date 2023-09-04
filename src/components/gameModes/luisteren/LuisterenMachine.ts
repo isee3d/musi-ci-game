@@ -5,20 +5,20 @@ import {
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
+import { deepCopy } from '~/utils/deepCopy'
 
 const Transpose = (
   fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number,
   shouldTranspose: boolean = true,
 ) => {
-  const { transposeFragmentsInOctave } = useAudioServiceStore.getState()
+  const { transposeFragments, transposeFragmentsInOctave } = useAudioServiceStore.getState()
   // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
-  console.log('selectedFragments', selectedFragments)
   if (!shouldTranspose) {
     return selectedFragments.map((fragment) => {
       return { ...fragment, transpose: 0, octave: 1 }
@@ -26,8 +26,9 @@ const Transpose = (
   }
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  const randomOctave = Math.floor(Math.random() * 3) as 0 | 1 | 2
-  const transposedFragments = transposeFragmentsInOctave(
+  const octaves = [3, 4, 5]
+  const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
+  const transposedFragments = transposeFragments(
     selectedFragments,
     randomTransposeDirection,
     randomOctave,
@@ -94,11 +95,8 @@ export const luisterenMachine = createMachine(
         }
       }),
       initializeShownFragments: assign((context) => {
-        const transposedFragments = Transpose(
-          context.allLevelFragments,
-          context.fragmentsToShow,
-          false,
-        )
+        const copiedFragments = deepCopy(context.allLevelFragments)
+        const transposedFragments = Transpose(copiedFragments, context.fragmentsToShow, false)
         return {
           shownFragments: transposedFragments,
         }
@@ -109,7 +107,8 @@ export const luisterenMachine = createMachine(
         return {}
       }),
       shuffleFragments: assign((context) => {
-        const transposedFragments = Transpose(context.allLevelFragments, context.fragmentsToShow)
+        const copiedFragments = deepCopy(context.allLevelFragments)
+        const transposedFragments = Transpose(copiedFragments, context.fragmentsToShow)
         return {
           shownFragments: transposedFragments,
         }

@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
+import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -23,18 +24,21 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const isClickable = TestModeMachineContext.useSelector((state) => state.context.isClickable)
   const activeFragment = TestModeMachineContext.useSelector(
     (state) => state.context.activeFragment,
-    shallowEqual
+    shallowEqual,
   )
   const guessedFragment = TestModeMachineContext.useSelector(
     (state) => state.context.guessedFragment,
-    shallowEqual
+    shallowEqual,
   )
   const shownFragments = TestModeMachineContext.useSelector(
     (state) => state.context.shownFragments,
-    shallowEqual
+    shallowEqual,
+  )
+  const allOriginalFragments = TestModeMachineContext.useSelector(
+    (state) => state.context.allLevelFragments,
   )
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
-    state.matches('playing.guessHeardFragment')
+    state.matches('playing.guessHeardFragment'),
   )
   const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
 
@@ -47,8 +51,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
-    undefined
+    undefined,
   )
+  const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
     onSuccess: () => {
@@ -70,8 +75,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       })
     })
     AddSceneData(sceneData)
+    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
 
-    if(mode?.amountOfScenes === null) {
+    if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
     }
 
@@ -106,13 +112,15 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
+     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+      if(!fragmentToPlay) return
     if (guessHeardFragmentState) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
       }
-      addNewUserSceneAnswer(checkIsGuessedCorrect(fragment))
-      setChosenFragment(fragment.id)
-      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragment })
+      addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
+      setChosenFragment(fragmentToPlay.id)
+      send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
       toast.success('Je hebt goed geklikt! Het volgende fragment komt eraan')
     }
   }
@@ -123,7 +131,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
   return (
     <>
-      {shownFragments.map((fragment) => (
+      {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}
           animationFragment={fragment}
