@@ -12,7 +12,7 @@ export const subLevelRouter = createTRPCRouter({
         gameModes: z.array(z.number().int()),
         questions: z.array(z.number().int()),
         fragmentGroups: z.array(z.number().int()),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { fragments, gameModes, questions, fragmentGroups, ...newInput } = input
@@ -36,7 +36,7 @@ export const subLevelRouter = createTRPCRouter({
       })
     }),
 
-           getAllSubLevels: protectedProcedure.query(({ ctx }) => {
+  getAllSubLevels: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.subLevel.findMany()
   }),
 
@@ -119,7 +119,15 @@ export const subLevelRouter = createTRPCRouter({
               id: true,
               name: true,
               description: true,
-              fragments: true,
+              fragments: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                  useAlways: true,
+                  notes: true,
+                },
+              },
             },
           },
         },
@@ -157,7 +165,7 @@ export const subLevelRouter = createTRPCRouter({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
         fragmentGroups: z.array(z.number().int()),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id, gameModes, fragments, fragmentGroups } = input

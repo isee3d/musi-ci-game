@@ -40,6 +40,11 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
+
+  const fragmentGroupsQuery = api.sublevel.getFragmentGroupsOfSublevel.useQuery({
+    sublevelId: sublevelId,
+  })
+
   const sublevelQuery = api.sublevel.getSublevelById.useQuery(
     { id: sublevelId },
     {
@@ -120,6 +125,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
               playTime={playTime}
               sublevelId={sublevelId}
               mode={modeQuery?.data}
+              fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
             />
           </TestModeMachineContext.Provider>
         )
@@ -162,7 +168,7 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
           // </Button>
         ))}
       </div>
-      <div className="relative flex w-5/6 flex-col justify-center items-center gap-y-8 pt-4">
+      <div className="relative flex w-5/6 flex-col items-center justify-center gap-y-8 pt-4">
         {renderGameMode(mode)}
       </div>
     </ContentContainer>
@@ -185,6 +191,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await ssg.sublevel.getSublevelById.prefetch({ id: sublevelId })
   await ssg.gameMode.getGameMode.prefetch({ name: mode })
   await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
+  await ssg.sublevel.getFragmentGroupsOfSublevel.prefetch({ sublevelId: sublevelId })
 
   return {
     props: {

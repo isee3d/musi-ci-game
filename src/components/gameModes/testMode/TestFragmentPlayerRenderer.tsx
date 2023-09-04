@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
-import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
+import { getOriginalFragments, getOriginalFragmentsFromFragmentGroup, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -34,8 +34,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     (state) => state.context.shownFragments,
     shallowEqual,
   )
-  const allOriginalFragments = TestModeMachineContext.useSelector(
-    (state) => state.context.allLevelFragments,
+  const selectedGroup = TestModeMachineContext.useSelector(
+    (state) => state.context.selectedGroup,
   )
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
@@ -75,7 +75,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       })
     })
     AddSceneData(sceneData)
-    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
+    setOriginalFragments(getOriginalFragmentsFromFragmentGroup(shownFragments, selectedGroup?.fragments))
 
     if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
@@ -112,8 +112,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
-      if(!fragmentToPlay) return
+    const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+    if (!fragmentToPlay) return
     if (guessHeardFragmentState) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)

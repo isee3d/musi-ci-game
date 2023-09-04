@@ -13,89 +13,60 @@ import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
 
 const Transpose = (
-  fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
   fragmentsToShow: number,
   amountPlayed: number,
   amountOfScenes: number,
-  fragmentGroups?: FragmentGroup[],
+  fragmentGroups: FragmentGroup[],
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
-  // check which octave to use based on amount of scenes played
+
+  // Determine the octave based on the amount played
   let octave = 3 + Math.floor(amountPlayed / (amountOfScenes / 3))
   if (amountPlayed % (amountOfScenes / 3) === 0 && octave !== 0) {
     resetUsedFragments()
   }
   // Cap octave at 5
- if (octave > 5) octave = 5
-
-  const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
-  const otherFragments = fragments.filter((f) => !f.useAlways)
+  if (octave > 5) octave = 5
 
   // Probabilistic threshold for maximum plays per fragment
-  const baseThreshold = Math.floor(amountOfScenes / fragments.length - alwaysUsedFragments.length)
+  const baseThreshold = Math.floor(amountOfScenes / fragmentGroups.length)
   const probThreshold = baseThreshold + (Math.random() < 0.5 ? 1 : 0)
 
-  let candidates: FragmentWithNotes[] = []
+  // Select a random fragment group
+  const randomGroupIndex = Math.floor(Math.random() * fragmentGroups.length)
+  const selectedGroup = fragmentGroups[randomGroupIndex]
 
-  // If fragmentGroups is defined and has at least one element, select a random group
-  if (fragmentGroups && fragmentGroups.length > 0) {
-    // Create a copy of fragmentGroups to avoid modifying the original array
-    let groups = [...fragmentGroups]
-
-    while (candidates.length < fragmentsToShow - alwaysUsedFragments.length && groups.length > 0) {
-      const randomIndex = Math.floor(Math.random() * groups.length)
-      const randomGroup = groups[randomIndex]
-      if (randomGroup) {
-        const groupFragmentIds = randomGroup.fragments.map((f) => f.id)
-
-        // Only keep fragments whose id exists in the selected group
-        let groupFragments = otherFragments.filter((f) => groupFragmentIds.includes(f.id))
-
-        let groupCandidates = groupFragments.filter(
-          (f) => (usedFragmentsMap[f.id] || 0) < probThreshold,
-        )
-
-        // Concatenate the new candidates with the existing ones
-        candidates = [...candidates, ...groupCandidates]
-      }
-
-      // Remove the group from the list to avoid choosing it again
-      groups.splice(randomIndex, 1)
-    }
+  if (!selectedGroup) {
+    throw new Error('No selected group available')
   }
 
-  if (candidates.length === 0) {
-    // All fragments have been played at least probThreshold times
-    console.log('All fragments have been played the maximum number of times')
-    candidates = otherFragments
-  }
-
-  const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
-  const selectedCandidates = shuffledCandidates.slice(
-    0,
-    fragmentsToShow - alwaysUsedFragments.length,
+  // Filter fragments that haven't been played more than the threshold
+  const candidates = selectedGroup.fragments.filter(
+    (f) => (usedFragmentsMap[f.id] || 0) < probThreshold,
   )
+  // Shuffle and select the required number of fragments
+  const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
+  const selectedFragments = shuffledCandidates.slice(0, fragmentsToShow)
 
-  const selectedFragments = [...alwaysUsedFragments, ...selectedCandidates]
-
+  // Transpose the selected fragments
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   let transposedFragments: FragmentWithNotes[] = []
   if ([3, 4, 5].includes(octave)) {
-    transposedFragments = transposeFragments(
-      selectedFragments,
-      randomTransposeDirection,
-      octave,
-    )
+    transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection, octave)
   }
 
+  // Update the used fragments map
   addUsedFragments(transposedFragments.map((f) => f.id))
 
-  const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection, octave: octave }
-  })
-
-  return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
+  return {
+    transposedFragments: transposedFragments.map((fragment) => ({
+      ...fragment,
+      transpose: randomTransposeDirection,
+      octave: octave,
+    })) as FragmentWithNotesAndTransposeDirection[],
+    selectedGroup,
+  }
 }
 
 export const testModeMachine = createMachine(
@@ -107,7 +78,8 @@ export const testModeMachine = createMachine(
       isClickable: undefined as boolean | undefined,
       isAnimating: undefined as boolean | undefined,
       isLooping: undefined as boolean | undefined,
-      allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+      originalFragmentGroups: [] as FragmentGroup[],
+      selectedGroup: undefined as FragmentGroup | undefined,
       fragmentsToShow: 0 as number,
       activeFragment: undefined as FragmentWithNotes | undefined,
       shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
@@ -117,7 +89,7 @@ export const testModeMachine = createMachine(
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
-      fragmentGroups: [] as FragmentGroup[],
+      groups: [] as FragmentGroup[],
     },
     schema: {
       services: {} as {
@@ -138,12 +110,12 @@ export const testModeMachine = createMachine(
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes | undefined }
         | {
             type: 'STARTROUND'
-            levelFragments: FragmentWithNotes[]
+            originalFragmentGroups: FragmentGroup[]
             fragmentsToShow: number
             countdownTimings: CountdownTimings
             amountOfScenes: number
             countdownActions: StopwatchActions
-            fragmentGroups: FragmentGroup[]
+            groups: FragmentGroup[]
           },
     },
     tsTypes: {} as import('./testMachine.typegen').Typegen0,
@@ -302,15 +274,22 @@ export const testModeMachine = createMachine(
         }
       }),
       setupData: assign((_, event) => {
-        const { setUsedFragments } = useLuisterenStore.getState()
-        setUsedFragments(new Array(event.levelFragments.length).fill(0))
+        const {
+          originalFragmentGroups,
+          fragmentsToShow,
+          amountOfScenes,
+          countdownTimings,
+          countdownActions,
+          groups,
+        } = event
+
         return {
-          allLevelFragments: event.levelFragments,
-          fragmentsToShow: event.fragmentsToShow,
-          amountOfScenes: event.amountOfScenes,
-          countdownTimings: event.countdownTimings,
-          countdownActions: event.countdownActions,
-          fragmentGroups: event.fragmentGroups,
+          originalFragmentGroups: originalFragmentGroups,
+          fragmentsToShow,
+          amountOfScenes,
+          countdownTimings,
+          countdownActions,
+          groups,
         }
       }),
       startPlaying: () => {
@@ -353,19 +332,20 @@ export const testModeMachine = createMachine(
           isLooping: false,
           activeFragment: undefined,
           guessedFragment: undefined,
-          shownFragments: [],
+          // shownFragments: [],
+          fragmentGroups: [],
         }
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
-        const copiedFragments = deepCopy(context.allLevelFragments)
-        const transposedFragments = Transpose(
-          copiedFragments,
+        const copiedGroups = deepCopy(context.groups)
+        const { transposedFragments, selectedGroup } = Transpose(
+          // copiedFragments,
           context.fragmentsToShow,
           context.amountPlayed,
           context.amountOfScenes,
+          copiedGroups,
         )
-
         const newActiveFragment =
           transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
@@ -373,6 +353,7 @@ export const testModeMachine = createMachine(
           guessedFragment: undefined,
           shownFragments: transposedFragments,
           activeFragment: newActiveFragment,
+          selectedGroup: selectedGroup,
         }
       }),
     },

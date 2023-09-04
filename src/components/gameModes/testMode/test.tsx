@@ -1,4 +1,4 @@
-import { GameMode } from '@prisma/client'
+import { Fragment, GameMode } from '@prisma/client'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
 import { FragmentGroup } from 'types/fragmentGroup'
@@ -20,6 +20,7 @@ interface TestModeProps {
   sublevelId: string
   gameId: string
   fragmentsToShow: number
+  fragmentGroups: FragmentGroup[]
   playTime: number | null | undefined
   mode: GameMode | null | undefined
 }
@@ -30,6 +31,7 @@ const Test: React.FC<TestModeProps> = ({
   levelId,
   sublevelId,
   fragmentsToShow,
+  fragmentGroups,
   playTime,
   mode,
 }) => {
@@ -39,21 +41,17 @@ const Test: React.FC<TestModeProps> = ({
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
   const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
-    state.matches('answeringQuestions')
+    state.matches('answeringQuestions'),
   )
   const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
-    state.matches('FinishedPlayingTestMode')
+    state.matches('FinishedPlayingTestMode'),
   )
   const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
-    state.matches('playing.didNotAnswerFragment')
+    state.matches('playing.didNotAnswerFragment'),
   )
 
   const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery({
-    sublevelId: sublevelId,
-  })
-
-  const fragmentGroups = api.sublevel.getFragmentGroupsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
 
@@ -67,7 +65,7 @@ const Test: React.FC<TestModeProps> = ({
       three: mode?.three ?? 1000,
       go: mode?.go ?? 1000,
     }),
-    [mode]
+    [mode],
   )
 
   function getPauseOrResumeEvent() {
@@ -80,12 +78,12 @@ const Test: React.FC<TestModeProps> = ({
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',
-      levelFragments: fragments,
+      originalFragmentGroups: fragmentGroups as FragmentGroup[],
       fragmentsToShow: fragmentsToShow,
       countdownTimings: countdownTimings,
       amountOfScenes: mode?.amountOfScenes ?? 0,
       countdownActions: stopwatch.actions,
-      fragmentGroups: fragmentGroups.data?.fragmentGroups ?? [] as FragmentGroup[],
+      groups: fragmentGroups as FragmentGroup[],
     })
   }, [])
 
