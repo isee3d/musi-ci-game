@@ -5,15 +5,31 @@ import { Parser } from 'json2csv'
 import { Button } from '~/components/ui/button'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 
+function flattenObject(obj: any, prefix = ''): { [key: string]: any } {
+  return Object.keys(obj).reduce<{ [key: string]: any }>((acc, k) => {
+    const pre = prefix.length ? prefix + '_' : ''
+    if (typeof obj[k] === 'object' && obj[k] !== null && !(obj[k] instanceof Date)) {
+      Object.assign(acc, flattenObject(obj[k], pre + k))
+    } else {
+      acc[pre + k] = obj[k]
+    }
+    return acc
+  }, {})
+}
+
 const DownloadPage: NextPage = () => {
   useRequireAuth()
 
   const downloadQuery = api.download.getAll.useQuery()
 
   const downloadCSV = async () => {
+  const flattenedData = (downloadQuery.data?.levelResults ?? []).map((result) =>
+    flattenObject(result),
+  )
+
     const opts = { quote: '', delimiter: ';' }
     const json2csvParser = new Parser(opts)
-    const csv = json2csvParser.parse(downloadQuery.data ?? [])
+    const csv = json2csvParser.parse(flattenedData)
 
     const blob = new Blob([csv], { type: 'text/csv' })
     const link = document.createElement('a')
