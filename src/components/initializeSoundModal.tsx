@@ -12,7 +12,7 @@ interface BaseStaticModalProps {
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmodal }) => {
   const { audioContext } = useAudioServiceStore()
   const [guideText, setGuideText] = useState<string>(
-    ' Klik op de knop hieronder om het geluid in te schakelen.'
+    ' Klik op de knop hieronder om het geluid in te schakelen.',
   )
   const [isLoading, setLoading] = useState<boolean>(false)
 
@@ -24,11 +24,10 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   }
 
   async function initializeAudio() {
-    setLoading(true)
+    // setLoading(true)
     setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
     setClickedButton(true)
     await initializeSound()
-    setmodal(false)
   }
 
   useEffect(() => {
@@ -38,9 +37,16 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     }
   }, [])
 
-   if (!showModal || isLoading) {
-     return null
-   }
+  useEffect(() => {
+    if (audioContext !== undefined) {
+      console.log('audioContext', audioContext)
+      setmodal(false)
+    }
+  }, [audioContext])
+
+  //  if (!showModal || isLoading) {
+  //    return null
+  //  }
 
   return (
     <>

@@ -45,8 +45,8 @@ export async function initializeSound() {
     note: 'C5',
     volume: 1,
     sustain: 400,
-    releaseMs: 1000,
-    delay: 300,
+    releaseMs: 500,
+    delay: 100,
   })
 }
 
