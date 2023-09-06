@@ -1,21 +1,22 @@
-import { create } from 'zustand';
-import { mountStoreDevtool } from 'simple-zustand-devtools';
-import Sampler from '~/components/fragmentPlayer/audio/Sampler';
-import { FragmentWithNotes } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
-import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard';
-import { Note } from '@prisma/client';
+import { create } from 'zustand'
+import { mountStoreDevtool } from 'simple-zustand-devtools'
+import Sampler from '~/components/fragmentPlayer/audio/Sampler'
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard'
+import { Note } from '@prisma/client'
+import { canTranspose } from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
-    audioContext: AudioContext | undefined
-    activeFragment: FragmentWithNotes | undefined
-    piano: Sampler | undefined
-    soundBoard: Sampler | undefined
-    audioTime: number
-    BPM: number
-    PPQ: number
-    hasSupport: boolean
-    isInitialized: boolean
-};
+  audioContext: AudioContext | undefined
+  activeFragment: FragmentWithNotes | undefined
+  piano: Sampler | undefined
+  soundBoard: Sampler | undefined
+  audioTime: number
+  BPM: number
+  PPQ: number
+  hasSupport: boolean
+  isInitialized: boolean
+}
 
 type AudioserviceAction = {
   init: () => Promise<void>
@@ -44,10 +45,10 @@ type AudioserviceAction = {
 }
 
 const initialState = {
-    BPM: 60,
+  BPM: 60,
 }
 
-const MS_PER_MINUTE = 1000 * 60;
+const MS_PER_MINUTE = 1000 * 60
 
 export const useAudioServiceStore = create<AudioServiceState & AudioserviceAction>((set, get) => ({
   audioTime: 0,
@@ -176,11 +177,22 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   },
   transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave: number = 4) => {
     const newFragments: FragmentWithNotes[] = []
+    const originalDirection = direction
 
     for (let i = 0; i < fragments.length; i++) {
       const fragment = fragments[i]
       const notes: Note[] = []
       if (!fragment) continue
+
+      direction = originalDirection
+      while (!canTranspose(fragment, direction) && Math.abs(direction) > 0) {
+        direction -= Math.sign(direction) // Reduce direction by one semitone
+      }
+      if (Math.abs(direction) === 0) {
+        // If we've exhausted all possibilities, we simply use the original fragment
+        newFragments.push(fragment)
+        continue
+      }
 
       for (let j = 0; j < fragment.notes.length; j++) {
         const n = fragment.notes[j]
@@ -230,5 +242,5 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
 }))
 
 if (process.env.NODE_ENV === 'development') {
-    mountStoreDevtool('NoteStore', useAudioServiceStore);
+  mountStoreDevtool('NoteStore', useAudioServiceStore)
 }
