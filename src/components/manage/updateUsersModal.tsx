@@ -89,7 +89,7 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
             <div className="relative flex justify-center px-4">
               <Select
                 defaultValue={user.isAllowedToPlay?.toString() ?? 'false'}
-                onValueChange={(value: string) => updateUserRoleValues(value)}
+                onValueChange={(value: string) => updateUserIsAllowedToPlayValues(value)}
               >
                 <SelectTrigger className="w-[180px] border-2">
                   <SelectValue />

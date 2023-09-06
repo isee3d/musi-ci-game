@@ -271,6 +271,7 @@ export const spelenMachine = createMachine(
           newActiveFragment =
             transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
           setPlayedFragmentId(newActiveFragment?.id ?? 0)
+          console.log('newActiveFragment', newActiveFragment, 'transposedFragments', transposedFragments)
         }
         return {
           guessedFragment: undefined,

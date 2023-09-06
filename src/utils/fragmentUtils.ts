@@ -7,9 +7,12 @@ export const getOriginalFragments = (
 ): FragmentWithNotes[] => {
   const shownFragmentIds = shownFragments.map((frag) => frag.id)
 
-  return allLevelFragments.filter((frag) =>
+  const originalFragments = allLevelFragments.filter((frag) =>
     shownFragmentIds.includes(frag.id),
   ) as FragmentWithNotes[]
+
+  console.log('originalFragments', originalFragments, 'shown: ', shownFragments)
+  return originalFragments
 }
 
 export const getOriginalFragmentsFromFragmentGroup = (
@@ -28,5 +31,6 @@ export const getShownFragmentByFragmentId = (
   shownFragments: FragmentWithNotesAndTransposeDirection[],
   fragmentId: number,
 ): FragmentWithNotes | undefined => {
+  console.log('getShownFragmentByFragmentId', shownFragments, fragmentId)
   return shownFragments.find((frag) => frag.id === fragmentId)
 }
