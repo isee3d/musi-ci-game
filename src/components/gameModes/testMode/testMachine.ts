@@ -41,13 +41,18 @@ const Transpose = (
     throw new Error('No selected group available')
   }
 
+  // Separate out the fragments that are marked "useAlways"
+  const alwaysUseFragments = selectedGroup.fragments.filter((f) => f.useAlways)
+  const otherFragments = selectedGroup.fragments.filter((f) => !f.useAlways)
+
   // Filter fragments that haven't been played more than the threshold
-  const candidates = selectedGroup.fragments.filter(
-    (f) => (usedFragmentsMap[f.id] || 0) < probThreshold,
-  )
+  const candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
   // Shuffle and select the required number of fragments
   const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
-  const selectedFragments = shuffledCandidates.slice(0, fragmentsToShow)
+  const remainingSpots = fragmentsToShow - alwaysUseFragments.length
+  const selectedFromCandidates = shuffledCandidates.slice(0, remainingSpots)
+
+  const selectedFragments = [...alwaysUseFragments, ...selectedFromCandidates]
 
   // Transpose the selected fragments
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6

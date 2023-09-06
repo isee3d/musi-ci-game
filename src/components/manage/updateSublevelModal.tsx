@@ -390,7 +390,7 @@ const UpdateSublevelModal: React.FC<{
           <Button
             type="submit"
             className="mx-3"
-            disabled={addedGameModes.length === 0 || addedFragments.length === 0}
+            disabled={addedGameModes.length === 0}
           >
             Sla aangepaste sublevel op
           </Button>

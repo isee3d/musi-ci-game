@@ -43,20 +43,18 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
         questions.map((question) => ({
           question,
           answer: '',
-        }))
+        })),
       )
     }
   }, [questions])
 
-
   const form = useForm<z.infer<typeof questionAnswerFormSchema>>({
     mode: 'onBlur',
     resolver: zodResolver(questionAnswerFormSchema),
-    defaultValues:
-      questions?.map((question) => ({
-        question,
-        answer: '',
-      })) ,
+    defaultValues: questions?.map((question) => ({
+      question,
+      answer: '',
+    })),
   })
 
   function onSubmit(data: z.infer<typeof questionAnswerFormSchema>) {
@@ -66,6 +64,12 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
     }))
     sendQuestionAnswers(dataWithUserId)
   }
+
+  useEffect(() => {
+    if (questions?.length === 0) {
+      send('ANSWEREDQUESTIONS')
+    }     
+  }, [])
 
   return (
     <>

@@ -22,7 +22,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
 }) => {
     const playAudio = async () => {
         if(!fragment) return;
-        start(fragment, options?.onStartedPlaying, options?.onFinishedPlaying);
+        start(fragment, {onStartPlaying: options?.onStartedPlaying, onFinishedPlaying: options?.onFinishedPlaying });
     };
 
     useEffect(() => {
