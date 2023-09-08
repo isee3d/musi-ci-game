@@ -40,15 +40,15 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     }
   }, [])
 
-  useEffect(() => {
-    if (audioContext !== undefined) {
-      console.log('audioContext', audioContext)
-       if (!piano) return
-       if (audioContext.state === 'suspended') return
-       console.log('audioContext.state', audioContext.state)
-      setmodal(false)
-    }
-  }, [audioContext])
+  // useEffect(() => {
+  //   if (audioContext !== undefined) {
+  //     console.log('audioContext', audioContext)
+  //      if (!piano) return
+  //      if (audioContext.state === 'suspended') return
+  //      console.log('audioContext.state', audioContext.state)
+  //     setmodal(false)
+  //   }
+  // }, [audioContext])
 
   //  if (!showModal || isLoading) {
   //    return null
