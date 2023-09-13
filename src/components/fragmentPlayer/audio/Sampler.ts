@@ -84,7 +84,7 @@ export default class Sampler {
     this.ready = Promise.all(
       samples.map((s) => {
         return Sampler.setupSampleData(s, this.notes)
-      })
+      }),
     ).then((sampleData) => {
       sampleData.forEach((s) => {
         const { note, buffer } = s
@@ -96,7 +96,7 @@ export default class Sampler {
 
   private static async getAudioBufferFromPath(
     filepath: string,
-    name: string
+    name: string,
   ): Promise<NamedAudioBuffer> {
     const { returnAudioBuffer } = useAudioServiceStore.getState()
     const response = await fetch(filepath)
@@ -113,7 +113,7 @@ export default class Sampler {
 
   private static async setupSampleData(
     sampleData: SampleLoadData,
-    notes: string[]
+    notes: string[],
   ): Promise<{
     note: string
     isPlaying: boolean
@@ -174,34 +174,33 @@ export default class Sampler {
 
       const { note, attackMs, sustain, releaseMs, volume, delay } = options
 
-      setTimeout(() => {
-        if (!audioContext) return
+      if (!audioContext) return
 
-        const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note)
-        const playRate = this.getBufferPlaybackRate(buffer, note)
+      const buffer = this.samples[note]?.buffer || this.returnClosestBuffer(note)
+      const playRate = this.getBufferPlaybackRate(buffer, note)
 
-        const noteEnvelope = audioContext.createGain() as GainNode
+      const noteEnvelope = audioContext.createGain() as GainNode
 
-        const sampleSource = audioContext.createBufferSource()
-        sampleSource.buffer = buffer
+      const sampleSource = audioContext.createBufferSource()
+      sampleSource.buffer = buffer
 
-        sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime())
+      sampleSource.playbackRate.setValueAtTime(playRate, getCurrentTime())
 
-        const now = getCurrentTime()
+      const now = getCurrentTime()
+      const startTime = now + (delay || 0) / 1000 // Add delay to the current time
 
-        this.updateSamples(note, sampleSource)
+      this.updateSamples(note, sampleSource)
 
-        noteEnvelope.gain.cancelScheduledValues(now)
-        noteEnvelope.gain.setValueAtTime(0, now)
-        noteEnvelope.gain.linearRampToValueAtTime(volume, now + (attackMs || 1) / 1000)
-        noteEnvelope.gain.linearRampToValueAtTime(0, now + sustain / 1000 + releaseMs / 1000)
-        sampleSource.connect(noteEnvelope).connect(audioContext.destination)
-        sampleSource.start()
-        sampleSource.stop(now + sustain / 1000 + releaseMs / 1000)
-        sampleSource.onended = () => {
-          resolve()
-        }
-      }, delay || 0)
+      noteEnvelope.gain.cancelScheduledValues(now)
+      noteEnvelope.gain.setValueAtTime(0, startTime)
+      noteEnvelope.gain.linearRampToValueAtTime(volume, startTime + (attackMs || 1) / 1000)
+      noteEnvelope.gain.linearRampToValueAtTime(0, startTime + sustain / 1000 + releaseMs / 1000)
+      sampleSource.connect(noteEnvelope).connect(audioContext.destination)
+      sampleSource.start(startTime)
+      sampleSource.stop(startTime + sustain / 1000 + releaseMs / 1000)
+      sampleSource.onended = () => {
+        resolve()
+      }
     })
   }
 

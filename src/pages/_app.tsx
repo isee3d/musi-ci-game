@@ -21,6 +21,8 @@ import { env } from '~/env.mjs'
 import SetTeamIdAndParticipantIdModal from '~/components/setTeamIdAndParticipantIdModal'
 import { cn } from '~/lib/utils'
 import { ThemeProvider } from '~/components/themeProvider'
+import { useRouter } from 'next/router'
+import { startSilentAudio } from '~/utils/audioThrottlePreventHelper'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -44,18 +46,39 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const [showModal, setShowModal] = useState(true)
-  const { init: initAudio } = useAudioServiceStore.getState()
+  const { init: initAudio, audioContext } = useAudioServiceStore.getState()
+  const router = useRouter()
 
   useEffect(() => {
     if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
       initAudio()
     }
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return
+
     if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
       inspect({
         url: 'https://statecharts.io/inspect', // (default)
         iframe: false,
       })
+    }
+
+    const initializeSilentAudio = () => {
+      console.log('in trigger mode')
+      if (router.pathname.includes('Luisteren')) {
+        setShowModal(true)
+      }
+    }
+
+    window.addEventListener('focus', initializeSilentAudio)
+    window.addEventListener('blur', initializeSilentAudio)
+    router.events.on('routeChangeComplete', initializeSilentAudio)
+    document.addEventListener('visibilitychange', initializeSilentAudio)
+
+    return () => {
+      window.removeEventListener('focus', initializeSilentAudio)
+      window.removeEventListener('blur', initializeSilentAudio)
+      router.events.off('routeChangeComplete', initializeSilentAudio)
+      document.removeEventListener('visibilitychange', initializeSilentAudio)
     }
   }, [])
 
@@ -71,7 +94,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           'min-h-screen font-sans antialiased',
           fontSans.variable,
           fontHeading.variable,
-          poppins.variable
+          poppins.variable,
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

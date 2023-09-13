@@ -3,6 +3,7 @@ import { initializeSound } from '~/components/fragmentPlayer/audio/AudioControls
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
+import { startSilentAudio } from '~/utils/audioThrottlePreventHelper'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -14,7 +15,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   const [guideText, setGuideText] = useState<string>(
     ' Klik op de knop hieronder om het geluid in te schakelen.',
   )
-  const [isLoading, setLoading] = useState<boolean>(false)
 
   const [clickedButton, setClickedButton] = useState<boolean>(false)
 
@@ -24,10 +24,10 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
   }
 
   async function initializeAudio() {
-    // setLoading(true)
     setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
     setClickedButton(true)
     await initializeSound()
+    startSilentAudio()
     if(audioContext?.state === 'running'){
       setmodal(false)
     }
@@ -40,19 +40,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (audioContext !== undefined) {
-  //     console.log('audioContext', audioContext)
-  //      if (!piano) return
-  //      if (audioContext.state === 'suspended') return
-  //      console.log('audioContext.state', audioContext.state)
-  //     setmodal(false)
-  //   }
-  // }, [audioContext])
-
-  //  if (!showModal || isLoading) {
-  //    return null
-  //  }
 
   return (
     <>
