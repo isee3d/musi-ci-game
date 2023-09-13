@@ -56,7 +56,7 @@
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 750,
   // Workbench settings
-  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreview": true,
   "workbench.editor.closeOnFileDelete": true,
   "workbench.editor.highlightModifiedTabs": true,
   // Tailwind CSS
