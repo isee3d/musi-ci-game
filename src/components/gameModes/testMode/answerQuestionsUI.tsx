@@ -68,8 +68,8 @@ const AnswerQuestionsUI: React.FC<AnswerQuestionsProps> = ({ sublevelId, questio
   useEffect(() => {
     if (questions?.length === 0) {
       send('ANSWEREDQUESTIONS')
-    }     
-  }, [])
+    }
+  }, [questions])
 
   return (
     <>
