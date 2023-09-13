@@ -165,10 +165,11 @@ export const subLevelRouter = createTRPCRouter({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
         fragmentGroups: z.array(z.number().int()),
+        questions: z.array(z.number().int()),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, gameModes, fragments, fragmentGroups } = input
+      const { id, gameModes, fragments, fragmentGroups, questions } = input
       return await ctx.prisma.subLevel.update({
         where: { id },
         data: {
@@ -181,6 +182,9 @@ export const subLevelRouter = createTRPCRouter({
           },
           fragmentGroups: {
             set: fragmentGroups?.map((id) => ({ id })),
+          },
+          questions: {
+            set: questions?.map((id) => ({ id })),
           },
         },
       })

@@ -9,13 +9,22 @@ import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import { Label } from '~/components/ui/label'
 import CreateQuestionModal from '~/components/manage/createQuestionModal'
+import toast from 'react-hot-toast'
 
 const ManageQuestionsPage: NextPage = () => {
   useRequireAuth()
   useRequireAdminRole()
-
+  const ctx = api.useContext()
   const questionsQuery = api.question.getAllQuestions.useQuery()
-  const { mutate: deleteQuestion } = api.question.deleteQuestion.useMutation()
+  const { mutate: deleteQuestion } = api.question.deleteQuestion.useMutation({
+    onSuccess: () => {
+      toast.success('vraag verwijderd!')
+      ctx.question.getAllQuestions.invalidate()
+    },
+    onError: () => {
+      toast.error('er is iets misgegaan')
+    },
+  })
 
   const [createModal, setCreateModal] = useState(false)
 

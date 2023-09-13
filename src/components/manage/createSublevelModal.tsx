@@ -99,6 +99,7 @@ const CreateSublevelModal: React.FC<{
       })
       setAddedGameModes([])
       setAddedFragments([])
+      setAddedQuestions([])
       form.reset()
       setmodal(false)
     } else {
