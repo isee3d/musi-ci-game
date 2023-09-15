@@ -30,20 +30,34 @@ const DownloadPage: NextPage = () => {
 
     const workbook = new Workbook()
 
-     for (const [sheetName, sheetData] of Object.entries(data)) {
-       const worksheet = workbook.addWorksheet(sheetName)
+    for (const [sheetName, sheetData] of Object.entries(data)) {
+      const worksheet = workbook.addWorksheet(sheetName)
 
-       // Assuming the data is an array of objects, where each object is a row
-       // and the keys are the column headers
-       if (sheetData.length > 0) {
-         const headers = Object.keys(sheetData[0])
-         worksheet.addRow(headers)
+      // Assuming the data is an array of objects, where each object is a row
+      // and the keys are the column headers
+      if (sheetData.length > 0) {
+        const headers = Object.keys(sheetData[0])
+        worksheet.addRow(headers)
 
-         for (const row of sheetData) {
-           worksheet.addRow(Object.values(row))
-         }
-       }
-     }
+        for (const row of sheetData) {
+          worksheet.addRow(Object.values(row))
+        }
+
+        // Adjust column width
+        worksheet.columns.forEach((column) => {
+          let maxColumnLength = 0
+
+          column.eachCell({ includeEmpty: true }, (cell) => {
+            const columnLength = cell.text.length
+            if (columnLength > maxColumnLength) {
+              maxColumnLength = columnLength
+            }
+          })
+
+          column.width = maxColumnLength + 2 // Add some padding
+        })
+      }
+    }
 
     // Generate Excel and trigger download
     const buffer = await workbook.xlsx.writeBuffer()
