@@ -5,131 +5,18 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/
 
 export const downloadRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-        const [
-          users,
-          levels,
-          sublevels,
-          fragmentGroups,
-          fragments,
-          notes,
-          gameModes,
-          levelResults,
-          scenes,
-          sceneFragments,
-          relistenFragments,
-          questionAnswer,
-          activities,
-        ] = await Promise.all([
-          ctx.prisma.user.findMany({
-            select: {
-              id: true,
-              participantId: true,
-              role: true,
-              isAllowedToPlay: true,
-              createdAt: true,
-              levelResults: true,
-              questionAnswers: true,
-              activities: true,
-            },
-          }),
-          ctx.prisma.level.findMany({
-            include: {
-              subLevels: true,
-              levelResult: true,
-            },
-          }),
-          ctx.prisma.subLevel.findMany({
-            include: {
-              levels: true,
-              fragments: true,
-              gameModes: true,
-              levelResult: true,
-              questions: true,
-              fragmentGroups: true,
-            },
-          }),
-          ctx.prisma.fragmentGroup.findMany({
-            include: {
-              fragments: true,
-              subLevels: true,
-            },
-          }),
-          ctx.prisma.fragment.findMany({
-            include: {
-              notes: true,
-              level: true,
-              chosenScene: true,
-              playedScene: true,
-              relistenfragment: true,
-              sceneFragment: true,
-              fragmentgroup: true,
-            },
-          }),
-          ctx.prisma.note.findMany({
-            include: {
-              fragment: true,
-            },
-          }),
-          ctx.prisma.gameMode.findMany({
-            include: {
-              levels: true,
-              levelResult: true,
-            },
-          }),
-          ctx.prisma.levelResult.findMany({
-            include: {
-              user: true,
-              Level: true,
-              subLevel: true,
-              gameMode: true,
-              Scenes: true,
-            },
-          }),
-          ctx.prisma.scene.findMany({
-            include: {
-              chosenFragment: true,
-              sceneFragments: true,
-              levelResult: true,
-              relistenFragments: true,
-              playedFragment: true,
-            },
-          }),
-          ctx.prisma.sceneFragment.findMany({
-            include: {
-              fragment: true,
-              scene: true,
-            },
-          }),
-          ctx.prisma.relistenFragment.findMany({
-            include: {
-              scene: true,
-              fragment: true,
-            },
-          }),
-          ctx.prisma.questionAnswer.findMany({
-            include: {
-              user: true,
-            },
-          }),
-          ctx.prisma.activity.findMany({
-            include: {
-              user: true,
-            },
-          }),
-        ])
-
-    // const users = await ctx.prisma.user.findMany({
-    //   select: {
-    //     id: true,
-    //     participantId: true,
-    //     role: true,
-    //     isAllowedToPlay: true,
-    //     createdAt: true,
-    //     levelResults: true,
-    //     questionAnswers: true,
-    //     activities: true,
-    //   },
-    // })
+    const users = await ctx.prisma.user.findMany({
+      select: {
+        id: true,
+        participantId: true,
+        role: true,
+        isAllowedToPlay: true,
+        createdAt: true,
+        levelResults: true,
+        questionAnswers: true,
+        activities: true,
+      },
+    })
 
     // const levels = await ctx.prisma.level.findMany({
     //   include: {
@@ -486,18 +373,18 @@ export const downloadRouter = createTRPCRouter({
 
     return {
       users,
-      levels,
-      sublevels,
-      fragmentGroups,
-      fragments,
-      notes,
-      gameModes,
-      levelResults,
-      scenes,
-      sceneFragments,
-      relistenFragments,
-      questionAnswer,
-      activities,
+      // levels,
+      // sublevels,
+      // fragmentGroups,
+      // fragments,
+      // notes,
+      // gameModes,
+      // levelResults,
+      // scenes,
+      // sceneFragments,
+      // relistenFragments,
+      // questionAnswer,
+      // activities,
       // levels,
       // sublevels,
       // fragmentGroups,
