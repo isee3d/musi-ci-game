@@ -24,18 +24,18 @@ const DownloadPage: NextPage = () => {
   useRequireResearcherRole()
 
   const usersQuery = api.download.getAllUsers.useQuery()
-  // const levelsQuery = api.download.getAllLevels.useQuery()
-  // const sublevelsQuery = api.download.getAllSublevels.useQuery()
-  // const fragmentGroupsQuery = api.download.getAllFragmentGroups.useQuery()
-  // const fragmentsQuery = api.download.getAllFragments.useQuery()
-  // const notesQuery = api.download.getAllNotes.useQuery()
-  // const gameModesQuery = api.download.getAllGameModes.useQuery()
+  const levelsQuery = api.download.getAllLevels.useQuery()
+  const sublevelsQuery = api.download.getAllSublevels.useQuery()
+  const fragmentGroupsQuery = api.download.getAllFragmentGroups.useQuery()
+  const fragmentsQuery = api.download.getAllFragments.useQuery()
+  const notesQuery = api.download.getAllNotes.useQuery()
+  const gameModesQuery = api.download.getAllGameModes.useQuery()
   // const levelResultsQuery = api.download.getAllLevelResults.useQuery()
-  // const scenesQuery = api.download.getAllScenes.useQuery()
+  const scenesQuery = api.download.getAllScenes.useQuery()
   const sceneFragmentsQuery = api.download.getAllSceneFragments.useQuery()
   const relistenFragmentsQuery = api.download.getAllRelistenFragments.useQuery()
-  // const questionAnswersQuery = api.download.getAllQuestionAnswers.useQuery()
-  // const activitiesQuery = api.download.getAllActivities.useQuery()
+  const questionAnswersQuery = api.download.getAllQuestionAnswers.useQuery()
+  const activitiesQuery = api.download.getAllActivities.useQuery()
 
   const downloadExcel = async () => {
     const data = usersQuery.data
