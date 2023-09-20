@@ -18,7 +18,7 @@ interface BaseStaticModalProps {
   user: User
 }
 
-const userRoles = ['USER', 'ADMIN'] as const
+const userRoles = ['USER', 'ADMIN', 'RESEARCHER'] as const
 
 const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) => {
   const ctx = api.useContext()

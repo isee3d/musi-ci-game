@@ -9,9 +9,29 @@ export const useRequireAdminRole = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const userRole = sessionData?.user?.role || ''
+    const userRole = sessionData?.user?.role
+
+    if(userRole === undefined) return
+
     if (userRole !== UserRole.ADMIN) {
-      // router.push('/')
+      router.push('/')
+    }
+  }, [sessionData?.user, router])
+
+  return sessionData
+}
+
+export const useRequireResearcherRole = () => {
+  const { data: sessionData } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    const userRole = sessionData?.user?.role
+
+    if (userRole === undefined) return
+
+    if (userRole === UserRole.USER) {
+      router.push('/')
     }
   }, [sessionData?.user, router])
 

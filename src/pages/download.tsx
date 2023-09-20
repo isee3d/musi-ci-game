@@ -5,6 +5,7 @@ import { Parser } from 'json2csv'
 import { Button } from '~/components/ui/button'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { Workbook } from 'exceljs'
+import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
 
 function flattenObject(obj: any, prefix = ''): { [key: string]: any } {
   return Object.keys(obj).reduce<{ [key: string]: any }>((acc, k) => {
@@ -20,6 +21,7 @@ function flattenObject(obj: any, prefix = ''): { [key: string]: any } {
 
 const DownloadPage: NextPage = () => {
   useRequireAuth()
+  useRequireResearcherRole()
 
   const downloadQuery = api.download.getAll.useQuery()
 

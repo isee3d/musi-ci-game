@@ -46,7 +46,7 @@ const navitemsTemplate: NavItem[] = [
   },
   {
     title: 'download data',
-    href: '/download'
+    href: '/download',
   },
   {
     title: 'Vragen',
@@ -55,7 +55,14 @@ const navitemsTemplate: NavItem[] = [
   {
     title: 'Fragment Groepen',
     href: '/manage/fragmentGroup',
-  }
+  },
+]
+
+const navItemsResearcher: NavItem[] = [
+  {
+    title: 'download data',
+    href: '/download',
+  },
 ]
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -69,6 +76,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     if (sessionData?.user?.role === 'ADMIN') {
       setMainNavItems(navitemsTemplate)
+    } else if (sessionData?.user?.role === 'RESEARCHER') {
+      setMainNavItems(navItemsResearcher)
     } else {
       setMainNavItems([])
     }
