@@ -26,12 +26,14 @@ const Transpose = (
   }
 
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
+  console.log('randomTransposeDirection', randomTransposeDirection)
+  // const randomTransposeDirection = -12
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
   const transposedFragments = transposeFragments(
     selectedFragments,
     randomTransposeDirection,
-    randomOctave,
+    // randomOctave,
   )
   const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
     return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }

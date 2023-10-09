@@ -12,7 +12,7 @@ export const getOriginalFragments = (
     shownFragmentIds.includes(frag.id),
   ) as FragmentWithNotes[]
 
-  console.log('originalFragments', originalFragments, 'shown: ', shownFragments)
+  // console.log('originalFragments', originalFragments, 'shown: ', shownFragments)
   return originalFragments
 }
 
