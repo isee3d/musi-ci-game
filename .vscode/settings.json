@@ -27,10 +27,8 @@
   "editor.formatOnPaste": true,
   "editor.foldingImportsByDefault": true,
   "editor.codeActionsOnSave": {
-    // "eslint.format.enable": true,
-    // "source.fixAll.eslint": true,
-    "pretter.formatOnSave": true,
-    "addMissingImports": true,
+    "pretter.formatOnSave": "explicit",
+    "addMissingImports": "explicit"
   },
   // Getting used to this one, don't know if I like it yet
   "editor.cursorSmoothCaretAnimation": "on",

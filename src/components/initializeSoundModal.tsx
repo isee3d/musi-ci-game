@@ -28,6 +28,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     setClickedButton(true)
     await initializeSound()
     startSilentAudio()
+    console.log('audioContext?.state', audioContext?.state)
     if(audioContext?.state === 'running'){
       setmodal(false)
     }

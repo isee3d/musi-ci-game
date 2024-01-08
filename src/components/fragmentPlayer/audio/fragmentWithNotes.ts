@@ -8,6 +8,10 @@ export interface FragmentWithNotes {
     useAlways?: boolean | null | undefined;
 }
 
+export interface FragmentWithNotesAndWeight extends FragmentWithNotes {
+    weight: number;
+}
+
 export type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number, octave: 0 | 1 | 2 };
 
 export interface FragmentToPlay extends FragmentWithNotes {

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { FragmentWithNotes, FragmentWithNotesAndWeight } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
 import { canTranspose } from '~/utils/fragmentUtils'
@@ -37,11 +37,19 @@ type AudioserviceAction = {
     direction: number,
     octave?: number,
   ) => FragmentWithNotes[]
-  transposeFragmentsInOctave(
-    fragments: FragmentWithNotes[],
+  transposeWeightedFragments: (
+    fragments: FragmentWithNotesAndWeight[],
     direction: number,
-    octave: 0 | 1 | 2,
-  ): FragmentWithNotes[]
+    octave?: number,
+  ) => FragmentWithNotesAndWeight[]
+  chooseWeightedActiveFragment: (
+    fragments: FragmentWithNotesAndWeight[],
+  ) => FragmentWithNotesAndWeight | undefined
+  // transposeFragmentsInOctave(
+  //   fragments: FragmentWithNotes[],
+  //   direction: number,
+  //   octave: 0 | 1 | 2,
+  // ): FragmentWithNotes[]
 }
 
 const initialState = {
@@ -126,103 +134,114 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       set({ hasSupport: false })
     }
   },
-  transposeFragmentsInOctave: (
-    fragments: FragmentWithNotes[],
+  // transposeFragmentsInOctave: (
+  //   fragments: FragmentWithNotes[],
+  //   direction: number,
+  //   octave: 0 | 1 | 2 = 1,
+  // ) => {
+  //   const newFragments: FragmentWithNotes[] = []
+
+  //   for (let i = 0; i < fragments.length; i++) {
+  //     const fragment = fragments[i]
+  //     const notes: Note[] = []
+  //     if (!fragment) continue
+  //     for (let j = 0; j < fragment.notes.length; j++) {
+  //       const n = fragment.notes[j]
+  //       if (!n) continue
+  //       const note = n.name.replace(/\d/, '')
+  //       let currentOctave = octave
+  //       let index = allOctaves[currentOctave].findIndex((no) => no.replace(/\d/, '') === note)
+
+  //       // Transpose in the given direction.
+  //       index += direction
+
+  //       // Wrap around within the available octaves if out of bounds.
+  //       while (index < 0) {
+  //         currentOctave -= 1
+  //         if (currentOctave < 0) {
+  //           currentOctave = 2 // Wrap to the highest octave
+  //         }
+  //         index += 12
+  //       }
+
+  //       while (index >= 12) {
+  //         currentOctave += 1
+  //         if (currentOctave > 2) {
+  //           currentOctave = 0 // Wrap to the lowest octave
+  //         }
+  //         index -= 12
+  //       }
+
+  //       const newNote = allOctaves[currentOctave][index]
+  //       if (!newNote) continue
+
+  //       n.name = newNote
+  //       notes.push(n)
+  //     }
+  //     fragment.notes = notes
+  //     newFragments.push(fragment)
+  //   }
+  //   return newFragments
+  // },
+  chooseWeightedActiveFragment: (fragments: FragmentWithNotesAndWeight[]) => {
+    return fragments[0]
+  },
+  transposeWeightedFragments: (
+    fragments: FragmentWithNotesAndWeight[],
     direction: number,
-    octave: 0 | 1 | 2 = 1,
+    octave?: number,
   ) => {
+    return fragments
+  },
+  transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave?: number) => {
     const newFragments: FragmentWithNotes[] = []
 
-    for (let i = 0; i < fragments.length; i++) {
-      const fragment = fragments[i]
-      const notes: Note[] = []
+    for (let fragment of fragments) {
       if (!fragment) continue
-      for (let j = 0; j < fragment.notes.length; j++) {
-        const n = fragment.notes[j]
-        if (!n) continue
+
+      // Assuming the first note in the fragment is the ground tone
+      const groundTone = fragment.notes[0]
+      if (!groundTone) continue
+
+      const groundToneNote = groundTone.name.replace(/\d/, '')
+      const groundToneOctave = parseInt(groundTone.name.replace(/\D+/, ''))
+
+      const groundToneIndex = baseNotes.findIndex((no) => no === groundToneNote)
+      const totalShift = groundToneIndex + direction
+
+      const transposedGroundToneOctave = groundToneOctave + Math.floor(totalShift / 12)
+      let transposedGroundToneIndex = totalShift % 12
+      if (transposedGroundToneIndex < 0) transposedGroundToneIndex += 12
+
+      const semitoneDifference =
+        transposedGroundToneIndex +
+        12 * transposedGroundToneOctave -
+        (groundToneIndex + 12 * groundToneOctave)
+
+      const notes: Note[] = []
+      for (let n of fragment.notes) {
         const note = n.name.replace(/\d/, '')
-        let currentOctave = octave
-        let index = allOctaves[currentOctave].findIndex((no) => no.replace(/\d/, '') === note)
+        const currentOctave = parseInt(n.name.replace(/\D+/, ''))
 
-        // Transpose in the given direction.
-        index += direction
+        const currentIndex = baseNotes.findIndex((no) => no === note)
+        const totalShiftForNote = currentIndex + 12 * currentOctave + semitoneDifference
 
-        // Wrap around within the available octaves if out of bounds.
-        while (index < 0) {
-          currentOctave -= 1
-          if (currentOctave < 0) {
-            currentOctave = 2 // Wrap to the highest octave
-          }
-          index += 12
-        }
+        const newOctave = Math.floor(totalShiftForNote / 12)
+        const newIndex = totalShiftForNote % 12
 
-        while (index >= 12) {
-          currentOctave += 1
-          if (currentOctave > 2) {
-            currentOctave = 0 // Wrap to the lowest octave
-          }
-          index -= 12
-        }
-
-        const newNote = allOctaves[currentOctave][index]
-        if (!newNote) continue
-
-        n.name = newNote
+        const newNoteBase = baseNotes[newIndex] || 'C'
+        const newNoteName = newNoteBase + newOctave
+        n.name = newNoteName
         notes.push(n)
       }
+
       fragment.notes = notes
       newFragments.push(fragment)
     }
+
     return newFragments
   },
-  transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave?: number) => {
-   const newFragments: FragmentWithNotes[] = []
 
-   for (let fragment of fragments) {
-     if (!fragment) continue
-
-     // Assuming the first note in the fragment is the ground tone
-     const groundTone = fragment.notes[0]
-     if (!groundTone) continue
-
-     const groundToneNote = groundTone.name.replace(/\d/, '') 
-     const groundToneOctave = parseInt(groundTone.name.replace(/\D+/, ''))
-
-     const groundToneIndex = baseNotes.findIndex((no) => no === groundToneNote)
-     const totalShift = groundToneIndex + direction
-
-     const transposedGroundToneOctave = groundToneOctave + Math.floor(totalShift / 12)
-     let transposedGroundToneIndex = totalShift % 12
-     if (transposedGroundToneIndex < 0) transposedGroundToneIndex += 12
-
-     const semitoneDifference =
-       transposedGroundToneIndex +
-       12 * transposedGroundToneOctave -
-       (groundToneIndex + 12 * groundToneOctave)
-
-     const notes: Note[] = []
-     for (let n of fragment.notes) {
-       const note = n.name.replace(/\d/, '')
-       const currentOctave = parseInt(n.name.replace(/\D+/, ''))
-
-       const currentIndex = baseNotes.findIndex((no) => no === note)
-       const totalShiftForNote = currentIndex + 12 * currentOctave + semitoneDifference
-
-       const newOctave = Math.floor(totalShiftForNote / 12)
-       const newIndex = totalShiftForNote % 12
-
-       const newNoteBase = baseNotes[newIndex] || 'C'
-       const newNoteName = newNoteBase + newOctave
-       n.name = newNoteName
-       notes.push(n)
-     }
-
-     fragment.notes = notes
-     newFragments.push(fragment)
-   }
-
-   return newFragments
-  },
   reset: () => {
     set(initialState)
   },
