@@ -4,7 +4,7 @@ import Sampler from '~/components/fragmentPlayer/audio/Sampler'
 import { FragmentWithNotes, FragmentWithNotesAndWeight, FragmentWithNotesWeightAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
-import { canTranspose } from '~/utils/fragmentUtils'
+import { adjustWeights, canTranspose } from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
   audioContext: AudioContext | undefined
@@ -184,7 +184,18 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   //   return newFragments
   // },
   chooseWeightedActiveFragment: (fragments: FragmentWithNotesWeightAndTransposeDirection[]) => {
-    // TODO: use weighted algoritm to choose fragment
+    let totalWeight = fragments.reduce((sum, fragment) => sum + fragment.weight, 0)
+    let random = Math.random() * totalWeight
+
+    for (let fragment of fragments) {
+      random -= fragment.weight
+      if(random < 0) {
+        console.log('chose fragment', fragment.id)
+        adjustWeights(fragments, fragment);
+        return fragment;
+      }
+    }
+    // Fallback
     return fragments[0]
   },
   transposeWeightedFragments: (

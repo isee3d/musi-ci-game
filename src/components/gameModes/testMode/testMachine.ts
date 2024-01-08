@@ -365,14 +365,10 @@ export const testModeMachine = createMachine(
           copiedGroups,
         )
 
-        // TODO: Here the weighted fragments should be used to set the new active fragment...
-        // use function from useAudioserviceStore => chooseWeightedActiveFragment => returns a fragment
-        // So the fragments that are set in this machine need to have a default weight of 1 or 100
-        const newActiveFragment =
-          transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
+        // const newActiveFragment =
+        //   transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
 
-        const newActiveFragment2 = chooseWeightedActiveFragment(transposedFragments)
-
+        const newActiveFragment = chooseWeightedActiveFragment(transposedFragments)
 
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {

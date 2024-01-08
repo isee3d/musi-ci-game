@@ -1,6 +1,6 @@
 import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard';
 import { FragmentGroup } from "types/fragmentGroup"
-import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes"
+import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection, FragmentWithNotesWeightAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes"
 
 export const getOriginalFragments = (
   shownFragments: FragmentWithNotesAndTransposeDirection[],
@@ -44,4 +44,17 @@ export function canTranspose(fragment: FragmentWithNotes, direction: number) {
     ...fragment.notes.map((n) => baseNotes.findIndex((no) => no === n.name.replace(/\d/, ''))),
   )
   return !(minNote + direction < 0 || maxNote + direction >= 12)
+}
+
+export function adjustWeights(fragments: FragmentWithNotesWeightAndTransposeDirection[], selectedFragment: FragmentWithNotesWeightAndTransposeDirection) {
+  const decreaseAmount = 10;
+  const increaseAmount = 4;
+
+  fragments.forEach(fragment => {
+    if (fragment.id === selectedFragment.id) {
+      fragment.weight = Math.max(fragment.weight - decreaseAmount, 0);
+    } else {
+      fragment.weight += increaseAmount;
+    }
+  });
 }
