@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
-import { FragmentWithNotes, FragmentWithNotesAndWeight } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { FragmentWithNotes, FragmentWithNotesAndWeight, FragmentWithNotesWeightAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
 import { canTranspose } from '~/utils/fragmentUtils'
@@ -36,15 +36,15 @@ type AudioserviceAction = {
     fragments: FragmentWithNotes[],
     direction: number,
     octave?: number,
-  ) => FragmentWithNotes[]
+  ) => FragmentWithNotes[] | FragmentWithNotesAndWeight[]
   transposeWeightedFragments: (
     fragments: FragmentWithNotesAndWeight[],
     direction: number,
     octave?: number,
   ) => FragmentWithNotesAndWeight[]
   chooseWeightedActiveFragment: (
-    fragments: FragmentWithNotesAndWeight[],
-  ) => FragmentWithNotesAndWeight | undefined
+    fragments: FragmentWithNotesWeightAndTransposeDirection[],
+  ) => FragmentWithNotesWeightAndTransposeDirection | undefined
   // transposeFragmentsInOctave(
   //   fragments: FragmentWithNotes[],
   //   direction: number,
@@ -183,7 +183,8 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   //   }
   //   return newFragments
   // },
-  chooseWeightedActiveFragment: (fragments: FragmentWithNotesAndWeight[]) => {
+  chooseWeightedActiveFragment: (fragments: FragmentWithNotesWeightAndTransposeDirection[]) => {
+    // TODO: use weighted algoritm to choose fragment
     return fragments[0]
   },
   transposeWeightedFragments: (
@@ -241,7 +242,6 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
 
     return newFragments
   },
-
   reset: () => {
     set(initialState)
   },

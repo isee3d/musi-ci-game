@@ -1,4 +1,4 @@
-import { FragmentGroup } from 'types/fragmentGroup'
+import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { createMachine, assign } from 'xstate'
@@ -6,6 +6,8 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import {
   FragmentWithNotes,
   FragmentWithNotesAndTransposeDirection,
+  FragmentWithNotesAndWeight,
+  FragmentWithNotesWeightAndTransposeDirection,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -16,7 +18,7 @@ const Transpose = (
   fragmentsToShow: number,
   amountPlayed: number,
   amountOfScenes: number,
-  fragmentGroups: FragmentGroup[],
+  fragmentGroups: FragmentGroupWithWeights[],
 ) => {
   const { transposeFragments } = useAudioServiceStore.getState()
   const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
@@ -56,9 +58,9 @@ const Transpose = (
 
   // Transpose the selected fragments
   const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  let transposedFragments: FragmentWithNotes[] = []
+  let transposedFragments: FragmentWithNotesAndWeight[] = []
   if ([3, 4, 5].includes(octave)) {
-    transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection, octave)
+    transposedFragments = transposeFragments(selectedFragments, randomTransposeDirection, octave) as FragmentWithNotesAndWeight[]
   }
 
   // Update the used fragments map
@@ -69,7 +71,7 @@ const Transpose = (
       ...fragment,
       transpose: randomTransposeDirection,
       octave: octave,
-    })) as FragmentWithNotesAndTransposeDirection[],
+    })) as FragmentWithNotesWeightAndTransposeDirection[],
     selectedGroup,
   }
 }
@@ -94,7 +96,7 @@ export const testModeMachine = createMachine(
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
-      groups: [] as FragmentGroup[],
+      groups: [] as FragmentGroupWithWeights[],
     },
     schema: {
       services: {} as {
@@ -288,13 +290,23 @@ export const testModeMachine = createMachine(
           groups,
         } = event
 
+        // Add a weight to every fragment at the start of the game
+
+        const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
+          ...group,
+          fragments: group.fragments.map((fragment) => ({
+            ...fragment,
+            weight: 100,
+          })),
+        }))
+
         return {
           originalFragmentGroups: originalFragmentGroups,
           fragmentsToShow,
           amountOfScenes,
           countdownTimings,
           countdownActions,
-          groups,
+          groups: convertedFragmentGroups,
         }
       }),
       startPlaying: () => {
@@ -343,6 +355,7 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
+        const { chooseWeightedActiveFragment } = useAudioServiceStore.getState()
         const copiedGroups = deepCopy(context.groups)
         const { transposedFragments, selectedGroup } = Transpose(
           // copiedFragments,
@@ -351,8 +364,16 @@ export const testModeMachine = createMachine(
           context.amountOfScenes,
           copiedGroups,
         )
+
+        // TODO: Here the weighted fragments should be used to set the new active fragment...
+        // use function from useAudioserviceStore => chooseWeightedActiveFragment => returns a fragment
+        // So the fragments that are set in this machine need to have a default weight of 1 or 100
         const newActiveFragment =
           transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
+
+        const newActiveFragment2 = chooseWeightedActiveFragment(transposedFragments)
+
+
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
           guessedFragment: undefined,
