@@ -201,7 +201,6 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   transposeWeightedFragments: (
     fragments: FragmentWithNotesAndWeight[],
     direction: number,
-    octave?: number,
   ) => {
     return fragments
   },

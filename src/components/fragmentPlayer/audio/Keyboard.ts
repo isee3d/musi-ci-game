@@ -1,5 +1,7 @@
 // import * as Tone from 'tone';
 
+import { FragmentWithNotesAndWeight } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
+
 export enum Keyboard {
   BACKSPACE = 8,
   TAB = 9,
@@ -124,6 +126,162 @@ export const generateNotes = (octaves: number) => {
 
   return notes;
 };
+
+export class PianoTransposer {
+    baseNotes: string[];
+    initialWeights: number[];
+    weights: number[];
+    selectionFrequency: number[];
+    lowestNote: string;
+    highestNote: string;
+    minOctave: number;
+    maxOctave: number;
+    maxFrequencyPerOctave: number;
+    fragmentFrequencyInOctave: Map<number, Map<number, number>>;
+
+   constructor(minOctave: number, maxOctave: number, maxFrequencyPerOctave?: number) {
+    this.baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    this.initialWeights = new Array(this.baseNotes.length).fill(1);
+    this.weights = [...this.initialWeights];
+    this.selectionFrequency = new Array(this.baseNotes.length).fill(0);
+    this.lowestNote = 'A0';
+    this.highestNote = 'C8';
+    this.minOctave = minOctave;
+    this.maxOctave = maxOctave;
+    this.maxFrequencyPerOctave = maxFrequencyPerOctave  || Infinity;
+
+    this.fragmentFrequencyInOctave = new Map();
+    for (let octave = minOctave; octave <= maxOctave; octave++) {
+        this.fragmentFrequencyInOctave.set(octave, new Map());
+    }
+  }
+
+   setWeights(newWeights: number[]) {
+    if (newWeights.length === this.baseNotes.length) {
+      this.weights = newWeights;
+    } else {
+      throw new Error('Weights array must be the same length as base notes');
+    }
+  }
+
+  resetWeights() {
+    this.weights.fill(1); // Reset to equal distribution
+  }
+
+  getWeights() {
+    return this.weights;
+  }
+
+  transposeFragments(fragments: FragmentWithNotesAndWeight[]) {
+    const newFragments: FragmentWithNotesAndWeight[] = [];
+    let direction: number = 0;
+
+    for (let fragment of fragments) {
+      if (!fragment || !fragment.notes.length) continue;
+
+      const notes = [];
+      direction = this.weightedRandom() ?? 0;
+
+      for (let note of fragment.notes) {
+        const noteIndex = this.baseNotes.indexOf(note.name.slice(0, -1));
+        const octave = parseInt(note.name.slice(-1));
+        const totalShift = noteIndex + direction;
+
+        let newOctave = octave + Math.floor(totalShift / 12);
+        let newIndex = totalShift % 12;
+        if (newIndex < 0) {
+          newIndex += 12;
+          newOctave -= 1;
+        }
+
+        // Ensure the transposed note is within the specified octave range
+        if (newOctave < this.minOctave || newOctave > this.maxOctave) continue;
+
+        // @ts-ignore
+        const newNoteName = this.baseNotes[newIndex] + newOctave;
+
+        // Ensure the transposed note is within the piano's range
+        if (this.isWithinPianoRange(newNoteName)) {
+                let fragmentId = fragment.id;
+                let newOctave = this.findAvailableOctave(fragmentId);
+                // @ts-ignore
+                const newNoteName = this.baseNotes[newIndex] + newOctave;
+                notes.push({ ...note, name: newNoteName });
+                this.incrementFragmentFrequency(fragmentId, newOctave);
+            }
+      }
+
+      if (notes.length > 0) {
+        newFragments.push({ ...fragment, notes });
+      }
+
+       this.updateWeights(direction);
+    }
+
+    return { newFragments, direction };
+  }
+
+  findAvailableOctave(fragmentId: number) {
+    for (let octave = this.minOctave; octave <= this.maxOctave; octave++) {
+         if (!this.maxFrequencyPerOctave || this.getFragmentFrequency(fragmentId, octave) < this.maxFrequencyPerOctave) {
+            return octave;
+        }
+    }
+
+    return this.minOctave;  // Fallback to minOctave if no other octave is available
+}
+
+
+  incrementFragmentFrequency(fragmentId: number, octave: number) {
+      let currentFrequency = this.getFragmentFrequency(fragmentId, octave) || 0;
+      this.fragmentFrequencyInOctave.get(octave)?.set(fragmentId, currentFrequency + 1);
+  }
+
+  getFragmentFrequency(fragmentId: number, octave: number) {
+      return this.fragmentFrequencyInOctave.get(octave)?.get(fragmentId) || 0;
+  }
+
+   weightedRandom() {
+    let totalWeight = this.weights.reduce((sum, weight) => sum + weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (let i = 0; i < this.weights.length; i++) {
+      // @ts-ignore
+      if (random < this.weights[i]) return i - (this.weights.length / 2);
+      // @ts-ignore
+      random -= this.weights[i];
+    }
+  }
+
+  updateWeights(selectedDirection: number) {
+      const selectedIndex = (selectedDirection + this.baseNotes.length) % this.baseNotes.length;
+
+      for (let i = 0; i < this.weights.length; i++) {
+          if (i === selectedIndex) {
+            // @ts-ignore
+              this.weights[i] = Math.max(this.weights[i] - 1, 1);
+          } else {
+              this.weights[i] += 0.5;
+          }
+      }
+    }
+
+   isWithinPianoRange(noteName: string) {
+    const pianoLowestIndex = this.noteToIndex(this.lowestNote);
+    const pianoHighestIndex = this.noteToIndex(this.highestNote);
+    const noteIndex = this.noteToIndex(noteName);
+
+    return noteIndex >= pianoLowestIndex && noteIndex <= pianoHighestIndex;
+  }
+
+   noteToIndex(noteName: string) {
+    const note = noteName.slice(0, -1);
+    const octave = parseInt(noteName.slice(-1));
+    const noteIndex = this.baseNotes.indexOf(note);
+
+    return octave * 12 + noteIndex;
+  }
+}
 
 export class KeyboardToNote {
   // Maps regular Keyboard to Musical Notes
