@@ -142,31 +142,33 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
       shouldRenderBackButton={false}
     >
       <div className="flex w-full">
-        {gameModesOfSublevelQuery?.data?.map((gameMode, index) => (
-          // <Button
-          //   className={cn(
-          //     buttonVariants({ size: 'lg' }),
-          //     'flex-auto rounded-none border border-background p-0 text-xl',
-          //     mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
-          //   )}
-          //   key={index}
-          //   disabled={mode === gameMode.name || isPlaying}
-          //   asChild
-          // >
-          <Link
-            key={index}
-            href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
-            className={cn(
-              buttonVariants({ size: 'lg' }),
-              'flex-auto rounded-none border border-background p-0 text-xl',
-              mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
-              isPlaying ? 'pointer-events-none' : '',
-            )}
-          >
-            {gameMode.name}
-          </Link>
-          // </Button>
-        ))}
+        {gameModesOfSublevelQuery?.data
+          ?.filter((gameMode) => gameMode.name !== 'Test')
+          .map((gameMode, index) => (
+            // <Button
+            //   className={cn(
+            //     buttonVariants({ size: 'lg' }),
+            //     'flex-auto rounded-none border border-background p-0 text-xl',
+            //     mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
+            //   )}
+            //   key={index}
+            //   disabled={mode === gameMode.name || isPlaying}
+            //   asChild
+            // >
+            <Link
+              key={index}
+              href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
+              className={cn(
+                buttonVariants({ size: 'lg' }),
+                'flex-auto rounded-none border border-background p-0 text-xl',
+                mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
+                isPlaying ? 'pointer-events-none' : '',
+              )}
+            >
+              {gameMode.name}
+            </Link>
+            // </Button>
+          ))}
       </div>
       <div className="relative flex w-5/6 flex-col items-center justify-center gap-y-8 pt-4">
         {renderGameMode(mode)}
