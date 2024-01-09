@@ -187,7 +187,6 @@ export const testModeMachine = createMachine(
         states: {
           hist: {
             type: 'history',
-            // history: 'deep',
           },
           initializePlaying: {
             description: 'Loads the new view, at the moment the fragments need to initialize...',

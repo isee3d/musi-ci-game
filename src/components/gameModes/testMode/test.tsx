@@ -10,6 +10,7 @@ import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPl
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
 import { Button } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
+import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
@@ -40,6 +41,7 @@ const Test: React.FC<TestModeProps> = ({
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
+  const guessHeardFragmentState = TestModeMachineContext.useSelector((state) => state.matches('playing.guessHeardFragment'))
   // const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
   //   state.matches('answeringQuestions'),
   // )
@@ -97,9 +99,11 @@ const Test: React.FC<TestModeProps> = ({
         />
       )} */}
       {countdownState && <TestCountdownPlayer />}
-      {(playingState) && <TestFragmentPlayerRenderer mode={mode} />}
+      {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
         <Button
+          className={cn('cursor-not-allowed', guessHeardFragmentState || isPausedState ? 'cursor-pointer' : '')}
+          disabled={!guessHeardFragmentState && !isPausedState}
           onClick={() => {
             send({
               type: getPauseOrResumeEvent(),
