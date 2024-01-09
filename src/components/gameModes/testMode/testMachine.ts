@@ -131,20 +131,20 @@ export const testModeMachine = createMachine(
         description: 'The state where the context data will be initialized',
         on: {
           STARTROUND: {
-            target: 'answeringQuestions',
-            actions: 'setupData',
-          },
-        },
-      },
-      answeringQuestions: {
-        description: 'The state where the user is answering the questions for the test',
-        on: {
-          ANSWEREDQUESTIONS: {
             target: 'startRound',
-            actions: 'startPlaying',
+            actions: ['setupData', 'startPlaying'],
           },
         },
       },
+      // answeringQuestions: {
+      //   description: 'The state where the user is answering the questions for the test',
+      //   on: {
+      //     ANSWEREDQUESTIONS: {
+      //       target: 'startRound',
+      //       actions: 'startPlaying',
+      //     },
+      //   },
+      // },
       startRound: {
         entry: 'initializeContext',
         description: 'Starts a new round & Shows the start and back to overview button',

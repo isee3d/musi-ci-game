@@ -40,9 +40,9 @@ const Test: React.FC<TestModeProps> = ({
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
-  const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
-    state.matches('answeringQuestions'),
-  )
+  // const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
+  //   state.matches('answeringQuestions'),
+  // )
   const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
@@ -89,7 +89,6 @@ const Test: React.FC<TestModeProps> = ({
 
   return (
     <>
-      <h3 className=" text-center text-4xl font-extrabold tracking-tight">Probeer de test</h3>
       {(playingState || isPausedState) && (
         <Button
           onClick={() => {
@@ -103,12 +102,12 @@ const Test: React.FC<TestModeProps> = ({
       )}
 
       {startRoundState && <StartTestUI />}
-      {answeringQuestionsState && (
+      {/* {answeringQuestionsState && (
         <AnswerQuestionsUI
           sublevelId={sublevelId}
           questions={QuestionsOfSublevelQuery?.data?.map((item) => item.question)}
         />
-      )}
+      )} */}
       {countdownState && <TestCountdownPlayer />}
       {(playingState || countdownState) && <TestFragmentPlayerRenderer mode={mode} />}
       {didNotAnswerState && (
