@@ -121,7 +121,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
-      toast.success('Je hebt goed geklikt! Het volgende fragment komt eraan')
     }
   }
 
@@ -131,6 +130,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
   return (
     <>
+      <h3 className='text-4xl font-bold tracking-tight pb-4'>Klik op het gehoorde fragment</h3>
       {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}

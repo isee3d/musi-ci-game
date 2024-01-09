@@ -47,9 +47,9 @@ const Test: React.FC<TestModeProps> = ({
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
-  const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
-    state.matches('playing.didNotAnswerFragment'),
-  )
+  // const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
+  //   state.matches('playing.didNotAnswerFragment'),
+  // )
 
   const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery({
     sublevelId: sublevelId,
@@ -89,6 +89,15 @@ const Test: React.FC<TestModeProps> = ({
 
   return (
     <>
+      {startRoundState && <StartTestUI />}
+      {/* {answeringQuestionsState && (
+        <AnswerQuestionsUI
+          sublevelId={sublevelId}
+          questions={QuestionsOfSublevelQuery?.data?.map((item) => item.question)}
+        />
+      )} */}
+      {countdownState && <TestCountdownPlayer />}
+      {(playingState) && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
         <Button
           onClick={() => {
@@ -100,17 +109,7 @@ const Test: React.FC<TestModeProps> = ({
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
       )}
-
-      {startRoundState && <StartTestUI />}
-      {/* {answeringQuestionsState && (
-        <AnswerQuestionsUI
-          sublevelId={sublevelId}
-          questions={QuestionsOfSublevelQuery?.data?.map((item) => item.question)}
-        />
-      )} */}
-      {countdownState && <TestCountdownPlayer />}
-      {(playingState || countdownState) && <TestFragmentPlayerRenderer mode={mode} />}
-      {didNotAnswerState && (
+      {/* {didNotAnswerState && (
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
             Je hebt niet geantwoord
@@ -119,7 +118,7 @@ const Test: React.FC<TestModeProps> = ({
             Volgende fragment begint zo
           </p>
         </div>
-      )}
+      )} */}
       {isFinishedState && (
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}

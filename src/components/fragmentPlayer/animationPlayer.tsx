@@ -10,12 +10,15 @@ import { api } from '~/utils/api'
 function getAnimationClass(
   options: AnimationPlayerOptions | undefined,
   thisFragment: FragmentWithNotes,
+  isBlueBorder: boolean,
 ) {
   const borderColorClass = options?.showCorrectOutline
     ? options?.isCorrect
       ? 'border-green-500'
       : 'border-red-500'
-    : 'border-transparent'
+    : ''
+
+  const blueBorderClass = isBlueBorder ? 'border-blue-500' : ''
 
   const bgColorClass =
     options?.showCorrectOutline && thisFragment.id === options?.guessedFragment?.id
@@ -24,14 +27,14 @@ function getAnimationClass(
         : 'bg-red-500'
       : 'bg-zinc-200'
 
-  const cursorClass =
-    options?.isClickable
-      ? 'cursor-pointer hover:opacity-60'
-      : 'cursor-not-allowed bg-gray-400'
+  const cursorClass = options?.isClickable
+    ? 'cursor-pointer hover:opacity-60'
+    : 'cursor-not-allowed bg-gray-400'
 
   return cn(
-    'rounded-2xl border-4 border-purple-500 shadow-md w-full md:w-1/2',
+    'rounded-2xl border-4 border-transparant shadow-md w-full md:w-1/2',
     borderColorClass,
+    blueBorderClass,
     bgColorClass,
     cursorClass,
   )
@@ -81,6 +84,8 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
     circleColor: 'red',
   })
 
+  const [isBlueBorder, setIsBlueBorder] = useState(false)
+
   const appSettingsQuery = api.appSettings.getAllSettings.useQuery(undefined, {
     onSuccess: (data) => {
       setFragmentPlayerSettings({
@@ -122,6 +127,9 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
   }
 
   function handleAnimationClicked() {
+    setIsBlueBorder(true)
+    setTimeout(() => setIsBlueBorder(false), 1000)
+
     if (options?.onAnimationClicked) {
       options.onAnimationClicked(animationFragment)
     }
@@ -140,7 +148,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
       disabled={!options?.isAnimating && !options?.isClickable}
       onClick={handleAnimationClicked}
       ref={containerRef}
-      className={`${getAnimationClass(options, animationFragment)}`}
+      className={`${getAnimationClass(options, animationFragment, isBlueBorder)}`}
     >
       <View useOrbit className="h-28 w-full">
         <Suspense fallback={null}>

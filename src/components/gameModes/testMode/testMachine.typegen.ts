@@ -3,19 +3,8 @@
 export interface Typegen0 {
   '@@xstate/typegen': true
   internalEvents: {
-    'done.invoke.testMode.playing.playSound:invocation[0]': {
-      type: 'done.invoke.testMode.playing.playSound:invocation[0]'
-      data: unknown
-      __tip: 'See the XState TS docs to learn how to strongly type this.'
-    }
     'xstate.after(1000)#testMode.playing.restAfterAnswering': {
       type: 'xstate.after(1000)#testMode.playing.restAfterAnswering'
-    }
-    'xstate.after(10000)#testMode.playing.guessHeardFragment': {
-      type: 'xstate.after(10000)#testMode.playing.guessHeardFragment'
-    }
-    'xstate.after(3000)#testMode.playing.didNotAnswerFragment': {
-      type: 'xstate.after(3000)#testMode.playing.didNotAnswerFragment'
     }
     'xstate.after(GO)#testMode.countdown.GO!': { type: 'xstate.after(GO)#testMode.countdown.GO!' }
     'xstate.after(ONE)#testMode.countdown.1': { type: 'xstate.after(ONE)#testMode.countdown.1' }
@@ -38,11 +27,10 @@ export interface Typegen0 {
     onCountdownStarted: 'RESUMEGAME' | 'xstate.after(GO)#testMode.countdown.GO!'
     onFinishedPlaying: 'FINISHEDPLAYING'
     saveLatency: 'GUESSEDFRAGMENT'
-    saveScene: 'GUESSEDFRAGMENT' | 'xstate.after(3000)#testMode.playing.didNotAnswerFragment'
+    saveScene: 'GUESSEDFRAGMENT'
     setGuessedFragment: 'GUESSEDFRAGMENT'
     setupData: 'STARTROUND'
     startPlaying: 'STARTROUND'
-    timedOutAnswering: 'xstate.after(10000)#testMode.playing.guessHeardFragment'
   }
   eventsCausingDelays: {
     GO: 'xstate.after(ONE)#testMode.countdown.1'
@@ -63,7 +51,6 @@ export interface Typegen0 {
     | 'idle'
     | 'pausedGame'
     | 'playing'
-    | 'playing.didNotAnswerFragment'
     | 'playing.guessHeardFragment'
     | 'playing.initializePlaying'
     | 'playing.playSound'
@@ -71,12 +58,7 @@ export interface Typegen0 {
     | 'startRound'
     | {
         countdown?: '1' | '2' | '3' | 'GO!'
-        playing?:
-          | 'didNotAnswerFragment'
-          | 'guessHeardFragment'
-          | 'initializePlaying'
-          | 'playSound'
-          | 'restAfterAnswering'
+        playing?: 'guessHeardFragment' | 'initializePlaying' | 'playSound' | 'restAfterAnswering'
       }
   tags: never
 }

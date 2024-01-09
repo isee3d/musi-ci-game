@@ -222,18 +222,18 @@ export const testModeMachine = createMachine(
                 actions: ['setGuessedFragment', 'saveLatency'],
               },
             },
-            after: {
-              10000: {
-                target: 'didNotAnswerFragment',
-                actions: 'timedOutAnswering',
-              },
-            },
+            // after: {
+            //   10000: {
+            //     target: 'didNotAnswerFragment',
+            //     actions: 'timedOutAnswering',
+            //   },
+            // },
           },
-          didNotAnswerFragment: {
-            after: {
-              3000: 'restAfterAnswering',
-            },
-          },
+          // didNotAnswerFragment: {
+          //   after: {
+          //     3000: 'restAfterAnswering',
+          //   },
+          // },
           restAfterAnswering: {
             entry: [(context) => context.countdownActions?.pause(), 'saveScene'],
             description: 'In this state the users gets a 1 second rest and the timer has to stop',
@@ -267,19 +267,19 @@ export const testModeMachine = createMachine(
   },
   {
     actions: {
-      timedOutAnswering: assign((context, event) => {
-        const { setChosenFragmentLatency, setChosenFragment, addNewUserSceneAnswer } =
-          useLuisterenStore.getState()
-        context.countdownActions?.pause()
-        addNewUserSceneAnswer(undefined)
-        setChosenFragment(undefined)
-        if (context.latency) {
-          setChosenFragmentLatency(-1)
-        }
-        return {
-          guessedFragment: undefined,
-        }
-      }),
+      // timedOutAnswering: assign((context, event) => {
+      //   const { setChosenFragmentLatency, setChosenFragment, addNewUserSceneAnswer } =
+      //     useLuisterenStore.getState()
+      //   context.countdownActions?.pause()
+      //   addNewUserSceneAnswer(undefined)
+      //   setChosenFragment(undefined)
+      //   if (context.latency) {
+      //     setChosenFragmentLatency(-1)
+      //   }
+      //   return {
+      //     guessedFragment: undefined,
+      //   }
+      // }),
       setupData: assign((_, event) => {
         const {
           originalFragmentGroups,
