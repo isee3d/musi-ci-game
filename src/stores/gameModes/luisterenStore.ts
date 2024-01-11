@@ -14,9 +14,18 @@ type LuisterenState = {
   sceneData: Scene
   isPlaying: boolean
   usedFragmentsMap: { [key: number]: number }
+  newUsedFragmentsMap: {
+    [fragmentId: number]: {
+      [octaveNumber: number]: number
+    }
+  }
 }
 
 type LuisterenActions = {
+  addNewUsedFragment: (fragmentId: number, octaveNumber: number) => void
+  addNewUsedFragments: (
+    fragmentIdWithOctave: { fragmentId: number; octaveNumber: number }[],
+  ) => void
   addUsedFragment: (fragmentId: number) => void
   addUsedFragments: (fragmentIds: number[]) => void
   setUsedFragments: (fragmentIds: number[]) => void
@@ -53,6 +62,7 @@ const initialState: LuisterenState = {
   allPlayedScenes: [],
   isPlaying: false,
   usedFragmentsMap: {},
+  newUsedFragmentsMap: {},
 }
 
 const initialRoundState: Partial<LuisterenState> = {
@@ -71,6 +81,31 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   sceneData: {},
   allPlayedScenes: [],
   usedFragmentsMap: [],
+  newUsedFragmentsMap: [],
+  addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
+    set((state) => {
+      const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}
+      const newCount = (fragmentMap[octaveNumber] || 0) + 1
+      return {
+        newUsedFragmentsMap: {
+          ...state.newUsedFragmentsMap,
+          [fragmentId]: {
+            ...fragmentMap,
+            [octaveNumber]: newCount,
+          },
+        },
+      }
+    }),
+  addNewUsedFragments: (fragmentIdWithOctave: { fragmentId: number; octaveNumber: number }[]) =>
+    set((state) => {
+      const newMap = { ...state.newUsedFragmentsMap }
+      for (const { fragmentId, octaveNumber } of fragmentIdWithOctave) {
+        const fragmentMap = newMap[fragmentId] || {}
+        fragmentMap[octaveNumber] = (fragmentMap[octaveNumber] || 0) + 1
+        newMap[fragmentId] = fragmentMap
+      }
+      return { newUsedFragmentsMap: newMap }
+    }),
   addUsedFragment: (fragmentId: number) =>
     set((state) => {
       const newCount = (state.usedFragmentsMap[fragmentId] || 0) + 1
@@ -92,7 +127,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       }
       return { usedFragmentsMap: newMap }
     }),
-  resetUsedFragments: () => set(() => ({ usedFragmentsMap: {} })),
+  resetUsedFragments: () => set(() => ({ usedFragmentsMap: {}, newUsedFragmentsMap: {} })),
   addScene: (scene: Scene) =>
     set((state) => ({ allPlayedScenes: [...state.allPlayedScenes, scene] })),
   AddSceneData: (items: FragmentSceneData[]) =>

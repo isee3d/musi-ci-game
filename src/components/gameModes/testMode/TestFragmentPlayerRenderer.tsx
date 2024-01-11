@@ -34,8 +34,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     (state) => state.context.shownFragments,
     shallowEqual,
   )
-  const selectedGroup = TestModeMachineContext.useSelector(
-    (state) => state.context.selectedGroup,
+  const originalFragmentGroups = TestModeMachineContext.useSelector(
+    (state) => state.context.originalFragmentGroups,
   )
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
@@ -70,12 +70,12 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose,
-        octave: fragment.octave,
+        groundTone: 1,
+        octave: 1,
       })
     })
     AddSceneData(sceneData)
-    setOriginalFragments(getOriginalFragmentsFromFragmentGroup(shownFragments, selectedGroup?.fragments))
+    setOriginalFragments(getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups))
 
     if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')

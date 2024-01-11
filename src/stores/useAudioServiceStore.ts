@@ -1,10 +1,14 @@
 import { create } from 'zustand'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
-import { FragmentWithNotes, FragmentWithNotesAndWeight, FragmentWithNotesWeightAndTransposeDirection } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { baseNotes, allOctaves } from '~/components/fragmentPlayer/audio/Keyboard'
+import {
+  FragmentWithNotes,
+  FragmentWithNotesAndWeight,
+  FragmentWithNotesWeightAndTransposeDirection,
+} from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { baseNotes, allOctaves, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
-import { adjustWeights, canTranspose } from '~/utils/fragmentUtils'
+import { adjustWeights, canTranspose, getNoteIndex, getNoteNameFromNoteIndex } from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
   audioContext: AudioContext | undefined
@@ -39,17 +43,12 @@ type AudioserviceAction = {
   ) => FragmentWithNotes[] | FragmentWithNotesAndWeight[]
   transposeWeightedFragments: (
     fragments: FragmentWithNotesAndWeight[],
-    direction: number,
-    octave?: number,
+    octave: number,
+    range: number[],
   ) => FragmentWithNotesAndWeight[]
   chooseWeightedActiveFragment: (
-    fragments: FragmentWithNotesWeightAndTransposeDirection[],
-  ) => FragmentWithNotesWeightAndTransposeDirection | undefined
-  // transposeFragmentsInOctave(
-  //   fragments: FragmentWithNotes[],
-  //   direction: number,
-  //   octave: 0 | 1 | 2,
-  // ): FragmentWithNotes[]
+    fragments: FragmentWithNotesAndWeight[],
+  ) => FragmentWithNotesAndWeight | undefined
 }
 
 const initialState = {
@@ -134,76 +133,67 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       set({ hasSupport: false })
     }
   },
-  // transposeFragmentsInOctave: (
-  //   fragments: FragmentWithNotes[],
-  //   direction: number,
-  //   octave: 0 | 1 | 2 = 1,
-  // ) => {
-  //   const newFragments: FragmentWithNotes[] = []
-
-  //   for (let i = 0; i < fragments.length; i++) {
-  //     const fragment = fragments[i]
-  //     const notes: Note[] = []
-  //     if (!fragment) continue
-  //     for (let j = 0; j < fragment.notes.length; j++) {
-  //       const n = fragment.notes[j]
-  //       if (!n) continue
-  //       const note = n.name.replace(/\d/, '')
-  //       let currentOctave = octave
-  //       let index = allOctaves[currentOctave].findIndex((no) => no.replace(/\d/, '') === note)
-
-  //       // Transpose in the given direction.
-  //       index += direction
-
-  //       // Wrap around within the available octaves if out of bounds.
-  //       while (index < 0) {
-  //         currentOctave -= 1
-  //         if (currentOctave < 0) {
-  //           currentOctave = 2 // Wrap to the highest octave
-  //         }
-  //         index += 12
-  //       }
-
-  //       while (index >= 12) {
-  //         currentOctave += 1
-  //         if (currentOctave > 2) {
-  //           currentOctave = 0 // Wrap to the lowest octave
-  //         }
-  //         index -= 12
-  //       }
-
-  //       const newNote = allOctaves[currentOctave][index]
-  //       if (!newNote) continue
-
-  //       n.name = newNote
-  //       notes.push(n)
-  //     }
-  //     fragment.notes = notes
-  //     newFragments.push(fragment)
-  //   }
-  //   return newFragments
-  // },
-  chooseWeightedActiveFragment: (fragments: FragmentWithNotesWeightAndTransposeDirection[]) => {
+  chooseWeightedActiveFragment: (fragments: FragmentWithNotesAndWeight[]) => {
     let totalWeight = fragments.reduce((sum, fragment) => sum + fragment.weight, 0)
     let random = Math.random() * totalWeight
 
     for (let fragment of fragments) {
       random -= fragment.weight
-      if(random < 0) {
+      if (random < 0) {
         console.log('chose fragment', fragment.id)
-        adjustWeights(fragments, fragment);
-        return fragment;
+        adjustWeights(fragments, fragment)
+        return fragment
       }
     }
     // Fallback
     return fragments[0]
   },
-  transposeWeightedFragments: (
-    fragments: FragmentWithNotesAndWeight[],
-    direction: number,
-  ) => {
-    return fragments
-  },
+transposeWeightedFragments: (
+  fragments: FragmentWithNotesAndWeight[],
+  targetOctave: number,
+  range: number[],
+) => {
+    const transposedFragments = fragments.map((fragment) => {
+      let minTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave}`) ?? 0
+      let maxTargetOctaveIndex = minTargetOctaveIndex + 12
+
+      const fragmentWithoutFirstNote = fragment.notes.slice(1)
+
+      const minNote = Math.min(...fragmentWithoutFirstNote.map((n) => getNoteIndex(n.name)))
+      const maxNote = Math.max(...fragmentWithoutFirstNote.map((n) => getNoteIndex(n.name)))
+
+      const minNoteRange = pianoNotesMap.get(`C${range[0]}`) ?? 0
+      const maxNoteRange = pianoNotesMap.get(`C${range[range.length - 1]}`) ?? 0
+
+      minTargetOctaveIndex = Math.max(minNoteRange, minTargetOctaveIndex - (minNote - minNoteRange))
+      maxTargetOctaveIndex = Math.min(maxNoteRange, maxTargetOctaveIndex - (maxNote - maxNoteRange))
+
+      // Calculate the range for possible transpositions
+      const transposeRange = maxTargetOctaveIndex - minTargetOctaveIndex
+
+      // Generate a random number within this range
+      const randomTranspose = Math.floor(Math.random() * (transposeRange + 1))
+
+      // Offset the random number by minTargetOctaveIndex to get the transpose location
+      const randomStartNoteIndex = minTargetOctaveIndex + randomTranspose
+
+      const firstNote = fragment.notes[0]
+      const originalFirstNoteIndex = getNoteIndex(firstNote?.name ?? '');
+      const transpositionInterval = randomStartNoteIndex - originalFirstNoteIndex
+
+      fragment.notes.forEach((note) => {
+        const originalNoteIndex = getNoteIndex(note.name)
+         const transposedNoteIndex = originalNoteIndex + transpositionInterval
+         note.name = getNoteNameFromNoteIndex(transposedNoteIndex)
+      })
+
+      return fragment
+    })
+
+    console.log(transposedFragments)
+
+    return transposedFragments
+},
   transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave?: number) => {
     const newFragments: FragmentWithNotes[] = []
 

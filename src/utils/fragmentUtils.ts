@@ -1,6 +1,6 @@
-import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard';
+import { baseNotes, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard';
 import { FragmentGroup } from "types/fragmentGroup"
-import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection, FragmentWithNotesWeightAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes"
+import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection, FragmentWithNotesAndWeight, FragmentWithNotesWeightAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes"
 
 export const getOriginalFragments = (
   shownFragments: FragmentWithNotesAndTransposeDirection[],
@@ -17,22 +17,41 @@ export const getOriginalFragments = (
 }
 
 export const getOriginalFragmentsFromFragmentGroup = (
-  shownFragments: FragmentWithNotesAndTransposeDirection[],
-  fragmentGroupFragment: FragmentWithNotes[] | undefined,
+  shownFragments: FragmentWithNotesAndWeight[],
+  originalFragmentGroups: FragmentGroup[] | undefined,
 ): FragmentWithNotes[] => {
-  if(!fragmentGroupFragment) return []
-  const shownFragmentIds = shownFragments.map((frag) => frag.id)
+  if (!originalFragmentGroups) return []
+  const shownFragmentIds = new Set(shownFragments.map((frag) => frag.id))
 
-  return fragmentGroupFragment.filter((frag) =>
-    shownFragmentIds.includes(frag.id),
-  ) as FragmentWithNotes[]
+  let originalFragments: FragmentWithNotes[] = []
+
+  originalFragmentGroups.forEach((group) => {
+    group.fragments.forEach((fragment) => {
+      if (shownFragmentIds.has(fragment.id)) {
+        originalFragments.push(fragment)
+      }
+    })
+  })
+
+  return originalFragments
 }
 
+// export const getOriginalFragmentsFromFragmentGroup = (
+//   shownFragments: FragmentWithNotesAndWeight[],
+//   originalFragmentGroups: FragmentGroup[] | undefined,
+// ): FragmentWithNotes[] => {
+//   if (!originalFragmentGroups) return []
+//   const shownFragmentIds = shownFragments.map((frag) => frag.id)
+
+//   return originalFragmentGroups.filter((frag) =>
+//     shownFragmentIds.includes(frag.id),
+//   ) as FragmentWithNotes[]
+// }
+
 export const getShownFragmentByFragmentId = (
-  shownFragments: FragmentWithNotesAndTransposeDirection[],
+  shownFragments: FragmentWithNotesAndWeight[],
   fragmentId: number,
 ): FragmentWithNotes | undefined => {
-  console.log('getShownFragmentByFragmentId', shownFragments, fragmentId)
   return shownFragments.find((frag) => frag.id === fragmentId)
 }
 
@@ -46,15 +65,31 @@ export function canTranspose(fragment: FragmentWithNotes, direction: number) {
   return !(minNote + direction < 0 || maxNote + direction >= 12)
 }
 
-export function adjustWeights(fragments: FragmentWithNotesWeightAndTransposeDirection[], selectedFragment: FragmentWithNotesWeightAndTransposeDirection) {
-  const decreaseAmount = 10;
-  const increaseAmount = 4;
+export function adjustWeights(
+  fragments: FragmentWithNotesAndWeight[],
+  selectedFragment: FragmentWithNotesAndWeight,
+) {
+  const decreaseAmount = 10
+  const increaseAmount = 4
 
-  fragments.forEach(fragment => {
+  fragments.forEach((fragment) => {
     if (fragment.id === selectedFragment.id) {
-      fragment.weight = Math.max(fragment.weight - decreaseAmount, 0);
+      fragment.weight = Math.max(fragment.weight - decreaseAmount, 0)
     } else {
-      fragment.weight += increaseAmount;
+      fragment.weight += increaseAmount
     }
-  });
+  })
+}
+
+export function getNoteIndex(note: string) {
+  return pianoNotesMap.get(note) ?? 0
+}
+
+export function getNoteNameFromNoteIndex(index: number) {
+  for (let [key, value] of pianoNotesMap) {
+    if (value === index) {
+      return key
+    }
+  }
+  return '-1'
 }
