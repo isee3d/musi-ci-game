@@ -70,8 +70,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: 1,
-        octave: 1,
+        groundTone: fragment.transpose ?? -1,
+        octave: fragment.octave ?? -1,
       })
     })
     AddSceneData(sceneData)

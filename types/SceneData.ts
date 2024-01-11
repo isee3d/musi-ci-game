@@ -2,7 +2,7 @@ export interface FragmentSceneData {
     id_fragment: number;
     fragmentIndex: number;
     groundTone: number;
-    octave: 0 | 1 | 2;
+    octave: number;
 }
 
 export interface Scene {

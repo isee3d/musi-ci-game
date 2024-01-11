@@ -8,7 +8,12 @@ import {
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { baseNotes, allOctaves, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
-import { adjustWeights, canTranspose, getNoteIndex, getNoteNameFromNoteIndex } from '~/utils/fragmentUtils'
+import {
+  adjustWeights,
+  canTranspose,
+  getNoteIndex,
+  getNoteNameFromNoteIndex,
+} from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
   audioContext: AudioContext | undefined
@@ -148,44 +153,39 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     // Fallback
     return fragments[0]
   },
-transposeWeightedFragments: (
-  fragments: FragmentWithNotesAndWeight[],
-  targetOctave: number,
-  range: number[],
-) => {
+  transposeWeightedFragments: (
+    fragments: FragmentWithNotesAndWeight[],
+    targetOctave: number,
+    range: number[],
+  ) => {
     const transposedFragments = fragments.map((fragment) => {
-      let minTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave}`) ?? 0
-      let maxTargetOctaveIndex = minTargetOctaveIndex + 12
+      const minTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave}`) ?? 0
+      const maxTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave + 1}`) ?? 0
 
-      const fragmentWithoutFirstNote = fragment.notes.slice(1)
-
-      const minNote = Math.min(...fragmentWithoutFirstNote.map((n) => getNoteIndex(n.name)))
-      const maxNote = Math.max(...fragmentWithoutFirstNote.map((n) => getNoteIndex(n.name)))
-
+      // Get the note indices for the range's lowest C and highest B
       const minNoteRange = pianoNotesMap.get(`C${range[0]}`) ?? 0
-      const maxNoteRange = pianoNotesMap.get(`C${range[range.length - 1]}`) ?? 0
-
-      minTargetOctaveIndex = Math.max(minNoteRange, minTargetOctaveIndex - (minNote - minNoteRange))
-      maxTargetOctaveIndex = Math.min(maxNoteRange, maxTargetOctaveIndex - (maxNote - maxNoteRange))
-
-      // Calculate the range for possible transpositions
-      const transposeRange = maxTargetOctaveIndex - minTargetOctaveIndex
-
-      // Generate a random number within this range
-      const randomTranspose = Math.floor(Math.random() * (transposeRange + 1))
-
-      // Offset the random number by minTargetOctaveIndex to get the transpose location
-      const randomStartNoteIndex = minTargetOctaveIndex + randomTranspose
+      const maxNoteRange = pianoNotesMap.get(`B${range[range.length - 1]}`) ?? 0
 
       const firstNote = fragment.notes[0]
-      const originalFirstNoteIndex = getNoteIndex(firstNote?.name ?? '');
-      const transpositionInterval = randomStartNoteIndex - originalFirstNoteIndex
+      const originalFirstNoteIndex = getNoteIndex(firstNote?.name ?? '')
+
+      // Calculate the range for possible transpositions for the first note
+      let transposeRangeMin = Math.max(minNoteRange, minTargetOctaveIndex) - originalFirstNoteIndex
+      let transposeRangeMax =
+        Math.min(maxNoteRange, maxTargetOctaveIndex - 1) - originalFirstNoteIndex
+
+      // Generate a random transposition interval within this range
+      const transpositionInterval =
+        Math.floor(Math.random() * (transposeRangeMax - transposeRangeMin + 1)) + transposeRangeMin
 
       fragment.notes.forEach((note) => {
         const originalNoteIndex = getNoteIndex(note.name)
-         const transposedNoteIndex = originalNoteIndex + transpositionInterval
-         note.name = getNoteNameFromNoteIndex(transposedNoteIndex)
+        const transposedNoteIndex = originalNoteIndex + transpositionInterval
+        note.name = getNoteNameFromNoteIndex(transposedNoteIndex)
       })
+
+      fragment.transpose = transpositionInterval
+      fragment.octave = targetOctave
 
       return fragment
     })
@@ -193,7 +193,7 @@ transposeWeightedFragments: (
     console.log(transposedFragments)
 
     return transposedFragments
-},
+  },
   transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave?: number) => {
     const newFragments: FragmentWithNotes[] = []
 
