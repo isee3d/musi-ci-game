@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { initializeSound } from '~/components/fragmentPlayer/audio/AudioControls'
+import { initializeSound, start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -28,8 +28,13 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     setClickedButton(true)
     await initializeSound()
     startSilentAudio()
+    //@ts-ignore
+    window.start = start
+    //@ts-ignore
+    console.log('Is myFunc defined on window?', typeof window.myFunc === 'function')
+
     console.log('audioContext?.state', audioContext?.state)
-    if(audioContext?.state === 'running'){
+    if (audioContext?.state === 'running') {
       setmodal(false)
     }
   }
