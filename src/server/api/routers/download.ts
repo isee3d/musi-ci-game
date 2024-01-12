@@ -7,83 +7,83 @@ export const downloadRouter = createTRPCRouter({
   getAllUsers: publicProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany({
       select: {
-        id: true,
+        // id: true,
         participantId: true,
-        role: true,
-        isAllowedToPlay: true,
-        createdAt: true,
-        levelResults: true,
-        questionAnswers: true,
+        // role: true,
+        // isAllowedToPlay: true,
+        // createdAt: true,
+        // levelResults: true,
+        // questionAnswers: true,
         activities: true,
       },
     })
 
     return users
   }),
-  getAllLevels: publicProcedure.query(async ({ ctx }) => {
-    const levels = await ctx.prisma.level.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        color: true,
-        subLevels: {
-          select: {
-            id: true,
-          },
-        },
-        levelResult: {
-          select: {
-            id: true,
-          },
-        },
-      },
-      // include: {
-      //   subLevels: true,
-      //   levelResult: true,
-      // },
-    })
+  // getAllLevels: publicProcedure.query(async ({ ctx }) => {
+  //   const levels = await ctx.prisma.level.findMany({
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       description: true,
+  //       color: true,
+  //       subLevels: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       levelResult: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //     },
+  //     // include: {
+  //     //   subLevels: true,
+  //     //   levelResult: true,
+  //     // },
+  //   })
 
-    return levels
-  }),
+  //   return levels
+  // }),
 
   getAllSublevels: publicProcedure.query(async ({ ctx }) => {
     const sublevels = await ctx.prisma.subLevel.findMany({
       select: {
-        id: true,
+        // id: true,
         name: true,
-        description: true,
-        color: true,
-        levels: {
-          select: {
-            id: true,
-          },
-        },
-        fragments: {
-          select: {
-            id: true,
-          },
-        },
-        gameModes: {
-          select: {
-            id: true,
-          },
-        },
-        levelResult: {
-          select: {
-            id: true,
-          },
-        },
-        questions: {
-          select: {
-            id: true,
-          },
-        },
-        fragmentGroups: {
-          select: {
-            id: true,
-          },
-        },
+        // description: true,
+        // color: true,
+        // levels: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // fragments: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // gameModes: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // levelResult: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // questions: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // fragmentGroups: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
       },
 
       // include: {
@@ -99,126 +99,126 @@ export const downloadRouter = createTRPCRouter({
     return sublevels
   }),
 
-  getAllFragmentGroups: publicProcedure.query(async ({ ctx }) => {
-    const fragmentGroups = await ctx.prisma.fragmentGroup.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        fragments: {
-          select: {
-            id: true,
-          },
-        },
-        subLevels: {
-          select: {
-            id: true,
-          },
-        },
-      },
+  // getAllFragmentGroups: publicProcedure.query(async ({ ctx }) => {
+  //   const fragmentGroups = await ctx.prisma.fragmentGroup.findMany({
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       description: true,
+  //       fragments: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       subLevels: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //     },
 
-      // include: {
-      //   fragments: true,
-      //   subLevels: true,
-      // },
-    })
+  //     // include: {
+  //     //   fragments: true,
+  //     //   subLevels: true,
+  //     // },
+  //   })
 
-    return fragmentGroups
-  }),
+  //   return fragmentGroups
+  // }),
 
-  getAllFragments: publicProcedure.query(async ({ ctx }) => {
-    const fragments = await ctx.prisma.fragment.findMany({
-      select: {
-        id: true,
-        name: true,
-        useAlways: true,
-        description: true,
-        isActive: true,
-        level: {
-          select: {
-            id: true,
-          },
-        },
-        chosenScene: {
-          select: {
-            id: true,
-          },
-        },
-        playedScene: {
-          select: {
-            id: true,
-          },
-        },
-        relistenfragment: {
-          select: {
-            id: true,
-          },
-        },
-        sceneFragment: {
-          select: {
-            id: true,
-          },
-        },
-        fragmentgroup: {
-          select: {
-            id: true,
-          },
-        },
-      },
+  // getAllFragments: publicProcedure.query(async ({ ctx }) => {
+  //   const fragments = await ctx.prisma.fragment.findMany({
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       useAlways: true,
+  //       description: true,
+  //       isActive: true,
+  //       level: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       chosenScene: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       playedScene: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       relistenfragment: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       sceneFragment: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //       fragmentgroup: {
+  //         select: {
+  //           id: true,
+  //         },
+  //       },
+  //     },
 
-      // include: {
-      //   notes: true,
-      //   level: true,
-      //   chosenScene: true,
-      //   playedScene: true,
-      //   relistenfragment: true,
-      //   sceneFragment: true,
-      //   fragmentgroup: true,
-      // },
-    })
+  //     // include: {
+  //     //   notes: true,
+  //     //   level: true,
+  //     //   chosenScene: true,
+  //     //   playedScene: true,
+  //     //   relistenfragment: true,
+  //     //   sceneFragment: true,
+  //     //   fragmentgroup: true,
+  //     // },
+  //   })
 
-    return fragments
-  }),
+  //   return fragments
+  // }),
 
-  getAllNotes: publicProcedure.query(async ({ ctx }) => {
-    const notes = await ctx.prisma.note.findMany({
-      select: {
-        id_Fragment: true,
-        id: true,
-        name: true,
-        time: true,
-        duration: true,
-        speed: true,
-      },
+  // getAllNotes: publicProcedure.query(async ({ ctx }) => {
+  //   const notes = await ctx.prisma.note.findMany({
+  //     select: {
+  //       id_Fragment: true,
+  //       id: true,
+  //       name: true,
+  //       time: true,
+  //       duration: true,
+  //       speed: true,
+  //     },
 
-      // include: {
-      //   fragment: true,
-      // },
-    })
+  //     // include: {
+  //     //   fragment: true,
+  //     // },
+  //   })
 
-    return notes
-  }),
+  //   return notes
+  // }),
 
   getAllGameModes: publicProcedure.query(async ({ ctx }) => {
     const gameModes = await ctx.prisma.gameMode.findMany({
       select: {
-        id: true,
+        // id: true,
         name: true,
-        amountOfScenes: true,
-        one: true,
-        two: true,
-        three: true,
-        go: true,
-        levels: {
-          select: {
-            id: true,
-          },
-        },
-        levelResult: {
-          select: {
-            id: true,
-          },
-        },
+        // amountOfScenes: true,
+        // one: true,
+        // two: true,
+        // three: true,
+        // go: true,
+        // levels: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
+        // levelResult: {
+        //   select: {
+        //     id: true,
+        //   },
+        // },
       },
 
       // include: {
@@ -326,34 +326,34 @@ export const downloadRouter = createTRPCRouter({
     return relistenFragments
   }),
 
-  getAllQuestionAnswers: publicProcedure.query(async ({ ctx }) => {
-    const questionAnswer = await ctx.prisma.questionAnswer.findMany({
-      select: {
-        id: true,
-        id_User: true,
-        question: true,
-        answer: true,
-        answeredDate: true,
-      },
-      // include: {
-      //   user: true,
-      // },
-    })
+  // getAllQuestionAnswers: publicProcedure.query(async ({ ctx }) => {
+  //   const questionAnswer = await ctx.prisma.questionAnswer.findMany({
+  //     select: {
+  //       id: true,
+  //       id_User: true,
+  //       question: true,
+  //       answer: true,
+  //       answeredDate: true,
+  //     },
+  //     // include: {
+  //     //   user: true,
+  //     // },
+  //   })
 
-    return questionAnswer
-  }),
+  //   return questionAnswer
+  // }),
 
-  getAllQuestions: publicProcedure.query(async ({ ctx }) => {
-    const questions = await ctx.prisma.question.findMany({
-      select: {
-        id: true,
-        id_subLevel: true,
-        question: true,
-      },
-    })
+  // getAllQuestions: publicProcedure.query(async ({ ctx }) => {
+  //   const questions = await ctx.prisma.question.findMany({
+  //     select: {
+  //       id: true,
+  //       id_subLevel: true,
+  //       question: true,
+  //     },
+  //   })
 
-    return questions
-  }),
+  //   return questions
+  // }),
 
   getAllActivities: publicProcedure.query(async ({ ctx }) => {
     const activities = await ctx.prisma.activity.findMany({

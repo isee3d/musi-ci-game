@@ -1,53 +1,95 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
 import { api } from '~/utils/api'
-import { Parser } from 'json2csv'
-import { Button } from '~/components/ui/button'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { Workbook } from 'exceljs'
 import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
 import { useEffect, useState } from 'react'
+import { MultiSelect } from '~/components/ui/multi-select'
+import { addDays, format } from 'date-fns'
+import { Calendar as CalendarIcon } from 'lucide-react'
+import { DateRange } from 'react-day-picker'
 
-function flattenObject(obj: any, prefix = ''): { [key: string]: any } {
-  return Object.keys(obj).reduce<{ [key: string]: any }>((acc, k) => {
-    const pre = prefix.length ? prefix + '_' : ''
-    if (typeof obj[k] === 'object' && obj[k] !== null && !(obj[k] instanceof Date)) {
-      Object.assign(acc, flattenObject(obj[k], pre + k))
-    } else {
-      acc[pre + k] = obj[k]
-    }
-    return acc
-  }, {})
+import { cn } from '~/lib/utils'
+import { Button } from '~/components/ui/button'
+import { Calendar } from '~/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
+import {
+  Select,
+  SelectTrigger,
+  SelectGroup,
+  SelectValue,
+  SelectLabel,
+  SelectContent,
+  SelectItem,
+} from '~/components/ui/select'
+import { Sub } from '@radix-ui/react-dropdown-menu'
+import { Label } from '~/components/ui/label'
+
+const headers = [
+  'deelnemer nummer',
+  'datum van spelen',
+  'sublevel',
+  'Game modus',
+  'Startijd sublevel scene',
+  'Eindtijd sublevel scene',
+  'Latency (ms)',
+  'Gespeelde fragment',
+  'grondtoon',
+  'Gekozen fragment',
+  'Goed beantwoord?',
+  'Positie gespeeld fragment',
+  'Positie gekozen fragment',
+  'Teruggeluisterde fragmenten',
+] as const
+
+const workSheets = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
+
+const getYesterdayDate = () => {
+  const today = new Date()
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
 }
 
 const DownloadPage: NextPage = () => {
   useRequireAuth()
   useRequireResearcherRole()
 
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
+  const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: getYesterdayDate(),
+    to: addDays(getYesterdayDate(), 1),
+  })
+
   const [queriesData, setQueriesData] = useState({})
   const [shouldDownload, setShouldDownload] = useState(false)
 
   const usersQuery = api.download.getAllUsers.useQuery(undefined, {
-    enabled: shouldDownload === true,
+    enabled: true,
   })
-  const levelsQuery = api.download.getAllLevels.useQuery(undefined, { enabled: !!usersQuery.data })
+  // const levelsQuery = api.download.getAllLevels.useQuery(undefined, { enabled: !!usersQuery.data })
   const sublevelsQuery = api.download.getAllSublevels.useQuery(undefined, {
-    enabled: !!levelsQuery.data,
+    enabled: true,
   })
-  const fragmentGroupsQuery = api.download.getAllFragmentGroups.useQuery(undefined, {
-    enabled: !!sublevelsQuery.data,
-  })
-  const fragmentsQuery = api.download.getAllFragments.useQuery(undefined, {
-    enabled: !!fragmentGroupsQuery.data,
-  })
-  const notesQuery = api.download.getAllNotes.useQuery(undefined, {
-    enabled: !!fragmentsQuery.data,
-  })
+  // const fragmentGroupsQuery = api.download.getAllFragmentGroups.useQuery(undefined, {
+  //   enabled: !!sublevelsQuery.data,
+  // })
+  // const fragmentsQuery = api.download.getAllFragments.useQuery(undefined, {
+  //   enabled: !!fragmentGroupsQuery.data,
+  // })
+  // const notesQuery = api.download.getAllNotes.useQuery(undefined, {
+  //   enabled: !!fragmentsQuery.data,
+  // })
+
+  // const questionAnswersQuery = api.download.getAllQuestionAnswers.useQuery(undefined, {
+  //   enabled: !!relistenFragmentsQuery.data,
+  // })
   const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
-    enabled: !!notesQuery.data,
+    enabled: true,
   })
   const levelResultsQuery = api.download.getAllLevelResults.useQuery(undefined, {
-    enabled: !!gameModesQuery.data,
+    enabled: shouldDownload === true,
   })
   const scenesQuery = api.download.getAllScenes.useQuery(undefined, {
     enabled: !!levelResultsQuery.data,
@@ -58,42 +100,40 @@ const DownloadPage: NextPage = () => {
   const relistenFragmentsQuery = api.download.getAllRelistenFragments.useQuery(undefined, {
     enabled: !!sceneFragmentsQuery.data,
   })
-  const questionAnswersQuery = api.download.getAllQuestionAnswers.useQuery(undefined, {
-    enabled: !!relistenFragmentsQuery.data,
-  })
+
   const activitiesQuery = api.download.getAllActivities.useQuery(undefined, {
-    enabled: !!questionAnswersQuery.data,
+    enabled: !!relistenFragmentsQuery.data,
   })
 
   useEffect(() => {
     setQueriesData({
       users: usersQuery.data,
-      levels: levelsQuery.data,
-      sublevels: sublevelsQuery.data,
-      fragmentGroups: fragmentGroupsQuery.data,
-      fragments: fragmentsQuery.data,
-      notes: notesQuery.data,
+      // levels: levelsQuery.data,
+      // sublevels: sublevelsQuery.data,
+      // fragmentGroups: fragmentGroupsQuery.data,
+      // fragments: fragmentsQuery.data,
+      // notes: notesQuery.data,
       gameModes: gameModesQuery.data,
       levelResults: levelResultsQuery.data,
       scenes: scenesQuery.data,
       sceneFragments: sceneFragmentsQuery.data,
       relistenFragments: relistenFragmentsQuery.data,
-      questionAnswers: questionAnswersQuery.data,
+      // questionAnswers: questionAnswersQuery.data,
       activities: activitiesQuery.data,
     })
   }, [
     usersQuery.data,
-    levelsQuery.data,
-    sublevelsQuery.data,
-    fragmentGroupsQuery.data,
-    fragmentsQuery.data,
-    notesQuery.data,
+    // levelsQuery.data,
+    // sublevelsQuery.data,
+    // fragmentGroupsQuery.data,
+    // fragmentsQuery.data,
+    // notesQuery.data,
     gameModesQuery.data,
     levelResultsQuery.data,
     scenesQuery.data,
     sceneFragmentsQuery.data,
     relistenFragmentsQuery.data,
-    questionAnswersQuery.data,
+    // questionAnswersQuery.data,
     activitiesQuery.data,
   ])
 
@@ -107,7 +147,6 @@ const DownloadPage: NextPage = () => {
         sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
       ) // Capitalize sheet name for better aesthetics
 
-      const headers = Object.keys(sheetData[0])
       worksheet.addRow(headers)
 
       for (const row of sheetData) {
@@ -144,26 +183,6 @@ const DownloadPage: NextPage = () => {
     setShouldDownload(true)
   }
 
-  // const downloadJSON = async () => {
-  //   const data = usersQuery.data
-
-  //   if (!data) return
-
-  //   // Stringify the data to convert it to JSON format
-  //   const jsonData = JSON.stringify(data, null, 2) // The "2" here formats the JSON with 2-space indentation
-
-  //   // Create a blob from the JSON string
-  //   const blob = new Blob([jsonData], {
-  //     type: 'application/json',
-  //   })
-
-  //   // Create a link element, set its href to the blob, and trigger a click to start the download
-  //   const link = document.createElement('a')
-  //   link.href = URL.createObjectURL(blob)
-  //   link.download = 'data.json'
-  //   link.click()
-  // }
-
   return (
     <>
       <Head>
@@ -175,6 +194,86 @@ const DownloadPage: NextPage = () => {
       <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">Download CSV</h1>
+          {/*
+          filter op level, sublevel, game modus */}
+          <h2>Selecteer spelers</h2>
+          <MultiSelect
+            options={
+              usersQuery.data?.map((user) => ({
+                value: user.participantId ?? '-1',
+                label: user.participantId ?? '-1',
+              })) ?? []
+            }
+            selected={selectedUsers}
+            onChange={setSelectedUsers}
+            className="w-[560px]"
+          />
+
+          <Label className="mb-1">Selecteer hieronder de begin- en einddatum</Label>
+          <div className={cn('grid gap-2')}>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={'outline'}
+                  className={cn(
+                    'w-[300px] justify-start text-left font-normal',
+                    !date && 'text-muted-foreground',
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
+                      </>
+                    ) : (
+                      format(date.from, 'LLL dd, y')
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <Label className="mb-1">Selecteer hieronder de sublevels</Label>
+          <MultiSelect
+            options={
+              sublevelsQuery.data?.map((sublevel) => ({
+                value: sublevel.name,
+                label: sublevel.name,
+              })) ?? []
+            }
+            selected={selectedSublevels}
+            onChange={setSelectedSublevels}
+            className="w-[560px]"
+          />
+
+          <Label className="mb-1">Selecteer hieronder de game modussen</Label>
+          <MultiSelect
+            options={
+              gameModesQuery.data?.map((gameMode) => ({
+                value: gameMode.name,
+                label: gameMode.name,
+              })) ?? []
+            }
+            selected={selectedGameModes}
+            onChange={setSelectedGameModes}
+            className="w-[560px]"
+          />
+
           <Button onClick={startDownload} size={'lg'}>
             <h3>Klik hier om de download te starten, dit kan even duren</h3>
           </Button>
@@ -186,10 +285,6 @@ const DownloadPage: NextPage = () => {
               <h3>Download naar csv</h3>
             </Button>
           )}
-
-          {/* <Button onClick={downloadJSON} size={'lg'}>
-            <h3>Download naar JSON</h3>
-          </Button> */}
         </div>
       </section>
     </>
