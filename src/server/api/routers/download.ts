@@ -50,7 +50,7 @@ export const downloadRouter = createTRPCRouter({
   getAllSublevels: publicProcedure.query(async ({ ctx }) => {
     const sublevels = await ctx.prisma.subLevel.findMany({
       select: {
-        // id: true,
+        id: true,
         name: true,
         // description: true,
         // color: true,
@@ -202,7 +202,7 @@ export const downloadRouter = createTRPCRouter({
   getAllGameModes: publicProcedure.query(async ({ ctx }) => {
     const gameModes = await ctx.prisma.gameMode.findMany({
       select: {
-        // id: true,
+        id: true,
         name: true,
         // amountOfScenes: true,
         // one: true,
@@ -240,7 +240,7 @@ export const downloadRouter = createTRPCRouter({
         id_gameMode: true,
         startTime: true,
         endTime: true,
-        score: true,
+        // score: true,
         Scenes: {
           select: {
             id: true,
