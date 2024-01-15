@@ -69,8 +69,8 @@ export function adjustWeights(
   fragments: FragmentWithNotesAndWeight[],
   selectedFragment: FragmentWithNotesAndWeight,
 ) {
-  const decreaseAmount = 10
-  const increaseAmount = 4
+  const decreaseAmount = 5
+  const increaseAmount = 10
 
   fragments.forEach((fragment) => {
     if (fragment.id === selectedFragment.id) {
@@ -79,6 +79,15 @@ export function adjustWeights(
       fragment.weight += increaseAmount
     }
   })
+}
+
+export function adjustSingleItemWeight(
+  fragment: FragmentWithNotesAndWeight | undefined,
+) {
+  const decreaseAmount = 5
+  if(!fragment) return fragment
+  fragment.weight = Math.max(fragment.weight - decreaseAmount, 0)
+  return fragment
 }
 
 export function getNoteIndex(note: string) {

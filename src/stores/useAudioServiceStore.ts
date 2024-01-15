@@ -9,6 +9,7 @@ import {
 import { baseNotes, allOctaves, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
 import {
+  adjustSingleItemWeight,
   adjustWeights,
   canTranspose,
   getNoteIndex,
@@ -151,6 +152,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       }
     }
     // Fallback
+    adjustSingleItemWeight(fragments[0])
     return fragments[0]
   },
   transposeWeightedFragments: (

@@ -79,11 +79,10 @@ function getFragmentsToShow(
 
  function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
    let totalCount = 0
-
    // Iterate through each fragment group
    fragmentGroups.forEach((group) => {
      // Add the count of fragments that do not have `useAlways` set to true
-     totalCount += group.fragments.filter((fragment) => !fragment.useAlways).length
+     totalCount += group.fragments.length
    })
 
    return totalCount
@@ -127,7 +126,7 @@ function getPlayableOctavesForFragment(
   const totalFragmentCount = getTotalFragmentCount(fragmentGroups)
   // Determine the threshold
   const totalFragmentsPerOctave = availableOctaves.length
-  const threshold = Math.floor(amountOfScenes / totalFragmentsPerOctave / totalFragmentCount)
+  const threshold = Math.ceil(amountOfScenes / totalFragmentsPerOctave / totalFragmentCount)
   // Get the usage map for the new active fragment
   const fragmentUsageMap = newUsedFragmentsMap[newActiveFragmentId] || {}
   // Filter out the octaves that have not exceeded the threshold
@@ -155,6 +154,7 @@ export const selectActiveAndTransposeFragmentsForScene = (
     amountOfScenes,
     newUsedFragmentsMap,
   )
+  console.log('potentialActiveFragments', potentialActiveFragments)
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
   const availableOctavesForNewActiveFragment = getPlayableOctavesForFragment(
@@ -167,7 +167,11 @@ export const selectActiveAndTransposeFragmentsForScene = (
 
   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
-
+    if(randomOctave === undefined) {
+      console.log("octaves: ", availableOctavesForNewActiveFragment)
+      console.log("potentialActiveFragments: ", potentialActiveFragments)
+      console.log("newActiveFragment: ", newActiveFragment)
+    }
   // Call transpose function with the fragmentsForScene
   const transposedFragments = transposeWeightedFragments(
     fragmentsForScene,
