@@ -145,7 +145,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     for (let fragment of fragments) {
       random -= fragment.weight
       if (random < 0) {
-        console.log('chose fragment', fragment.id)
+        // console.log('chose fragment', fragment.id)
         adjustWeights(fragments, fragment)
         return fragment
       }
@@ -190,7 +190,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       return fragment
     })
 
-    console.log(transposedFragments)
+    // console.log(transposedFragments)
 
     return transposedFragments
   },

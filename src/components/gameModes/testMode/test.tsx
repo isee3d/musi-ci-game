@@ -1,19 +1,68 @@
 import { Fragment, GameMode } from '@prisma/client'
+import { useSession } from 'next-auth/react'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
-import { FragmentGroup } from 'types/fragmentGroup'
+import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
 import AnswerQuestionsUI from '~/components/gameModes/testMode/answerQuestionsUI'
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { Button } from '~/components/ui/button'
+import { selectActiveAndTransposeFragmentsForScene } from '~/components/gameModes/testMode/testMachine'
+import { Button, buttonVariants } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
+
+type LogType = {
+  [fragmentId: string]: {
+    [octave: string]: number
+  }
+}
+
+function testAlgorithm(
+  times: number,
+  fragmentGroups: FragmentGroup[],
+  fragmentsToShow: number,
+  amountOfScenes: number,
+) {
+  let log: LogType = {}
+  let totalCount = 0
+
+  const convertedFragmentGroups = fragmentGroups.map((group) => ({
+    ...group,
+    fragments: group.fragments.map((fragment) => ({
+      ...fragment,
+      weight: 100,
+    })),
+  })) as FragmentGroupWithWeights[]
+
+  for (let i = 0; i < times; i++) {
+    const { transposedFragments } = selectActiveAndTransposeFragmentsForScene(
+      fragmentsToShow,
+      amountOfScenes,
+      convertedFragmentGroups,
+    )
+  }
+
+  const { newUsedFragmentsMap } = useLuisterenStore.getState()
+
+  // Update the log with the results of each iteration
+  for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
+    log[fragmentId] = log[fragmentId] || {}
+    //@ts-ignore
+    for (const [octave, count] of Object.entries(octaveData)) {
+      // @ts-ignore
+      log[fragmentId][octave] = (log[fragmentId][octave] || 0) + count
+      totalCount += count
+    }
+  }
+
+  console.log('Log of fragment usage by octave:', log, 'count:', totalCount)
+}
 
 interface TestModeProps {
   fragments: FragmentWithNotes[]
@@ -36,12 +85,15 @@ const Test: React.FC<TestModeProps> = ({
   playTime,
   mode,
 }) => {
+  const { data: session } = useSession()
   const { send } = TestModeMachineContext.useActorRef()
-  const { setLevelSublevelMode, reset, setStartTime } = useLuisterenStore()
+  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap } = useLuisterenStore()
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
-  const guessHeardFragmentState = TestModeMachineContext.useSelector((state) => state.matches('playing.guessHeardFragment'))
+  const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.guessHeardFragment'),
+  )
   // const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
   //   state.matches('answeringQuestions'),
   // )
@@ -102,7 +154,10 @@ const Test: React.FC<TestModeProps> = ({
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
         <Button
-          className={cn('cursor-not-allowed', guessHeardFragmentState || isPausedState ? 'cursor-pointer' : '')}
+          className={cn(
+            'cursor-not-allowed',
+            guessHeardFragmentState || isPausedState ? 'cursor-pointer' : '',
+          )}
           disabled={!guessHeardFragmentState && !isPausedState}
           onClick={() => {
             send({
@@ -111,6 +166,14 @@ const Test: React.FC<TestModeProps> = ({
           }}
         >
           {isPausedState ? `Hervat` : `Pauzeer`}
+        </Button>
+      )}
+      {session?.user.role === 'ADMIN' && (
+        <Button
+          className={cn(buttonVariants({ size: 'lg' }))}
+          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300)}
+        >
+          Print Test algoritme validatie
         </Button>
       )}
       {/* {didNotAnswerState && (

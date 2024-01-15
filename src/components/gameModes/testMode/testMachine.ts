@@ -77,6 +77,18 @@ function getFragmentsToShow(
   return fragmentsToShow.slice(0, fragmentsToShowSize)
 }
 
+ function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
+   let totalCount = 0
+
+   // Iterate through each fragment group
+   fragmentGroups.forEach((group) => {
+     // Add the count of fragments that do not have `useAlways` set to true
+     totalCount += group.fragments.filter((fragment) => !fragment.useAlways).length
+   })
+
+   return totalCount
+ }
+
 function filterPlayableFragments(
   sceneFragments: FragmentWithNotesAndWeight[],
   fragmentGroups: FragmentGroupWithWeights[],
@@ -87,18 +99,6 @@ function filterPlayableFragments(
     }
   },
 ) {
-  function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
-    let totalCount = 0
-
-    // Iterate through each fragment group
-    fragmentGroups.forEach((group) => {
-      // Add the count of fragments that do not have `useAlways` set to true
-      totalCount += group.fragments.filter((fragment) => !fragment.useAlways).length
-    })
-
-    return totalCount
-  }
-
   const totlaFragmentCount = getTotalFragmentCount(fragmentGroups)
   const threshold = amountOfScenes / totlaFragmentCount
 
@@ -122,14 +122,14 @@ function getPlayableOctavesForFragment(
       [octaveNumber: number]: number
     }
   },
+  fragmentGroups: FragmentGroupWithWeights[],
 ) {
+  const totalFragmentCount = getTotalFragmentCount(fragmentGroups)
   // Determine the threshold
   const totalFragmentsPerOctave = availableOctaves.length
-  const threshold = amountOfScenes / totalFragmentsPerOctave
-
+  const threshold = Math.floor(amountOfScenes / totalFragmentsPerOctave / totalFragmentCount)
   // Get the usage map for the new active fragment
   const fragmentUsageMap = newUsedFragmentsMap[newActiveFragmentId] || {}
-
   // Filter out the octaves that have not exceeded the threshold
   const playableOctaves = availableOctaves.filter((octave) => {
     const usageCount = fragmentUsageMap[octave] || 0
@@ -139,16 +139,14 @@ function getPlayableOctavesForFragment(
   return playableOctaves
 }
 
-const selectActiveAndTransposeFragmentsForScene = (
+export const selectActiveAndTransposeFragmentsForScene = (
   fragmentsToShow: number,
-  amountPlayed: number,
   amountOfScenes: number,
   fragmentGroups: FragmentGroupWithWeights[],
 ) => {
   const { transposeWeightedFragments, transposeFragments } = useAudioServiceStore.getState()
   const { chooseWeightedActiveFragment } = useAudioServiceStore.getState()
-  const { newUsedFragmentsMap, addNewUsedFragment, resetUsedFragments } =
-    useLuisterenStore.getState()
+  const { newUsedFragmentsMap, addNewUsedFragment } = useLuisterenStore.getState()
   const fragmentsForScene = getFragmentsToShow(fragmentGroups, fragmentsToShow, newUsedFragmentsMap)
 
   const potentialActiveFragments = filterPlayableFragments(
@@ -164,15 +162,20 @@ const selectActiveAndTransposeFragmentsForScene = (
     [3, 4, 5],
     amountOfScenes,
     newUsedFragmentsMap,
+    fragmentGroups,
   )
 
   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
 
   // Call transpose function with the fragmentsForScene
-  const transposedFragments = transposeWeightedFragments(fragmentsForScene, randomOctave ?? 0, [3,4,5])
+  const transposedFragments = transposeWeightedFragments(
+    fragmentsForScene,
+    randomOctave ?? 0,
+    [3, 4, 5],
+  )
   // const transposedFragments = transposeFragments(fragmentsForScene, -6, randomOctave ?? 0)
-    console.log(randomOctave, 'octave chosen')
+  // console.log(randomOctave, 'octave chosen')
   // Save played fragment in newusedfragmentsmap
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
@@ -458,6 +461,10 @@ export const testModeMachine = createMachine(
           groups,
         } = event
 
+        const { resetUsedFragments } = useLuisterenStore.getState()
+
+        resetUsedFragments()
+
         // Add a weight to every fragment at the start of the game
 
         const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
@@ -535,7 +542,6 @@ export const testModeMachine = createMachine(
         const { transposedFragments, newActiveFragment, randomOctave } =
           selectActiveAndTransposeFragmentsForScene(
             context.fragmentsToShow,
-            context.amountPlayed,
             context.amountOfScenes,
             copiedGroups,
           )
