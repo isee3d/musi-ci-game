@@ -118,7 +118,22 @@ export const fragmentNoteRouter = createTRPCRouter({
     }),
 
   getAllFragmentGroups: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.fragmentGroup.findMany()
+    return await ctx.prisma.fragmentGroup.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        fragments: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            useAlways: true,
+            isActive: true,
+          },
+        },
+      }
+    })
   }),
 
   getFragmentsOfFragmentGroup: protectedProcedure
@@ -166,13 +181,12 @@ export const fragmentNoteRouter = createTRPCRouter({
         data: {
           name,
           description,
-          subLevels: {
-            disconnect: undefined,
-            connect: sublevel?.map((id) => ({ id })),
-          },
+          // subLevels: {
+          //   disconnect: undefined,
+          //   connect: sublevel?.map((id) => ({ id })),
+          // },
           fragments: {
-            disconnect: undefined,
-            connect: fragments.map((id) => ({ id })),
+            set: fragments.map((id) => ({ id })),
           },
         },
       })

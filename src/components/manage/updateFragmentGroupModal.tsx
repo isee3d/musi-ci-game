@@ -22,13 +22,13 @@ import { Label } from '~/components/ui/label'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
-  fragmentGroup: FragmentGroup
+  fragmentGroup: any
 }
 
 const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmentGroup }) => {
-  const [addedFragments, setAddedFragments] = useState<Fragment[] | undefined>([])
+  const [addedFragments, setAddedFragments] = useState<Fragment[] | undefined>(fragmentGroup.fragments)
   const ctx = api.useContext()
-  const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
+  // const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const { mutate: updatefragmentGroup } = api.fragmentNote.updateFragmentGroup.useMutation({
     onSuccess: () => {
@@ -40,10 +40,10 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
     },
   })
 
-  const fragmentsOfFragmentGroup = api.fragmentNote.getFragmentsOfFragmentGroup.useQuery(
-    { id: fragmentGroup.id },
-    { onSuccess: (data) => setAddedFragments(data?.fragments) }
-  )
+  // const fragmentsOfFragmentGroup = api.fragmentNote.getFragmentsOfFragmentGroup.useQuery(
+  //   { id: fragmentGroup.id },
+  //   { onSuccess: (data) => setAddedFragments(data?.fragments) }
+  // )
 
   const onAddFragmentButtonClick = (fragment: Fragment) => {
     setAddedFragments((prev) => [...(prev ?? []), fragment])
@@ -59,22 +59,25 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
     defaultValues: {
       name: fragmentGroup.name,
       description: fragmentGroup.description,
+      fragments: fragmentGroup.fragments?.map((f) => f.id) ?? [],
     },
   })
 
   function onSubmit(data: z.infer<typeof fragmentGroupFormSchema>) {
-    const exists = fragmentGroupQuery.data?.find(
-      (t) => t.name === data.name && t.id !== fragmentGroup.id
-    )
-    if (!exists) {
+    console.log('comning here', addedFragments, fragmentGroup.id, data)
+    // const exists = fragmentGroupQuery.data?.find(
+    //   (t) => t.name === data.name && t.id !== fragmentGroup.id
+    // )
+    // if (!exists) {
       updatefragmentGroup({
-        ...data,
+        name: data.name,
+        description: data.description,
         id: fragmentGroup.id,
         fragments: addedFragments?.map((f) => f.id) ?? [],
       })
       form.reset()
       setmodal(false)
-    }
+    // }
   }
 
   return (
@@ -124,7 +127,7 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
                     onClick={() => onRemoveFragmentButtonClick(fragment)}
                     className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
                   >
-                    Verwijder van sublevel
+                    Verwijder van fragmentgroep
                   </Button>
                 </div>
               )
@@ -152,7 +155,7 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
             })}
           </div>
         </div>
-        <Button type="submit">Sla nieuwe fragment groep op</Button>
+        <Button type="submit">Sla aangepaste fragment groep op</Button>
         <Button
           onClick={() => {
             form.reset()
