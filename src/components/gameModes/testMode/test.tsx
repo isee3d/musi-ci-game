@@ -171,7 +171,7 @@ const Test: React.FC<TestModeProps> = ({
       {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300)}
+          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300)}
         >
           Print Test algoritme validatie
         </Button>

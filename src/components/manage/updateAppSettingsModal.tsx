@@ -54,7 +54,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 mx-auto space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto mt-5 space-y-8">
         <FormField
           control={form.control}
           name="fragmentDotColor"
@@ -62,10 +62,11 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
             <FormItem>
               <FormLabel>Fragment speler bolletje kleur</FormLabel>
               <FormControl>
-                <HuePicker
-                  styles={{ default: { picker: { width: '100%' } } }}
-                  color={field.value || 'red'}
-                  onChangeComplete={(color) => field.onChange(color.hex)}
+                <input
+                  type="color"
+                  className="w-full"
+                  value={appSettings?.fragmentDotColor || 'red'}
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
               </FormControl>
               <FormMessage />
@@ -79,11 +80,17 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
             <FormItem>
               <FormLabel>Fragment speler lijn kleur</FormLabel>
               <FormControl>
-                <HuePicker
+                <input
+                  type="color"
+                  className="w-full"
+                  value={appSettings?.fragmentDotLineColor || 'red'}
+                  onChange={(e) => field.onChange(e.target.value)}
+                />
+                {/* <HuePicker
                   styles={{ default: { picker: { width: '100%' } } }}
                   color={field.value || 'red'}
                   onChangeComplete={(color) => field.onChange(color.hex)}
-                />
+                /> */}
               </FormControl>
               <FormMessage />
             </FormItem>

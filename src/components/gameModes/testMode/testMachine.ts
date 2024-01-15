@@ -154,7 +154,7 @@ export const selectActiveAndTransposeFragmentsForScene = (
     amountOfScenes,
     newUsedFragmentsMap,
   )
-  console.log('potentialActiveFragments', potentialActiveFragments)
+
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
   const availableOctavesForNewActiveFragment = getPlayableOctavesForFragment(
@@ -164,6 +164,8 @@ export const selectActiveAndTransposeFragmentsForScene = (
     newUsedFragmentsMap,
     fragmentGroups,
   )
+
+  console.log('newActiveFragment', newActiveFragment.id, "fragmentsInScene: ", fragmentsForScene.map(f => f.id))
 
   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
