@@ -1,30 +1,43 @@
+import { addDays, format } from 'date-fns'
+import { Workbook } from 'exceljs'
+import { Calendar as CalendarIcon } from 'lucide-react'
 import { type NextPage } from 'next'
 import Head from 'next/head'
-import { api } from '~/utils/api'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { Workbook } from 'exceljs'
-import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
 import { useEffect, useState } from 'react'
-import { MultiSelect } from '~/components/ui/multi-select'
-import { addDays, format } from 'date-fns'
-import { Calendar as CalendarIcon } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
+import { MultiSelect } from '~/components/ui/multi-select'
+import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
+import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { RouterInputs, RouterOutputs, api } from '~/utils/api'
 
-import { cn } from '~/lib/utils'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
-import {
-  Select,
-  SelectTrigger,
-  SelectGroup,
-  SelectValue,
-  SelectLabel,
-  SelectContent,
-  SelectItem,
-} from '~/components/ui/select'
-import { Sub } from '@radix-ui/react-dropdown-menu'
 import { Label } from '~/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
+import { cn } from '~/lib/utils'
+import { z } from 'zod'
+
+const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
+  return data.reduce((acc: SplitDataByUser, item) => {
+    const participantId = item.user?.participantId
+    if (!participantId) return acc
+    if (!acc[participantId]) acc[participantId] = []
+    acc[participantId]!.push(item)
+    return acc
+  }, {})
+}
+
+const DateRangeSchema = z.object({
+  from: z.optional(z.date()),
+  to: z.optional(z.date()),
+})
+
+export const DownloadSettingsSchema = z.object({
+  selectedUsers: z.array(z.string()),
+  selectedSublevels: z.array(z.string()),
+  selectedGameModes: z.array(z.string()),
+  date: z.optional(DateRangeSchema),
+})
 
 const headers = [
   'deelnemer nummer',
@@ -49,6 +62,9 @@ const getYesterdayDate = () => {
   const today = new Date()
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
 }
+
+type ExcelRoute = RouterOutputs['download']['getFilteredExcelData']
+type SplitDataByUser = { [participantId: string]: ExcelRoute }
 
 const DownloadPage: NextPage = () => {
   useRequireAuth()
@@ -88,54 +104,139 @@ const DownloadPage: NextPage = () => {
   const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
     enabled: true,
   })
-  const levelResultsQuery = api.download.getAllLevelResults.useQuery(undefined, {
-    enabled: shouldDownload === true,
-  })
-  const scenesQuery = api.download.getAllScenes.useQuery(undefined, {
-    enabled: !!levelResultsQuery.data,
-  })
-  const sceneFragmentsQuery = api.download.getAllSceneFragments.useQuery(undefined, {
-    enabled: !!scenesQuery.data,
-  })
-  const relistenFragmentsQuery = api.download.getAllRelistenFragments.useQuery(undefined, {
-    enabled: !!sceneFragmentsQuery.data,
-  })
 
-  const activitiesQuery = api.download.getAllActivities.useQuery(undefined, {
-    enabled: !!relistenFragmentsQuery.data,
-  })
+  const getExcelDataQuery = api.download.getFilteredExcelData.useQuery(
+    {
+      selectedUsers: selectedUsers,
+      selectedSublevels: selectedSublevels,
+      selectedGameModes: selectedGameModes,
+      date: date,
+    },
+    {
+      onSuccess(data: ExcelRoute) {
+        const splitData = splitDataByUser(data)
+        console.log(JSON.stringify(splitData))
+        createExcelFilesPerUser(splitData);
+      },
+      enabled: shouldDownload === true,
+    },
+  )
+
+  // const levelResultsQuery = api.download.getAllLevelResults.useQuery(undefined, {
+  //   enabled: shouldDownload === true,
+  // })
+  // const scenesQuery = api.download.getAllScenes.useQuery(undefined, {
+  //   enabled: !!levelResultsQuery.data,
+  // })
+  // const sceneFragmentsQuery = api.download.getAllSceneFragments.useQuery(undefined, {
+  //   enabled: !!scenesQuery.data,
+  // })
+  // const relistenFragmentsQuery = api.download.getAllRelistenFragments.useQuery(undefined, {
+  //   enabled: !!sceneFragmentsQuery.data,
+  // })
+
+  // const activitiesQuery = api.download.getAllActivities.useQuery(undefined, {
+  //   enabled: !!relistenFragmentsQuery.data,
+  // })
+
+  // useEffect(() => {
+  //   setQueriesData({
+  //     users: usersQuery.data,
+  //     // levels: levelsQuery.data,
+  //     // sublevels: sublevelsQuery.data,
+  //     // fragmentGroups: fragmentGroupsQuery.data,
+  //     // fragments: fragmentsQuery.data,
+  //     // notes: notesQuery.data,
+  //     gameModes: gameModesQuery.data,
+  //     levelResults: levelResultsQuery.data,
+  //     scenes: scenesQuery.data,
+  //     sceneFragments: sceneFragmentsQuery.data,
+  //     relistenFragments: relistenFragmentsQuery.data,
+  //     // questionAnswers: questionAnswersQuery.data,
+  //     activities: activitiesQuery.data,
+  //   })
+  // }, [
+  //   usersQuery.data,
+  //   // levelsQuery.data,
+  //   // sublevelsQuery.data,
+  //   // fragmentGroupsQuery.data,
+  //   // fragmentsQuery.data,
+  //   // notesQuery.data,
+  //   gameModesQuery.data,
+  //   levelResultsQuery.data,
+  //   scenesQuery.data,
+  //   sceneFragmentsQuery.data,
+  //   relistenFragmentsQuery.data,
+  //   // questionAnswersQuery.data,
+  //   activitiesQuery.data,
+  // ])
+
+  const createExcelFilesPerUser = async (splitDataByUser: SplitDataByUser) => {
+    for (const participantId in splitDataByUser) {
+      const userData = splitDataByUser[participantId]
+      if (userData === undefined) continue
+
+      const workbook = new Workbook()
+      const worksheet = workbook.addWorksheet('Data')
+      worksheet.addRow(headers)
+
+      userData.forEach((data) => {
+        data.Scenes.forEach((scene) => {
+          const row = [
+            participantId,
+            new Date(data.startTime).toLocaleDateString(),
+            data.subLevel?.name,
+            data.gameMode?.name,
+            new Date(data.startTime).toLocaleTimeString(),
+            new Date(data.endTime).toLocaleTimeString(),
+            scene.chosenFragmentLatency,
+            scene.playedFragment?.name,
+            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
+              ?.octave,
+            scene.chosenFragment?.name,
+            scene.answeredCorrectly ? 1 : 0,
+            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
+              ?.fragmentIndex,
+            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.chosenFragment?.name)
+              ?.fragmentIndex,
+              // todo add the list of fragments that were listened to
+            scene.relistenFragments.map((f) => f?.fragment?.name).join(', '),
+          ]
+
+          worksheet.addRow(row)
+        })
+      })
+
+      worksheet.columns.forEach((column) => {
+        let maxColumnLength = 0
+        // @ts-ignore
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.text.length
+          if (columnLength > maxColumnLength) {
+            maxColumnLength = columnLength
+          }
+        })
+
+        column.width = maxColumnLength + 2
+      })
+
+      // Generate Excel and trigger download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = `data-${participantId}.xlsx`
+      link.click()
+    }
+  }
 
   useEffect(() => {
-    setQueriesData({
-      users: usersQuery.data,
-      // levels: levelsQuery.data,
-      // sublevels: sublevelsQuery.data,
-      // fragmentGroups: fragmentGroupsQuery.data,
-      // fragments: fragmentsQuery.data,
-      // notes: notesQuery.data,
-      gameModes: gameModesQuery.data,
-      levelResults: levelResultsQuery.data,
-      scenes: scenesQuery.data,
-      sceneFragments: sceneFragmentsQuery.data,
-      relistenFragments: relistenFragmentsQuery.data,
-      // questionAnswers: questionAnswersQuery.data,
-      activities: activitiesQuery.data,
-    })
-  }, [
-    usersQuery.data,
-    // levelsQuery.data,
-    // sublevelsQuery.data,
-    // fragmentGroupsQuery.data,
-    // fragmentsQuery.data,
-    // notesQuery.data,
-    gameModesQuery.data,
-    levelResultsQuery.data,
-    scenesQuery.data,
-    sceneFragmentsQuery.data,
-    relistenFragmentsQuery.data,
-    // questionAnswersQuery.data,
-    activitiesQuery.data,
-  ])
+    if (shouldDownload) {
+      setShouldDownload(false)
+    }
+  }, [shouldDownload])
 
   const downloadExcel = async () => {
     const workbook = new Workbook()
@@ -179,10 +280,6 @@ const DownloadPage: NextPage = () => {
     link.click()
   }
 
-  function startDownload() {
-    setShouldDownload(true)
-  }
-
   return (
     <>
       <Head>
@@ -194,8 +291,6 @@ const DownloadPage: NextPage = () => {
       <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">Download CSV</h1>
-          {/*
-          filter op level, sublevel, game modus */}
           <h2>Selecteer spelers</h2>
           <MultiSelect
             options={
@@ -252,7 +347,7 @@ const DownloadPage: NextPage = () => {
           <MultiSelect
             options={
               sublevelsQuery.data?.map((sublevel) => ({
-                value: sublevel.name,
+                value: sublevel.id.toString(),
                 label: sublevel.name,
               })) ?? []
             }
@@ -265,7 +360,7 @@ const DownloadPage: NextPage = () => {
           <MultiSelect
             options={
               gameModesQuery.data?.map((gameMode) => ({
-                value: gameMode.name,
+                value: gameMode.id.toString(),
                 label: gameMode.name,
               })) ?? []
             }
@@ -274,17 +369,17 @@ const DownloadPage: NextPage = () => {
             className="w-[560px]"
           />
 
-          <Button onClick={startDownload} size={'lg'}>
+          <Button onClick={() => setShouldDownload(true)} size={'lg'}>
             <h3>Klik hier om de download te starten, dit kan even duren</h3>
           </Button>
 
-          {shouldDownload && !activitiesQuery.data && <h2>De download is bezig...</h2>}
+          {/* {shouldDownload && !activitiesQuery.data && <h2>De download is bezig...</h2>}
 
           {activitiesQuery.data && (
             <Button onClick={downloadExcel} size={'lg'}>
               <h3>Download naar csv</h3>
             </Button>
-          )}
+          )} */}
         </div>
       </section>
     </>

@@ -1,5 +1,6 @@
 import { SceneFragment } from './../../../../prisma/generated/zod/index'
 import { z } from 'zod'
+import { DownloadSettingsSchema } from '~/pages/download'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
@@ -371,4 +372,112 @@ export const downloadRouter = createTRPCRouter({
 
     return activities
   }),
+
+  getFilteredExcelData: publicProcedure
+    .input(DownloadSettingsSchema)
+    .query(async ({ ctx, input }) => {
+      const { selectedUsers, selectedSublevels, selectedGameModes, date } = input
+
+      const selectedSublevelsNumbers = selectedSublevels.map((sublevel) => parseInt(sublevel, 10))
+      const selectedGameModesNumbers = selectedGameModes.map((gameMode) => parseInt(gameMode, 10))
+
+      let whereClause = {}
+
+      if (selectedUsers.length > 0) {
+        //@ts-ignore
+        whereClause.id_User = {
+          in: selectedUsers,
+        }
+      }
+
+      if (selectedSublevels.length > 0) {
+        //@ts-ignore
+        whereClause.id_subLevel = {
+          in: selectedSublevelsNumbers,
+        }
+      }
+
+      if (selectedGameModes.length > 0) {
+        //@ts-ignore
+        whereClause.id_gameMode = {
+          in: selectedGameModesNumbers,
+        }
+      }
+
+      if (date) {
+        //@ts-ignore
+        whereClause.startTime = {}
+        if (date.from) {
+          //@ts-ignore
+          whereClause.startTime.gte = date.from
+        }
+        if (date.to) {
+          //@ts-ignore
+          whereClause.startTime.lte = date.to
+        }
+      }
+
+      return await ctx.prisma.levelResult.findMany({
+        where: whereClause,
+        select: {
+          user: {
+            select: {
+              participantId: true,
+            },
+          },
+          subLevel: {
+            select: {
+              name: true,
+            },
+          },
+          gameMode: {
+            select: {
+              name: true,
+            },
+          },
+          startTime: true,
+          endTime: true,
+          Scenes: {
+            select: {
+              id: true,
+              chosenFragment: {
+                select: {
+                  name: true,
+                },
+              },
+              id_levelResult: true,
+              playedFragment: {
+                select: {
+                  name: true,
+                },
+              },
+              chosenFragmentLatency: true,
+              answeredCorrectly: true,
+              relistenFragments: {
+                select: {
+                  fragment: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                  relistenCount: true,
+                },
+              },
+              sceneFragments: {
+                select: {
+                  fragment: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                  fragmentIndex: true,
+                  groundTone: true,
+                  octave: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    }),
 })
