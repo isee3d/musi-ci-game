@@ -423,11 +423,29 @@ export const downloadRouter = createTRPCRouter({
           user: {
             select: {
               participantId: true,
+              questionAnswers: {
+                select: {
+                  question: true,
+                  answer: true,
+                  answeredDate: true,
+                },
+              },
+              activities: {
+                select: {
+                  activity: true,
+                  activity_Date: true,
+                },
+              },
             },
           },
           subLevel: {
             select: {
               name: true,
+              questions: {
+                select: {
+                  question: true,
+                },
+              },
             },
           },
           gameMode: {

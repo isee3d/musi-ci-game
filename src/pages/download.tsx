@@ -56,7 +56,16 @@ const headers = [
   'Teruggeluisterde fragmenten',
 ] as const
 
-const workSheets = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
+const questionsHeaders = [
+  'Vraag',
+  'Antwoord',
+  'Datum',
+] as const
+
+const activitiesHeaders = [
+  'Activiteit type',
+  'Datum',
+] as const
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -114,9 +123,14 @@ const DownloadPage: NextPage = () => {
       if (userData === undefined) continue
 
       const workbook = new Workbook()
-      const worksheet = workbook.addWorksheet('Data')
+      const worksheet = workbook.addWorksheet('Speelresultaten')
+      const questionsWorksheet = workbook.addWorksheet('Vragen en antwoorden')
+      const activitiesWorksheet = workbook.addWorksheet('Activiteiten')
 
+      // setup / styling
       worksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      questionsWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      activitiesWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
 
       const headerRowStyle: Fill = {
         type: 'pattern',
@@ -125,9 +139,42 @@ const DownloadPage: NextPage = () => {
       }
 
       const headerRow = worksheet.addRow(headers)
+      const questionsHeaderRow = questionsWorksheet.addRow(questionsHeaders)
+      const activitiesHeaderRow = activitiesWorksheet.addRow(activitiesHeaders)
+      questionsHeaderRow.eachCell((cell) => {
+        cell.fill = headerRowStyle
+        cell.font = { bold: true }
+      })
+      activitiesHeaderRow.eachCell((cell) => {
+        cell.fill = headerRowStyle
+        cell.font = { bold: true }
+      })
       headerRow.eachCell((cell) => {
         cell.fill = headerRowStyle
         cell.font = { bold: true }
+      })
+
+      //Data filling
+      userData.forEach((data) => {
+        if (data.user && data.user.activities) {
+          data.user.activities.forEach((activity) => {
+            const row = [activity.activity, new Date(activity.activity_Date).toLocaleDateString()]
+            activitiesWorksheet.addRow(row)
+          })
+        }
+      })
+
+      userData.forEach((data) => {
+        if(data.user && data.user.questionAnswers) {
+           data.user.questionAnswers.forEach((qa) => {
+             const row = [
+               qa.question,
+               qa.answer,
+               qa.answeredDate ? new Date(qa.answeredDate).toLocaleDateString() : '',
+             ]
+             questionsWorksheet.addRow(row)
+           })
+        }
       })
 
       userData.forEach((data) => {
@@ -171,6 +218,8 @@ const DownloadPage: NextPage = () => {
         })
       })
 
+      // Formatting cells
+
       worksheet.columns.forEach((column) => {
         let maxColumnLength = 0
         // @ts-ignore
@@ -183,6 +232,32 @@ const DownloadPage: NextPage = () => {
 
         column.width = maxColumnLength + 2
       })
+
+       questionsWorksheet.columns.forEach((column) => {
+         let maxColumnLength = 0
+         // @ts-ignore
+         column.eachCell({ includeEmpty: true }, (cell) => {
+           const columnLength = cell.text.length
+           if (columnLength > maxColumnLength) {
+             maxColumnLength = columnLength
+           }
+         })
+
+         column.width = maxColumnLength + 2
+       })
+
+        activitiesWorksheet.columns.forEach((column) => {
+          let maxColumnLength = 0
+          // @ts-ignore
+          column.eachCell({ includeEmpty: true }, (cell) => {
+            const columnLength = cell.text.length
+            if (columnLength > maxColumnLength) {
+              maxColumnLength = columnLength
+            }
+          })
+
+          column.width = maxColumnLength + 2
+        })
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
