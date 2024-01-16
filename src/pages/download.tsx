@@ -1,5 +1,5 @@
 import { addDays, format } from 'date-fns'
-import { Workbook } from 'exceljs'
+import { Workbook, Fill } from 'exceljs'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { type NextPage } from 'next'
 import Head from 'next/head'
@@ -8,7 +8,7 @@ import { DateRange } from 'react-day-picker'
 import { MultiSelect } from '~/components/ui/multi-select'
 import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { RouterInputs, RouterOutputs, api } from '~/utils/api'
+import { RouterOutputs, api } from '~/utils/api'
 
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
@@ -78,29 +78,15 @@ const DownloadPage: NextPage = () => {
     to: addDays(getYesterdayDate(), 1),
   })
 
-  const [queriesData, setQueriesData] = useState({})
   const [shouldDownload, setShouldDownload] = useState(false)
 
   const usersQuery = api.download.getAllUsers.useQuery(undefined, {
     enabled: true,
   })
-  // const levelsQuery = api.download.getAllLevels.useQuery(undefined, { enabled: !!usersQuery.data })
+
   const sublevelsQuery = api.download.getAllSublevels.useQuery(undefined, {
     enabled: true,
   })
-  // const fragmentGroupsQuery = api.download.getAllFragmentGroups.useQuery(undefined, {
-  //   enabled: !!sublevelsQuery.data,
-  // })
-  // const fragmentsQuery = api.download.getAllFragments.useQuery(undefined, {
-  //   enabled: !!fragmentGroupsQuery.data,
-  // })
-  // const notesQuery = api.download.getAllNotes.useQuery(undefined, {
-  //   enabled: !!fragmentsQuery.data,
-  // })
-
-  // const questionAnswersQuery = api.download.getAllQuestionAnswers.useQuery(undefined, {
-  //   enabled: !!relistenFragmentsQuery.data,
-  // })
   const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
     enabled: true,
   })
@@ -122,55 +108,6 @@ const DownloadPage: NextPage = () => {
     },
   )
 
-  // const levelResultsQuery = api.download.getAllLevelResults.useQuery(undefined, {
-  //   enabled: shouldDownload === true,
-  // })
-  // const scenesQuery = api.download.getAllScenes.useQuery(undefined, {
-  //   enabled: !!levelResultsQuery.data,
-  // })
-  // const sceneFragmentsQuery = api.download.getAllSceneFragments.useQuery(undefined, {
-  //   enabled: !!scenesQuery.data,
-  // })
-  // const relistenFragmentsQuery = api.download.getAllRelistenFragments.useQuery(undefined, {
-  //   enabled: !!sceneFragmentsQuery.data,
-  // })
-
-  // const activitiesQuery = api.download.getAllActivities.useQuery(undefined, {
-  //   enabled: !!relistenFragmentsQuery.data,
-  // })
-
-  // useEffect(() => {
-  //   setQueriesData({
-  //     users: usersQuery.data,
-  //     // levels: levelsQuery.data,
-  //     // sublevels: sublevelsQuery.data,
-  //     // fragmentGroups: fragmentGroupsQuery.data,
-  //     // fragments: fragmentsQuery.data,
-  //     // notes: notesQuery.data,
-  //     gameModes: gameModesQuery.data,
-  //     levelResults: levelResultsQuery.data,
-  //     scenes: scenesQuery.data,
-  //     sceneFragments: sceneFragmentsQuery.data,
-  //     relistenFragments: relistenFragmentsQuery.data,
-  //     // questionAnswers: questionAnswersQuery.data,
-  //     activities: activitiesQuery.data,
-  //   })
-  // }, [
-  //   usersQuery.data,
-  //   // levelsQuery.data,
-  //   // sublevelsQuery.data,
-  //   // fragmentGroupsQuery.data,
-  //   // fragmentsQuery.data,
-  //   // notesQuery.data,
-  //   gameModesQuery.data,
-  //   levelResultsQuery.data,
-  //   scenesQuery.data,
-  //   sceneFragmentsQuery.data,
-  //   relistenFragmentsQuery.data,
-  //   // questionAnswersQuery.data,
-  //   activitiesQuery.data,
-  // ])
-
   const createExcelFilesPerUser = async (splitDataByUser: SplitDataByUser) => {
     for (const participantId in splitDataByUser) {
       const userData = splitDataByUser[participantId]
@@ -178,7 +115,20 @@ const DownloadPage: NextPage = () => {
 
       const workbook = new Workbook()
       const worksheet = workbook.addWorksheet('Data')
-      worksheet.addRow(headers)
+
+       worksheet.views = [{ state: 'frozen', ySplit: 1 }]
+
+      const headerRowStyle: Fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD9D9D9' },
+      }
+
+      const headerRow = worksheet.addRow(headers)
+       headerRow.eachCell((cell) => {
+         cell.fill = headerRowStyle;
+         cell.font = { bold: true }
+       })
 
       userData.forEach((data) => {
         data.Scenes.forEach((scene) => {
@@ -237,48 +187,6 @@ const DownloadPage: NextPage = () => {
       setShouldDownload(false)
     }
   }, [shouldDownload])
-
-  const downloadExcel = async () => {
-    const workbook = new Workbook()
-
-    for (const [sheetName, sheetData] of Object.entries(queriesData)) {
-      if (!sheetData || sheetData.length === 0) continue // Skip if no data
-
-      const worksheet = workbook.addWorksheet(
-        sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
-      ) // Capitalize sheet name for better aesthetics
-
-      worksheet.addRow(headers)
-
-      for (const row of sheetData) {
-        worksheet.addRow(Object.values(row))
-      }
-
-      // Adjust column width
-      worksheet.columns.forEach((column) => {
-        let maxColumnLength = 0
-
-        column.eachCell({ includeEmpty: true }, (cell) => {
-          const columnLength = cell.text.length
-          if (columnLength > maxColumnLength) {
-            maxColumnLength = columnLength
-          }
-        })
-
-        column.width = maxColumnLength + 2 // Add some padding
-      })
-    }
-
-    // Generate Excel and trigger download
-    const buffer = await workbook.xlsx.writeBuffer()
-    const blob = new Blob([buffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'data.xlsx'
-    link.click()
-  }
 
   return (
     <>
