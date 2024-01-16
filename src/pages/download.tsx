@@ -102,7 +102,7 @@ const DownloadPage: NextPage = () => {
       onSuccess(data: ExcelRoute) {
         const splitData = splitDataByUser(data)
         console.log(JSON.stringify(splitData))
-        createExcelFilesPerUser(splitData);
+        createExcelFilesPerUser(splitData)
       },
       enabled: shouldDownload === true,
     },
@@ -116,7 +116,7 @@ const DownloadPage: NextPage = () => {
       const workbook = new Workbook()
       const worksheet = workbook.addWorksheet('Data')
 
-       worksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      worksheet.views = [{ state: 'frozen', ySplit: 1 }]
 
       const headerRowStyle: Fill = {
         type: 'pattern',
@@ -125,14 +125,14 @@ const DownloadPage: NextPage = () => {
       }
 
       const headerRow = worksheet.addRow(headers)
-       headerRow.eachCell((cell) => {
-         cell.fill = headerRowStyle;
-         cell.font = { bold: true }
-       })
+      headerRow.eachCell((cell) => {
+        cell.fill = headerRowStyle
+        cell.font = { bold: true }
+      })
 
       userData.forEach((data) => {
         data.Scenes.forEach((scene) => {
-          const row = [
+          const commonData = [
             participantId,
             new Date(data.startTime).toLocaleDateString(),
             data.subLevel?.name,
@@ -149,11 +149,25 @@ const DownloadPage: NextPage = () => {
               ?.fragmentIndex,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.chosenFragment?.name)
               ?.fragmentIndex,
-              // todo add the list of fragments that were listened to
-            scene.relistenFragments.map((f) => f?.fragment?.name).join(', '),
           ]
 
-          worksheet.addRow(row)
+          const commonDataLength = commonData.length
+
+          if (scene.relistenFragments.length > 0) {
+            scene.relistenFragments.forEach((relFrag, index) => {
+              let row
+              if (index === 0) {
+                row = [...commonData, relFrag?.fragment?.name]
+              } else {
+                // Create an array of nulls to align the relisten fragment in the correct column
+                row = Array(commonDataLength).fill(null)
+                row.push(relFrag?.fragment?.name)
+              }
+              worksheet.addRow(row)
+            })
+          } else {
+            worksheet.addRow(commonData)
+          }
         })
       })
 
