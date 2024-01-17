@@ -1,11 +1,11 @@
-import { Fragment, GameMode } from '@prisma/client'
+import { GameMode } from '@prisma/client'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
 import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
+import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
-import AnswerQuestionsUI from '~/components/gameModes/testMode/answerQuestionsUI'
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
@@ -41,10 +41,11 @@ function testAlgorithm(
   })) as FragmentGroupWithWeights[]
 
   for (let i = 0; i < times; i++) {
-    const { transposedFragments } = selectActiveAndTransposeFragmentsForScene(
+    selectActiveAndTransposeFragmentsForScene(
       fragmentsToShow,
       amountOfScenes,
       convertedFragmentGroups,
+      pianoNotesMap,
     )
   }
 
@@ -62,6 +63,7 @@ function testAlgorithm(
   }
 
   console.log('Log of fragment usage by octave:', log, 'count:', totalCount)
+  console.log('pianoNotesMap', pianoNotesMap)
 }
 
 interface TestModeProps {
@@ -94,16 +96,10 @@ const Test: React.FC<TestModeProps> = ({
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
   )
-  // const answeringQuestionsState = TestModeMachineContext.useSelector((state) =>
-  //   state.matches('answeringQuestions'),
-  // )
   const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
-  // const didNotAnswerState = TestModeMachineContext.useSelector((state) =>
-  //   state.matches('playing.didNotAnswerFragment'),
-  // )
 
   const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery({
     sublevelId: sublevelId,
@@ -144,12 +140,6 @@ const Test: React.FC<TestModeProps> = ({
   return (
     <>
       {startRoundState && <StartTestUI />}
-      {/* {answeringQuestionsState && (
-        <AnswerQuestionsUI
-          sublevelId={sublevelId}
-          questions={QuestionsOfSublevelQuery?.data?.map((item) => item.question)}
-        />
-      )} */}
       {countdownState && <TestCountdownPlayer />}
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
@@ -176,16 +166,6 @@ const Test: React.FC<TestModeProps> = ({
           Print Test algoritme validatie
         </Button>
       )}
-      {/* {didNotAnswerState && (
-        <div className="flex flex-col items-center justify-center">
-          <h3 className="text-center text-4xl font-extrabold tracking-tight">
-            Je hebt niet geantwoord
-          </h3>
-          <p className="text-center text-2xl font-extrabold tracking-tight">
-            Volgende fragment begint zo
-          </p>
-        </div>
-      )} */}
       {isFinishedState && (
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}

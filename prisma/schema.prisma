@@ -262,8 +262,10 @@ model Scene {
   relistenFragments     RelistenFragment[]
   id_playedFragment     Int?
   playedFragment        Fragment?  @relation("PlayedFragment", fields: [id_playedFragment], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   chosenFragmentLatency Int?
   answeredCorrectly    Boolean?
+  startTime            DateTime?
 
   @@index([id_chosenFragment])
   @@index([id_levelResult])
@@ -277,7 +279,7 @@ model SceneFragment {
    id_fragment        Int
    fragment           Fragment?       @relation(fields: [id_fragment], references: [id])
    fragmentIndex       Int
-   groundTone          Int
+   groundTone          String
    octave              Int          @default(1)
 
    @@index([id_Scene])

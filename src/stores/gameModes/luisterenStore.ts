@@ -41,6 +41,7 @@ type LuisterenActions = {
   AddSceneData: (items: FragmentSceneData[]) => void
   setChosenFragmentLatency: (latency: number) => void
   setChosenFragment: (fragmentId: number | undefined) => void
+  setSceneStartTime: (date: Date) => void
   getPercentageCorrectlyAnswered: () => number
   setStartTime: (time: number) => void
   setEndTime: (time: number) => void
@@ -140,6 +141,12 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     set((state) => {
       const newScene = { ...state.sceneData }
       newScene.chosenFragment = fragmentId
+      return { sceneData: newScene }
+    }),
+  setSceneStartTime: (date: Date) =>
+    set((state) => {
+      const newScene = { ...state.sceneData }
+      newScene.startTime = date
       return { sceneData: newScene }
     }),
   setChosenFragmentLatency: (latency: number) =>

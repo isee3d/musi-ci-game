@@ -1,7 +1,7 @@
 export interface FragmentSceneData {
     id_fragment: number;
     fragmentIndex: number;
-    groundTone: number;
+    groundTone: string;
     octave: number;
 }
 
@@ -12,6 +12,7 @@ export interface Scene {
     chosenFragmentlatency?: number | undefined;
     answeredCorrectly?: boolean;
     id_playedFragment?: number;
+    startTime?: Date;
 }
 
 interface FormattedScene {
@@ -35,4 +36,9 @@ export interface FormattedData {
     endTime: Date;
     score: number;
     Scenes: FormattedScene[];
+}
+
+export type WeightedInterval = {
+  interval: number
+  weight: number
 }

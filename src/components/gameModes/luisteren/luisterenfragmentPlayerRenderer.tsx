@@ -18,7 +18,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
     undefined,
   )
-  const { addScore, AddSceneData, addRelistenFragment } = useLuisterenStore()
+  const { addScore, AddSceneData, addRelistenFragment, setSceneStartTime } = useLuisterenStore()
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   useEffect(() => {
@@ -27,11 +27,12 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose,
+        groundTone: fragment.transpose.toString(),
         octave: fragment.octave,
       })
     })
     AddSceneData(sceneData)
+    setSceneStartTime(new Date())
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
 
     return () => {
@@ -40,7 +41,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
         sceneData.push({
           id_fragment: fragment.id,
           fragmentIndex: index,
-          groundTone: fragment.transpose,
+          groundTone: fragment.transpose.toString(),
           octave: fragment.octave,
         })
       })
@@ -50,7 +51,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
-    if(!fragmentToPlay) return
+    if (!fragmentToPlay) return
     setactiveFragmentPlayerIndex(fragmentToPlay.id)
     if (activeFragmentPlayerIndex === undefined) {
       start(fragmentToPlay)

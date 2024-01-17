@@ -48,6 +48,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     setEndTime,
     setChosenFragment,
     getFormattedStoreData,
+    setSceneStartTime,
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -70,11 +71,12 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose ?? -1,
+        groundTone: fragment.transpose ?? '',
         octave: fragment.octave ?? -1,
       })
     })
     AddSceneData(sceneData)
+    setSceneStartTime(new Date())
     setOriginalFragments(getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups))
 
     if (mode?.amountOfScenes === null) {

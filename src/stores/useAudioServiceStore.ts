@@ -1,3 +1,4 @@
+import { pianoNotesMap } from './../components/fragmentPlayer/audio/Keyboard'
 import { create } from 'zustand'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
@@ -6,7 +7,7 @@ import {
   FragmentWithNotesAndWeight,
   FragmentWithNotesWeightAndTransposeDirection,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { baseNotes, allOctaves, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
+import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard'
 import { Note } from '@prisma/client'
 import {
   adjustSingleItemWeight,
@@ -15,6 +16,7 @@ import {
   getNoteIndex,
   getNoteNameFromNoteIndex,
 } from '~/utils/fragmentUtils'
+import { WeightedInterval } from 'types/SceneData'
 
 type AudioServiceState = {
   audioContext: AudioContext | undefined
@@ -51,6 +53,7 @@ type AudioserviceAction = {
     fragments: FragmentWithNotesAndWeight[],
     octave: number,
     range: number[],
+    pianoNotesmap: Map<string, { noteNumber: number; weight: number }>,
   ) => FragmentWithNotesAndWeight[]
   chooseWeightedActiveFragment: (
     fragments: FragmentWithNotesAndWeight[],
@@ -159,40 +162,87 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     fragments: FragmentWithNotesAndWeight[],
     targetOctave: number,
     range: number[],
+    pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
   ) => {
     const transposedFragments = fragments.map((fragment) => {
-      const minTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave}`) ?? 0
-      const maxTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave + 1}`) ?? 0
+      const minTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave}`)
+      const maxTargetOctaveIndex = pianoNotesMap.get(`C${targetOctave + 1}`)
 
       // Get the note indices for the range's lowest C and highest B
-      const minNoteRange = pianoNotesMap.get(`C${range[0]}`) ?? 0
-      const maxNoteRange = pianoNotesMap.get(`B${range[range.length - 1]}`) ?? 0
+      const minNoteRange = pianoNotesMap.get(`C${range[0]}`)
+      const maxNoteRange = pianoNotesMap.get(`B${range[range.length - 1]}`)
 
       const firstNote = fragment.notes[0]
       const originalFirstNoteIndex = getNoteIndex(firstNote?.name ?? '')
+      if (
+        !originalFirstNoteIndex ||
+        !minNoteRange ||
+        !maxNoteRange ||
+        !minTargetOctaveIndex ||
+        !maxTargetOctaveIndex
+      )
+        return fragment
 
       // Calculate the range for possible transpositions for the first note
-      let transposeRangeMin = Math.max(minNoteRange, minTargetOctaveIndex) - originalFirstNoteIndex
+      let transposeRangeMin =
+        Math.max(minNoteRange.noteNumber, minTargetOctaveIndex.noteNumber) -
+        originalFirstNoteIndex.noteNumber
       let transposeRangeMax =
-        Math.min(maxNoteRange, maxTargetOctaveIndex - 1) - originalFirstNoteIndex
+        Math.min(maxNoteRange.noteNumber, maxTargetOctaveIndex.noteNumber - 1) -
+        originalFirstNoteIndex.noteNumber
 
       // Generate a random transposition interval within this range
-      const transpositionInterval =
-        Math.floor(Math.random() * (transposeRangeMax - transposeRangeMin + 1)) + transposeRangeMin
+      // TODO: Check the weight in pianoNotesmap and do a weighted random
+      // const transpositionInterval =
+      //   Math.floor(Math.random() * (transposeRangeMax - transposeRangeMin + 1)) + transposeRangeMin
+
+      let totalWeight = 0
+      let weightedChoices = []
+
+      for (let i = transposeRangeMin; i <= transposeRangeMax; i++) {
+        const noteName = getNoteNameFromNoteIndex(originalFirstNoteIndex.noteNumber + i)
+        const noteWeight = pianoNotesMap.get(noteName)?.weight || 0
+        totalWeight += noteWeight
+        weightedChoices.push({ interval: i, cumulativeWeight: totalWeight })
+      }
+
+      // Select a transposition interval based on weight
+      let random = Math.random() * totalWeight
+      let transpositionInterval =
+        weightedChoices.find((choice) => random <= choice.cumulativeWeight)?.interval || 0
+
+      const increaseAmount = 10
+      const decreaseAmount = 5
+
+      for (let i = transposeRangeMin; i <= transposeRangeMax; i++) {
+        const noteName = getNoteNameFromNoteIndex(originalFirstNoteIndex.noteNumber + i)
+        const noteWeight = pianoNotesMap.get(noteName)?.weight || 0
+        if(!noteWeight) continue
+         let newWeight = 0
+         if (i === transpositionInterval) {
+           newWeight = Math.max(noteWeight - decreaseAmount, 0)
+         } else {
+           newWeight = noteWeight + increaseAmount
+         }
+         // Set the new weight for the note in pianoNotesMap
+         pianoNotesMap.set(noteName, {
+           noteNumber: originalFirstNoteIndex.noteNumber + i,
+           weight: newWeight,
+         })
+      }
 
       fragment.notes.forEach((note) => {
         const originalNoteIndex = getNoteIndex(note.name)
-        const transposedNoteIndex = originalNoteIndex + transpositionInterval
+        if (!originalNoteIndex) return
+        const transposedNoteIndex = originalNoteIndex.noteNumber + transpositionInterval
         note.name = getNoteNameFromNoteIndex(transposedNoteIndex)
       })
 
-      fragment.transpose = transpositionInterval
       fragment.octave = targetOctave
-
+      if (fragment.notes[0] === undefined) return fragment
+      fragment.transpose = fragment.notes[0].name
       return fragment
     })
-
-    // console.log(transposedFragments)
 
     return transposedFragments
   },

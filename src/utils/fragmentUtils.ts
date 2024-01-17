@@ -49,7 +49,7 @@ export const getOriginalFragmentsFromFragmentGroup = (
 // }
 
 export const getShownFragmentByFragmentId = (
-  shownFragments: FragmentWithNotesAndWeight[],
+  shownFragments: FragmentWithNotesAndWeight[] | FragmentWithNotesAndTransposeDirection[],
   fragmentId: number,
 ): FragmentWithNotes | undefined => {
   return shownFragments.find((frag) => frag.id === fragmentId)
@@ -91,12 +91,12 @@ export function adjustSingleItemWeight(
 }
 
 export function getNoteIndex(note: string) {
-  return pianoNotesMap.get(note) ?? 0
+  return pianoNotesMap.get(note)
 }
 
 export function getNoteNameFromNoteIndex(index: number) {
   for (let [key, value] of pianoNotesMap) {
-    if (value === index) {
+    if (value.noteNumber === index) {
       return key
     }
   }

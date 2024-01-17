@@ -53,6 +53,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     setEndTime,
     setChosenFragment,
     getFormattedStoreData,
+    setSceneStartTime,
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -80,6 +81,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       })
     })
     AddSceneData(sceneData)
+    setSceneStartTime(new Date())
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
 
     if (mode?.amountOfScenes === null) {
@@ -117,8 +119,8 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
-      if(!fragmentToPlay) return
+    const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+    if (!fragmentToPlay) return
     if (guessHeardFragmentState) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)

@@ -1,13 +1,12 @@
-import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { CountdownTimings } from 'types/Timings'
+import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { Latency } from 'types/latency'
-import { createMachine, assign } from 'xstate'
+import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
+import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndTransposeDirection,
   FragmentWithNotesAndWeight,
-  FragmentWithNotesWeightAndTransposeDirection,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -77,16 +76,16 @@ function getFragmentsToShow(
   return fragmentsToShow.slice(0, fragmentsToShowSize)
 }
 
- function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
-   let totalCount = 0
-   // Iterate through each fragment group
-   fragmentGroups.forEach((group) => {
-     // Add the count of fragments that do not have `useAlways` set to true
-     totalCount += group.fragments.length
-   })
+function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
+  let totalCount = 0
+  // Iterate through each fragment group
+  fragmentGroups.forEach((group) => {
+    // Add the count of fragments that do not have `useAlways` set to true
+    totalCount += group.fragments.length
+  })
 
-   return totalCount
- }
+  return totalCount
+}
 
 function filterPlayableFragments(
   sceneFragments: FragmentWithNotesAndWeight[],
@@ -142,9 +141,10 @@ export const selectActiveAndTransposeFragmentsForScene = (
   fragmentsToShow: number,
   amountOfScenes: number,
   fragmentGroups: FragmentGroupWithWeights[],
+  pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
 ) => {
-  const { transposeWeightedFragments, transposeFragments } = useAudioServiceStore.getState()
-  const { chooseWeightedActiveFragment } = useAudioServiceStore.getState()
+  const { chooseWeightedActiveFragment, transposeWeightedFragments } =
+    useAudioServiceStore.getState()
   const { newUsedFragmentsMap, addNewUsedFragment } = useLuisterenStore.getState()
   const fragmentsForScene = getFragmentsToShow(fragmentGroups, fragmentsToShow, newUsedFragmentsMap)
 
@@ -165,93 +165,30 @@ export const selectActiveAndTransposeFragmentsForScene = (
     fragmentGroups,
   )
 
-  console.log('newActiveFragment', newActiveFragment.id, "fragmentsInScene: ", fragmentsForScene.map(f => f.id))
+  console.log(
+    'newActiveFragment',
+    newActiveFragment.id,
+    'fragmentsInScene: ',
+    fragmentsForScene.map((f) => f.id),
+  )
 
   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
-    if(randomOctave === undefined) {
-      console.log("octaves: ", availableOctavesForNewActiveFragment)
-      console.log("potentialActiveFragments: ", potentialActiveFragments)
-      console.log("newActiveFragment: ", newActiveFragment)
-    }
+  if (randomOctave === undefined) {
+    console.log('octaves: ', availableOctavesForNewActiveFragment)
+    console.log('potentialActiveFragments: ', potentialActiveFragments)
+    console.log('newActiveFragment: ', newActiveFragment)
+  }
   // Call transpose function with the fragmentsForScene
   const transposedFragments = transposeWeightedFragments(
     fragmentsForScene,
     randomOctave ?? 0,
     [3, 4, 5],
+    pianoNotesMap,
   )
-  // const transposedFragments = transposeFragments(fragmentsForScene, -6, randomOctave ?? 0)
-  // console.log(randomOctave, 'octave chosen')
-  // Save played fragment in newusedfragmentsmap
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
-  return { transposedFragments, newActiveFragment, randomOctave }
-}
-
-const Transpose = (
-  fragmentsToShow: number,
-  amountPlayed: number,
-  amountOfScenes: number,
-  fragmentGroups: FragmentGroupWithWeights[],
-) => {
-  const { transposeFragments } = useAudioServiceStore.getState()
-  const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
-
-  // Determine the octave based on the amount played
-  let octave = 3 + Math.floor(amountPlayed / (amountOfScenes / 3))
-  if (amountPlayed % (amountOfScenes / 3) === 0 && octave !== 0) {
-    resetUsedFragments()
-  }
-  // Cap octave at 5
-  if (octave > 5) octave = 5
-
-  // Probabilistic threshold for maximum plays per fragment
-  const baseThreshold = Math.floor(amountOfScenes / fragmentGroups.length)
-  const probThreshold = baseThreshold + (Math.random() < 0.5 ? 1 : 0)
-
-  // Select a random fragment group
-  const randomGroupIndex = Math.floor(Math.random() * fragmentGroups.length)
-  const selectedGroup = fragmentGroups[randomGroupIndex]
-
-  if (!selectedGroup) {
-    throw new Error('No selected group available')
-  }
-
-  // Separate out the fragments that are marked "useAlways"
-  const alwaysUseFragments = selectedGroup.fragments.filter((f) => f.useAlways)
-  const otherFragments = selectedGroup.fragments.filter((f) => !f.useAlways)
-
-  // Filter fragments that haven't been played more than the threshold
-  const candidates = otherFragments.filter((f) => (usedFragmentsMap[f.id] || 0) < probThreshold)
-  // Shuffle and select the required number of fragments
-  const shuffledCandidates = candidates.sort(() => Math.random() - 0.5)
-  const remainingSpots = fragmentsToShow - alwaysUseFragments.length
-  const selectedFromCandidates = shuffledCandidates.slice(0, remainingSpots)
-
-  const selectedFragments = [...alwaysUseFragments, ...selectedFromCandidates]
-
-  // Transpose the selected fragments
-  const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  let transposedFragments: FragmentWithNotesAndWeight[] = []
-  if ([3, 4, 5].includes(octave)) {
-    transposedFragments = transposeFragments(
-      selectedFragments,
-      randomTransposeDirection,
-      octave,
-    ) as FragmentWithNotesAndWeight[]
-  }
-
-  // Update the used fragments map
-  addUsedFragments(transposedFragments.map((f) => f.id))
-
-  return {
-    transposedFragments: transposedFragments.map((fragment) => ({
-      ...fragment,
-      transpose: randomTransposeDirection,
-      octave: octave,
-    })) as FragmentWithNotesWeightAndTransposeDirection[],
-    selectedGroup,
-  }
+  return { transposedFragments, newActiveFragment, pianoNotesMap }
 }
 
 export const testModeMachine = createMachine(
@@ -275,6 +212,7 @@ export const testModeMachine = createMachine(
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
       groups: [] as FragmentGroupWithWeights[],
+      pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
       services: {} as {
@@ -488,6 +426,7 @@ export const testModeMachine = createMachine(
           countdownTimings,
           countdownActions,
           groups: convertedFragmentGroups,
+          pianoNotesMap: pianoNotesMap,
         }
       }),
       startPlaying: () => {
@@ -536,32 +475,20 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
-        // const { chooseWeightedActiveFragment } = useAudioServiceStore.getState()
         const copiedGroups = deepCopy(context.groups)
-        // const { transposedFragments, selectedGroup } = Transpose(
-        //   // copiedFragments,
-        //   context.fragmentsToShow,
-        //   context.amountPlayed,
-        //   context.amountOfScenes,
-        //   copiedGroups,
-        // )
-        const { transposedFragments, newActiveFragment, randomOctave } =
+        const { transposedFragments, newActiveFragment, pianoNotesMap } =
           selectActiveAndTransposeFragmentsForScene(
             context.fragmentsToShow,
             context.amountOfScenes,
             copiedGroups,
+            context.pianoNotesMap ?? new Map(),
           )
-        // // const newActiveFragment =
-        // //   transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
-
-        // const newActiveFragment = chooseWeightedActiveFragment(transposedFragments)
-
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
           guessedFragment: undefined,
           shownFragments: transposedFragments,
           activeFragment: newActiveFragment,
-          // selectedGroup: selectedGroup,
+          pianoNotesMap: pianoNotesMap,
         }
       }),
     },

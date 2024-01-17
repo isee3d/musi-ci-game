@@ -184,12 +184,12 @@ const DownloadPage: NextPage = () => {
             new Date(data.startTime).toLocaleDateString(),
             data.subLevel?.name,
             data.gameMode?.name,
-            new Date(data.startTime).toLocaleTimeString(),
-            new Date(data.endTime).toLocaleTimeString(),
+            new Date(scene.startTime ?? -1).toLocaleTimeString(),
+            new Date(((scene?.startTime?.getTime() ?? 0) + (scene?.chosenFragmentLatency ?? 0) ?? -1)).toLocaleTimeString(),
             scene.chosenFragmentLatency,
             scene.playedFragment?.name,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
-              ?.octave,
+              ?.groundTone,
             scene.chosenFragment?.name,
             scene.answeredCorrectly ? 1 : 0,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)

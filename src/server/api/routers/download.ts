@@ -470,6 +470,7 @@ export const downloadRouter = createTRPCRouter({
                 },
               },
               chosenFragmentLatency: true,
+              startTime: true,
               answeredCorrectly: true,
               relistenFragments: {
                 select: {

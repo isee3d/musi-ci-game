@@ -21,32 +21,32 @@ const FragmentPlayerRenderer: React.FC = () => {
   const isClickable = SpelenMachineContext.useSelector((state) => state.context.isClickable)
 
   const playingSound = SpelenMachineContext.useSelector((state) =>
-    state.matches('playing.playSound')
+    state.matches('playing.playSound'),
   )
 
   const activeFragment = SpelenMachineContext.useSelector(
     (state) => state.context.activeFragment,
-    shallowEqual
+    shallowEqual,
   )
   const guessedFragment = SpelenMachineContext.useSelector(
     (state) => state.context.guessedFragment,
-    shallowEqual
+    shallowEqual,
   )
   const shownFragments = SpelenMachineContext.useSelector(
     (state) => state.context.shownFragments,
-    shallowEqual
+    shallowEqual,
   )
-   const allOriginalFragments = SpelenMachineContext.useSelector(
-     (state) => state.context.allLevelFragments,
-   )
+  const allOriginalFragments = SpelenMachineContext.useSelector(
+    (state) => state.context.allLevelFragments,
+  )
   const guessHeardFragmentState = SpelenMachineContext.useSelector((state) =>
-    state.matches('playing.guessHeardFragment')
+    state.matches('playing.guessHeardFragment'),
   )
   const listenToFragmentsState = SpelenMachineContext.useSelector((state) =>
-    state.matches('playing.listenToFragments')
+    state.matches('playing.listenToFragments'),
   )
 
-   if (!sessionData?.user) return null
+  if (!sessionData?.user) return null
 
   const {
     addNewUserSceneAnswer,
@@ -57,6 +57,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     addScene,
     sceneData,
     getFormattedStoreData,
+    setSceneStartTime,
   } = useLuisterenStore()
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
@@ -70,7 +71,7 @@ const FragmentPlayerRenderer: React.FC = () => {
 
   // local state
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
-    undefined
+    undefined,
   )
   const [isPlayingFragment, setIsPlayingFragment] = useState(false)
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
@@ -81,12 +82,13 @@ const FragmentPlayerRenderer: React.FC = () => {
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose,
+        groundTone: fragment.transpose.toString(),
         octave: fragment.octave,
       })
     })
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
     AddSceneData(sceneData)
+    setSceneStartTime(new Date())
   }, [shownFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
@@ -113,8 +115,8 @@ const FragmentPlayerRenderer: React.FC = () => {
   }
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
-     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
-     if(!fragmentToPlay) return
+    const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+    if (!fragmentToPlay) return
     if (guessHeardFragmentState || playingSound) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
@@ -188,7 +190,7 @@ const FragmentPlayerRenderer: React.FC = () => {
                 sceneData.push({
                   id_fragment: fragment.id,
                   fragmentIndex: index,
-                  groundTone: fragment.transpose,
+                  groundTone: fragment.transpose.toString(),
                   octave: fragment.octave,
                 })
               })
