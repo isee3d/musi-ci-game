@@ -9,7 +9,7 @@ const footer: React.FC = () => {
 
   return (
     <div className="relative bottom-0 flex w-full justify-end gap-2 border-t-4 bg-background px-4 py-2 text-xs">
-      <h3>V2.0.3</h3>
+      <h3>V2.1.0</h3>
       <Link href="https://www.musi-ci.nl/">Musi-CI Game ©{getCurrentYear()} JokeVeltmanMuziek</Link>
     </div>
   )

@@ -51,9 +51,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     setSceneStartTime,
   } = useLuisterenStore()
 
-  const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
-    undefined,
-  )
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
@@ -91,11 +88,11 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }, [shownFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
-    return isAnimating === undefined ? activeFragmentPlayerIndex === fragment.id : isAnimating
+    return isAnimating ?? false
   }
 
   function checkIsClickable() {
-    return isClickable === undefined ? activeFragmentPlayerIndex === undefined : isClickable
+    return isClickable
   }
 
   function checkIsGuessedCorrect(selfFragment: FragmentWithNotes): boolean {
@@ -116,10 +113,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
     if (!fragmentToPlay) return
+
     if (guessHeardFragmentState) {
-      if (activeFragmentPlayerIndex !== undefined) {
-        setactiveFragmentPlayerIndex(undefined)
-      }
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
@@ -127,7 +122,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }
 
   function onFragmentPlayingComplete() {
-    setactiveFragmentPlayerIndex(undefined)
+    // setactiveFragmentPlayerIndex(undefined)
   }
 
   return (

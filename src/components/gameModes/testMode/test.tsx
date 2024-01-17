@@ -158,14 +158,14 @@ const Test: React.FC<TestModeProps> = ({
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
       )}
-      {session?.user.role === 'ADMIN' && (
+      {/* {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
           onClick={() => testAlgorithm(300, fragmentGroups, 3, 300)}
         >
           Print Test algoritme validatie
         </Button>
-      )}
+      )} */}
       {isFinishedState && (
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}
