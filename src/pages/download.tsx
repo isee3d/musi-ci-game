@@ -84,7 +84,7 @@ const DownloadPage: NextPage = () => {
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
-    to: addDays(getYesterdayDate(), 1),
+    to: addDays(getYesterdayDate(), 2),
   })
 
   const [shouldDownload, setShouldDownload] = useState(false)
@@ -292,7 +292,7 @@ const DownloadPage: NextPage = () => {
           <MultiSelect
             options={
               usersQuery.data?.map((user) => ({
-                value: user.participantId ?? '-1',
+                value: user.id ?? '-1',
                 label: user.participantId ?? '-1',
               })) ?? []
             }

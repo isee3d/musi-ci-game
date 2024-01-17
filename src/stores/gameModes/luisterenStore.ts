@@ -235,6 +235,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
         answeredCorrectly: scene.answeredCorrectly,
         id_chosenFragment: scene.chosenFragment,
         id_playedFragment: scene.id_playedFragment,
+        startTime: scene.startTime,
         sceneFragments: sceneFragments,
         relistenFragments: relistenFragments,
       }

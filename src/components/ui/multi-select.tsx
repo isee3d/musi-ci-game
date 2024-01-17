@@ -53,10 +53,10 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           onClick={() => setOpen(!open)}
         >
           <div className="flex flex-wrap gap-1">
-            {selected.map((item) => (
+            {selected.map((item, index) => (
               <Badge
                 variant="secondary"
-                key={item}
+                key={index}
                 className="mb-1 mr-1"
                 onClick={() => handleUnselect(item)}
               >
@@ -89,9 +89,9 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           <CommandInput placeholder="Search ..." />
           <CommandEmpty>No item found.</CommandEmpty>
           <CommandGroup className="max-h-64 overflow-auto">
-            {options.map((option) => (
+            {options.map((option, index) => (
               <CommandItem
-                key={option.value}
+                key={index}
                 onSelect={() => {
                   onChange(
                     selected.includes(option.value)

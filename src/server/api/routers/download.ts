@@ -8,7 +8,7 @@ export const downloadRouter = createTRPCRouter({
   getAllUsers: publicProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany({
       select: {
-        // id: true,
+        id: true,
         participantId: true,
         // role: true,
         // isAllowedToPlay: true,
