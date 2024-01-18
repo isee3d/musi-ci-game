@@ -8,7 +8,7 @@ const LuisterenFeedback: React.FC = () => {
   return (
     <>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        Je speelde voor {formatTime(endTime - startTime)}
+        Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         You scored {score} points!

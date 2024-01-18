@@ -33,7 +33,7 @@ const PlayButtonsRenderer: React.FC = () => {
           resetSceneRelatedData()
         }}
       >
-        <h3>Play knop</h3>
+        <h3>hoger/lager</h3>
       </Button>
       <Button
         size={'lg'}
@@ -43,7 +43,7 @@ const PlayButtonsRenderer: React.FC = () => {
           saveToDB(getFormattedStoreData(sessionData.user.id))
         }}
       >
-        <h3>Stop Luisteren</h3>
+        <h3>Stop</h3>
       </Button>
     </>
   )

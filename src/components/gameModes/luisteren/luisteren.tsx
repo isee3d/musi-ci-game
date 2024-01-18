@@ -7,6 +7,8 @@ import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/lu
 import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { GameMode } from '@prisma/client'
+import { Button, buttonVariants } from '~/components/ui/button'
+import { useRouter } from 'next/router'
 
 interface LuisterenProps {
   fragmentsToShow: number
@@ -23,14 +25,16 @@ const Luisteren: React.FC<LuisterenProps> = ({
   levelId,
   mode,
 }) => {
+  const router = useRouter()
   const { send } = LuisterenMachineContext.useActorRef()
+  const isIdleState = LuisterenMachineContext.useSelector((state) => state.matches('idle'))
   const isPlayingState = LuisterenMachineContext.useSelector((state) => state.matches('playing'))
   const isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
-    state.matches('finishedListening')
+    state.matches('finishedListening'),
   )
   const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
 
-  useEffect(() => {
+  function startLuisteren() {
     reset()
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
@@ -39,11 +43,21 @@ const Luisteren: React.FC<LuisterenProps> = ({
       levelFragments: fragments,
       fragmentsToShow: fragmentsToShow,
     })
-  }, [])
+  }
 
   return (
     <>
-      <h2 className="text-center text-4xl font-extrabold tracking-tight">Kijk en luister</h2>
+      <h2 className="text-center text-4xl font-extrabold tracking-tight">Klik en luister</h2>
+      {isIdleState && (
+        <div className="flex flex-col gap-y-5">
+          <Button className={buttonVariants({ size: 'lg' })} onClick={() => startLuisteren()}>
+            Start met luisteren
+          </Button>
+          <Button className={buttonVariants({ size: 'lg' })} onClick={() => router.back()}>
+            Terug
+          </Button>
+        </div>
+      )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
       {isfinishedPlayingState && <LuisterenFeedback />}
       <div className=" flex justify-center space-x-5">
