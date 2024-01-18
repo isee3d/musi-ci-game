@@ -39,6 +39,7 @@
     "@trpc/server": "10.37.1",
     "@xstate/inspect": "0.8.0",
     "@xstate/react": "3.2.2",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "0.7.0",
     "clsx": "2.1.0",
     "cmdk": "^0.2.0",
@@ -70,6 +71,7 @@
     "zustand": "4.4.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/eslint": "^8.56.1",
     "@types/json2csv": "^5.0.7",
     "@types/node": "^20.10.7",

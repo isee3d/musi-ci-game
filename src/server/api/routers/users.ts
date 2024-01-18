@@ -1,8 +1,10 @@
 import { TRPCError } from '@trpc/server'
 import { UserSchema } from 'prisma/generated/zod'
 import { z } from 'zod'
+import bcrypt from 'bcrypt'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
+import { userFormSchema } from 'types/FormSchema'
 
 export const usersRouter = createTRPCRouter({
   getAllUsersWithoutTeam: protectedProcedure.query(async ({ ctx }) => {
@@ -111,7 +113,7 @@ export const usersRouter = createTRPCRouter({
       })
     }),
 
-    updateUserIsAllowedToPlay: protectedProcedure
+  updateUserIsAllowedToPlay: protectedProcedure
     .input(z.object({ id: z.string(), isAllowedToPlay: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const { id, isAllowedToPlay } = input
@@ -136,6 +138,83 @@ export const usersRouter = createTRPCRouter({
           },
           activity: activity,
         },
+      })
+    }),
+
+  createUserByCredentials: protectedProcedure
+    .input(userFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { name, participantId, password, isAllowedToPlay } = input
+
+      const existingUser = await ctx.prisma.user.findFirst({
+        where: {
+          participantId: participantId,
+          name: name,
+        },
+      })
+
+      if (existingUser) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'User already exists' })
+      }
+
+      if(password === undefined) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password is required' })
+      }
+
+      if(password.length < 6) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password must be at least 6 characters' })
+      }
+
+     return await ctx.prisma.user.create({
+        data: {
+          name: name,
+          participantId: participantId,
+          isAllowedToPlay: isAllowedToPlay,
+          hashedPassword: await bcrypt.hash(password, 10),
+        },
+      })
+    }),
+
+    updateUserData: protectedProcedure
+    .input(userFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { userId, participantId, password, isAllowedToPlay, role, name } = input
+
+      if(!userId) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'userId is required' })
+      }
+
+      const existingUser = await ctx.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      })
+
+      if (!existingUser) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'User does not exist' })
+      }
+
+      if(password && password.length < 6) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password must be at least 6 characters' })
+      }
+
+       let updateData = {
+         name: name,
+         participantId: participantId,
+         isAllowedToPlay: isAllowedToPlay,
+         role: role,
+       }
+
+       if (password) {
+        // @ts-ignore
+         updateData.hashedPassword = await bcrypt.hash(password, 10)
+       }
+
+      return await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: updateData
       })
     }),
 })

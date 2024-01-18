@@ -9,12 +9,15 @@ import { cn } from '~/lib/utils'
 import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
 import { Label } from '~/components/ui/label'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
+import CreateNewUserModal from '~/components/manage/createNewUserModal'
 
 const ManageUsersPage: NextPage = () => {
   useRequireAuth()
   useRequireAdminRole()
 
   const ctx = api.useContext()
+  const [createModal, setCreateModal] = useState(false)
   const usersQuery = api.user.getAllUsers.useQuery()
   const { mutate: deleteUser } = api.user.deleteUser.useMutation({
     onSuccess: () => {
@@ -37,6 +40,14 @@ const ManageUsersPage: NextPage = () => {
           Gebruikers beheren
         </h2>
         <div className="container mx-auto flex min-h-fit w-1/2 flex-col items-center gap-y-4 rounded border-2 border-primary p-4 shadow">
+          <Button onClick={() => setCreateModal(true)} variant="default">
+            Creeër een nieuwe speler
+          </Button>
+          {createModal && (
+            <ManageBaseModal title="Nieuwe speler aanmaken">
+              <CreateNewUserModal setmodal={setCreateModal} />
+            </ManageBaseModal>
+          )}
           <Label className="text-center text-3xl font-bold">Bestaande gebruikers</Label>
           {usersQuery.data?.map((user) => {
             return (
@@ -65,7 +76,9 @@ const ManageUsersPage: NextPage = () => {
                   </Button>
                 </div>
                 {showModal && selectedUser?.id === user.id && (
-                  <UpdateUsersModal setmodal={setShowModal} user={selectedUser} />
+                  <ManageBaseModal title="Speler updaten">
+                     <UpdateUsersModal setmodal={setShowModal} user={selectedUser} />
+                  </ManageBaseModal>
                 )}
               </div>
             )

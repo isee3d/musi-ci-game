@@ -1,6 +1,21 @@
-import { User } from '@prisma/client'
+import { Team, User } from '@prisma/client'
+import { api } from '~/utils/api'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
+import { Button } from '~/components/ui/button'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { Button, buttonVariants } from '~/components/ui/button'
+import { Textarea } from '~/components/ui/textarea'
+import { teamFormSchema, userFormSchema } from 'types/FormSchema'
 import {
   Select,
   SelectContent,
@@ -10,8 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { cn } from '~/lib/utils'
-import { api } from '~/utils/api'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,101 +35,145 @@ const userRoles = ['USER', 'ADMIN', 'RESEARCHER'] as const
 
 const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) => {
   const ctx = api.useContext()
-  const { mutate: updateUserRole } = api.user.updateUserRole.useMutation({
+
+  const { mutate: updateUser } = api.user.updateUserData.useMutation({
     onSuccess: () => {
-      toast.success('Rol is succesvol aangepast')
+      toast.success('Speler updated!')
       ctx.user.getAllUsers.invalidate()
+    },
+    onError: () => {
+      toast.error('Something went wrong!')
     },
   })
 
-  const { mutate: updateUserIsAllowedToPlay } = api.user.updateUserIsAllowedToPlay.useMutation({
-    onSuccess: () => {
-      toast.success('De speler mag spelen is aangepast')
-      ctx.user.getAllUsers.invalidate()
+  const form = useForm<z.infer<typeof userFormSchema>>({
+    mode: 'onBlur',
+    resolver: zodResolver(userFormSchema),
+    defaultValues: {
+      userId: user.id,
+      name: user.name ?? '',
+      participantId: user.participantId ?? '',
+      isAllowedToPlay: user.isAllowedToPlay ?? true,
+      role: user.role ?? 'USER',
     },
   })
 
-  function updateUserRoleValues(role: string) {
-    updateUserRole({
-      id: user.id,
-      role: role,
-    })
+  function onSubmit(data: z.infer<typeof userFormSchema>) {
+    updateUser(data)
+    form.reset()
     setmodal(false)
   }
-
-  function updateUserIsAllowedToPlayValues(isAllowedToPlay: string) {
-    const value = isAllowedToPlay === 'true'
-    updateUserIsAllowedToPlay({
-      id: user.id,
-      isAllowedToPlay: value,
-    })
-    setmodal(false)
-  }
-
 
   return (
-    <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
-        <div className="relative mx-auto my-6 w-auto max-w-3xl">
-          {/*content*/}
-          <div className="relative flex w-full flex-col gap-3 rounded-lg border-0 bg-slate-500 shadow-lg outline-none focus:outline-none">
-            {/*header*/}
-            <div className="flex items-start justify-between rounded-t border-b border-solid  p-5">
-              <h3 className="text-3xl font-semibold">
-                Verander rol en mag spelen voor {user.name}
-              </h3>
-            </div>
-            <h3> Kies hieronder de rol</h3>
-            <div className="relative flex justify-center px-4">
-              <Select
-                defaultValue={user.role ?? userRoles[0]}
-                onValueChange={(value: string) => updateUserRoleValues(value)}
-              >
-                <SelectTrigger className="w-[180px] border-2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Kies nieuwe rol</SelectLabel>
-                    {userRoles.map((role, index) => (
-                      <SelectItem value={role}>{role}</SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <h3> Bepaal hieronder of de speler mag spelen</h3>
-            <div className="relative flex justify-center px-4">
-              <Select
-                defaultValue={user.isAllowedToPlay?.toString() ?? 'false'}
-                onValueChange={(value: string) => updateUserIsAllowedToPlayValues(value)}
-              >
-                <SelectTrigger className="w-[180px] border-2">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Bepaal of speler mag spelen</SelectLabel>
-                    <SelectItem value={'true'}>Mag wel spelen</SelectItem>
-                    <SelectItem value={'false'}>Mag niet spelen</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-center rounded-b border-t border-solid p-6">
-              <Button
-                className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
-                type="button"
-                onClick={() => setmodal(false)}
-              >
-                Sluiten
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
-    </>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Speler naam</FormLabel>
+              <FormControl>
+                <Input placeholder="speler naam..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="participantId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Deelnemer nummer</FormLabel>
+              <FormControl>
+                <Input placeholder="bijv... 12345" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>wachtwoord</FormLabel>
+              <FormControl>
+                <Input placeholder="Nieuwe wachtwoord" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Speler role</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>selecteer de rol van de speler</SelectLabel>
+                      {userRoles.map((role, index) => (
+                        <SelectItem key={index} value={role}>{role}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isAllowedToPlay"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mag spelen</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={(value) => {
+                    const booleanValue = value === 'true'
+                    field.onChange(booleanValue)
+                  }}
+                  defaultValue={field.value.toString()}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Bepaal of speler mag spelen</SelectLabel>
+                      <SelectItem value={'true'}>Mag wel spelen</SelectItem>
+                      <SelectItem value={'false'}>Mag niet spelen</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Sla geupdate speler op</Button>
+        <Button
+          onClick={() => {
+            form.reset()
+            setmodal(false)
+          }}
+          type="button"
+          className="mx-3"
+        >
+          Annuleren
+        </Button>
+      </form>
+    </Form>
   )
 }
 

@@ -19,6 +19,15 @@ export const teamFormSchema = z.object({
   description: z.string().nullish(),
 })
 
+export const userFormSchema = z.object({
+  userId: z.string().optional(),
+  name: z.string().optional(),
+  participantId: z.string().optional(),
+  password: z.string().min(6).optional(),
+  isAllowedToPlay: z.boolean().default(true),
+  role: z.string().default('USER'),
+})
+
 export const fragmentGroupFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
