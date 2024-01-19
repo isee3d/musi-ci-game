@@ -32,12 +32,12 @@ const Uitdaging: React.FC<UitdagingProps> = ({
 }) => {
   const { send } = UitdagingMachineContext.useActorRef()
   const startRoundState = UitdagingMachineContext.useSelector((state) =>
-    state.matches('startRound')
+    state.matches('startRound'),
   )
   const countdownState = UitdagingMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = UitdagingMachineContext.useSelector((state) => state.matches('playing'))
   const isFinishedState = UitdagingMachineContext.useSelector((state) =>
-    state.matches('FinishedPlayingUitdagingMode')
+    state.matches('FinishedPlayingUitdagingMode'),
   )
   const stopwatch = useStopwatch(1000)
 
@@ -52,7 +52,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
       three: mode?.three ?? 1000,
       go: mode?.go ?? 1000,
     }),
-    [mode]
+    [mode],
   )
 
   useEffect(() => {
@@ -70,8 +70,17 @@ const Uitdaging: React.FC<UitdagingProps> = ({
 
   return (
     <>
-      <h3 className=" text-center text-4xl font-extrabold tracking-tight">Speel met de klok</h3>
-      {!isFinishedState && (
+      {startRoundState && (
+        <>
+          <h3 className=" text-center text-4xl font-extrabold tracking-tight">
+            Speel tegen de klok
+          </h3>
+          <h3 className=" text-center text-4xl font-extrabold tracking-tight">
+            Doe {mode?.amountOfScenes} opdrachten zo snel mogelijk
+          </h3>
+        </>
+      )}
+      {(playingState || countdownState) && (
         <h3 className="text-center text-4xl font-extrabold tracking-tight">
           Stopwatch: {hours}:{minutes}:{seconds}
         </h3>

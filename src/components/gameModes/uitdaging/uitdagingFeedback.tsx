@@ -14,11 +14,12 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, 
 
   return (
     <>
+    <h3 className='text-center font-extrabold text-4xl'>Uitdaging afgerond</h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
-        je hebt {formatTime(endTime - startTime)} gespeeld!
+        je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
-        Je hebt {getPercentageCorrectlyAnswered()} % correct!
+        Je hebt {getPercentageCorrectlyAnswered()} % goed
       </h3>
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Felicitaties! -- gebaseerd op % en config

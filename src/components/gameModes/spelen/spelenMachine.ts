@@ -272,11 +272,10 @@ export const spelenMachine = createMachine(
         return {}
       }),
       onCountdownStarted: assign((context) => {
-        const { setIsPlaying } = useLuisterenStore.getState()
+        const { setIsPlaying, setPlayedFragmentId } = useLuisterenStore.getState()
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
         const shuffledFragments = copiedFragments?.sort(() => Math.random() - 0.5)
-        const { setPlayedFragmentId } = useLuisterenStore.getState()
 
         const { transposedFragments, newActiveFragment, pianoNotesMap } = transpose(
           shuffledFragments,

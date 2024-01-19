@@ -76,8 +76,8 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose,
-        octave: fragment.octave,
+        groundTone: fragment.transpose ?? '',
+        octave: fragment.octave ?? -1,
       })
     })
     AddSceneData(sceneData)
