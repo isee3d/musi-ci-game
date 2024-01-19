@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-// import { start } from '~/components/fragmentPlayer/audio/AudioControls';
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { shallowEqual } from '@xstate/react'
 import { FragmentSceneData } from 'types/SceneData'

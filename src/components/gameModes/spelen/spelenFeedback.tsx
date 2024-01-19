@@ -14,11 +14,12 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId, ga
 
   return (
     <>
+      <h3 className="text-center text-5xl font-extrabold pb-10">Spelen afgerond</h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        Je hebt voor {formatTime(endTime - startTime)} gespeeld!
+        Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        Je hebt {getPercentageCorrectlyAnswered()} % correct!
+        Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight ">
         Felicitaties! -- gebaseerd op % en config

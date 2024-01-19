@@ -2,28 +2,33 @@ import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { createMachine, assign } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
+import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
   FragmentWithNotesAndTransposeDirection,
+  FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
 
-const Transpose = (
-  fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+const transpose = (
+  fragments: FragmentWithNotesAndWeight[],
   fragmentsToShow: number,
+  pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
   shouldTranspose: boolean = true,
 ) => {
-  const { transposeFragments } = useAudioServiceStore.getState()
-  const { usedFragmentsMap, addUsedFragments, resetUsedFragments } = useLuisterenStore.getState()
+  const { transposeWeightedFragments, chooseWeightedActiveFragment } =
+    useAudioServiceStore.getState()
+  const { newUsedFragmentsMap, addNewUsedFragment, resetUsedFragments } =
+    useLuisterenStore.getState()
 
   // Filter out fragments that have been played based on usedFragmentsMap
-  let candidates = fragments.filter((f) => !usedFragmentsMap[f.id])
+  let candidates = fragments.filter((f) => !newUsedFragmentsMap[f.id])
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
 
   if (
-    Object.keys(usedFragmentsMap).length === fragments.length ||
+    Object.keys(newUsedFragmentsMap).length === fragments.length ||
     candidates.length + alwaysUsedFragments.length < fragmentsToShow
   ) {
     resetUsedFragments()
@@ -37,28 +42,30 @@ const Transpose = (
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
 
-  addUsedFragments(selectedFragments.map((f) => f.id))
+  const newActiveFragment = chooseWeightedActiveFragment(selectedFragments)
+  if (!newActiveFragment) throw new Error('No new active fragment available')
 
-  if (!shouldTranspose) {
-    return selectedFragments.map((fragment) => {
-      return { ...fragment, transpose: 0, octave: 1 }
-    }) as FragmentWithNotesAndTransposeDirection[]
-  }
-
-  const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
-  const transposedFragments = transposeFragments(
+
+   if (!shouldTranspose) {
+     return {
+      transposedFragments: selectedFragments,
+      newActiveFragment: newActiveFragment,
+      pianoNotesMap: pianoNotesMap,
+     }
+   }
+
+  const transposedFragments = transposeWeightedFragments(
     selectedFragments,
-    randomTransposeDirection,
-    randomOctave,
+    randomOctave ?? 3,
+    octaves,
+    pianoNotesMap,
   )
 
-  const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
-  })
+  addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
-  return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
+  return { transposedFragments, newActiveFragment, pianoNotesMap }
 }
 
 export const spelenMachine = createMachine(
@@ -70,13 +77,14 @@ export const spelenMachine = createMachine(
       isClickable: undefined as boolean | undefined,
       isAnimating: undefined as boolean | undefined,
       isLooping: undefined as boolean | undefined,
-      allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+      allLevelFragments: [] as FragmentWithNotesAndWeight[],
       fragmentsToShow: 0 as number,
       activeFragment: undefined as FragmentWithNotes | undefined,
-      shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
+      shownFragments: [] as FragmentWithNotesAndWeight[],
       guessedFragment: undefined as FragmentWithNotes | undefined,
       countdownTimings: undefined as CountdownTimings | undefined,
       latency: undefined as Latency | undefined,
+      pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
       services: {} as {
@@ -217,10 +225,15 @@ export const spelenMachine = createMachine(
   {
     actions: {
       setupData: assign((_, event) => {
+        const fragmentsWithWeight = event.levelFragments.map((fragment) => {
+          return { ...fragment, weight: 100 }
+        }) as FragmentWithNotesAndWeight[]
+
         return {
-          allLevelFragments: event.levelFragments,
+          allLevelFragments: fragmentsWithWeight,
           fragmentsToShow: event.fragmentsToShow,
           countdownTimings: event.countdownTimings,
+          pianoNotesMap: pianoNotesMap,
         }
       }),
       setGuessedFragment: assign((_, event) => {
@@ -263,20 +276,20 @@ export const spelenMachine = createMachine(
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
         const shuffledFragments = copiedFragments?.sort(() => Math.random() - 0.5)
-        let newActiveFragment: FragmentWithNotes | undefined = undefined
-        let transposedFragments: FragmentWithNotesAndTransposeDirection[] | undefined = undefined
-        if (shuffledFragments) {
-          const { setPlayedFragmentId } = useLuisterenStore.getState()
-          transposedFragments = Transpose(shuffledFragments, context.fragmentsToShow)
-          newActiveFragment =
-            transposedFragments?.[Math.floor(Math.random() * transposedFragments.length)]
-          setPlayedFragmentId(newActiveFragment?.id ?? 0)
-          console.log('newActiveFragment', newActiveFragment, 'transposedFragments', transposedFragments)
-        }
+        const { setPlayedFragmentId } = useLuisterenStore.getState()
+
+        const { transposedFragments, newActiveFragment, pianoNotesMap } = transpose(
+          shuffledFragments,
+          context.fragmentsToShow,
+          context.pianoNotesMap ?? new Map(),
+        )
+
+        setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
           guessedFragment: undefined,
           shownFragments: transposedFragments,
           activeFragment: newActiveFragment,
+          pianoNotesMap: pianoNotesMap,
         }
       }),
     },

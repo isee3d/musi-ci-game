@@ -59,7 +59,11 @@ const Spelen: React.FC<SpelenProps> = ({
 
   return (
     <>
-      <h3 className="pb-16 text-center text-4xl font-extrabold tracking-tight">Kijk en luister</h3>
+      {!finishedState && (
+        <h3 className="pb-16 text-center text-4xl font-extrabold tracking-tight">
+          Luister en klik
+        </h3>
+      )}
       {startRoundState && (
         <StartRoundUI gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}

@@ -82,8 +82,8 @@ const FragmentPlayerRenderer: React.FC = () => {
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose.toString(),
-        octave: fragment.octave,
+        groundTone: fragment.transpose ?? '',
+        octave: fragment.octave ?? -1,
       })
     })
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
@@ -190,15 +190,15 @@ const FragmentPlayerRenderer: React.FC = () => {
                 sceneData.push({
                   id_fragment: fragment.id,
                   fragmentIndex: index,
-                  groundTone: fragment.transpose.toString(),
-                  octave: fragment.octave,
+                  groundTone: fragment.transpose ?? '',
+                  octave: fragment.octave ?? -1,
                 })
               })
               AddSceneData(sceneData)
             }
           }}
         >
-          stoppen
+          Stop
         </Button>
       </div>
     </>
