@@ -55,14 +55,20 @@ export type NoteName = string
 // test3: [524 - 1048] Hz [c5 - c6]
 export const baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-export const generateNotes = (octaves: number): string[] => {
+const generatePianoNotes = () => {
   const notes = []
-  for (let i = 2; i < octaves + 1; i += 1) {
-    // eslint-disable-next-line no-restricted-syntax
-    for (let j = 0; j < baseNotes.length; j += 1) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      notes.push(`${baseNotes[j] + i}`)
+
+  // Standard piano range is from A0 to C8
+  for (let octave = 0; octave <= 8; octave++) {
+    for (let i = 0; i < baseNotes.length; i++) {
+      // Special cases for the first and last partial octaves
+      if (octave === 0 && baseNotes[i] === 'C') {
+        continue // Skip C0, starts from A0
+      }
+      if (octave === 8 && baseNotes[i] !== 'C') {
+        continue // Stop after C8
+      }
+      notes.push(`${baseNotes[i]}${octave}`)
     }
   }
 
@@ -74,7 +80,7 @@ export default class Sampler {
 
   private audioBuffers: NamedAudioBuffer[] = []
 
-  private notes = generateNotes(5)
+  private notes = generatePianoNotes()
 
   private pausedAtTime?: number
 
@@ -149,6 +155,7 @@ export default class Sampler {
     })
 
     if (!closest) throw new Error(`No Buffer for ${note} found`)
+
     return closest
   }
 

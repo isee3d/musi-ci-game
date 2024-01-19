@@ -27,8 +27,8 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
       sceneData.push({
         id_fragment: fragment.id,
         fragmentIndex: index,
-        groundTone: fragment.transpose.toString(),
-        octave: fragment.octave,
+        groundTone: fragment.transpose ?? '',
+        octave: fragment.octave ?? -1,
       })
     })
     AddSceneData(sceneData)
@@ -41,8 +41,8 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
         sceneData.push({
           id_fragment: fragment.id,
           fragmentIndex: index,
-          groundTone: fragment.transpose.toString(),
-          octave: fragment.octave,
+          groundTone: fragment.transpose ?? '',
+          octave: fragment.octave ?? -1,
         })
       })
       AddSceneData(sceneData)
@@ -51,6 +51,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
+    console.log('fragmentToPlay', fragmentToPlay)
     if (!fragmentToPlay) return
     setactiveFragmentPlayerIndex(fragmentToPlay.id)
     if (activeFragmentPlayerIndex === undefined) {

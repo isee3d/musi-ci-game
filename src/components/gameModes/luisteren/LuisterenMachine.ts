@@ -1,45 +1,58 @@
 import { createMachine, assign } from 'xstate'
+import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
   FragmentWithNotesAndTransposeDirection,
+  FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
 
-const Transpose = (
-  fragments: FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+const transpose = (
+  fragments: FragmentWithNotesAndWeight[],
   fragmentsToShow: number,
+  pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
   shouldTranspose: boolean = true,
 ) => {
-  const { transposeFragments } = useAudioServiceStore.getState()
-  // const shuffledFragments = fragments.sort(() => Math.random() - 0.5);
+  const { transposeWeightedFragments } = useAudioServiceStore.getState()
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
   const otherFragments = fragments.filter((f) => !f.useAlways)
+
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
+
   const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
+
   if (!shouldTranspose) {
-    return selectedFragments.map((fragment) => {
-      return { ...fragment, transpose: 0, octave: 1 }
-    }) as FragmentWithNotesAndTransposeDirection[]
+    return selectedFragments
   }
 
-  const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-  console.log('randomTransposeDirection', randomTransposeDirection)
-  // const randomTransposeDirection = -12
+  // const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
+
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
-  const transposedFragments = transposeFragments(
-    selectedFragments,
-    randomTransposeDirection,
-    // randomOctave,
-  )
-  const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-    return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
-  })
 
-  return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
+  const transposedFragments = transposeWeightedFragments(
+    selectedFragments,
+    randomOctave ?? 3,
+    octaves,
+    pianoNotesMap,
+  )
+  // const transposedFragments = transposeFragments(
+  //   selectedFragments,
+  //   randomTransposeDirection,
+  //   // randomOctave,
+  // )
+
+  return transposedFragments
+
+
+  // const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
+  //   return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
+  // })
+
+  // return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
 }
 
 export const luisterenMachine = createMachine(
@@ -48,9 +61,11 @@ export const luisterenMachine = createMachine(
     id: 'luisteren',
     initial: 'idle',
     context: {
-      allLevelFragments: [] as FragmentWithNotesAndTransposeDirection[] | FragmentWithNotes[],
+      allLevelFragments: [] as
+        | FragmentWithNotesAndWeight[],
       fragmentsToShow: 0 as number,
-      shownFragments: [] as FragmentWithNotesAndTransposeDirection[],
+      shownFragments: [] as FragmentWithNotesAndWeight[],
+      pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
       events: {} as
@@ -91,14 +106,24 @@ export const luisterenMachine = createMachine(
       setupData: assign((_, event) => {
         const { setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
+        const fragmentsWithWeight = event.levelFragments.map((fragment) => {
+          return { ...fragment, weight: 100 }
+        }) as FragmentWithNotesAndWeight[]
+
         return {
-          allLevelFragments: event.levelFragments,
+          allLevelFragments: fragmentsWithWeight,
           fragmentsToShow: event.fragmentsToShow,
+          pianoNotesMap: pianoNotesMap,
         }
       }),
       initializeShownFragments: assign((context) => {
         const copiedFragments = deepCopy(context.allLevelFragments)
-        const transposedFragments = Transpose(copiedFragments, context.fragmentsToShow, false)
+        const transposedFragments = transpose(
+          copiedFragments,
+          context.fragmentsToShow,
+          context.pianoNotesMap ?? new Map(),
+          false,
+        )
         return {
           shownFragments: transposedFragments,
         }
@@ -110,7 +135,11 @@ export const luisterenMachine = createMachine(
       }),
       shuffleFragments: assign((context) => {
         const copiedFragments = deepCopy(context.allLevelFragments)
-        const transposedFragments = Transpose(copiedFragments, context.fragmentsToShow)
+        const transposedFragments = transpose(
+          copiedFragments,
+          context.fragmentsToShow,
+          context.pianoNotesMap ?? new Map(),
+        )
         return {
           shownFragments: transposedFragments,
         }

@@ -402,7 +402,6 @@ export const testModeMachine = createMachine(
           amountOfScenes,
           countdownTimings,
           countdownActions,
-          groups,
         } = event
 
         const { resetUsedFragments } = useLuisterenStore.getState()

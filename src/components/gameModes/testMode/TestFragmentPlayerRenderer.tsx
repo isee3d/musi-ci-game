@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
-import { getOriginalFragments, getOriginalFragmentsFromFragmentGroup, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
+import { getOriginalFragmentsFromFragmentGroup, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined

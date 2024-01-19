@@ -191,6 +191,23 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
         Math.min(maxNoteRange.noteNumber, maxTargetOctaveIndex.noteNumber - 1) -
         originalFirstNoteIndex.noteNumber
 
+      let highestNoteNumber = -Infinity
+      let lowestNoteNumber = Infinity
+      fragment.notes.forEach((note, index) => {
+        if (index === 0) return // Skip the first note if needed
+        const noteIndex = getNoteIndex(note.name)
+        if (noteIndex) {
+          highestNoteNumber = Math.max(highestNoteNumber, noteIndex.noteNumber)
+          lowestNoteNumber = Math.min(lowestNoteNumber, noteIndex.noteNumber)
+        }
+      })
+
+      transposeRangeMin = Math.max(transposeRangeMin, minNoteRange.noteNumber - lowestNoteNumber)
+      transposeRangeMax = Math.min(
+        transposeRangeMax,
+        maxNoteRange.noteNumber - highestNoteNumber - 1,
+      )
+
       // Generate a random transposition interval within this range
       // TODO: Check the weight in pianoNotesmap and do a weighted random
       // const transpositionInterval =
@@ -217,18 +234,18 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       for (let i = transposeRangeMin; i <= transposeRangeMax; i++) {
         const noteName = getNoteNameFromNoteIndex(originalFirstNoteIndex.noteNumber + i)
         const noteWeight = pianoNotesMap.get(noteName)?.weight || 0
-        if(!noteWeight) continue
-         let newWeight = 0
-         if (i === transpositionInterval) {
-           newWeight = Math.max(noteWeight - decreaseAmount, 0)
-         } else {
-           newWeight = noteWeight + increaseAmount
-         }
-         // Set the new weight for the note in pianoNotesMap
-         pianoNotesMap.set(noteName, {
-           noteNumber: originalFirstNoteIndex.noteNumber + i,
-           weight: newWeight,
-         })
+        if (!noteWeight) continue
+        let newWeight = 0
+        if (i === transpositionInterval) {
+          newWeight = Math.max(noteWeight - decreaseAmount, 0)
+        } else {
+          newWeight = noteWeight + increaseAmount
+        }
+        // Set the new weight for the note in pianoNotesMap
+        pianoNotesMap.set(noteName, {
+          noteNumber: originalFirstNoteIndex.noteNumber + i,
+          weight: newWeight,
+        })
       }
 
       fragment.notes.forEach((note) => {
