@@ -56,56 +56,57 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
-    session({ session, token }) {
-      if(token && session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.participantId = token.participantId as string
-        session.user.id_Team = token.id_Team as string
-        session.user.preferSkipTutorial = token.preferSkipTutorial as boolean
-        session.user.isAllowedToPlay = token.isAllowedToPlay as boolean
-      }
-
-      return session
-    },
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.sub,
+        role: token.role as string,
+        participantId: token.participantId as string,
+        id_Team: token.id_Team as string,
+        preferSkipTutorial: token.preferSkipTutorial as boolean,
+        isAllowedToPlay: token.isAllowedToPlay as boolean,
+      },
+    }),
   },
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    // CredentialsProvider({
-    //   name: 'Credentials',
-    //   credentials: {
-    //     participantId: {
-    //       label: 'Deelnemer nummer',
-    //       type: 'text',
-    //       placeholder: '12345',
-    //     },
-    //     password: { label: 'Wachtwoord', type: 'password' },
-    //   },
-    //   async authorize(credentials, req) {
-    //     if (!credentials?.participantId || !credentials?.password) return null
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        participantId: {
+          label: 'Deelnemer nummer',
+          type: 'text',
+          placeholder: '12345',
+        },
+        password: { label: 'Wachtwoord', type: 'password' },
+      },
+      async authorize(credentials, req) {
+        if (!credentials?.participantId || !credentials?.password) return null
 
-    //     const user = await prisma.user.findFirst({
-    //       where: {
-    //         participantId: credentials.participantId,
-    //       },
-    //     })
+        const user = await prisma.user.findFirst({
+          where: {
+            participantId: credentials.participantId,
+          },
+        })
 
-    //     if (!user || !user.hashedPassword) return null
+        if (!user || !user.hashedPassword) return null
 
-    //     const passwordsMatch = await bcrypt.compare(credentials.password, user.hashedPassword)
+        const passwordsMatch = await bcrypt.compare(credentials.password, user.hashedPassword)
 
-    //     if (!passwordsMatch) return null
+        if (!passwordsMatch) return null
 
-    //     return user
-    //   },
-    // }),
+        return user
+      },
+    }),
     /**
      * ...add more providers here.
      *

@@ -1,13 +1,11 @@
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
-const PodiumPage: NextPage = () => {
-  useRequireAuth()
-
+const PodiumPage = () => {
   return (
     <>
       <Head>
@@ -19,7 +17,7 @@ const PodiumPage: NextPage = () => {
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center gap-4">
           <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Het podium</h2>
-          <div className="relative flex h-[20vh] lg:h-[50vh] w-[50vw] flex-col justify-center">
+          <div className="relative flex h-[20vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
             <Image
               src="/images/podium.webp"
               fill
@@ -42,3 +40,7 @@ const PodiumPage: NextPage = () => {
 }
 
 export default PodiumPage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  return await getSSRAuthRedirectLogin(ctx)
+}

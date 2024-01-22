@@ -1,20 +1,17 @@
+import { Role } from '@prisma/client'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { type NextPage } from 'next'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { GameMode, Kliniek, Role } from '@prisma/client'
 import toast from 'react-hot-toast'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const validationRules = {
   name: { required: 'Role is required.' },
 }
 
-const ManageRole: NextPage = () => {
-  useRequireAuth()
-  useRequireAdminRole()
-
+const ManageRole = () => {
   const {
     register,
     handleSubmit,
@@ -84,3 +81,25 @@ const ManageRole: NextPage = () => {
 }
 
 export default ManageRole
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuthRedirectOnAdminRole(ctx)
+  if (auth.props?.session) {
+    const helpers = generateServerSideHelper(auth.props.session)
+    await helpers.gameMode.getAllGameModes.prefetch()
+    await helpers.appSettings.getAllSettings.prefetch()
+
+    return {
+      props: {
+        session: auth.props.session,
+        trpcState: helpers.dehydrate(),
+      },
+    }
+  }
+
+  return {
+    props: {
+      session: null,
+    },
+  }
+}

@@ -1,15 +1,19 @@
-import { GetStaticProps, type NextPage } from 'next'
-import { useSession } from 'next-auth/react'
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType
+} from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
 import { buttonVariants } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuth } from '~/utils/authUtils'
 
-const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId, gameId }) => {
-  const session = useRequireAuth()
+const SublevelsPage = ({
+  levelId,
+  gameId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId })
 
   return (
@@ -28,7 +32,7 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
               >
                 {sublevel.id}
               </div> */}
-              <div className="flex relative h-16 w-full items-center justify-center text-2xl font-medium">
+              <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
                 <h2>{sublevel.name}</h2>
                 <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
@@ -40,27 +44,27 @@ const SublevelsPage: NextPage<{ levelId: string; gameId: string }> = ({ levelId,
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = generateServerSideHelper()
-  const levelId = context.params?.levelId
-  const gameId = context.params?.gameId
+export const getServerSideProps = async (
+  ctx: GetServerSidePropsContext<{ gameId: string; levelId: string }>,
+) => {
+  const auth = await getSSRAuth(ctx)
+  const helpers = generateServerSideHelper(auth.props.session)
 
-  if (typeof levelId !== 'string') throw new Error('No levelId')
-  if (typeof gameId !== 'string') throw new Error('No gameId')
+  const gameId = ctx.params?.gameId
+  const levelId = ctx.params?.levelId
+  if (typeof gameId !== 'string' || typeof levelId !== 'string')
+    throw new Error('invalid parameters')
 
-  // await ssg.level.getSubLevelsOfLevel.prefetch({ levelId: levelId })
+  await helpers.level.getSubLevelsOfLevel.prefetch({ levelId: levelId })
 
   return {
     props: {
-      trpcState: ssg.dehydrate(),
-      levelId: levelId,
-      gameId: gameId,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
+      levelId,
+      gameId,
     },
   }
-}
-
-export const getStaticPaths = () => {
-  return { paths: [], fallback: 'blocking' }
 }
 
 export default SublevelsPage

@@ -1,21 +1,18 @@
-import Head from 'next/head'
-import { type NextPage } from 'next'
 import { AppSettings, GameMode } from '@prisma/client'
-import { api } from '~/utils/api'
+import { GetServerSidePropsContext } from 'next'
+import Head from 'next/head'
 import { useState } from 'react'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
+import UpdateAppSettingsModal from '~/components/manage/updateAppSettingsModal'
+import UpdateGameModeModal from '~/components/manage/updateGameModeModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
-import ManageBaseModal from '~/components/manage/manageBaseModal'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
-import UpdateGameModeModal from '~/components/manage/updateGameModeModal'
-import UpdateAppSettingsModal from '~/components/manage/updateAppSettingsModal'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
+import { api } from '~/utils/api'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
-const ManageAppSettingsPage: NextPage = () => {
-  useRequireAuth()
-  useRequireAdminRole()
-
-  const ctx = api.useContext()
+const ManageAppSettingsPage = () => {
+  // const ctx = api.useContext()
 
   const gameModesQuery = api.gameMode.getAllGameModes.useQuery()
   const appSettingsQuery = api.appSettings.getAllSettings.useQuery()
@@ -115,3 +112,25 @@ const ManageAppSettingsPage: NextPage = () => {
 }
 
 export default ManageAppSettingsPage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuthRedirectOnAdminRole(ctx)
+  if (auth.props?.session) {
+    const helpers = generateServerSideHelper(auth.props.session)
+    await helpers.gameMode.getAllGameModes.prefetch()
+    await helpers.appSettings.getAllSettings.prefetch()
+
+    return {
+      props: {
+        session: auth.props.session,
+        trpcState: helpers.dehydrate(),
+      },
+    }
+  }
+
+  return {
+    props: {
+      session: null,
+    },
+  }
+}

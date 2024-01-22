@@ -1,10 +1,11 @@
-import { useSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 import { useEffect } from 'react'
 import { useSettingsStore } from '~/stores/settings'
 import { api } from '~/utils/api'
 
-export function useUserActivity() {
-  const { data: sessionData } = useSession()
+export function useUserActivity(session: Session | null) {
+  if (!session) return
+
   const { enteredWebsite, setEnteredWebsite, lastEnteredWebsite, setLastEnteredWebsite } =
     useSettingsStore()
   const { mutate: createActivity } = api.user.createUserActivity.useMutation()
@@ -13,18 +14,18 @@ export function useUserActivity() {
     const now = Date.now()
     const differenceInMinutes = Math.abs(now - lastEnteredWebsite) / 1000 / 60
 
-    if (sessionData?.user.id && !enteredWebsite && differenceInMinutes > 5) {
+    if (session?.user.id && !enteredWebsite && differenceInMinutes > 5) {
       setEnteredWebsite(true)
       setLastEnteredWebsite(Date.now())
-      createActivity({ userId: sessionData.user.id, activity: 'EnterWebsiteMessage' })
+      createActivity({ userId: session.user.id, activity: 'EnterWebsiteMessage' })
     }
-  }, [sessionData])
+  }, [session])
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
-      if (!sessionData?.user.id) return
-      createActivity({ userId: sessionData.user.id, activity: 'LeftWebsiteMessage' })
+      if (!session?.user.id) return
+      createActivity({ userId: session.user.id, activity: 'LeftWebsiteMessage' })
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
@@ -34,5 +35,5 @@ export function useUserActivity() {
     }
   }, [])
 
-  return { sessionData }
+  return { sessionData: session }
 }

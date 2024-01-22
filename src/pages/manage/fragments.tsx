@@ -1,4 +1,4 @@
-import { NextPage } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { Fragment } from 'prisma/generated/zod'
 import { useState } from 'react'
@@ -8,17 +8,13 @@ import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateFragmentModal from '~/components/manage/updateFragmentModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
-const ManageFragments: NextPage = () => {
-  useRequireAuth()
-  useRequireAdminRole()
-
+const ManageFragments = () => {
   const ctx = api.useContext()
-  const [createModal, setCreateModal] = useState(false)
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const { mutate: deleteFragment } = api.fragmentNote.deleteFragment.useMutation({
     onSuccess: () => {
@@ -28,6 +24,8 @@ const ManageFragments: NextPage = () => {
       ctx.level.getAllLevels.invalidate()
     },
   })
+
+  const [createModal, setCreateModal] = useState(false)
   const [selectedFragment, setSelectedFragment] = useState<Fragment | null>(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -95,3 +93,24 @@ const ManageFragments: NextPage = () => {
 }
 
 export default ManageFragments
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuthRedirectOnAdminRole(ctx)
+  if (auth.props?.session) {
+    const helpers = generateServerSideHelper(auth.props.session)
+    await helpers.fragmentNote.getAllFragments.prefetch()
+
+    return {
+      props: {
+        session: auth.props.session,
+        trpcState: helpers.dehydrate(),
+      },
+    }
+  }
+
+  return {
+    props: {
+      session: null,
+    },
+  }
+}

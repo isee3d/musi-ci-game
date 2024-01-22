@@ -1,18 +1,21 @@
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType, type NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '~/components/ui/button'
 import { useUserActivity } from '~/hooks/useUserActivity'
+import { getSSRAuth } from '~/utils/authUtils'
+import { useSession } from 'next-auth/react'
 
-const WelcomePage: NextPage = () => {
-  const { sessionData } = useUserActivity()
-
+const WelcomePage = () => {
+  const { data: session } = useSession()
+  useUserActivity(session)
+  console.log(session)
   const getNextPageRoute = (): string => {
-    if (!sessionData?.user.id) {
+    if (!session?.user.id) {
       return '/login'
     }
-    if (sessionData?.user.preferSkipTutorial) {
+    if (session?.user.preferSkipTutorial) {
       return '/podium'
     }
     return '/tutorial'
@@ -45,3 +48,7 @@ const WelcomePage: NextPage = () => {
 }
 
 export default WelcomePage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  return await getSSRAuth(ctx)
+}

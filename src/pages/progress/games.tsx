@@ -1,17 +1,15 @@
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { useSession } from 'next-auth/react'
-import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import ContentContainer from '~/components/contentContainer'
-import { Button, buttonVariants } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuth } from '~/utils/authUtils'
 
-const UserGamesPage: NextPage = () => {
-  const session = useRequireAuth()
-  // Add loading to retrieve this data, cause it can't be prefetched
+const UserGamesPage = () => {
+  const { data: session } = useSession()
   const gamesOfUserQuery = api.user.getGamesOfUser.useQuery({ id: session?.user.id })
 
   return (
@@ -45,3 +43,17 @@ const UserGamesPage: NextPage = () => {
 }
 
 export default UserGamesPage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuth(ctx)
+
+  const helpers = generateServerSideHelper(auth.props.session)
+  await helpers.user.getGamesOfUser.prefetch({ id: auth.props.session?.user.id })
+
+  return {
+    props: {
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
+    },
+  }
+}

@@ -1,27 +1,18 @@
 import { CheckedState } from '@radix-ui/react-checkbox'
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { getServerAuthSession } from '~/server/auth'
 import { api } from '~/utils/api'
-import { useEffect } from 'react'
 
-const TutorialPage: NextPage = () => {
-  const session = useRequireAuth()
-  const router = useRouter()
-
-  const { mutate: setTutorialPreference } = api.user.setUserTutorialPreference.useMutation()
+const TutorialPage = () => {
+  const { data: session } = useSession()
   const { data: user } = api.user.getUserById.useQuery({ id: session?.user.id ?? '' })
-
-  useEffect(() => {
-    if (user?.preferSkipTutorial) {
-      router.push('/podium')
-    }
-  }, [user])
+  const { mutate: setTutorialPreference } = api.user.setUserTutorialPreference.useMutation()
 
   return (
     <>
@@ -40,7 +31,7 @@ const TutorialPage: NextPage = () => {
               defaultChecked={user?.preferSkipTutorial ?? false}
               onCheckedChange={(checked: CheckedState) => {
                 setTutorialPreference({
-                  id: session?.user.id ?? '',
+                  id: session?.user?.id ?? '',
                   preferSkipTutorial: checked as boolean,
                 })
               }}
@@ -60,3 +51,30 @@ const TutorialPage: NextPage = () => {
 }
 
 export default TutorialPage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getServerAuthSession(ctx)
+  if (!session?.user.id) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: true,
+      },
+    }
+  }
+
+  if(session.user.preferSkipTutorial) {
+    return {
+      redirect: {
+        destination: '/podium',
+        permanent: true,
+      },
+    }
+  }
+
+  return {
+    props: {
+      session,
+    },
+  }
+}

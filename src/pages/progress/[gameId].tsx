@@ -1,17 +1,16 @@
-import { GetStaticProps, type NextPage } from 'next'
-import { useSession } from 'next-auth/react'
-import Head from 'next/head'
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType
+} from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import ContentContainer from '~/components/contentContainer'
-import { Button, buttonVariants } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuth } from '~/utils/authUtils'
 
-const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
-  const session = useRequireAuth()
+const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
 
   return (
@@ -42,24 +41,48 @@ const UserLevelsPage: NextPage<{ gameId: string }> = ({ gameId }) => {
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = generateServerSideHelper()
-  const gameId = context.params?.gameId
+export default UserLevelsPage
 
+export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId: string }>) => {
+  const auth = await getSSRAuth(ctx)
+  const helpers = generateServerSideHelper(auth.props.session)
+
+  const gameId = ctx.params?.gameId
   if (typeof gameId !== 'string') throw new Error('No gameId')
 
-  // await ssg.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+  await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
 
   return {
     props: {
-      trpcState: ssg.dehydrate(),
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
       gameId,
     },
   }
 }
 
-export const getStaticPaths = () => {
-  return { paths: [], fallback: 'blocking' }
-}
+/*
+EXAMPLE OF GETSTATICPROPS
 
-export default UserLevelsPage
+Below is an example of how to use getStaticProps to generate a static page with tRPC data.
+*/
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const ssg = generateServerSideHelper()
+//   const gameId = context.params?.gameId
+
+//   if (typeof gameId !== 'string') throw new Error('No gameId')
+
+//   // await ssg.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       gameId,
+//     },
+//   }
+// }
+
+// export const getStaticPaths = () => {
+//   return { paths: [], fallback: 'blocking' }
+// }

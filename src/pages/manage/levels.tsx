@@ -1,5 +1,5 @@
 import { Level } from '@prisma/client'
-import { NextPage } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 import CreateLevelModal from '~/components/manage/createLevelModal'
@@ -7,15 +7,12 @@ import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateLevelModal from '~/components/manage/updateLevelModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { cn } from '~/lib/utils'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
-const ManageLevels: NextPage = () => {
-  useRequireAuth()
-  useRequireAdminRole()
-
+const ManageLevels = () => {
   const ctx = api.useContext()
   const { mutate: deleteLevel } = api.level.deleteLevel.useMutation({
     onSuccess: () => {
@@ -23,6 +20,7 @@ const ManageLevels: NextPage = () => {
     },
   })
   const levelQuery = api.level.getAllLevels.useQuery()
+
   const [selectedLevel, setSelectedLevel] = useState<Level | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [createModal, setCreateModal] = useState(false)
@@ -94,3 +92,24 @@ const ManageLevels: NextPage = () => {
 }
 
 export default ManageLevels
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuthRedirectOnAdminRole(ctx)
+  if (auth.props?.session) {
+    const helpers = generateServerSideHelper(auth.props.session)
+    await helpers.level.getAllLevels.prefetch()
+
+    return {
+      props: {
+        session: auth.props.session,
+        trpcState: helpers.dehydrate(),
+      },
+    }
+  }
+
+  return {
+    props: {
+      session: null,
+    },
+  }
+}

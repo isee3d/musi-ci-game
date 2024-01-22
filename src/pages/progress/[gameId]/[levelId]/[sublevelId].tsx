@@ -1,18 +1,17 @@
-import { GetStaticProps, type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
-import { Button, buttonVariants } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
+import { getSSRAuth } from '~/utils/authUtils'
 
-const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> = ({
+const Level = ({
   sublevelId,
   levelId,
   gameId,
-}) => {
-  useRequireAuth()
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const gameModesQuery = api.sublevel.getGameModesOfSublevel.useQuery({ sublevelId: sublevelId })
   const sublevelQuery = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
@@ -24,12 +23,12 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
       {gameModesQuery.data?.map((gameMode) => (
         <Link
           key={gameMode.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 rounded-xl w-full')}
+          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
           href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
         >
           <div className="flex w-full items-center justify-center">
-            <div className="flex justify-center w-full space-x-4">
-               {/* <div
+            <div className="flex w-full justify-center space-x-4">
+              {/* <div
                 className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 // style={{ borderColor: 'green' }}
               >
@@ -46,29 +45,26 @@ const Level: NextPage<{ sublevelId: string; levelId: string; gameId: string }> =
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = generateServerSideHelper()
-  const sublevelId = context.params?.sublevelId
-  const levelId = context.params?.levelId
-  const gameId = context.params?.gameId
-  if (typeof sublevelId !== 'string') throw new Error('No sublevel')
-  if (typeof levelId !== 'string') throw new Error('No levelId')
-  if (typeof gameId !== 'string') throw new Error('No gameId')
+export default Level
 
-  // await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
+export const getServerSideProps = async (
+  ctx: GetServerSidePropsContext<{ gameId: string; levelId: string; sublevelId: string }>,
+) => {
+  const auth = await getSSRAuth(ctx)
+  const helpers = generateServerSideHelper(auth.props.session)
+
+  if (ctx.params?.sublevelId) {
+    await helpers.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: ctx.params?.sublevelId })
+    await helpers.sublevel.getSublevelById.prefetch({ id: ctx.params?.sublevelId })
+  }
 
   return {
     props: {
-      trpcState: ssg.dehydrate(),
-      sublevelId: sublevelId,
-      levelId: levelId,
-      gameId: gameId,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
+      levelId: ctx.params?.levelId ?? '',
+      gameId: ctx.params?.gameId ?? '',
+      sublevelId: ctx.params?.sublevelId ?? '',
     },
   }
 }
-
-export const getStaticPaths = () => {
-  return { paths: [], fallback: 'blocking' }
-}
-
-export default Level

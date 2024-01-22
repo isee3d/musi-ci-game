@@ -1,38 +1,40 @@
 import { createActorContext } from '@xstate/react'
-import { GetStaticProps, type NextPage } from 'next'
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType
+} from 'next'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import ContentContainer from '~/components/contentContainer'
 import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
 import Spelen from '~/components/gameModes/spelen/spelen'
 import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine'
+import Test from '~/components/gameModes/testMode/test'
+import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
-import { Button, buttonVariants } from '~/components/ui/button'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
+import { buttonVariants } from '~/components/ui/button'
+import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
-import { useEffect } from 'react'
-import { env } from '~/env.mjs'
-import Link from 'next/link'
-import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
-import Test from '~/components/gameModes/testMode/test'
+import { getSSRAuth } from '~/utils/authUtils'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })
 export const TestModeMachineContext = createActorContext(testModeMachine, { devTools: true })
 
-const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; gameId: string }> = ({
+const ModePage = ({
   gameId,
   levelId,
   sublevelId,
   mode,
-}) => {
-  useRequireAuth()
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
   const { audioContext, setBPM, reset } = useAudioServiceStore()
   const { isPlaying, setIsPlaying } = useLuisterenStore()
@@ -177,37 +179,38 @@ const ModePage: NextPage<{ levelId: string; sublevelId: string; mode: string; ga
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = generateServerSideHelper()
-  const mode = context.params?.mode
-  const sublevelId = context.params?.sublevelId
-  const levelId = context.params?.levelId
-  const gameId = context.params?.gameId
+export default ModePage
 
-  if (typeof mode !== 'string') throw new Error('No mode')
-  if (typeof levelId !== 'string') throw new Error('No level')
-  if (typeof sublevelId !== 'string') throw new Error('No sublevel')
-  if (typeof gameId !== 'string') throw new Error('No game')
 
-  await ssg.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: sublevelId })
-  await ssg.sublevel.getSublevelById.prefetch({ id: sublevelId })
-  await ssg.gameMode.getGameMode.prefetch({ name: mode })
-  await ssg.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: sublevelId })
-  await ssg.sublevel.getFragmentGroupsOfSublevel.prefetch({ sublevelId: sublevelId })
+export const getServerSideProps = async (
+  ctx: GetServerSidePropsContext<{
+    gameId: string
+    levelId: string
+    sublevelId: string
+    mode: string
+  }>,
+) => {
+  const auth = await getSSRAuth(ctx)
+  const helpers = generateServerSideHelper(auth.props.session)
+
+  if (ctx.params?.sublevelId && ctx.params?.mode) {
+    await helpers.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: ctx.params.sublevelId })
+    await helpers.sublevel.getSublevelById.prefetch({ id: ctx.params.sublevelId })
+    await helpers.gameMode.getGameMode.prefetch({ name: ctx.params.mode })
+    await helpers.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: ctx.params.sublevelId })
+    await helpers.sublevel.getFragmentGroupsOfSublevel.prefetch({
+      sublevelId: ctx.params.sublevelId,
+    })
+  }
 
   return {
     props: {
-      trpcState: ssg.dehydrate(),
-      sublevelId,
-      levelId,
-      gameId,
-      mode,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
+      levelId: ctx.params?.levelId ?? '',
+      gameId: ctx.params?.gameId ?? '',
+      sublevelId: ctx.params?.sublevelId ?? '',
+      mode: ctx.params?.mode ?? '',
     },
   }
 }
-
-export const getStaticPaths = () => {
-  return { paths: [], fallback: 'blocking' }
-}
-
-export default ModePage

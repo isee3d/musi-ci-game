@@ -1,21 +1,20 @@
 import { addDays, format } from 'date-fns'
-import { Workbook, Fill } from 'exceljs'
+import { Fill, Workbook } from 'exceljs'
 import { Calendar as CalendarIcon } from 'lucide-react'
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { MultiSelect } from '~/components/ui/multi-select'
-import { useRequireResearcherRole } from '~/hooks/useRequireAdminRole'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
 import { RouterOutputs, api } from '~/utils/api'
 
+import { z } from 'zod'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import { Label } from '~/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
-import { z } from 'zod'
+import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   return data.reduce((acc: SplitDataByUser, item) => {
@@ -75,10 +74,7 @@ const getYesterdayDate = () => {
 type ExcelRoute = RouterOutputs['download']['getFilteredExcelData']
 type SplitDataByUser = { [participantId: string]: ExcelRoute }
 
-const DownloadPage: NextPage = () => {
-  useRequireAuth()
-  useRequireResearcherRole()
-
+const DownloadPage = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
@@ -165,15 +161,15 @@ const DownloadPage: NextPage = () => {
       })
 
       userData.forEach((data) => {
-        if(data.user && data.user.questionAnswers) {
-           data.user.questionAnswers.forEach((qa) => {
-             const row = [
-               qa.question,
-               qa.answer,
-               qa.answeredDate ? new Date(qa.answeredDate).toLocaleDateString() : '',
-             ]
-             questionsWorksheet.addRow(row)
-           })
+        if (data.user && data.user.questionAnswers) {
+          data.user.questionAnswers.forEach((qa) => {
+            const row = [
+              qa.question,
+              qa.answer,
+              qa.answeredDate ? new Date(qa.answeredDate).toLocaleDateString() : '',
+            ]
+            questionsWorksheet.addRow(row)
+          })
         }
       })
 
@@ -185,7 +181,9 @@ const DownloadPage: NextPage = () => {
             data.subLevel?.name,
             data.gameMode?.name,
             new Date(scene.startTime ?? -1).toLocaleTimeString(),
-            new Date(((scene?.startTime?.getTime() ?? 0) + (scene?.chosenFragmentLatency ?? 0) ?? -1)).toLocaleTimeString(),
+            new Date(
+              (scene?.startTime?.getTime() ?? 0) + (scene?.chosenFragmentLatency ?? 0) ?? -1,
+            ).toLocaleTimeString(),
             scene.chosenFragmentLatency,
             scene.playedFragment?.name,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
@@ -233,31 +231,31 @@ const DownloadPage: NextPage = () => {
         column.width = maxColumnLength + 2
       })
 
-       questionsWorksheet.columns.forEach((column) => {
-         let maxColumnLength = 0
-         // @ts-ignore
-         column.eachCell({ includeEmpty: true }, (cell) => {
-           const columnLength = cell.text.length
-           if (columnLength > maxColumnLength) {
-             maxColumnLength = columnLength
-           }
-         })
-
-         column.width = maxColumnLength + 2
-       })
-
-        activitiesWorksheet.columns.forEach((column) => {
-          let maxColumnLength = 0
-          // @ts-ignore
-          column.eachCell({ includeEmpty: true }, (cell) => {
-            const columnLength = cell.text.length
-            if (columnLength > maxColumnLength) {
-              maxColumnLength = columnLength
-            }
-          })
-
-          column.width = maxColumnLength + 2
+      questionsWorksheet.columns.forEach((column) => {
+        let maxColumnLength = 0
+        // @ts-ignore
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.text.length
+          if (columnLength > maxColumnLength) {
+            maxColumnLength = columnLength
+          }
         })
+
+        column.width = maxColumnLength + 2
+      })
+
+      activitiesWorksheet.columns.forEach((column) => {
+        let maxColumnLength = 0
+        // @ts-ignore
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.text.length
+          if (columnLength > maxColumnLength) {
+            maxColumnLength = columnLength
+          }
+        })
+
+        column.width = maxColumnLength + 2
+      })
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
@@ -384,3 +382,8 @@ const DownloadPage: NextPage = () => {
 }
 
 export default DownloadPage
+
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  return await getSSRAuthRedirectOnResearcherRole(ctx)
+}

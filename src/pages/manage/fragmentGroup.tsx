@@ -1,23 +1,19 @@
+import { FragmentGroup } from '@prisma/client'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { type NextPage } from 'next'
-import { FragmentGroup, Team, User } from '@prisma/client'
-import toast from 'react-hot-toast'
-import { api } from '~/utils/api'
 import { useState } from 'react'
-import UpdateTeamModal from '~/components/manage/updateTeamModal'
-import { Button, buttonVariants } from '~/components/ui/button'
-import { cn } from '~/lib/utils'
-import ManageBaseModal from '~/components/manage/manageBaseModal'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
-import { Label } from '~/components/ui/label'
+import toast from 'react-hot-toast'
 import CreateFragmentGroupModal from '~/components/manage/createFragmentGroupModal'
+import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateFragmentGroupModal from '~/components/manage/updateFragmentGroupModal'
+import { Button, buttonVariants } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
+import { cn } from '~/lib/utils'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
+import { api } from '~/utils/api'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
-const ManageFragmentGroupPage: NextPage = () => {
-  useRequireAuth()
-  useRequireAdminRole()
-
+const ManageFragmentGroupPage = () => {
   const ctx = api.useContext()
   const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
 
@@ -98,3 +94,25 @@ const ManageFragmentGroupPage: NextPage = () => {
 }
 
 export default ManageFragmentGroupPage
+
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const auth = await getSSRAuthRedirectOnAdminRole(ctx)
+  if (auth.props?.session) {
+    const helpers = generateServerSideHelper(auth.props.session)
+    await helpers.fragmentNote.getAllFragmentGroups.prefetch()
+
+    return {
+      props: {
+        session: auth.props.session,
+        trpcState: helpers.dehydrate(),
+      },
+    }
+  }
+
+  return {
+    props: {
+      session: null,
+    },
+  }
+}

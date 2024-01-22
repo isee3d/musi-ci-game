@@ -1,15 +1,17 @@
-import { type NextPage } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
-import { signIn, signOut } from 'next-auth/react'
+import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { useUserActivity } from '~/hooks/useUserActivity'
-import Link from 'next/link'
+import { getSSRAuth } from '~/utils/authUtils'
 
-const LoginPage: NextPage = () => {
-    const { sessionData } = useUserActivity()
+const LoginPage = () => {
+  const { data: session } = useSession()
+  useUserActivity(session)
 
   function getLoginText() {
-    if (!sessionData?.user) {
+    if (!session?.user) {
       return 'Log hier in om te starten'
     } else {
       return 'Druk hieronder om uit te loggen'
@@ -37,13 +39,13 @@ const LoginPage: NextPage = () => {
               <Button
                 size={'lg'}
                 onClick={
-                  sessionData
+                  session
                     ? () => void signOut()
                     : () =>
                         void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
                 }
               >
-                {sessionData ? 'Uitloggen' : 'Inloggen'}
+                {session ? 'Uitloggen' : 'Inloggen'}
               </Button>
               <Button size={'lg'} asChild>
                 <Link href={'/podium'}> Ga naar volgende pagina</Link>
@@ -57,3 +59,7 @@ const LoginPage: NextPage = () => {
 }
 
 export default LoginPage
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  return await getSSRAuth(ctx)
+}
