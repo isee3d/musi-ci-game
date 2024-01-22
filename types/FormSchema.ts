@@ -63,4 +63,9 @@ export const questionAnswerSchema = z.object({
   answer: z.string().min(1),
 })
 
+export const signInFormSchema = z.object({
+  participantId: z.string().min(1),
+  password: z.string().min(6),
+})
+
 export const questionAnswerFormSchema = z.array(questionAnswerSchema)
