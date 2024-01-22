@@ -10,7 +10,6 @@ import { useSession } from 'next-auth/react'
 const WelcomePage = () => {
   const { data: session } = useSession()
   useUserActivity(session)
-  console.log(session)
   const getNextPageRoute = (): string => {
     if (!session?.user.id) {
       return '/login'

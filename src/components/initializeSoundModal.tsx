@@ -30,10 +30,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
     startSilentAudio()
     //@ts-ignore
     window.start = start
-    //@ts-ignore
-    console.log('Is myFunc defined on window?', typeof window.myFunc === 'function')
-
-    console.log('audioContext?.state', audioContext?.state)
     if (audioContext?.state === 'running') {
       setmodal(false)
     }
