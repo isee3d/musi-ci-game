@@ -8,7 +8,6 @@ import UpdateUsersModal from '~/components/manage/updateUsersModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
-import { getServerAuthSession } from '~/server/auth'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
@@ -24,6 +23,13 @@ const ManageUsersPage = () => {
   })
   const [showModal, setShowModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  const handleDeleteUserClick = (userId: string) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je deze speler wilt verwijderen?')
+    if (isConfirmed) {
+      deleteUser({ id: userId })
+    }
+  }
 
   return (
     <>
@@ -58,7 +64,7 @@ const ManageUsersPage = () => {
                 <p className="text-xl">{user.participantId}</p>
                 <div className="flex flex-col gap-3 md:flex-row">
                   <Button
-                    onClick={() => deleteUser({ id: user.id })}
+                    onClick={() => handleDeleteUserClick(user.id)}
                     className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                   >
                     verwijderen
