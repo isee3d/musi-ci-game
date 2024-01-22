@@ -385,5 +385,15 @@ export default DownloadPage
 
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  return await getSSRAuthRedirectOnResearcherRole(ctx)
+  const auth = await getSSRAuthRedirectOnResearcherRole(ctx)
+
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
+
+  return {
+    props: {
+      session: auth.props.session,
+    },
+  }
 }

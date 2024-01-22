@@ -42,5 +42,13 @@ const PodiumPage = () => {
 export default PodiumPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  return await getSSRAuthRedirectLogin(ctx)
+  const auth = await getSSRAuthRedirectLogin(ctx)
+
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
+
+  return {
+    props: auth.props,
+  }
 }

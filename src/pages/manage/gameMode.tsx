@@ -86,21 +86,16 @@ export default ManageGameMode
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const auth = await getSSRAuthRedirectOnAdminRole(ctx)
-  if (auth.props?.session) {
-    const helpers = generateServerSideHelper(auth.props.session)
-    await helpers.gameMode.getAllGameModes.prefetch()
-
-    return {
-      props: {
-        session: auth.props.session,
-        trpcState: helpers.dehydrate(),
-      },
-    }
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
   }
+  const helpers = generateServerSideHelper(auth.props.session)
+  await helpers.gameMode.getAllGameModes.prefetch()
 
   return {
     props: {
-      session: null,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
     },
   }
 }

@@ -49,7 +49,7 @@ const ManageQuestionsPage = () => {
             </ManageBaseModal>
           )}
 
-          <Label className="text-center text-3xl py-4 font-bold">Bestaande vragen</Label>
+          <Label className="py-4 text-center text-3xl font-bold">Bestaande vragen</Label>
           <div className="flex w-full flex-col items-center justify-center gap-2">
             {questionsQuery.data?.map((question) => {
               return (
@@ -80,21 +80,17 @@ export default ManageQuestionsPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const auth = await getSSRAuthRedirectOnAdminRole(ctx)
-  if (auth.props?.session) {
-    const helpers = generateServerSideHelper(auth.props.session)
-    await helpers.question.getAllQuestions.prefetch()
-
-    return {
-      props: {
-        session: auth.props.session,
-        trpcState: helpers.dehydrate(),
-      },
-    }
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
   }
+
+  const helpers = generateServerSideHelper(auth.props.session)
+  await helpers.question.getAllQuestions.prefetch()
 
   return {
     props: {
-      session: null,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
     },
   }
 }

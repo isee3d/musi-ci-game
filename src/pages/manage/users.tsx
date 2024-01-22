@@ -8,6 +8,7 @@ import UpdateUsersModal from '~/components/manage/updateUsersModal'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { cn } from '~/lib/utils'
+import { getServerAuthSession } from '~/server/auth'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
@@ -74,7 +75,7 @@ const ManageUsersPage = () => {
                 </div>
                 {showModal && selectedUser?.id === user.id && (
                   <ManageBaseModal title="Speler updaten">
-                     <UpdateUsersModal setmodal={setShowModal} user={selectedUser} />
+                    <UpdateUsersModal setmodal={setShowModal} user={selectedUser} />
                   </ManageBaseModal>
                 )}
               </div>
@@ -90,21 +91,18 @@ export default ManageUsersPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const auth = await getSSRAuthRedirectOnAdminRole(ctx)
-  if (auth.props?.session) {
-    const helpers = generateServerSideHelper(auth.props.session)
-    await helpers.user.getAllUsers.prefetch()
 
-    return {
-      props: {
-        session: auth.props.session,
-        trpcState: helpers.dehydrate(),
-      },
-    }
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
   }
+
+  const helpers = generateServerSideHelper(auth.props.session)
+  await helpers.user.getAllUsers.prefetch()
 
   return {
     props: {
-      session: null,
+      session: auth.props.session,
+      trpcState: helpers.dehydrate(),
     },
   }
 }
