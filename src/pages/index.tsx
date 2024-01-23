@@ -1,15 +1,13 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType, type NextPage } from 'next'
-import Head from 'next/head'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '~/components/ui/button'
-import { useUserActivity } from '~/hooks/useUserActivity'
-import { getSSRAuth } from '~/utils/authUtils'
+import { GetServerSidePropsContext } from 'next'
 import { useSession } from 'next-auth/react'
+import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Button } from '~/components/ui/button'
+import { getSSRAuth } from '~/utils/authUtils'
 
 const WelcomePage = () => {
   const { data: session } = useSession()
-  useUserActivity(session)
   const getNextPageRoute = (): string => {
     if (!session?.user.id) {
       return '/login'

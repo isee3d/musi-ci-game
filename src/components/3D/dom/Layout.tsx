@@ -13,6 +13,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import { Icons } from '~/components/icons'
 import { api } from '~/utils/api'
 import { useRouter } from 'next/router'
+import { useUserActivity } from '~/hooks/useUserActivity'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
@@ -69,6 +70,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
   const { data: sessionData } = useSession()
   const router = useRouter()
+  const { logSignOutActivity } = useUserActivity()
   const ref = useRef(null)
 
   const { mutate: setTutorialPreference } = api.user.setUserTutorialPreference.useMutation()
@@ -87,6 +89,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     await testSound()
   }
 
+  async function handleSignOut() {
+    logSignOutActivity()
+    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
+    if (signOutResponse?.url) {
+      router.push(signOutResponse.url)
+    }
+  }
+
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
       <div className=" flex min-h-screen flex-col overflow-y-hidden">
@@ -95,7 +105,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <MainNav items={mainNavItems} />
             <nav className="flex gap-1">
               <Button
-                onClick={sessionData ? () => void signOut() : () => void signIn()}
+                onClick={sessionData ? () => handleSignOut() : () => void signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
               >
                 {sessionData ? 'Uitloggen' : 'Inloggen'}

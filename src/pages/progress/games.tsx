@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
@@ -6,7 +6,7 @@ import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
-import { getSSRAuth } from '~/utils/authUtils'
+import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const UserGamesPage = () => {
   const { data: session } = useSession()
@@ -45,7 +45,10 @@ const UserGamesPage = () => {
 export default UserGamesPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const auth = await getSSRAuth(ctx)
+  const auth = await getSSRAuthRedirectLogin(ctx)
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
 
   const helpers = generateServerSideHelper(auth.props.session)
   await helpers.user.getGamesOfUser.prefetch({ id: auth.props.session?.user.id })

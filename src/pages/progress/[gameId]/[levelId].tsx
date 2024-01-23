@@ -8,7 +8,7 @@ import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
-import { getSSRAuth } from '~/utils/authUtils'
+import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const SublevelsPage = ({
   levelId,
@@ -47,7 +47,10 @@ const SublevelsPage = ({
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<{ gameId: string; levelId: string }>,
 ) => {
-  const auth = await getSSRAuth(ctx)
+  const auth = await getSSRAuthRedirectLogin(ctx)
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
   const helpers = generateServerSideHelper(auth.props.session)
 
   const gameId = ctx.params?.gameId

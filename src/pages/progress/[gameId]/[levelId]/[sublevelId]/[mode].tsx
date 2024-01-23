@@ -1,8 +1,5 @@
 import { createActorContext } from '@xstate/react'
-import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType
-} from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
@@ -22,7 +19,7 @@ import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
-import { getSSRAuth } from '~/utils/authUtils'
+import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
 export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
@@ -181,7 +178,6 @@ const ModePage = ({
 
 export default ModePage
 
-
 export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<{
     gameId: string
@@ -190,7 +186,10 @@ export const getServerSideProps = async (
     mode: string
   }>,
 ) => {
-  const auth = await getSSRAuth(ctx)
+  const auth = await getSSRAuthRedirectLogin(ctx)
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
   const helpers = generateServerSideHelper(auth.props.session)
 
   if (ctx.params?.sublevelId && ctx.params?.mode) {

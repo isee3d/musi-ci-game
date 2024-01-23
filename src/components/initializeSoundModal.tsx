@@ -27,7 +27,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
       const AudioContext = window.AudioContext || window.webkitAudioContext
       const context = new AudioContext()
       setAudioContext(context)
-      await initializeSound()
       setmodal(false)
     } else if (audioContext?.state === 'running') {
       setmodal(false)

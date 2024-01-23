@@ -1,14 +1,11 @@
-import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType
-} from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
 import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
-import { getSSRAuth } from '~/utils/authUtils'
+import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
@@ -44,7 +41,10 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
 export default UserLevelsPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId: string }>) => {
-  const auth = await getSSRAuth(ctx)
+  const auth = await getSSRAuthRedirectLogin(ctx)
+  if (auth.redirect) {
+    return { redirect: auth.redirect }
+  }
   const helpers = generateServerSideHelper(auth.props.session)
 
   const gameId = ctx.params?.gameId

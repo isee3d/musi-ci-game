@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -8,7 +8,7 @@ import { getSSRAuth } from '~/utils/authUtils'
 
 const LoginPage = () => {
   const { data: session } = useSession()
-  useUserActivity(session)
+  const { logSignOutActivity } = useUserActivity()
 
   function getLoginText() {
     if (!session?.user) {
@@ -16,6 +16,11 @@ const LoginPage = () => {
     } else {
       return 'Druk hieronder om uit te loggen'
     }
+  }
+
+  async function handleSignOut() {
+    logSignOutActivity()
+    await signOut({ redirect: false, callbackUrl: '/login' })
   }
 
   return (
@@ -40,9 +45,8 @@ const LoginPage = () => {
                 size={'lg'}
                 onClick={
                   session
-                    ? () => void signOut()
-                    : () =>
-                        void signIn(undefined, { callbackUrl: 'http://localhost:3000/tutorial' })
+                    ? () => handleSignOut()
+                    : () => void signIn('credentials', { redirect: true, callbackUrl: '/tutorial' })
                 }
               >
                 {session ? 'Uitloggen' : 'Inloggen'}

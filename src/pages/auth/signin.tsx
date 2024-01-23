@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { signInFormSchema } from 'types/FormSchema'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'
@@ -15,14 +17,25 @@ import {
 import { Input } from '~/components/ui/input'
 
 const Signin = () => {
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof signInFormSchema>>({
     mode: 'onBlur',
     resolver: zodResolver(signInFormSchema),
   })
 
-  async function onSubmit (data: z.infer<typeof signInFormSchema>) {
-    await signIn("credentials", { ...data, redirect: true, callbackUrl: "/tutorial" })
-    form.reset()
+  async function onSubmit(data: z.infer<typeof signInFormSchema>) {
+    const signinResponse = await signIn('credentials', {
+      ...data,
+      redirect: false,
+      callbackUrl: '/tutorial',
+    })
+    if (signinResponse?.error) {
+      toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })
+    } else if(signinResponse?.url) {
+      router.push(signinResponse.url)
+      form.reset()
+    }
   }
 
   return (
@@ -41,11 +54,7 @@ const Signin = () => {
               <FormItem>
                 <FormLabel>Deelnemer nummer</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="new-password"
-                    placeholder="Deelnemer nummer"
-                    {...field}
-                  />
+                  <Input autoComplete="new-password" placeholder="Deelnemer nummer" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -70,16 +79,15 @@ const Signin = () => {
             )}
           />
           <Button type="submit">Login</Button>
-          {/* <Button
-          onClick={() => {
-            form.reset()
-            setmodal(false)
-          }}
-          type="button"
-          className="mx-3"
-        >
-          Annuleren
-        </Button> */}
+          <Button
+            onClick={() => {
+              router.back()
+            }}
+            type="button"
+            className="mx-3"
+          >
+            Terug
+          </Button>
         </form>
       </Form>
     </>

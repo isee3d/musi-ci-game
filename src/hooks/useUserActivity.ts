@@ -1,31 +1,34 @@
-import { Session } from 'next-auth'
+import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { useSettingsStore } from '~/stores/settings'
 import { api } from '~/utils/api'
 
-export function useUserActivity(session: Session | null) {
-  if (!session) return
-
+export function useUserActivity() {
+  const { data: session } = useSession()
   const { enteredWebsite, setEnteredWebsite, lastEnteredWebsite, setLastEnteredWebsite } =
     useSettingsStore()
   const { mutate: createActivity } = api.user.createUserActivity.useMutation()
 
   useEffect(() => {
+    const userId = session?.user?.id
     const now = Date.now()
     const differenceInMinutes = Math.abs(now - lastEnteredWebsite) / 1000 / 60
 
-    if (session?.user.id && !enteredWebsite && differenceInMinutes > 5) {
+    if (userId && !enteredWebsite && differenceInMinutes > 5) {
+      console.log(userId, enteredWebsite, differenceInMinutes, now, lastEnteredWebsite)
       setEnteredWebsite(true)
       setLastEnteredWebsite(Date.now())
-      createActivity({ userId: session.user.id, activity: 'EnterWebsiteMessage' })
+      createActivity({ userId: userId, activity: 'EnterWebsiteMessage' })
     }
   }, [session])
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const userId = session?.user?.id
       e.preventDefault()
-      if (!session?.user.id) return
-      createActivity({ userId: session.user.id, activity: 'LeftWebsiteMessage' })
+      if (!userId) return
+      console.log('left website')
+      createActivity({ userId: userId, activity: 'LeftWebsiteMessage' })
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
@@ -35,5 +38,12 @@ export function useUserActivity(session: Session | null) {
     }
   }, [])
 
-  return { sessionData: session }
+  const logSignOutActivity = () => {
+    const userId = session?.user?.id
+    if (!userId) return
+    console.log('signing out')
+    createActivity({ userId: userId, activity: 'SignOutMessage' })
+  }
+
+  return { logSignOutActivity }
 }

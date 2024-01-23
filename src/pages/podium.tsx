@@ -3,9 +3,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
+import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const PodiumPage = () => {
+  useUserActivity()
+
   return (
     <>
       <Head>
@@ -49,6 +52,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 
   return {
-    props: auth.props,
+    props: {
+      session: auth.props.session,
+    }
   }
 }
