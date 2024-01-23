@@ -22,22 +22,6 @@ export function useUserActivity() {
     }
   }, [session])
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const userId = session?.user?.id
-      e.preventDefault()
-      if (!userId) return
-      console.log('left website')
-      createActivity({ userId: userId, activity: 'LeftWebsiteMessage' })
-    }
-
-    window.addEventListener('beforeunload', handleBeforeUnload)
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-    }
-  }, [])
-
   const logSignOutActivity = () => {
     const userId = session?.user?.id
     if (!userId) return
