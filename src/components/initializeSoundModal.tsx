@@ -12,9 +12,6 @@ interface BaseStaticModalProps {
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
   const { data: session } = useSession()
   const { audioContext, setAudioContext, init } = useAudioServiceStore()
-  const [guideText, setGuideText] = useState<string>(
-    'Klik op de knop hieronder om het geluid in te schakelen.',
-  )
 
   const [clickedButton, setClickedButton] = useState<boolean>(false)
 
@@ -39,7 +36,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
     }
 
     if (triggerThroughGesture) {
-      setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
       setClickedButton(true)
       await initializeSound()
       setmodal(false)
@@ -56,10 +52,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
         <div className="relative mx-auto my-6 w-auto max-w-3xl rounded-lg border-4 border-accent-foreground">
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-background shadow-lg outline-none focus:outline-none">
             <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
-              <h3 className="text-3xl font-semibold">Geluid is uitgeschakeld voor deze website</h3>
-            </div>
-            <div className="relative flex justify-center p-6">
-              <p className="my-4 text-lg leading-relaxed ">{guideText}</p>
+              <h3 className="text-3xl font-semibold text-center">Klik om het geluid in te schakelen. U hoort nu twee tonen</h3>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
               <Button

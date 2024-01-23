@@ -3,19 +3,34 @@ import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Button } from '~/components/ui/button'
+import { api } from '~/utils/api'
 import { getSSRAuth } from '~/utils/authUtils'
 
 const WelcomePage = () => {
   const { data: session } = useSession()
+  const router = useRouter()
+  const tutorialMutation = api.user.setUserTutorialPreference.useMutation()
+
+  async function setTutorialPreference({
+    id,
+    preferSkipTutorial,
+  }: {
+    id: string
+    preferSkipTutorial: boolean
+  }) {
+    if (session?.user.id) {
+      await tutorialMutation.mutateAsync({ id, preferSkipTutorial })
+    }
+    router.push('/tutorial')
+  }
+
   const getNextPageRoute = () => {
     if (!session?.user.id) {
       return '/login'
     }
-    if (session?.user.preferSkipTutorial) {
-      return '/podium'
-    }
-    return '/tutorial'
+    return '/podium'
   }
 
   return (
@@ -27,17 +42,30 @@ const WelcomePage = () => {
       </Head>
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
-        <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md md:w-1/2">
-          <h1 className="font-heading text-center text-3xl sm:text-5xl md:text-6xl lg:text-7xl">WELKOM bij de Musi-CI Melody Game</h1>
-          {/* <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-            Help Cinie haar orkest te redden door de muzieknoten te herkennen
-          </p> */}
-          <Button size={'lg'} asChild>
-            <Link href={getNextPageRoute()}>
-              <h2 className="text-xl">Neem een kijkje</h2>
-            </Link>
-          </Button>
+        <Image src="/images/podium.webp" fill className="-z-10" alt="Logo" priority />
+        <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/50 backdrop-blur-md md:w-1/2">
+          <h1 className="font-heading text-center text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+            WELKOM bij de Musi-CI Melody Game
+          </h1>
+          <h2>Verzamel muzikanten voor het orkest van Cinie.</h2>
+          <div className="flex gap-x-4">
+            <Button size={'lg'} asChild>
+              <Link href={getNextPageRoute()}>
+                <h2 className="text-xl">Neem een kijkje</h2>
+              </Link>
+            </Button>
+            <Button
+              size={'lg'}
+              onClick={() => {
+                setTutorialPreference({
+                  id: session?.user.id ?? '',
+                  preferSkipTutorial: false,
+                })
+              }}
+            >
+              <h2 className="text-xl">Bekijk uitleg</h2>
+            </Button>
+          </div>
         </div>
       </section>
     </>

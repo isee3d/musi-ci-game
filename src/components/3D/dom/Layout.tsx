@@ -68,22 +68,35 @@ const navItemsResearcher: NavItem[] = [
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const router = useRouter()
   const { logSignOutActivity } = useUserActivity()
   const ref = useRef(null)
 
-  const { mutate: setTutorialPreference } = api.user.setUserTutorialPreference.useMutation()
+  const tutorialMutation = api.user.setUserTutorialPreference.useMutation()
+
+  async function setTutorialPreference({
+    id,
+    preferSkipTutorial,
+  }: {
+    id: string
+    preferSkipTutorial: boolean
+  }) {
+    if (session?.user.id) {
+      await tutorialMutation.mutateAsync({ id, preferSkipTutorial })
+    }
+    router.push('/tutorial')
+  }
 
   useEffect(() => {
-    if (sessionData?.user?.role === 'ADMIN') {
+    if (session?.user?.role === 'ADMIN') {
       setMainNavItems(navitemsTemplate)
-    } else if (sessionData?.user?.role === 'RESEARCHER') {
+    } else if (session?.user?.role === 'RESEARCHER') {
       setMainNavItems(navItemsResearcher)
     } else {
       setMainNavItems([])
     }
-  }, [sessionData])
+  }, [session])
 
   async function runTestSound() {
     await testSound()
@@ -91,7 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   async function handleSignOut() {
     await logSignOutActivity()
-    const signOutResponse = await signOut({redirect: false, callbackUrl: '/login'})
+    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
     if (signOutResponse?.url) {
       router.push(signOutResponse.url)
     }
@@ -105,19 +118,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <MainNav items={mainNavItems} />
             <nav className="flex gap-1">
               <Button
-                onClick={sessionData ? () => void handleSignOut() : () => void signIn()}
+                onClick={session ? () => void handleSignOut() : () => void signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
               >
-                {sessionData ? 'Uitloggen' : 'Inloggen'}
+                {session ? 'Uitloggen' : 'Inloggen'}
               </Button>
-              {sessionData?.user && (
+              {session?.user && (
                 <Button
                   onClick={() => {
                     setTutorialPreference({
-                      id: sessionData.user.id,
+                      id: session.user.id,
                       preferSkipTutorial: false,
                     })
-                    router.push('/tutorial')
                   }}
                   className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
                 >

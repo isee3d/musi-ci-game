@@ -51,9 +51,11 @@ const LoginPage = () => {
               >
                 {session ? 'Uitloggen' : 'Inloggen'}
               </Button>
-              <Button size={'lg'} asChild>
-                <Link href={'/podium'}> Ga naar volgende pagina</Link>
-              </Button>
+              {session?.user.id && (
+                <Button size={'lg'} asChild>
+                  <Link href={'/podium'}> Ga naar volgende pagina</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
