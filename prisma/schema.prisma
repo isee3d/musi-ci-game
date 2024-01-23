@@ -57,7 +57,7 @@ model VerificationToken {
 
 model User {
   id                String           @id @default(cuid())
-  participantId     String?
+  participantId     String?          @unique
   hashedPassword    String?
   name              String?
   email             String?          @unique

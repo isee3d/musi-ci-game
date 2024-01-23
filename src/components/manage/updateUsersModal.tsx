@@ -41,8 +41,8 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
       toast.success('Speler updated!')
       ctx.user.getAllUsers.invalidate()
     },
-    onError: () => {
-      toast.error('Something went wrong!')
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 

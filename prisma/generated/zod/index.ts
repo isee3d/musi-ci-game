@@ -2326,10 +2326,26 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
   z.object({
     id: z.string().cuid(),
+    participantId: z.string(),
     email: z.string()
   }),
   z.object({
     id: z.string().cuid(),
+    participantId: z.string(),
+  }),
+  z.object({
+    id: z.string().cuid(),
+    email: z.string(),
+  }),
+  z.object({
+    id: z.string().cuid(),
+  }),
+  z.object({
+    participantId: z.string(),
+    email: z.string(),
+  }),
+  z.object({
+    participantId: z.string(),
   }),
   z.object({
     email: z.string(),
@@ -2337,11 +2353,11 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
 ])
 .and(z.object({
   id: z.string().cuid().optional(),
+  participantId: z.string().optional(),
   email: z.string().optional(),
   AND: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
-  participantId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   hashedPassword: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   name: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   emailVerified: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),

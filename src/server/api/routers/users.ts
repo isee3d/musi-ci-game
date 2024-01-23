@@ -146,23 +146,34 @@ export const usersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { name, participantId, password, isAllowedToPlay } = input
 
-      const existingUser = await ctx.prisma.user.findFirst({
-        where: {
-          participantId: participantId,
-          name: name,
-        },
-      })
+      if(!participantId) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Deelnemer nummer is verplicht' })
+      }
 
-      if (existingUser) {
-        throw new TRPCError({ code: 'CONFLICT', message: 'User already exists' })
+      if (participantId) {
+        const participantIdExists = await ctx.prisma.user.findUnique({
+          where: {
+            participantId: participantId,
+          },
+        })
+
+        if (participantIdExists) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Deelnemer nummer is al in gebruik, kies een uniek nummer',
+          })
+        }
       }
 
       if(password === undefined) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password is required' })
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'wachtwoord is verplicht' })
       }
 
       if(password.length < 6) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password must be at least 6 characters' })
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Wachtwoord moet minstens 6 tekens hebben',
+        })
       }
 
      return await ctx.prisma.user.create({
@@ -181,7 +192,7 @@ export const usersRouter = createTRPCRouter({
       const { userId, participantId, password, isAllowedToPlay, role, name } = input
 
       if(!userId) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'userId is required' })
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Id voor speler verplicht' })
       }
 
       const existingUser = await ctx.prisma.user.findUnique({
@@ -191,11 +202,23 @@ export const usersRouter = createTRPCRouter({
       })
 
       if (!existingUser) {
-        throw new TRPCError({ code: 'CONFLICT', message: 'User does not exist' })
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Speler bestaat niet' })
       }
 
       if(password && password.length < 6) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Password must be at least 6 characters' })
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Wachtwoord moet minstens 6 tekens hebben' })
+      }
+
+      if(participantId) {
+        const participantIdExists = await ctx.prisma.user.findUnique({
+          where: {
+            participantId: participantId,
+          },
+        })
+
+        if(participantIdExists && participantIdExists.id !== userId) {
+          throw new TRPCError({ code: 'FORBIDDEN', message: 'Deelnemer nummer is al in gebruik, kies een uniek nummer' })
+        }
       }
 
        let updateData = {

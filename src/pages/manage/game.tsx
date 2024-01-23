@@ -1,13 +1,11 @@
+import { Game } from '@prisma/client'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { GetServerSidePropsContext, type NextPage } from 'next'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Game, GameMode, Kliniek } from '@prisma/client'
 import toast from 'react-hot-toast'
-import { api } from '~/utils/api'
-import { useRequireAuth } from '~/hooks/useRequireAuth'
-import { useRequireAdminRole } from '~/hooks/useRequireAdminRole'
-import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
+import { api } from '~/utils/api'
+import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const validationRules = {
   name: { required: 'Field is required.' },
