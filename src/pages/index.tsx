@@ -28,7 +28,7 @@ const WelcomePage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className=" flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
+      <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
         <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md md:w-1/2">
           <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Welkom</h1>
