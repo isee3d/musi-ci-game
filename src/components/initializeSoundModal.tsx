@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { initializeSound, start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { Icons } from '~/components/icons'
@@ -9,12 +10,17 @@ interface BaseStaticModalProps {
 }
 
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
+  const { data: session } = useSession()
   const { audioContext, setAudioContext, init } = useAudioServiceStore()
   const [guideText, setGuideText] = useState<string>(
-    ' Klik op de knop hieronder om het geluid in te schakelen.',
+    'Klik op de knop hieronder om het geluid in te schakelen.',
   )
 
   const [clickedButton, setClickedButton] = useState<boolean>(false)
+
+  useEffect(() => {
+    initializeAudio()
+  }, [])
 
   async function initializeAudio(triggerThroughGesture?: boolean) {
     //@ts-ignore
@@ -40,9 +46,9 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
     }
   }
 
-  useEffect(() => {
-    initializeAudio()
-  }, [])
+  if (!session?.user.id) {
+    return null
+  }
 
   return (
     <>
@@ -56,7 +62,12 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
               <p className="my-4 text-lg leading-relaxed ">{guideText}</p>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
-              <Button type="button" size={'lg'} onClick={() => initializeAudio(true)} disabled={clickedButton}>
+              <Button
+                type="button"
+                size={'lg'}
+                onClick={() => initializeAudio(true)}
+                disabled={clickedButton}
+              >
                 <Icons.music />
               </Button>
             </div>

@@ -8,7 +8,7 @@ import { getSSRAuth } from '~/utils/authUtils'
 
 const WelcomePage = () => {
   const { data: session } = useSession()
-  const getNextPageRoute = (): string => {
+  const getNextPageRoute = () => {
     if (!session?.user.id) {
       return '/login'
     }
@@ -29,13 +29,13 @@ const WelcomePage = () => {
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image src="/images/piano_img.jpg" fill className="-z-10" alt="Logo" priority />
         <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/80 backdrop-blur-md md:w-1/2">
-          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">Welkom</h1>
-          <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+          <h1 className="font-heading text-center text-3xl sm:text-5xl md:text-6xl lg:text-7xl">WELKOM bij de Musi-CI Melody Game</h1>
+          {/* <p className=" max-w-xl  text-center leading-normal text-muted-foreground sm:text-xl sm:leading-8">
             Help Cinie haar orkest te redden door de muzieknoten te herkennen
-          </p>
+          </p> */}
           <Button size={'lg'} asChild>
             <Link href={getNextPageRoute()}>
-              <h2 className="text-xl">Aan de slag</h2>
+              <h2 className="text-xl">Neem een kijkje</h2>
             </Link>
           </Button>
         </div>

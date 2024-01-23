@@ -14,7 +14,6 @@ const LoginPage = () => {
     if (!session?.user.id) {
       return 'Log hier in om te starten'
     } else {
-      console.log(session)
       return 'Druk hieronder om uit te loggen'
     }
   }
