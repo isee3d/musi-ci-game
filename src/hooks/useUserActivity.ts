@@ -7,7 +7,7 @@ export function useUserActivity() {
   const { data: session } = useSession()
   const { enteredWebsite, setEnteredWebsite, lastEnteredWebsite, setLastEnteredWebsite } =
     useSettingsStore()
-  const { mutate: createActivity } = api.user.createUserActivity.useMutation()
+  const mutation = api.user.createUserActivity.useMutation()
 
   useEffect(() => {
     const userId = session?.user?.id
@@ -18,15 +18,15 @@ export function useUserActivity() {
       console.log(userId, enteredWebsite, differenceInMinutes, now, lastEnteredWebsite)
       setEnteredWebsite(true)
       setLastEnteredWebsite(Date.now())
-      createActivity({ userId: userId, activity: 'EnterWebsiteMessage' })
+      mutation.mutate({ userId: userId, activity: 'EnterWebsiteMessage' })
     }
   }, [session])
 
-  const logSignOutActivity = () => {
+  const logSignOutActivity = async () => {
     const userId = session?.user?.id
     if (!userId) return
     console.log('signing out')
-    createActivity({ userId: userId, activity: 'SignOutMessage' })
+    await mutation.mutateAsync({ userId: userId, activity: 'SignOutMessage' })
   }
 
   return { logSignOutActivity }

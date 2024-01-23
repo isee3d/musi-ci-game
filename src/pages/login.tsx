@@ -11,15 +11,16 @@ const LoginPage = () => {
   const { logSignOutActivity } = useUserActivity()
 
   function getLoginText() {
-    if (!session?.user) {
+    if (!session?.user.id) {
       return 'Log hier in om te starten'
     } else {
+      console.log(session)
       return 'Druk hieronder om uit te loggen'
     }
   }
 
   async function handleSignOut() {
-    logSignOutActivity()
+    await logSignOutActivity()
     await signOut({ redirect: false, callbackUrl: '/login' })
   }
 

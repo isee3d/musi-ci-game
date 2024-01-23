@@ -90,8 +90,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   async function handleSignOut() {
-    logSignOutActivity()
-    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
+    await logSignOutActivity()
+    const signOutResponse = await signOut({redirect: false, callbackUrl: '/login'})
     if (signOutResponse?.url) {
       router.push(signOutResponse.url)
     }
@@ -105,7 +105,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <MainNav items={mainNavItems} />
             <nav className="flex gap-1">
               <Button
-                onClick={sessionData ? () => handleSignOut() : () => void signIn()}
+                onClick={sessionData ? () => void handleSignOut() : () => void signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
               >
                 {sessionData ? 'Uitloggen' : 'Inloggen'}
