@@ -1,28 +1,25 @@
-import { type AppType } from 'next/app'
+import { inspect } from '@xstate/inspect'
 import { type Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
-import { Toaster } from 'react-hot-toast'
-import { inspect } from '@xstate/inspect'
-import { Inter as FontSans } from 'next/font/google'
-import { Poppins } from 'next/font/google'
+import { type AppType } from 'next/app'
+import { Inter as FontSans, Poppins } from 'next/font/google'
 import localFont from 'next/font/local'
+import { Toaster } from 'react-hot-toast'
 
 import { api } from '~/utils/api'
 
 import Head from 'next/head'
 
-import '~/styles/globals.css'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Layout } from '~/components/3D/dom/Layout'
-import { TailwindIndicator } from '~/components/tailwindIndicator'
 import InitializeSoundModal from '~/components/initializeSoundModal'
-import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
-import { env } from '~/env.mjs'
-import SetTeamIdAndParticipantIdModal from '~/components/setTeamIdAndParticipantIdModal'
-import { cn } from '~/lib/utils'
+import { TailwindIndicator } from '~/components/tailwindIndicator'
 import { ThemeProvider } from '~/components/themeProvider'
-import { useRouter } from 'next/router'
-import { startSilentAudio } from '~/utils/audioThrottlePreventHelper'
+import { env } from '~/env.mjs'
+import { cn } from '~/lib/utils'
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
+import '~/styles/globals.css'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -46,13 +43,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const [showModal, setShowModal] = useState(true)
-  const { init: initAudio, audioContext } = useAudioServiceStore.getState()
-  const router = useRouter()
+  // const { init: initAudio } = useAudioServiceStore.getState()
+  // const router = useRouter()
 
   useEffect(() => {
-    if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
-      initAudio()
-    }
+    // if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
+    //   initAudio()
+    // }
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return
 
     if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
@@ -62,24 +59,24 @@ const MyApp: AppType<{ session: Session | null }> = ({
       })
     }
 
-    const initializeSilentAudio = () => {
-      console.log('in trigger mode')
-      if (router.pathname.includes('Luisteren')) {
-        setShowModal(true)
-      }
-    }
+    // const initializeSilentAudio = () => {
+    //   console.log('in trigger mode')
+    //   if (router.pathname.includes('Luisteren')) {
+    //     setShowModal(true)
+    //   }
+    // }
 
-    window.addEventListener('focus', initializeSilentAudio)
-    window.addEventListener('blur', initializeSilentAudio)
-    router.events.on('routeChangeComplete', initializeSilentAudio)
-    document.addEventListener('visibilitychange', initializeSilentAudio)
+    // window.addEventListener('focus', initializeSilentAudio)
+    // window.addEventListener('blur', initializeSilentAudio)
+    // router.events.on('routeChangeComplete', initializeSilentAudio)
+    // document.addEventListener('visibilitychange', initializeSilentAudio)
 
-    return () => {
-      window.removeEventListener('focus', initializeSilentAudio)
-      window.removeEventListener('blur', initializeSilentAudio)
-      router.events.off('routeChangeComplete', initializeSilentAudio)
-      document.removeEventListener('visibilitychange', initializeSilentAudio)
-    }
+    // return () => {
+    //   window.removeEventListener('focus', initializeSilentAudio)
+    //   window.removeEventListener('blur', initializeSilentAudio)
+    //   router.events.off('routeChangeComplete', initializeSilentAudio)
+    //   document.removeEventListener('visibilitychange', initializeSilentAudio)
+    // }
   }, [])
 
   return (
@@ -99,8 +96,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Layout>
-            {showModal && <InitializeSoundModal showModal={showModal} setmodal={setShowModal} />}
-            <SetTeamIdAndParticipantIdModal />
+            {showModal && <InitializeSoundModal setmodal={setShowModal} />}
             <TailwindIndicator />
             <Toaster position="bottom-center" />
 

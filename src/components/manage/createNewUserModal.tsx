@@ -18,7 +18,7 @@ import { api } from '~/utils/api'
 const CreateNewUserModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
 }) => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
 
   const { mutate: createUser } = api.user.createUserByCredentials.useMutation({
     onSuccess: () => {

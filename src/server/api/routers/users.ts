@@ -182,6 +182,7 @@ export const usersRouter = createTRPCRouter({
           participantId: participantId,
           isAllowedToPlay: isAllowedToPlay,
           hashedPassword: await bcrypt.hash(password, 10),
+          id_Team: 1
         },
       })
     }),

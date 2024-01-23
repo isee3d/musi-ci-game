@@ -40,13 +40,13 @@ export async function initializeSound() {
   if (!piano) return
 
   await piano.ready
-  await piano?.play({ note: 'C4', volume: 1, sustain: 400, releaseMs: 1000 })
+  await piano?.play({ note: 'C4', volume: 1, sustain: 200, releaseMs: 200 })
   await piano?.play({
     note: 'C5',
     volume: 1,
-    sustain: 400,
-    releaseMs: 500,
-    delay: 100,
+    sustain: 200,
+    releaseMs: 200,
+    delay: 400,
   })
 }
 

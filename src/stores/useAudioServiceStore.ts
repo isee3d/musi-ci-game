@@ -31,7 +31,7 @@ type AudioServiceState = {
 }
 
 type AudioserviceAction = {
-  init: () => Promise<void>
+  init: () => void
   setAudioContext: (audioContext: AudioContext) => void
   setActiveFragment: (fragment: FragmentWithNotes | undefined) => void
   getCurrentTime: () => number
@@ -107,18 +107,18 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
       )
     })
   },
-  init: async () => {
+  init: () => {
     const audioContext = get().audioContext
     if (audioContext) return
     try {
-      return new Promise((resolve) => {
-        setTimeout(async () => {
-          window.AudioContext = window.AudioContext || window.webkitAudioContext
-          const audioContext = new AudioContext()
-          set({ audioContext })
-          const audioTime = audioContext.currentTime
-          set({ audioTime })
-          const piano = await new Sampler([
+      // return new Promise((resolve) => {
+        // setTimeout(async () => {
+          // window.AudioContext = window.AudioContext || window.webkitAudioContext
+          // const audioContext = new AudioContext()
+          // set({ audioContext })
+          // const audioTime = audioContext.currentTime
+          // set({ audioTime })
+          const piano = new Sampler([
             { note: 'C5', path: '/media/sampler/Salamander/C5.mp3' },
             { note: 'C4', path: '/media/sampler/Salamander/C4.mp3' },
             { note: 'C3', path: '/media/sampler/Salamander/C3.mp3' },
@@ -127,16 +127,16 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
 
           set({ piano })
 
-          const soundBoard = await new Sampler([
+          const soundBoard = new Sampler([
             { note: 'C6', path: '/media/sampler/soundboard/tick_high.mp3' },
             { note: 'C5', path: '/media/sampler/soundboard/tick_low.mp3' },
           ])
 
           set({ soundBoard })
-          set({ isInitialized: true })
-          return resolve()
-        }, 1000)
-      })
+          // set({ isInitialized: true })
+          // return resolve()
+        // }, 1000)
+      // })
     } catch (e) {
       alert('Web Audio API not supported in this browser.')
       set({ hasSupport: false })

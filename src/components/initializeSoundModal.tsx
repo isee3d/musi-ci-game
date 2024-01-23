@@ -3,45 +3,47 @@ import { initializeSound, start } from '~/components/fragmentPlayer/audio/AudioC
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
-import { startSilentAudio } from '~/utils/audioThrottlePreventHelper'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
-  showModal: boolean
 }
 
-const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmodal }) => {
-  const { audioContext, piano } = useAudioServiceStore()
+const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
+  const { audioContext, setAudioContext, init } = useAudioServiceStore()
   const [guideText, setGuideText] = useState<string>(
     ' Klik op de knop hieronder om het geluid in te schakelen.',
   )
 
   const [clickedButton, setClickedButton] = useState<boolean>(false)
 
-  function handleAudiocontextChange(e: AudioContextState) {
-    if (e === 'running') return
-    setmodal(true)
-  }
-
-  async function initializeAudio() {
-    setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
-    setClickedButton(true)
-    await initializeSound()
-    startSilentAudio()
+  async function initializeAudio(triggerThroughGesture?: boolean) {
     //@ts-ignore
     window.start = start
-    if (audioContext?.state === 'running') {
+
+    init()
+
+    if (!audioContext) {
+      console.log('no audio context')
+      const AudioContext = window.AudioContext || window.webkitAudioContext
+      const context = new AudioContext()
+      setAudioContext(context)
+      await initializeSound()
+      setmodal(false)
+    } else if (audioContext?.state === 'running') {
+      setmodal(false)
+    }
+
+    if (triggerThroughGesture) {
+      setGuideText('Geluid wordt ingeschakeld..., U hoort nu een toon')
+      setClickedButton(true)
+      await initializeSound()
       setmodal(false)
     }
   }
 
   useEffect(() => {
-    if (!audioContext) return
-    audioContext.onstatechange = () => {
-      handleAudiocontextChange(audioContext.state)
-    }
+    initializeAudio()
   }, [])
-
 
   return (
     <>
@@ -55,7 +57,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ showModal, setmo
               <p className="my-4 text-lg leading-relaxed ">{guideText}</p>
             </div>
             <div className="flex items-center justify-center rounded-b border-t border-solid border-slate-200 p-6">
-              <Button type="button" size={'lg'} onClick={initializeAudio} disabled={clickedButton}>
+              <Button type="button" size={'lg'} onClick={() => initializeAudio(true)} disabled={clickedButton}>
                 <Icons.music />
               </Button>
             </div>
