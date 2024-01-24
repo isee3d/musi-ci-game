@@ -59,7 +59,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
         </div>
       )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
-      {true && <LuisterenFeedback />}
+      {isfinishedPlayingState && <LuisterenFeedback />}
       <div className=" flex justify-center space-x-5">
         {isPlayingState && <PlayButtonsRenderer />}
         {isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}
