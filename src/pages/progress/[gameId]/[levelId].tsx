@@ -18,13 +18,13 @@ const SublevelsPage = ({
   const { data: subLevelsOfLevelQuery, isLoading } = api.level.getSubLevelsOfLevel.useQuery({ levelId })
 
   return (
-    <ContentContainer title="Voortgang Musi-CI Sublevels" backPath={`/podium`}>
+    <ContentContainer title="Kies je sublevel" backPath={`/progress/${gameId}`}>
       {isLoading && <LoadingPage />}
       {subLevelsOfLevelQuery?.map((sublevel) => (
         <Link
           key={sublevel.id}
           className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
-          href={`/progress/${gameId}/${levelId}/${sublevel.id}`}
+          href={`/progress/${gameId}/${levelId}/${sublevel.id}/Luisteren`}
         >
           <div className="flex  w-full items-center justify-between">
             <div className="flex w-full justify-start space-x-4">

@@ -24,7 +24,7 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
       <div className="flex justify-center">
         <Button asChild>
           <Link onClick={() => reset()} href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
-            <h3>Terug naar overzicht</h3>
+            <h3>Rond de test af</h3>
           </Link>
         </Button>
       </div>

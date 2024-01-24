@@ -14,7 +14,7 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
   })
 
   return (
-    <ContentContainer backPath="/progress/games" title="Voortgang Musi-CI Levels">
+    <ContentContainer backPath="/progress/games" title="Kies je level">
       {isLoading && <LoadingPage />}
       {levelsOfGame?.map((level) => (
         <Link

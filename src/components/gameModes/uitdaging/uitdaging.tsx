@@ -82,7 +82,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
       )}
       {(playingState || countdownState) && (
         <h3 className="text-center text-4xl font-extrabold tracking-tight">
-          Stopwatch: {hours}:{minutes}:{seconds}
+          {hours}:{minutes}:{seconds}
         </h3>
       )}
       {startRoundState && <StartUitdagingUI />}

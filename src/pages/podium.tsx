@@ -33,7 +33,7 @@ const PodiumPage = () => {
           <Button className="z-20 " asChild>
             {/* Previously /progress/games for the games page */}
             <Link href="/progress/1">
-              <h3>Door naar levels pagina</h3>
+              <h3>Kies je level</h3>
             </Link>
           </Button>
         </div>
