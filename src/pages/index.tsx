@@ -42,7 +42,7 @@ const WelcomePage = () => {
       </Head>
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <Image src="/images/podium.webp" fill className="-z-10" alt="Logo" priority />
+        <Image src="/images/podium.webp" fill className="-z-10" alt="podium" />
         <div className="container mx-auto flex min-h-[50vh] w-5/6 flex-col items-center justify-center space-y-8 rounded-xl bg-background/50 backdrop-blur-md md:w-1/2">
           <h1 className="font-heading text-center text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
             WELKOM bij de Musi-CI Melody Game

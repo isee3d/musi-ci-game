@@ -48,7 +48,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
   return (
     <>
       <h2 className="text-center text-4xl font-extrabold tracking-tight">Klik en luister</h2>
-      {isIdleState && (
+      {/* {isIdleState && (
         <div className="flex flex-col gap-y-5">
           <Button className={buttonVariants({ size: 'lg' })} onClick={() => startLuisteren()}>
             Start met luisteren
@@ -57,12 +57,12 @@ const Luisteren: React.FC<LuisterenProps> = ({
             Terug
           </Button>
         </div>
-      )}
-      {isPlayingState && <LuisterenfragmentPlayerRenderer />}
-      {isfinishedPlayingState && <LuisterenFeedback />}
+      )} */}
+      {/* {isPlayingState && <LuisterenfragmentPlayerRenderer />} */}
+      {true && <LuisterenFeedback />}
       <div className=" flex justify-center space-x-5">
         {isPlayingState && <PlayButtonsRenderer />}
-        {isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}
+        {true && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}
       </div>
     </>
   )

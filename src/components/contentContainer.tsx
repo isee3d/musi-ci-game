@@ -1,7 +1,9 @@
 import Head from 'next/head'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface Props {
   children: React.ReactNode
@@ -19,6 +21,7 @@ const ContentContainer: React.FC<Props> = ({
   shouldRenderBackButton = true,
 }) => {
   const router = useRouter()
+  const { shouldRenderCinieInContentContainer } = useLuisterenStore()
 
   return (
     <>
@@ -30,9 +33,19 @@ const ContentContainer: React.FC<Props> = ({
 
       <section className="flex grow flex-col items-center justify-center">
         <div className="container mx-auto flex min-h-fit  w-5/6 flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 ">
-          <div className="relative flex justify-center w-full border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
-            <h2 className='w-5/6'>{title}</h2>
-            <div className="absolute left-3 top-3 rounded-full bg-primary w-12 h-12"/>
+          <div className="relative flex w-full justify-center border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
+            <h2 className="w-5/6">{title}</h2>
+            <div className="absolute left-3 top-3 h-12 w-12 bg-transparent">
+              {shouldRenderCinieInContentContainer && (
+                <Image
+                  src="/images/cinie-duim.jpg"
+                  alt="cinie"
+                  className="rounded-full"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  fill
+                />
+              )}
+            </div>
           </div>
           <div
             className={cn(

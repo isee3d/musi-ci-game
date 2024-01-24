@@ -66,7 +66,7 @@ const ModePage = ({
 
   useEffect(() => {
     if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/progress/${gameId}/${levelId}/${sublevelId}`)
+      router.push(`/progress/${gameId}/${levelId}`)
     }
 
     setIsPlaying(false)
@@ -136,7 +136,7 @@ const ModePage = ({
   return (
     <ContentContainer
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
-      backPath={`/progress/${gameId}/${levelId}/${sublevelId}`}
+      backPath={`/progress/${gameId}/${levelId}`}
       classNameParent="px-0 mt-0"
       shouldRenderBackButton={false}
     >

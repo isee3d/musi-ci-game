@@ -28,7 +28,7 @@ const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId, gameId }) => {
         }}
         asChild
       >
-        <Link href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
+        <Link href={`/progress/${gameId}/${levelId}/`}>
           <h3 className="text-center text-xl font-bold">Terug</h3>
         </Link>
       </Button>

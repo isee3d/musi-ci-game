@@ -7,6 +7,7 @@ type LuisterenState = {
   endTime: number
   timePlayed: number
   score: number
+  shouldRenderCinieInContentContainer: boolean
   level: number
   subLevel: number
   mode: number
@@ -49,6 +50,7 @@ type LuisterenActions = {
   getRelistenCounts: () => { [key: number]: number }
   reset: () => void
   setIsPlaying: (isPlaying: boolean) => void
+  setShouldRenderCinieInContentContainer: (shouldRender: boolean) => void
 }
 
 const initialState: LuisterenState = {
@@ -61,6 +63,7 @@ const initialState: LuisterenState = {
   mode: 0,
   sceneData: {},
   allPlayedScenes: [],
+  shouldRenderCinieInContentContainer: true,
   isPlaying: false,
   usedFragmentsMap: {},
   newUsedFragmentsMap: {},
@@ -71,6 +74,7 @@ const initialRoundState: Partial<LuisterenState> = {
 }
 
 export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set, get) => ({
+  shouldRenderCinieInContentContainer: true,
   timePlayed: 0,
   score: 0,
   startTime: 0,
@@ -177,6 +181,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       newScene.answeredCorrectly = isCorrect
       return { sceneData: newScene }
     }),
+  setShouldRenderCinieInContentContainer: (shouldRender: boolean) =>
+    set(() => ({ shouldRenderCinieInContentContainer: shouldRender })),
   setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
   addScore: (score: number) => set((state) => ({ score: state.score + score })),
   setStartTime: (time: number) => set((state) => ({ startTime: time })),

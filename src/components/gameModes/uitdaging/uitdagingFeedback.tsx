@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
@@ -10,7 +11,21 @@ interface UitdagingFeedbackProps {
 }
 
 const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
-  const { reset, getPercentageCorrectlyAnswered, endTime, startTime } = useLuisterenStore()
+  const {
+    reset,
+    getPercentageCorrectlyAnswered,
+    endTime,
+    startTime,
+    setShouldRenderCinieInContentContainer,
+  } = useLuisterenStore()
+
+   useEffect(() => {
+     setShouldRenderCinieInContentContainer(false)
+
+     return () => {
+       setShouldRenderCinieInContentContainer(true)
+     }
+   }, [])
 
   return (
     <>
@@ -26,7 +41,7 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, 
       </h3> */}
       <div className="flex justify-center">
         <Button asChild>
-          <Link onClick={() => reset()} href={`/progress/${gameId}/${levelId}/${sublevelId}`}>
+          <Link onClick={() => reset()} href={`/progress/${gameId}/${levelId}`}>
             <h3>Terug naar overzicht</h3>
           </Link>
         </Button>
