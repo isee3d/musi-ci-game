@@ -3,6 +3,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { LoadingPage } from '~/components/loading'
 import { Button } from '~/components/ui/button'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuth } from '~/utils/authUtils'
@@ -29,6 +30,8 @@ const LoginPage = () => {
       signIn('credentials', { redirect: true, callbackUrl: '/tutorial' })
     }
   }, [session])
+
+  if(!session) return <LoadingPage />
 
   return (
     <>

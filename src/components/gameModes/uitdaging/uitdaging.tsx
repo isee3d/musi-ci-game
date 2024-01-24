@@ -89,7 +89,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
       {countdownState && <UitdagingCountdownPlayer />}
       {(playingState || countdownState) && <UitdagingFragmentPlayerRenderer mode={mode} />}
       {isFinishedState && (
-        <UitdagingFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
+        <UitdagingFeedback gameId={gameId} levelId={levelId} />
       )}
     </>
   )

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { MobileNav, NavItem } from '~/components/mobileNav'
 import { cn } from '~/lib/utils'
 import { Icons } from '~/components/icons'
+import { useSession } from 'next-auth/react'
 
 interface MainNavProps {
   items?: NavItem[]
@@ -10,6 +11,7 @@ interface MainNavProps {
 }
 
 export function MainNav({ items, children }: MainNavProps) {
+  const { data: session } = useSession()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   return (
@@ -18,7 +20,7 @@ export function MainNav({ items, children }: MainNavProps) {
         <Icons.logo />
         <span className="hidden font-bold sm:inline-block">Musi Ci</span>
       </Link>
-      {items?.length ? (
+      {session && items?.length ? (
         <nav className="hidden gap-6 md:flex">
           {items?.map((item, index) => (
             <Link

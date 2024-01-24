@@ -30,7 +30,7 @@ const WelcomePage = () => {
     if (!session?.user.id) {
       return '/login'
     }
-    return '/podium'
+    return '/progress/1'
   }
 
   return (

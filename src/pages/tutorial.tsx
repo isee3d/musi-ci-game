@@ -20,7 +20,7 @@ const TutorialPage = () => {
     if (!session?.user.id) {
       return '/login'
     }
-    return '/podium'
+    return '/progress/1'
   }
 
   return (
@@ -88,7 +88,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (session && session.user.preferSkipTutorial) {
     return {
       redirect: {
-        destination: '/podium',
+        destination: '/progress/1',
         permanent: true,
       },
     }
