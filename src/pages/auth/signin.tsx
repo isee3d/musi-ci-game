@@ -28,7 +28,7 @@ const Signin = () => {
     const signinResponse = await signIn('credentials', {
       ...data,
       redirect: false,
-      callbackUrl: '/tutorial',
+      callbackUrl: '/podium',
     })
     if (signinResponse?.error) {
       toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })
