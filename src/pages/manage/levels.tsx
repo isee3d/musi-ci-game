@@ -2,6 +2,7 @@ import { Level } from '@prisma/client'
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
+import { LoadingSpinner } from '~/components/loading'
 import CreateLevelModal from '~/components/manage/createLevelModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateLevelModal from '~/components/manage/updateLevelModal'
@@ -14,7 +15,7 @@ import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageLevels = () => {
   const ctx = api.useContext()
-  const { mutate: deleteLevel } = api.level.deleteLevel.useMutation({
+  const { mutate: deleteLevel, isLoading: isDeletingLevel } = api.level.deleteLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
     },
@@ -59,6 +60,11 @@ const ManageLevels = () => {
                   <h2 className="text-xl">{level.description}</h2>
                   <h2 className="text-xl">Kleur: {level.color}</h2>
                   <div className="flex flex-col gap-3 md:flex-row">
+                    {isDeletingLevel && (
+                      <div className="flex items-center justify-center">
+                        <LoadingSpinner />
+                      </div>
+                    )}
                     <Button
                       onClick={() => deleteLevel({ id: level.id })}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

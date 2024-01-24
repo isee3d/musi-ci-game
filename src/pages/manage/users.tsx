@@ -2,6 +2,7 @@ import { User } from '@prisma/client'
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
+import { LoadingSpinner } from '~/components/loading'
 import CreateNewUserModal from '~/components/manage/createNewUserModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateUsersModal from '~/components/manage/updateUsersModal'
@@ -16,7 +17,7 @@ const ManageUsersPage = () => {
   const ctx = api.useContext()
   const [createModal, setCreateModal] = useState(false)
   const usersQuery = api.user.getAllUsers.useQuery()
-  const { mutate: deleteUser } = api.user.deleteUser.useMutation({
+  const { mutate: deleteUser, isLoading: isDeletingUser } = api.user.deleteUser.useMutation({
     onSuccess: () => {
       ctx.user.getAllUsers.invalidate()
     },
@@ -63,6 +64,11 @@ const ManageUsersPage = () => {
                 <h2 className="text-xl">{user.role}</h2>
                 <p className="text-xl">{user.participantId}</p>
                 <div className="flex flex-col gap-3 md:flex-row">
+                  {isDeletingUser && (
+                    <div className="flex items-center justify-center">
+                      <LoadingSpinner />
+                    </div>
+                  )}
                   <Button
                     onClick={() => handleDeleteUserClick(user.id)}
                     className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

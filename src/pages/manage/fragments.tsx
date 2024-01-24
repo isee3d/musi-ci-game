@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { Fragment } from 'prisma/generated/zod'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { LoadingSpinner } from '~/components/loading'
 import CreateFragmentModal from '~/components/manage/createFragmentModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateFragmentModal from '~/components/manage/updateFragmentModal'
@@ -14,9 +15,9 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageFragments = () => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
-  const { mutate: deleteFragment } = api.fragmentNote.deleteFragment.useMutation({
+  const { mutate: deleteFragment, isLoading: isDeletingFragment } = api.fragmentNote.deleteFragment.useMutation({
     onSuccess: () => {
       toast.success('Fragment verwijderd!')
       ctx.fragmentNote.getAllFragments.invalidate()
@@ -28,6 +29,13 @@ const ManageFragments = () => {
   const [createModal, setCreateModal] = useState(false)
   const [selectedFragment, setSelectedFragment] = useState<Fragment | null>(null)
   const [showModal, setShowModal] = useState(false)
+
+    const handleDeleteFragmentClick = (fragmentId: number) => {
+      const isConfirmed = window.confirm('Weet je zeker dat je deze speler wilt verwijderen?')
+      if (isConfirmed) {
+        deleteFragment({ id: fragmentId })
+      }
+    }
 
   return (
     <>
@@ -61,8 +69,13 @@ const ManageFragments = () => {
                   <h2 className="text-2xl font-bold">{fragment.name}</h2>
                   <h2 className="text-xl">{fragment.description}</h2>
                   <div className="flex flex-col gap-3 sm:flex-row">
+                    {isDeletingFragment && (
+                      <div className="flex items-center justify-center">
+                        <LoadingSpinner />
+                      </div>
+                    )}
                     <Button
-                      onClick={() => deleteFragment({ id: fragment.id })}
+                      onClick={() => handleDeleteFragmentClick(fragment.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen

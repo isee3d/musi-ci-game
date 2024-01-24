@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { LoadingSpinner } from '~/components/loading'
 import CreateSublevelModal from '~/components/manage/createSublevelModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import UpdateSublevelModal from '~/components/manage/updateSublevelModal'
@@ -14,8 +15,8 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageSublevels = () => {
-  const ctx = api.useContext()
-  const { mutate: deleteSubLevel } = api.sublevel.deleteSubLevel.useMutation({
+  const ctx = api.useUtils()
+  const { mutate: deleteSubLevel, isLoading: isDeletingSublevel } = api.sublevel.deleteSubLevel.useMutation({
     onSuccess: () => {
       toast.success('Sublevel verwijderd!')
       ctx.sublevel.getAllSubLevels.invalidate()
@@ -60,6 +61,11 @@ const ManageSublevels = () => {
                   <h2 className="text-xl">{sublevel.description}</h2>
                   <h2 className="text-xl">Kleur: {sublevel.color}</h2>
                   <div className="flex flex-col gap-3 sm:flex-row">
+                    {isDeletingSublevel && (
+                      <div className="flex items-center justify-center">
+                        <LoadingSpinner />
+                      </div>
+                    )}
                     <Button
                       onClick={() => deleteSubLevel({ id: sublevel.id })}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

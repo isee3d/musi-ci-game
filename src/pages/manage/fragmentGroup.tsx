@@ -14,7 +14,7 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageFragmentGroupPage = () => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
 
   const { mutate: deleteFragmentGroup } = api.fragmentNote.deleteFragmentGroup.useMutation({

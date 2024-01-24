@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import { LoadingPage } from '~/components/loading'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
@@ -18,18 +19,22 @@ const ManageGameMode = () => {
     reset,
     formState: { errors, isValid },
   } = useForm<GameMode>({ mode: 'onBlur' })
-  const ctx = api.useContext()
-  const { mutate: addGameMode } = api.gameMode.createGameMode.useMutation({
-    onSuccess: () => {
-      ctx.gameMode.getAllGameModes.invalidate()
-    },
-  })
+
+  const ctx = api.useUtils()
+  const { mutate: addGameMode, isLoading: isAddingGameMode } =
+    api.gameMode.createGameMode.useMutation({
+      onSuccess: () => {
+        ctx.gameMode.getAllGameModes.invalidate()
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    })
+
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
 
   const onSubmit: SubmitHandler<GameMode> = (data) => {
-    const exists = gameModeQuery.data?.find((gameMode) => gameMode.name === data.name)
-    const toastMessage = exists ? 'GameMode already exists!' : 'GameMode created!'
-    exists ? toast.error(toastMessage) : (addGameMode(data), toast.success(toastMessage))
+    addGameMode(data)
     reset()
   }
 
@@ -40,6 +45,13 @@ const ManageGameMode = () => {
         <meta name="description" content="manage gamemode" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {isAddingGameMode && (
+        <div className="flex items-center justify-center">
+          <LoadingPage />
+        </div>
+      )}
+      
       <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
           GameModes beheren

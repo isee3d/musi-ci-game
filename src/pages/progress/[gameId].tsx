@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
+import { LoadingPage } from '~/components/loading'
 import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
@@ -8,11 +9,14 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const levelsOfGameQuery = api.game.getLevelsOfGame.useQuery({ gameId: parseInt(gameId) })
+  const { data: levelsOfGame, isLoading } = api.game.getLevelsOfGame.useQuery({
+    gameId: parseInt(gameId),
+  })
 
   return (
     <ContentContainer backPath="/progress/games" title="Voortgang Musi-CI Levels">
-      {levelsOfGameQuery.data?.map((level) => (
+      {isLoading && <LoadingPage />}
+      {levelsOfGame?.map((level) => (
         <Link
           key={level.id}
           className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
@@ -48,15 +52,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId
   const helpers = generateServerSideHelper(auth.props.session)
 
   const gameId = ctx.params?.gameId
-  if (typeof gameId !== 'string') throw new Error('No gameId')
 
-  await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+  if (gameId) await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
 
   return {
     props: {
       session: auth.props.session,
       trpcState: helpers.dehydrate(),
-      gameId,
+      gameId: gameId ?? '',
     },
   }
 }

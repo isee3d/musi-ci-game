@@ -4,6 +4,7 @@ import {
 } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
+import { LoadingPage } from '~/components/loading'
 import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
@@ -14,11 +15,12 @@ const SublevelsPage = ({
   levelId,
   gameId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery({ levelId })
+  const { data: subLevelsOfLevelQuery, isLoading } = api.level.getSubLevelsOfLevel.useQuery({ levelId })
 
   return (
     <ContentContainer title="Voortgang Musi-CI Sublevels" backPath={`/podium`}>
-      {subLevelsOfLevelQuery.data?.map((sublevel) => (
+      {isLoading && <LoadingPage />}
+      {subLevelsOfLevelQuery?.map((sublevel) => (
         <Link
           key={sublevel.id}
           className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}

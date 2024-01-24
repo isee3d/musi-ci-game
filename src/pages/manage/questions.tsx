@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { LoadingSpinner } from '~/components/loading'
 import CreateQuestionModal from '~/components/manage/createQuestionModal'
 import ManageBaseModal from '~/components/manage/manageBaseModal'
 import { Button, buttonVariants } from '~/components/ui/button'
@@ -14,7 +15,7 @@ import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 const ManageQuestionsPage = () => {
   const ctx = api.useContext()
   const questionsQuery = api.question.getAllQuestions.useQuery()
-  const { mutate: deleteQuestion } = api.question.deleteQuestion.useMutation({
+  const { mutate: deleteQuestion, isLoading: isDeletingQuestion } = api.question.deleteQuestion.useMutation({
     onSuccess: () => {
       toast.success('vraag verwijderd!')
       ctx.question.getAllQuestions.invalidate()
@@ -59,6 +60,11 @@ const ManageQuestionsPage = () => {
                 >
                   <h2 className="text-2xl font-bold">{question.question}</h2>
                   <div className="flex flex-col gap-3 md:flex-row">
+                    {isDeletingQuestion && (
+                      <div className="flex items-center justify-center">
+                        <LoadingSpinner />
+                      </div>
+                    )}
                     <Button
                       onClick={() => deleteQuestion({ id: question.id })}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}

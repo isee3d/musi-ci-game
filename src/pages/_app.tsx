@@ -7,10 +7,9 @@ import localFont from 'next/font/local'
 import { Toaster } from 'react-hot-toast'
 
 import { api } from '~/utils/api'
-
+import NextNProgress from 'nextjs-progressbar'
 import Head from 'next/head'
 
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { Layout } from '~/components/3D/dom/Layout'
 import InitializeSoundModal from '~/components/initializeSoundModal'
@@ -18,7 +17,6 @@ import { TailwindIndicator } from '~/components/tailwindIndicator'
 import { ThemeProvider } from '~/components/themeProvider'
 import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
-import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import '~/styles/globals.css'
 
 const fontSans = FontSans({
@@ -99,7 +97,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
             {showModal && <InitializeSoundModal setmodal={setShowModal} />}
             <TailwindIndicator />
             <Toaster position="bottom-center" />
-
+            <NextNProgress color="#3b82f6" options={{ easing: 'ease', speed: 500 }} />
             <Component {...pageProps} />
           </Layout>
         </ThemeProvider>

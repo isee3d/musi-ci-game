@@ -9,6 +9,7 @@ import { Label } from '~/components/ui/label'
 import { getServerAuthSession } from '~/server/auth'
 import { api } from '~/utils/api'
 import Image from 'next/image'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 
 const TutorialPage = () => {
   const { data: session } = useSession()
@@ -79,6 +80,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   //   }
   // }
 
+  const helpers = generateServerSideHelper(session)
+
+  if(session?.user.id !== undefined)
+  await helpers.user.getUserById.prefetch({ id: session.user.id })
+
   if (session && session.user.preferSkipTutorial) {
     return {
       redirect: {
@@ -90,6 +96,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      trpcState: helpers.dehydrate(),
       session,
     },
   }
