@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { Button } from '~/components/ui/button'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuth } from '~/utils/authUtils'
@@ -22,6 +23,12 @@ const LoginPage = () => {
     await logSignOutActivity()
     await signOut({ redirect: false, callbackUrl: '/login' })
   }
+
+  useEffect(() => {
+    if(!session){
+      signIn('credentials', { redirect: true, callbackUrl: '/tutorial' })
+    }
+  }, [session])
 
   return (
     <>
