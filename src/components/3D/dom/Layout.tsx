@@ -1,19 +1,12 @@
 // 'use client'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import Footer from '~/components/footer'
-import { testSound } from '~/components/fragmentPlayer/audio/AudioControls'
-import { cn } from '~/lib/utils'
-import { Button, buttonVariants } from '~/components/ui/button'
 import { MainNav } from '~/components/mainNav'
 import { NavItem } from '~/components/mobileNav'
-import { ModeToggle } from '~/components/modeToggle'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import { Icons } from '~/components/icons'
-import { api } from '~/utils/api'
-import { useRouter } from 'next/router'
-import { useUserActivity } from '~/hooks/useUserActivity'
+import { UserAccountNav } from '~/components/userAccountNav'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
@@ -69,24 +62,11 @@ const navItemsResearcher: NavItem[] = [
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
   const { data: session } = useSession()
-  const router = useRouter()
-  const { logSignOutActivity } = useUserActivity()
   const ref = useRef(null)
 
-  const tutorialMutation = api.user.setUserTutorialPreference.useMutation()
 
-  async function setTutorialPreference({
-    id,
-    preferSkipTutorial,
-  }: {
-    id: string
-    preferSkipTutorial: boolean
-  }) {
-    if (session?.user.id) {
-      await tutorialMutation.mutateAsync({ id, preferSkipTutorial })
-    }
-    router.push('/tutorial')
-  }
+
+
 
   useEffect(() => {
     if (session?.user?.role === 'ADMIN') {
@@ -98,25 +78,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [session])
 
-  async function runTestSound() {
-    await testSound()
-  }
 
-  async function handleSignOut() {
-    await logSignOutActivity()
-    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
-    if (signOutResponse?.url) {
-      router.push(signOutResponse.url)
-    }
-  }
+
+
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
       <div className=" flex min-h-screen flex-col overflow-y-hidden">
-        <header className="container z-40 rounded-b-xl bg-background/60 backdrop-blur-md">
+        <header className="container z-40 rounded-b-xl bg-primary-foreground/80 backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={mainNavItems} />
-            <nav className="flex gap-1">
+            <UserAccountNav userName={session?.user.name ?? ''} />
+            {/* <nav className="flex gap-1">
               <Button
                 onClick={session ? () => void handleSignOut() : () => void signIn()}
                 className={cn(buttonVariants({ variant: 'secondary' }), 'px-2')}
@@ -143,7 +116,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Icons.music />
               </Button>
               <ModeToggle />
-            </nav>
+            </nav> */}
           </div>
         </header>
 
@@ -167,3 +140,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 }
 
 export { Layout }
+

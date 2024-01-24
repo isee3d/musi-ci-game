@@ -1,0 +1,130 @@
+'use client'
+
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
+
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/router'
+import { testSound } from '~/components/fragmentPlayer/audio/AudioControls'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
+import { UserAvatar } from '~/components/userAvatar'
+import { useUserActivity } from '~/hooks/useUserActivity'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { api } from '~/utils/api'
+import { Icons } from '~/components/icons'
+
+interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
+  userName: string
+}
+
+export function UserAccountNav({ userName }: UserAccountNavProps) {
+  const { data: session } = useSession()
+  const { isPlaying } = useLuisterenStore()
+  const router = useRouter()
+  const { setTheme } = useTheme()
+  const { logSignOutActivity } = useUserActivity()
+
+  const tutorialMutation = api.user.setUserTutorialPreference.useMutation()
+
+  async function runTestSound() {
+    await testSound()
+  }
+
+  async function setTutorialPreference({
+    id,
+    preferSkipTutorial,
+  }: {
+    id: string
+    preferSkipTutorial: boolean
+  }) {
+    if (session?.user.id) {
+      await tutorialMutation.mutateAsync({ id, preferSkipTutorial })
+    }
+    router.push('/tutorial')
+  }
+
+  async function handleSignOut() {
+    await logSignOutActivity()
+    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
+    if (signOutResponse?.url) {
+      router.push(signOutResponse.url)
+    }
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className={'rounded-full hover:bg-blue-200/20'}>
+        <Icons.settings />
+        {/* <UserAvatar user={{ name: userName || null, image: null }} className="h-12 w-12" /> */}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <div className="flex items-center justify-start gap-2 p-2">
+          <div className="flex flex-col space-y-1 leading-none">
+            {userName && <p className="font-medium">{userName}</p>}
+          </div>
+        </div>
+        <DropdownMenuSeparator />
+        {session?.user.role === 'RESEARCHER' && <DropdownMenuItem>Instellingen</DropdownMenuItem>}
+        {session?.user.role === 'ADMIN' && <DropdownMenuItem>Alle Instellingen</DropdownMenuItem>}
+        <DropdownMenuItem
+          disabled={isPlaying}
+          onClick={() => {
+            setTutorialPreference({
+              id: session?.user.id ?? '',
+              preferSkipTutorial: false,
+            })
+          }}
+        >
+          Ga naar tutorial
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled={isPlaying} asChild>
+          <Link href={'/podium'}>Ga naar podium</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled={isPlaying} onClick={() => runTestSound()}>
+          Test geluid
+        </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Kies thema</DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('light')}>
+                Licht
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('dark')}>
+                Donker
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('system')}>
+                Systeem
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          disabled={isPlaying}
+          className="cursor-pointer bg-purple-500"
+          onSelect={(event) => {
+            event.preventDefault()
+            if (session) {
+              handleSignOut()
+            } else {
+              signIn()
+            }
+          }}
+        >
+          {session ? 'Uitloggen' : 'Inloggen'}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}

@@ -4,7 +4,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Button } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 import { getSSRAuth } from '~/utils/authUtils'
 
@@ -55,7 +56,7 @@ const WelcomePage = () => {
               </Link>
             </Button>
             <Button
-              size={'lg'}
+            className={cn(buttonVariants({ size: 'lg', variant: 'outline'}))}
               onClick={() => {
                 setTutorialPreference({
                   id: session?.user.id ?? '',
