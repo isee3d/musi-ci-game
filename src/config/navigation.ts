@@ -1,4 +1,5 @@
-import { NavItem } from "~/components/mobileNav";
+import { testSound } from "~/components/fragmentPlayer/audio/AudioControls";
+import { NavItem, PlayerNavItem } from "~/components/mobileNav";
 
 export const navItemsResearcher: NavItem[] = [
   {
@@ -46,15 +47,32 @@ export const navitemsTemplate: NavItem[] = [
   },
 ]
 
-export const navItemsPlayer: NavItem[] = [
+  async function runTestSound() {
+    await testSound()
+  }
+
+export const navItemsPlayer: PlayerNavItem[] = [
   {
     title: 'Ga naar podium',
     href: '/podium',
+    enableAfterLogin: true,
   },
   {
     title: 'Ga naar uitleg',
     href: '/tutorial',
+    enableAfterLogin: false,
   },
+  {
+    title: 'Test geluid',
+    action: runTestSound,
+    enableAfterLogin: false,
+  },
+  {
+    title: 'Instellingen',
+    href: '/settings',
+    disabled: true,
+    enableAfterLogin: true,
+  }
 ]
 
 

@@ -1,13 +1,15 @@
 // 'use client'
 
-import { signIn, useSession } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { ReactNode, useRef } from 'react'
 import { MainNav } from '~/components/mainNav'
 import { SiteFooter } from '~/components/siteFooter'
 import { Button } from '~/components/ui/button'
-import { UserAccountNav } from '~/components/userAccountNav'
 import { navItemsPlayer } from '~/config/navigation'
+import { useUserActivity } from '~/hooks/useUserActivity'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
@@ -18,6 +20,17 @@ type LayoutProps = {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { data: session } = useSession()
   const ref = useRef(null)
+  const router = useRouter()
+  const { isPlaying } = useLuisterenStore()
+  const { logSignOutActivity } = useUserActivity()
+
+  async function handleSignOut() {
+    await logSignOutActivity()
+    const signOutResponse = await signOut({ redirect: false, callbackUrl: '/login' })
+    if (signOutResponse?.url) {
+      router.push(signOutResponse.url)
+    }
+  }
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
@@ -26,9 +39,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={navItemsPlayer} />
             {session?.user.id ? (
-              <UserAccountNav userName={session?.user.name ?? ''} />
+              <Button
+                disabled={isPlaying}
+                className="cursor-pointer bg-purple-500 text-white"
+                onClick={(event) => {
+                  event.preventDefault()
+                  if (session) {
+                    handleSignOut()
+                  } else {
+                    signIn()
+                  }
+                }}
+              >
+                {session ? 'Uitloggen' : 'Inloggen'}
+              </Button>
             ) : (
-              <Button onClick={() => signIn()}>Inloggen</Button>
+              // <UserAccountNav userName={session?.user.name ?? ''} />
+              <Button className="cursor-pointer bg-purple-500 text-white" onClick={() => signIn()}>
+                Inloggen
+              </Button>
             )}
           </div>
         </header>

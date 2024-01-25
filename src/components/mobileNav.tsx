@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
@@ -10,19 +11,28 @@ export type NavItem = {
   disabled?: boolean
 }
 
+export type PlayerNavItem = {
+  title: string
+  href?: string
+  action?: () => void
+  disabled?: boolean
+  enableAfterLogin?: boolean
+}
+
 interface MobileNavProps {
-  items: NavItem[]
+  items: PlayerNavItem[]
   setShowMobileNav: React.Dispatch<React.SetStateAction<boolean>>
   children?: React.ReactNode
 }
 
 export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps) {
+  const { data: session } = useSession()
   useLockBody()
 
   return (
     <div
       className={cn(
-        'fixed inset-0 top-16 z-50 grid h-[calc(100vh-4rem)] grid-flow-row auto-rows-max overflow-auto p-6 pb-32 shadow-md animate-in slide-in-from-bottom-80 md:hidden'
+        'fixed inset-0 top-16 z-50 grid h-[calc(100vh-4rem)] grid-flow-row auto-rows-max overflow-auto p-6 pb-32 shadow-md animate-in slide-in-from-bottom-80 md:hidden',
       )}
     >
       <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md">
@@ -36,17 +46,26 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
         </Link>
         <nav className="grid grid-flow-row auto-rows-max text-sm">
           {items.map((item, index) => (
-            <Link
-              onClick={() => setShowMobileNav(false)}
+            <Button
               key={index}
-              href={item.disabled ? '#' : item.href}
-              className={cn(
-                'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
-                item.disabled && 'cursor-not-allowed opacity-60'
-              )}
+              disabled={session?.user.role === 'USER' && item.disabled}
+              variant={'link'}
+              style={{
+                display: session?.user.role === 'USER' && item.disabled ? 'none' : 'inline-flex',
+              }}
+              asChild
             >
-              {item.title}
-            </Link>
+              <Link
+                onClick={() => setShowMobileNav(false)}
+                href={item.href === undefined ? '#' : item.href}
+                className={cn(
+                  'flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline',
+                  session?.user.role === 'USER' && item.disabled && 'cursor-not-allowed opacity-60',
+                )}
+              >
+                {item.title}
+              </Link>
+            </Button>
           ))}
         </nav>
         {children}

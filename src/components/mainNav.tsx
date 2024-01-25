@@ -1,12 +1,13 @@
 import * as React from 'react'
 import Link from 'next/link'
-import { MobileNav, NavItem } from '~/components/mobileNav'
+import { MobileNav, NavItem, PlayerNavItem } from '~/components/mobileNav'
 import { cn } from '~/lib/utils'
 import { Icons } from '~/components/icons'
 import { useSession } from 'next-auth/react'
+import { Button } from '~/components/ui/button'
 
 interface MainNavProps {
-  items?: NavItem[]
+  items?: PlayerNavItem[]
   children?: React.ReactNode
 }
 
@@ -20,20 +21,40 @@ export function MainNav({ items, children }: MainNavProps) {
         <Icons.logo />
         <span className="hidden font-bold sm:inline-block">Musi Ci</span>
       </Link>
-      {session && items?.length ? (
+      {items?.length ? (
         <nav className="hidden gap-6 md:flex">
           {items?.map((item, index) => (
-            <Link
+            <Button
               key={index}
-              href={item.disabled ? '#' : item.href}
-              className={cn(
-                'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
-                'text-foreground',
-                item.disabled && 'cursor-not-allowed opacity-80'
-              )}
+              onClick={() => item.action && item.action()}
+              disabled={session?.user?.role === 'USER' && item.disabled}
+              variant={'link'}
+              style={{
+                display:
+                  (session?.user?.role === 'USER' && item.disabled) ||
+                  (!session && item.enableAfterLogin === true)
+                    ? 'none'
+                    : 'inline-flex',
+              }}
+              asChild={item.href !== undefined}
             >
-              {item.title}
-            </Link>
+              {item.href ? (
+                <Link
+                  className={cn(
+                    'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
+                    'text-foreground',
+                    session?.user.role === 'USER' &&
+                      item.disabled &&
+                      'cursor-not-allowed opacity-80',
+                  )}
+                  href={item.href === undefined ? '#' : item.href}
+                >
+                  {item.title}
+                </Link>
+              ) : (
+                <div>{item.title}</div>
+              )}
+            </Button>
           ))}
         </nav>
       ) : null}

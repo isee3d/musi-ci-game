@@ -8,7 +8,7 @@ import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { navItemsResearcher, navitemsTemplate } from '~/config/navigation'
 import { cn } from '~/lib/utils'
-import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
+import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
 
 const SettingsPage = () => {
   const { data: session } = useSession()
@@ -61,7 +61,7 @@ const SettingsPage = () => {
 export default SettingsPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const auth = await getSSRAuthRedirectLogin(ctx)
+  const auth = await getSSRAuthRedirectOnResearcherRole(ctx)
 
   if (auth.redirect) {
     return { redirect: auth.redirect }
