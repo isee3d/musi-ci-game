@@ -10,6 +10,7 @@ import { getServerAuthSession } from '~/server/auth'
 import { api } from '~/utils/api'
 import Image from 'next/image'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
+import { useEffect } from 'react'
 
 const TutorialPage = () => {
   const { data: session } = useSession()
@@ -40,7 +41,7 @@ const TutorialPage = () => {
               Cinie is een dirigent zonder band. Help haar! Speel het spel en verdien de
               instrumenten!
             </h2>
-            {session?.user.id && (
+            {/* {session?.user.id && (
               <div className="flex gap-2">
                 <Checkbox
                   defaultChecked={user?.preferSkipTutorial ?? false}
@@ -54,7 +55,7 @@ const TutorialPage = () => {
                 />
                 <Label htmlFor="preferSkipTutorial">Ik wil de tutorial altijd overslaan</Label>
               </div>
-            )}
+            )} */}
             <Button size={'lg'} asChild>
               <Link href={getNextPageRoute()}>
                 <h3 className="text-xl">Ga door</h3>
@@ -85,14 +86,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if(session?.user.id !== undefined)
   await helpers.user.getUserById.prefetch({ id: session.user.id })
 
-  if (session && session.user.preferSkipTutorial) {
-    return {
-      redirect: {
-        destination: '/progress/1',
-        permanent: true,
-      },
-    }
-  }
+  // if (session && session.user.preferSkipTutorial) {
+  //   return {
+  //     redirect: {
+  //       destination: '/progress/1',
+  //       permanent: true,
+  //     },
+  //   }
+  // }
 
   return {
     props: {

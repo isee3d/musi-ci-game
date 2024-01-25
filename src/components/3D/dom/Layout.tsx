@@ -7,87 +7,34 @@ import Footer from '~/components/footer'
 import { MainNav } from '~/components/mainNav'
 import { NavItem } from '~/components/mobileNav'
 import { UserAccountNav } from '~/components/userAccountNav'
+import { navItemsPlayer, navItemsResearcher, navitemsTemplate } from '~/config/navigation'
 const Scene = dynamic(() => import('~/components/3D/canvas/Scene'), { ssr: false })
 
 type LayoutProps = {
   children: ReactNode
 }
 
-const navitemsTemplate: NavItem[] = [
-  {
-    title: 'Levels beheren',
-    href: '/manage/levels',
-  },
-  {
-    title: 'Sublevels beheren',
-    href: '/manage/sublevels',
-  },
-  {
-    title: 'Fragmenten beheren',
-    href: '/manage/fragments',
-  },
-  {
-    title: 'Spelers beheren',
-    href: '/manage/users',
-  },
-  {
-    title: 'Team beheren',
-    href: '/manage/team',
-  },
-  {
-    title: 'App instellingen',
-    href: '/manage/appSettings',
-  },
-  {
-    title: 'download data',
-    href: '/download',
-  },
-  {
-    title: 'Vragen',
-    href: '/manage/questions',
-  },
-  {
-    title: 'Fragment Groepen',
-    href: '/manage/fragmentGroup',
-  },
-]
-
-const navItemsResearcher: NavItem[] = [
-  {
-    title: 'download data',
-    href: '/download',
-  },
-]
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
+  // const [mainNavItems, setMainNavItems] = useState<NavItem[]>(navitemsTemplate)
   const { data: session } = useSession()
   const ref = useRef(null)
 
-
-
-
-
-  useEffect(() => {
-    if (session?.user?.role === 'ADMIN') {
-      setMainNavItems(navitemsTemplate)
-    } else if (session?.user?.role === 'RESEARCHER') {
-      setMainNavItems(navItemsResearcher)
-    } else {
-      setMainNavItems([])
-    }
-  }, [session])
-
-
-
-
+  // useEffect(() => {
+  //   if (session?.user?.role === 'ADMIN') {
+  //     setMainNavItems(navitemsTemplate)
+  //   } else if (session?.user?.role === 'RESEARCHER') {
+  //     setMainNavItems(navItemsResearcher)
+  //   } else {
+  //     setMainNavItems([])
+  //   }
+  // }, [session])
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
       <div className=" flex min-h-screen flex-col overflow-y-hidden">
-        <header className="container z-40 rounded-b-xl bg-primary-foreground/80 backdrop-blur-md">
+        <header className="container z-40 rounded-b-xl  backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
-            <MainNav items={mainNavItems} />
+            <MainNav items={navItemsPlayer} />
             <UserAccountNav userName={session?.user.name ?? ''} />
             {/* <nav className="flex gap-1">
               <Button
@@ -140,4 +87,3 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 }
 
 export { Layout }
-

@@ -86,7 +86,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <main
         className={cn(
-          'min-h-screen font-sans antialiased',
+          'min-h-screen bg-background font-sans antialiased',
           fontSans.variable,
           fontHeading.variable,
           poppins.variable,

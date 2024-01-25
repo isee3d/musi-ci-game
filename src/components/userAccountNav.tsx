@@ -7,15 +7,15 @@ import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 import { testSound } from '~/components/fragmentPlayer/audio/AudioControls'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { UserAvatar } from '~/components/userAvatar'
 import { useUserActivity } from '~/hooks/useUserActivity'
@@ -74,22 +74,11 @@ export function UserAccountNav({ userName }: UserAccountNavProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        {session?.user.role === 'RESEARCHER' && <DropdownMenuItem>Instellingen</DropdownMenuItem>}
-        {session?.user.role === 'ADMIN' && <DropdownMenuItem>Alle Instellingen</DropdownMenuItem>}
-        <DropdownMenuItem
-          disabled={isPlaying}
-          onClick={() => {
-            setTutorialPreference({
-              id: session?.user.id ?? '',
-              preferSkipTutorial: false,
-            })
-          }}
-        >
-          Ga naar tutorial
-        </DropdownMenuItem>
-        <DropdownMenuItem disabled={isPlaying} asChild>
-          <Link href={'/podium'}>Ga naar podium</Link>
-        </DropdownMenuItem>
+        {session?.user.role !== 'USER' && (
+          <DropdownMenuItem asChild>
+            <Link href={'/settings'}>Instellingen</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem disabled={isPlaying} onClick={() => runTestSound()}>
           Test geluid
         </DropdownMenuItem>
