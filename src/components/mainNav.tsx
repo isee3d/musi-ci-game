@@ -5,6 +5,7 @@ import { cn } from '~/lib/utils'
 import { Icons } from '~/components/icons'
 import { useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface MainNavProps {
   items?: PlayerNavItem[]
@@ -13,6 +14,7 @@ interface MainNavProps {
 
 export function MainNav({ items, children }: MainNavProps) {
   const { data: session } = useSession()
+  const { isPlaying } = useLuisterenStore()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   return (
@@ -27,7 +29,7 @@ export function MainNav({ items, children }: MainNavProps) {
             <Button
               key={index}
               onClick={() => item.action && item.action()}
-              disabled={session?.user?.role === 'USER' && item.disabled}
+              disabled={(session?.user?.role === 'USER' && item.disabled) || isPlaying}
               variant={'link'}
               style={{
                 display:

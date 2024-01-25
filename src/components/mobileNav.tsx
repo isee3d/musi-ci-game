@@ -4,6 +4,7 @@ import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
 import { useLockBody } from '~/hooks/use-lock-body'
 import { cn } from '~/lib/utils'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 export type NavItem = {
   title: string
@@ -27,6 +28,7 @@ interface MobileNavProps {
 
 export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps) {
   const { data: session } = useSession()
+  const { isPlaying } = useLuisterenStore()
   useLockBody()
 
   return (
@@ -48,10 +50,14 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
           {items.map((item, index) => (
             <Button
               key={index}
-              disabled={session?.user.role === 'USER' && item.disabled}
+              disabled={session?.user.role === 'USER' && item.disabled || isPlaying}
               variant={'link'}
               style={{
-                display: session?.user.role === 'USER' && item.disabled ? 'none' : 'inline-flex',
+                display:
+                  (session?.user?.role === 'USER' && item.disabled) ||
+                  (!session && item.enableAfterLogin === true)
+                    ? 'none'
+                    : 'inline-flex',
               }}
               asChild
             >

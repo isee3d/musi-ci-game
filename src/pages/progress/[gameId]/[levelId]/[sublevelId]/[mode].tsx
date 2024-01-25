@@ -65,9 +65,9 @@ const ModePage = ({
   const playTime = fragmentLevelQuery?.data?.playTime
 
   useEffect(() => {
-    // if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-    //   router.push(`/progress/${gameId}/${levelId}`)
-    // }
+    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+      router.push(`/progress/${gameId}/${levelId}`)
+    }
 
     setIsPlaying(false)
   }, [])
