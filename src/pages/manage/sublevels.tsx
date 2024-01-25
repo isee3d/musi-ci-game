@@ -28,6 +28,13 @@ const ManageSublevels = () => {
   const [showModal, setShowModal] = useState(false)
   const [selectedSubLevel, setSelectedSubLevel] = useState<SubLevel | null>(null)
 
+   const handleDeleteSubLevelClick = (sublevelId: number) => {
+     const isConfirmed = window.confirm('Weet je zeker dat je dit level wilt verwijderen?')
+     if (isConfirmed) {
+       deleteSubLevel({ id: sublevelId })
+     }
+   }
+
   return (
     <>
       <Head>
@@ -67,7 +74,7 @@ const ManageSublevels = () => {
                       </div>
                     )}
                     <Button
-                      onClick={() => deleteSubLevel({ id: sublevel.id })}
+                      onClick={() => handleDeleteSubLevelClick(sublevel.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen

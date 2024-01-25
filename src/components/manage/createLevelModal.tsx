@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Label } from '@radix-ui/react-label'
+import { SubLevel } from 'prisma/generated/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { api } from '~/utils/api'
 import toast from 'react-hot-toast'
-import { HuePicker } from 'react-color'
+import { levelFormSchema } from 'types/FormSchema'
+import { z } from 'zod'
+import { Button, buttonVariants } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,14 +15,10 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { SubLevel } from 'prisma/generated/zod'
-import { useState } from 'react'
 import { cn } from '~/lib/utils'
-import { Label } from '@radix-ui/react-label'
-import { levelFormSchema } from 'types/FormSchema'
+import { api } from '~/utils/api'
 
 const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
@@ -106,11 +105,12 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
             name="color"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Level kleur</FormLabel>
+                <FormLabel>Level kleur (klik om aan te passen)</FormLabel>
                 <FormControl>
-                  <HuePicker
-                    color={field.value || 'FFF'}
-                    onChangeComplete={(color) => field.onChange(color.hex)}
+                  <Input
+                    type="color"
+                    value={field.value || 'red'}
+                    onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />

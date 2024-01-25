@@ -21,6 +21,6 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {}
   eventsCausingServices: {}
-  matchesStates: 'finishedListening' | 'idle' | 'playing'
+  matchesStates: 'exitGame' | 'finishedListening' | 'idle' | 'playing'
   tags: never
 }

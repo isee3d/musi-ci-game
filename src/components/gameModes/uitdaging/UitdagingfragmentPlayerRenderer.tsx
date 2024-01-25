@@ -128,7 +128,6 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
-      toast.success('Je hebt geklikt! Het volgende fragment komt eraan')
     }
   }
 

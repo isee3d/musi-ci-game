@@ -28,14 +28,8 @@ const SublevelsPage = ({
         >
           <div className="flex  w-full items-center justify-between">
             <div className="flex w-full justify-start space-x-4">
-              {/* <div
-                className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
-                style={{ borderColor: sublevel.color ?? 'bg-background' }}
-              >
-                {sublevel.id}
-              </div> */}
               <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
-                <h2>{sublevel.name}</h2>
+                <h2 style={{color: sublevel.color ?? 'bg-background'}}>{sublevel.name}</h2>
                 <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
             </div>

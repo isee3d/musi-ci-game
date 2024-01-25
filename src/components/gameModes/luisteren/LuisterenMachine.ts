@@ -28,8 +28,6 @@ const transpose = (
     return selectedFragments
   }
 
-  // const randomTransposeDirection = Math.floor(Math.random() * 12 - 0.0001) - 6
-
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
 
@@ -39,20 +37,8 @@ const transpose = (
     octaves,
     pianoNotesMap,
   )
-  // const transposedFragments = transposeFragments(
-  //   selectedFragments,
-  //   randomTransposeDirection,
-  //   // randomOctave,
-  // )
 
   return transposedFragments
-
-
-  // const TransPosedfragmentsWithdirection = transposedFragments.map((fragment) => {
-  //   return { ...fragment, transpose: randomTransposeDirection, octave: randomOctave }
-  // })
-
-  // return TransPosedfragmentsWithdirection as FragmentWithNotesAndTransposeDirection[]
 }
 
 export const luisterenMachine = createMachine(
@@ -61,8 +47,7 @@ export const luisterenMachine = createMachine(
     id: 'luisteren',
     initial: 'idle',
     context: {
-      allLevelFragments: [] as
-        | FragmentWithNotesAndWeight[],
+      allLevelFragments: [] as FragmentWithNotesAndWeight[],
       fragmentsToShow: 0 as number,
       shownFragments: [] as FragmentWithNotesAndWeight[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
@@ -71,6 +56,8 @@ export const luisterenMachine = createMachine(
       events: {} as
         | { type: 'STARTROUND'; levelFragments: FragmentWithNotes[]; fragmentsToShow: number }
         | { type: 'STARTPLAYING' }
+        | { type: 'RESTARTMACHINE' }
+        | { type: 'EXITGAME' }
         | { type: 'FINISHEDLISTENING' }
         | { type: 'SHUFFLEFRAGMENTS' },
     },
@@ -92,12 +79,26 @@ export const luisterenMachine = createMachine(
       finishedListening: {
         entry: 'resetPlaying',
         description: 'The state where the user is done playing',
-        type: 'final',
       },
+      exitGame: {
+        type: 'final',
+      }
     },
     on: {
       SHUFFLEFRAGMENTS: {
         actions: 'shuffleFragments',
+      },
+      EXITGAME: {
+        target: 'exitGame'
+      },
+      RESTARTMACHINE: {
+        target: 'idle',
+        actions: assign({
+          allLevelFragments: [],
+          fragmentsToShow:  0,
+          shownFragments:  [],
+          pianoNotesMap: undefined,
+        }),
       },
     },
   },

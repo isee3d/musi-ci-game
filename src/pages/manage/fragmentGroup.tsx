@@ -28,6 +28,13 @@ const ManageFragmentGroupPage = () => {
   const [createModal, setCreateModal] = useState(false)
   const [selectedFragmentGroup, setSelectedFragmentGroup] = useState<FragmentGroup | null>(null)
 
+  const handleDeleteFragmentGroupClick = (fragmentGroupId: number) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je deze fragmentgroep wilt verwijderen?')
+    if (isConfirmed) {
+      deleteFragmentGroup({ id: fragmentGroupId })
+    }
+  }
+
   return (
     <>
       <Head>
@@ -63,7 +70,7 @@ const ManageFragmentGroupPage = () => {
                   <h2 className="text-xl">{fragmentGroup.description}</h2>
                   <div className="flex flex-col gap-3 md:flex-row">
                     <Button
-                      onClick={() => deleteFragmentGroup({ id: fragmentGroup.id })}
+                      onClick={() => handleDeleteFragmentGroupClick(fragmentGroup.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen

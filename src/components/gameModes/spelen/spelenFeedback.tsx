@@ -4,14 +4,14 @@ import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
 import Image from 'next/image'
+import { cn } from '~/lib/utils'
 
 interface SpelenFeedbackProps {
-  levelId: string
-  sublevelId: string
-  gameId: string
+  path: { gameId: string; levelId: string; restartSpelen: () => void }
 }
 
-const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId, gameId }) => {
+const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
+  const { gameId, levelId, restartSpelen } = path
   const {
     reset,
     getPercentageCorrectlyAnswered,
@@ -48,7 +48,13 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ levelId, sublevelId, ga
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight ">
         Felicitaties! -- gebaseerd op % en config
       </h3> */}
-      <div className="flex justify-center">
+      <div className="flex gap-4 justify-center">
+        <Button
+          className={cn('bg-purple-500 text-white hover:bg-purple-300')}
+          onClick={() => restartSpelen()}
+        >
+          Speel opnieuw
+        </Button>
         <Button onClick={() => reset()} asChild>
           <Link href={`/progress/${gameId}/${levelId}`}>
             <h3>Terug naar overzicht</h3>

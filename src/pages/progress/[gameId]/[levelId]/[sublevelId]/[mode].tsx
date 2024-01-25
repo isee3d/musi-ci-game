@@ -12,7 +12,7 @@ import Test from '~/components/gameModes/testMode/test'
 import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
-import { buttonVariants } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
@@ -65,9 +65,9 @@ const ModePage = ({
   const playTime = fragmentLevelQuery?.data?.playTime
 
   useEffect(() => {
-    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/progress/${gameId}/${levelId}`)
-    }
+    // if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+    //   router.push(`/progress/${gameId}/${levelId}`)
+    // }
 
     setIsPlaying(false)
   }, [])
@@ -144,29 +144,23 @@ const ModePage = ({
         {gameModesOfSublevelQuery?.data
           ?.filter((gameMode) => gameMode.name !== 'Test')
           .map((gameMode, index) => (
-            // <Button
-            //   className={cn(
-            //     buttonVariants({ size: 'lg' }),
-            //     'flex-auto rounded-none border border-background p-0 text-xl',
-            //     mode === gameMode.name ? 'bg-background text-accent-foreground' : ''
-            //   )}
-            //   key={index}
-            //   disabled={mode === gameMode.name || isPlaying}
-            //   asChild
-            // >
-            <Link
+            <Button
               key={index}
-              href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
               className={cn(
                 buttonVariants({ size: 'lg' }),
                 'flex-auto rounded-none border border-background p-0 text-xl',
                 mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
-                isPlaying ? 'pointer-events-none' : '',
+                isPlaying ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
+              disabled={isPlaying}
+              asChild
             >
-              {gameMode.name}
-            </Link>
-            // </Button>
+              <Link
+                href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
+              >
+                {gameMode.name}
+              </Link>
+            </Button>
           ))}
       </div>
       <div className="relative flex w-5/6 flex-col items-center justify-center gap-y-8 pt-4">

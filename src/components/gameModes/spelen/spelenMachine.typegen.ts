@@ -44,6 +44,7 @@ export interface Typegen0 {
     | 'countdown.2'
     | 'countdown.3'
     | 'countdown.GO!'
+    | 'exitGame'
     | 'idle'
     | 'playing'
     | 'playing.guessHeardFragment'

@@ -25,7 +25,12 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     initializeContext: 'STARTROUND'
-    onCountdownEnded: 'FINISHEDPLAYING' | 'xstate.after(GO)#spelen.countdown.GO!' | 'xstate.stop'
+    onCountdownEnded:
+      | 'EXITGAME'
+      | 'FINISHEDPLAYING'
+      | 'RESTARTMACHINE'
+      | 'xstate.after(GO)#spelen.countdown.GO!'
+      | 'xstate.stop'
     onFinishedPlaying: 'FINISHEDPLAYING'
     onPlayingStarted: 'xstate.after(GO)#spelen.countdown.GO!'
     saveLatency: 'GUESSEDFRAGMENT'
@@ -43,6 +48,7 @@ export interface Typegen0 {
   eventsCausingGuards: {}
   eventsCausingServices: {}
   matchesStates:
+    | 'ExitGame'
     | 'FinishedPlayingUitdagingMode'
     | 'countdown'
     | 'countdown.1'

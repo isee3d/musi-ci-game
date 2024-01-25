@@ -9,13 +9,12 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: levelsOfGame, isLoading } = api.game.getLevelsOfGame.useQuery({
+  const { data: levelsOfGame } = api.game.getLevelsOfGame.useQuery({
     gameId: parseInt(gameId),
   })
 
   return (
     <ContentContainer backPath="/progress/games" title="Kies je level">
-      {isLoading && <LoadingPage />}
       {levelsOfGame?.map((level) => (
         <Link
           key={level.id}
@@ -28,10 +27,9 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
                 className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
                 style={{ borderColor: level.color ?? 'bg-background' }}
               >
-                {level.id}
               </div> */}
               <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
-                <h2>{level.name}</h2>
+                <h2 style={{ color: level.color ?? 'bg-background' }}>{level.name}</h2>
                 <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
             </div>

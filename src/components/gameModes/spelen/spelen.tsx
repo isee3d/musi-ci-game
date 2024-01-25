@@ -31,8 +31,9 @@ const Spelen: React.FC<SpelenProps> = ({
   const startRoundState = SpelenMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = SpelenMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = SpelenMachineContext.useSelector((state) => state.matches('playing'))
+  const isIdleState = SpelenMachineContext.useSelector((state) => state.matches('idle'))
   const finishedState = SpelenMachineContext.useSelector((state) =>
-    state.matches('FinishedPlayingSpelenMode')
+    state.matches('FinishedPlayingSpelenMode'),
   )
 
   const countdownTimings: CountdownTimings = useMemo(
@@ -42,10 +43,22 @@ const Spelen: React.FC<SpelenProps> = ({
       three: mode?.three ?? 1000,
       go: mode?.go ?? 1000,
     }),
-    [mode]
+    [mode],
   )
 
   useEffect(() => {
+    return () => {
+      send({ type: 'EXITGAME' })
+    }
+  }, [])
+
+  function restartSpelen() {
+    send({
+      type: 'RESTARTMACHINE',
+    })
+  }
+
+  function startSpelen() {
     reset()
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
@@ -55,23 +68,19 @@ const Spelen: React.FC<SpelenProps> = ({
       fragmentsToShow: fragmentsToShow,
       countdownTimings: countdownTimings,
     })
-  }, [])
+  }
 
   return (
     <>
       {!finishedState && (
         <h3 className="pb-16 text-center text-4xl font-extrabold tracking-tight">
-          Luister en klik
+          Klik en luister
         </h3>
       )}
-      {startRoundState && (
-        <StartRoundUI gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
-      )}
+      {isIdleState && <StartRoundUI startSpelen={startSpelen} />}
       {countdownState && <CountdownPlayer />}
       {(playingState || countdownState) && <FragmentPlayerRenderer />}
-      {finishedState && (
-        <SpelenFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
-      )}
+      {finishedState && <SpelenFeedback path={{ gameId, levelId, restartSpelen }} />}
     </>
   )
 }

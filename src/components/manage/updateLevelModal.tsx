@@ -1,8 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Level } from '@prisma/client'
+import { Label } from '@radix-ui/react-label'
+import { SubLevel } from 'prisma/generated/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { api } from '~/utils/api'
 import toast from 'react-hot-toast'
+import { levelFormSchema } from 'types/FormSchema'
+import { z } from 'zod'
+import { Button, buttonVariants } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -11,22 +16,16 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { LevelOptionalDefaultsSchema, SubLevel } from 'prisma/generated/zod'
-import { useState } from 'react'
 import { cn } from '~/lib/utils'
-import { Label } from '@radix-ui/react-label'
-import { Level } from '@prisma/client'
-import { HuePicker } from 'react-color'
-import { levelFormSchema } from 'types/FormSchema'
+import { api } from '~/utils/api'
 
 const UpdateLevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
   level: Level
 }> = ({ setmodal, level }) => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const levelQuery = api.level.getAllLevels.useQuery()
   const [addedSublevels, setAddedSublevels] = useState<SubLevel[]>([])
   const [remainingSubLevels, setRemainingSublevels] = useState<SubLevel[]>([])
@@ -76,6 +75,7 @@ const UpdateLevelModal: React.FC<{
     defaultValues: {
       name: level.name,
       description: level.description,
+      color: level.color,
     },
   })
 
@@ -86,10 +86,12 @@ const UpdateLevelModal: React.FC<{
         id: level.id,
         name: data.name,
         description: data.description,
+        color: data.color,
       })
       updateSublevelsOfLevel({
         levelId: level.id.toString(),
         sublevels: addedSublevels.map((s) => s.id),
+        color: data.color,
       })
       form.reset()
       setmodal(false)
@@ -137,11 +139,12 @@ const UpdateLevelModal: React.FC<{
           name="color"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Level kleur</FormLabel>
+              <FormLabel>Level kleur (klik om aan te passen)</FormLabel>
               <FormControl>
-                <HuePicker
-                  color={field.value || 'FFF'}
-                  onChangeComplete={(color) => field.onChange(color.hex)}
+                <Input
+                  type="color"
+                  value={field.value || 'red'}
+                  onChange={(e) => field.onChange(e.target.value)}
                 />
               </FormControl>
               <FormMessage />

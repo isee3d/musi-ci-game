@@ -31,9 +31,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   mode,
 }) => {
   const { send } = UitdagingMachineContext.useActorRef()
-  const startRoundState = UitdagingMachineContext.useSelector((state) =>
-    state.matches('startRound'),
-  )
+  const idleState = UitdagingMachineContext.useSelector((state) => state.matches('idle'))
   const countdownState = UitdagingMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = UitdagingMachineContext.useSelector((state) => state.matches('playing'))
   const isFinishedState = UitdagingMachineContext.useSelector((state) =>
@@ -56,6 +54,18 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   )
 
   useEffect(() => {
+    return () => {
+      send({ type: 'EXITGAME' })
+    }
+  }, [])
+
+  function restartUitdaging() {
+    send({
+      type: 'RESTARTMACHINE',
+    })
+  }
+
+  function startUitdaging() {
     reset()
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
@@ -65,11 +75,11 @@ const Uitdaging: React.FC<UitdagingProps> = ({
       countdownTimings: countdownTimings,
       countdownActions: stopwatch.actions,
     })
-  }, [])
+  }
 
   return (
     <>
-      {startRoundState && (
+      {idleState && (
         <>
           <h3 className=" text-center text-4xl font-extrabold tracking-tight">
             Speel tegen de klok
@@ -79,17 +89,15 @@ const Uitdaging: React.FC<UitdagingProps> = ({
           </h3>
         </>
       )}
+      {idleState && <StartUitdagingUI startUitdaging={startUitdaging} />}
       {(playingState || countdownState) && (
         <h3 className="text-center text-4xl font-extrabold tracking-tight">
           {hours}:{minutes}:{seconds}
         </h3>
       )}
-      {startRoundState && <StartUitdagingUI />}
       {countdownState && <UitdagingCountdownPlayer />}
       {(playingState || countdownState) && <UitdagingFragmentPlayerRenderer mode={mode} />}
-      {isFinishedState && (
-        <UitdagingFeedback gameId={gameId} levelId={levelId} />
-      )}
+      {isFinishedState && <UitdagingFeedback options={{ gameId, levelId, restartUitdaging }} />}
     </>
   )
 }

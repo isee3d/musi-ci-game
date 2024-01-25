@@ -1,8 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Fragment, FragmentGroup, GameMode, SubLevel } from '@prisma/client'
+import { Question } from 'prisma/generated/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { api } from '~/utils/api'
 import toast from 'react-hot-toast'
+import { sublevelFormSchema } from 'types/FormSchema'
+import { z } from 'zod'
+import { Button, buttonVariants } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -11,16 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
-import { Textarea } from '~/components/ui/textarea'
-import { useState } from 'react'
-import { cn } from '~/lib/utils'
-import { Fragment, FragmentGroup, GameMode, SubLevel } from '@prisma/client'
 import { Label } from '~/components/ui/label'
-import { HuePicker } from 'react-color'
-import { sublevelFormSchema } from 'types/FormSchema'
-import { Question } from 'prisma/generated/zod'
+import { Textarea } from '~/components/ui/textarea'
+import { cn } from '~/lib/utils'
+import { api } from '~/utils/api'
 
 const UpdateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -108,6 +107,7 @@ const UpdateSublevelModal: React.FC<{
       description: sublevel.description,
       fragmentToShow: sublevel.fragmentToShow,
       bpm: sublevel.bpm ?? 60,
+      color: sublevel.color,
     },
   })
 
@@ -213,11 +213,12 @@ const UpdateSublevelModal: React.FC<{
             name="color"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Level kleur</FormLabel>
+                <FormLabel>Sublevel kleur (klik om aan te passen)</FormLabel>
                 <FormControl>
-                  <HuePicker
-                    color={field.value || 'FFF'}
-                    onChangeComplete={(color) => field.onChange(color.hex)}
+                  <Input
+                    type="color"
+                    value={field.value || 'FFF'}
+                    onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -388,11 +389,7 @@ const UpdateSublevelModal: React.FC<{
               })}
             </div>
           </div>
-          <Button
-            type="submit"
-            className="mx-3"
-            disabled={addedGameModes.length === 0}
-          >
+          <Button type="submit" className="mx-3" disabled={addedGameModes.length === 0}>
             Sla aangepaste sublevel op
           </Button>
           <Button

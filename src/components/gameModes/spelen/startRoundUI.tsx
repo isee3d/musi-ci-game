@@ -1,36 +1,34 @@
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
-import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface StartUIProps {
-  levelId: string
-  sublevelId: string
-  gameId: string
+  startSpelen: () => void
 }
 
-const StartUI: React.FC<StartUIProps> = ({ levelId, sublevelId, gameId }) => {
+const StartUI: React.FC<StartUIProps> = ({ startSpelen }) => {
   const { send } = SpelenMachineContext.useActorRef()
-  const { reset } = useLuisterenStore()
+  const router = useRouter()
+
+  function startSpelenAndCountdown() {
+    startSpelen()
+    send('STARTCOUNTDOWN')
+  }
 
   return (
     <div className="flex flex-col justify-center gap-y-5">
-      <Button onClick={() => send('STARTCOUNTDOWN')}>
+      <Button onClick={() => startSpelenAndCountdown()}>
         <h3 className="text-center text-xl font-bold">Start met spelen</h3>
       </Button>
       <Button
         className={cn('m-0')}
         onClick={() => {
-          reset()
-          send('CANCELLEDPLAYING')
+          router.back()
         }}
-        asChild
       >
-        <Link href={`/progress/${gameId}/${levelId}/`}>
-          <h3 className="text-center text-xl font-bold">Terug</h3>
-        </Link>
+        <h3 className="text-center text-xl font-bold">Terug</h3>
       </Button>
     </div>
   )

@@ -91,6 +91,8 @@ export const uitdagingMachine = createMachine(
         | { type: 'STARTCOUNTDOWN' }
         | { type: 'FINISH' }
         | { type: 'RESTART' }
+        | { type: 'EXITGAME' }
+        | { type: 'RESTARTMACHINE' }
         | { type: 'SOUNDFINISHED' }
         | { type: 'FINISHEDPLAYING' }
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes }
@@ -203,11 +205,36 @@ export const uitdagingMachine = createMachine(
       },
       FinishedPlayingUitdagingMode: {
         entry: [(context) => context.countdownActions?.reset(), 'onFinishedPlaying'],
-        type: 'final',
       },
+      ExitGame: {
+        type: 'final',
+      }
     },
     on: {
       FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
+      EXITGAME: {
+        target: 'ExitGame',
+      },
+      RESTARTMACHINE: {
+        target: 'idle',
+        actions: assign((context) => {
+          return {
+            isClickable: undefined,
+            isAnimating: undefined,
+            isLooping: undefined,
+            allLevelFragments: [],
+            fragmentsToShow: 0,
+            activeFragment: undefined,
+            shownFragments: [],
+            guessedFragment: undefined,
+            countdownTimings: undefined,
+            countdownActions: undefined,
+            latency: undefined,
+            amountPlayed: 0,
+            pianoNotesMap: undefined,
+          }
+        }),
+      },
     },
   },
   {

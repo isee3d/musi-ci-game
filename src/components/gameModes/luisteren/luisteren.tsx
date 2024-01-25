@@ -9,6 +9,7 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { GameMode } from '@prisma/client'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { useRouter } from 'next/router'
+import { cn } from '~/lib/utils'
 
 interface LuisterenProps {
   fragmentsToShow: number
@@ -33,6 +34,19 @@ const Luisteren: React.FC<LuisterenProps> = ({
     state.matches('finishedListening'),
   )
   const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
+
+  useEffect(() => {
+    return () => {
+      send({ type: 'EXITGAME' })
+    }
+  }, [])
+
+  function restartLuisteren() {
+    send({
+      type: 'RESTARTMACHINE'
+    })
+    startLuisteren()
+  }
 
   function startLuisteren() {
     reset()
@@ -62,6 +76,14 @@ const Luisteren: React.FC<LuisterenProps> = ({
       {isfinishedPlayingState && <LuisterenFeedback />}
       <div className=" flex justify-center space-x-5">
         {isPlayingState && <PlayButtonsRenderer />}
+        {isfinishedPlayingState && (
+          <Button
+            className={cn(buttonVariants({ size: 'lg' }), 'bg-purple-500 text-white hover:bg-purple-300')}
+            onClick={() => restartLuisteren()}
+          >
+            Speel opnieuw
+          </Button>
+        )}
         {isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}
       </div>
     </>

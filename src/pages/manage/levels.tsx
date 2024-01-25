@@ -26,6 +26,13 @@ const ManageLevels = () => {
   const [showModal, setShowModal] = useState(false)
   const [createModal, setCreateModal] = useState(false)
 
+  const handleDeleteLevelClick = (levelId: number) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je dit level wilt verwijderen?')
+    if (isConfirmed) {
+      deleteLevel({ id: levelId })
+    }
+  }
+
   return (
     <>
       <Head>
@@ -66,7 +73,7 @@ const ManageLevels = () => {
                       </div>
                     )}
                     <Button
-                      onClick={() => deleteLevel({ id: level.id })}
+                      onClick={() => handleDeleteLevelClick(level.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen

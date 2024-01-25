@@ -11,7 +11,7 @@ interface BackToOverViewProps {
 const BackToOverView: React.FC<BackToOverViewProps> = ({ levelId, sublevelId }) => {
   const { reset } = useLuisterenStore()
   return (
-    <Button asChild>
+    <Button variant={'outline'} asChild>
       <Link
         onClick={() => {
           reset

@@ -1,5 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { AppSettings } from '@prisma/client'
-import { api } from '~/utils/api'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { appSettingsFormSchema } from 'types/FormSchema'
+import { z } from 'zod'
+import { Button } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -8,13 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button } from '~/components/ui/button'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import toast from 'react-hot-toast'
-import { appSettingsFormSchema } from 'types/FormSchema'
-import { HuePicker } from 'react-color'
+import { api } from '~/utils/api'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -86,11 +85,6 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
                   value={appSettings?.fragmentDotLineColor || 'red'}
                   onChange={(e) => field.onChange(e.target.value)}
                 />
-                {/* <HuePicker
-                  styles={{ default: { picker: { width: '100%' } } }}
-                  color={field.value || 'red'}
-                  onChangeComplete={(color) => field.onChange(color.hex)}
-                /> */}
               </FormControl>
               <FormMessage />
             </FormItem>

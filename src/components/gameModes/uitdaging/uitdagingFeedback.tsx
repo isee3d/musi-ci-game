@@ -1,15 +1,17 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { Button } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
 
 interface UitdagingFeedbackProps {
-  levelId: string
-  gameId: string
+  options: { gameId: string; levelId: string; restartUitdaging: () => void }
 }
 
-const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId }) => {
+const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
+  options: { gameId, levelId, restartUitdaging },
+}) => {
   const {
     reset,
     getPercentageCorrectlyAnswered,
@@ -18,17 +20,16 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId }
     setShouldRenderCinieInContentContainer,
   } = useLuisterenStore()
 
-   useEffect(() => {
-     setShouldRenderCinieInContentContainer(false)
-
-     return () => {
-       setShouldRenderCinieInContentContainer(true)
-     }
-   }, [])
+  useEffect(() => {
+    setShouldRenderCinieInContentContainer(false)
+    return () => {
+      setShouldRenderCinieInContentContainer(true)
+    }
+  }, [])
 
   return (
     <>
-    <h3 className='text-center font-extrabold text-4xl'>Uitdaging afgerond</h3>
+      <h3 className="text-center text-4xl font-extrabold">Uitdaging afgerond</h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
         je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
@@ -38,9 +39,15 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId }
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Felicitaties! -- gebaseerd op % en config
       </h3> */}
-      <div className="flex justify-center">
+      <div className="flex gap-4 justify-center">
+        <Button
+          className={cn('bg-purple-500 text-white hover:bg-purple-300')}
+          onClick={restartUitdaging}
+        >
+          Speel opnieuw
+        </Button>
         <Button asChild>
-          <Link onClick={() => reset()} href={`/progress/${gameId}/${levelId}`}>
+          <Link onClick={reset} href={`/progress/${gameId}/${levelId}`}>
             <h3>Terug naar overzicht</h3>
           </Link>
         </Button>

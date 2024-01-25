@@ -48,13 +48,13 @@ const transpose = (
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
 
-   if (!shouldTranspose) {
-     return {
+  if (!shouldTranspose) {
+    return {
       transposedFragments: selectedFragments,
       newActiveFragment: newActiveFragment,
       pianoNotesMap: pianoNotesMap,
-     }
-   }
+    }
+  }
 
   const transposedFragments = transposeWeightedFragments(
     selectedFragments,
@@ -97,10 +97,12 @@ export const spelenMachine = createMachine(
         | { type: 'STARTCOUNTDOWN' }
         | { type: 'FINISH' }
         | { type: 'RESTART' }
+        | { type: 'EXITGAME' }
         | { type: 'SOUNDFINISHED' }
         | { type: 'FINISHEDLISTENING' }
         | { type: 'FINISHEDPLAYING' }
         | { type: 'CANCELLEDPLAYING' }
+        | { type: 'RESTARTMACHINE' }
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes }
         | {
             type: 'STARTROUND'
@@ -206,10 +208,12 @@ export const spelenMachine = createMachine(
       },
       FinishedPlayingSpelenMode: {
         entry: 'onFinishedPlaying',
-        type: 'final',
       },
       CancelledPlayingSpelenMode: {
         entry: 'onFinishedPlaying',
+        type: 'final',
+      },
+      exitGame: {
         type: 'final',
       },
     },
@@ -219,6 +223,25 @@ export const spelenMachine = createMachine(
       },
       CANCELLEDPLAYING: {
         target: 'CancelledPlayingSpelenMode',
+      },
+      EXITGAME: {
+        target: 'exitGame',
+      },
+      RESTARTMACHINE: {
+        target: 'idle',
+        actions: assign({
+          isClickable: undefined,
+          isAnimating: undefined,
+          isLooping: undefined,
+          allLevelFragments: [],
+          fragmentsToShow: 0,
+          activeFragment: undefined,
+          shownFragments: [],
+          guessedFragment: undefined,
+          countdownTimings: undefined,
+          latency: undefined,
+          pianoNotesMap: undefined,
+        }),
       },
     },
   },
