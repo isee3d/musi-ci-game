@@ -31,26 +31,10 @@ export function UserAccountNav({ userName }: UserAccountNavProps) {
   const { data: session } = useSession()
   const { isPlaying } = useLuisterenStore()
   const router = useRouter()
-  const { setTheme } = useTheme()
   const { logSignOutActivity } = useUserActivity()
-
-  const tutorialMutation = api.user.setUserTutorialPreference.useMutation()
 
   async function runTestSound() {
     await testSound()
-  }
-
-  async function setTutorialPreference({
-    id,
-    preferSkipTutorial,
-  }: {
-    id: string
-    preferSkipTutorial: boolean
-  }) {
-    if (session?.user.id) {
-      await tutorialMutation.mutateAsync({ id, preferSkipTutorial })
-    }
-    router.push('/tutorial')
   }
 
   async function handleSignOut() {
@@ -82,22 +66,6 @@ export function UserAccountNav({ userName }: UserAccountNavProps) {
         <DropdownMenuItem disabled={isPlaying} onClick={() => runTestSound()}>
           Test geluid
         </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Kies thema</DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('light')}>
-                Licht
-              </DropdownMenuItem>
-              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('dark')}>
-                Donker
-              </DropdownMenuItem>
-              <DropdownMenuItem disabled={isPlaying} onClick={() => setTheme('system')}>
-                Systeem
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           disabled={isPlaying}
