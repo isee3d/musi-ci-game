@@ -41,7 +41,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   )
   const stopwatch = useStopwatch(1000)
 
-  const { setLevelSublevelMode, reset, setStartTime } = useLuisterenStore()
+  const { setLevelSublevelMode, reset } = useLuisterenStore()
 
   const { hours, minutes, seconds } = stopwatch.convertedTime
 
@@ -57,7 +57,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({
 
   useEffect(() => {
     reset()
-    setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',

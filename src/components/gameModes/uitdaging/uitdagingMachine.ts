@@ -48,12 +48,12 @@ const transpose = (
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
 
-   const transposedFragments = transposeWeightedFragments(
-     selectedFragments,
-     randomOctave ?? 3,
-     octaves,
-     pianoNotesMap,
-   )
+  const transposedFragments = transposeWeightedFragments(
+    selectedFragments,
+    randomOctave ?? 3,
+    octaves,
+    pianoNotesMap,
+  )
 
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
@@ -123,7 +123,6 @@ export const uitdagingMachine = createMachine(
         // exit: "initTimer"
       },
       countdown: {
-        entry: (context) => context.countdownActions?.start(),
         initial: '3',
         description: 'Has all the chid states for counting down before a scene starts',
         states: {
@@ -148,9 +147,10 @@ export const uitdagingMachine = createMachine(
             },
           },
         },
+        exit: 'onCountdownEnded',
       },
       playing: {
-        entry: 'onCountdownStarted',
+        entry: 'onPlayingStarted',
         initial: 'initializePlaying',
         states: {
           initializePlaying: {
@@ -161,7 +161,7 @@ export const uitdagingMachine = createMachine(
             exit: assign({ isClickable: false, isAnimating: true }),
           },
           playSound: {
-            entry: (context) => context.countdownActions?.resume(),
+            // entry: (context) => context.countdownActions?.resume(),
             invoke: {
               src: async (context) => await start(context.activeFragment),
               onDone: [
@@ -187,7 +187,7 @@ export const uitdagingMachine = createMachine(
             exit: [],
           },
           restAfterAnswering: {
-            entry: [(context) => context.countdownActions?.pause(), 'saveScene'],
+            entry: ['saveScene'],
             description: 'In this state the users gets a 1 second rest and the timer has to stop',
             after: {
               1000: '#spelen.playing',
@@ -196,7 +196,7 @@ export const uitdagingMachine = createMachine(
               assign({
                 amountPlayed: (context) => context.amountPlayed + 1,
               }),
-              (context) => context.countdownActions?.resume(),
+              // (context) => context.countdownActions?.resume(),
             ],
           },
         },
@@ -245,7 +245,7 @@ export const uitdagingMachine = createMachine(
         resetSceneRelatedData()
       },
       setGuessedFragment: assign((context, event) => {
-        context.countdownActions?.pause()
+        // context.countdownActions?.pause()
         return {
           guessedFragment: event.guessedFragment,
         }
@@ -264,7 +264,7 @@ export const uitdagingMachine = createMachine(
           shownFragments: [],
         }
       }),
-      onCountdownStarted: assign((context) => {
+      onPlayingStarted: assign((context) => {
         const { setPlayedFragmentId, setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
@@ -283,6 +283,12 @@ export const uitdagingMachine = createMachine(
           activeFragment: newActiveFragment,
           pianoNotesMap: pianoNotesMap,
         }
+      }),
+      onCountdownEnded: assign((context) => {
+        const { setStartTime } = useLuisterenStore.getState()
+        context.countdownActions?.start()
+        setStartTime(Date.now())
+        return context
       }),
     },
     delays: {

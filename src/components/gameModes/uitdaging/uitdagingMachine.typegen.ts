@@ -14,6 +14,7 @@ export interface Typegen0 {
     'xstate.after(THREE)#spelen.countdown.3': { type: 'xstate.after(THREE)#spelen.countdown.3' }
     'xstate.after(TWO)#spelen.countdown.2': { type: 'xstate.after(TWO)#spelen.countdown.2' }
     'xstate.init': { type: 'xstate.init' }
+    'xstate.stop': { type: 'xstate.stop' }
   }
   invokeSrcNameMap: {}
   missingImplementations: {
@@ -24,8 +25,9 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     initializeContext: 'STARTROUND'
-    onCountdownStarted: 'xstate.after(GO)#spelen.countdown.GO!'
+    onCountdownEnded: 'FINISHEDPLAYING' | 'xstate.after(GO)#spelen.countdown.GO!' | 'xstate.stop'
     onFinishedPlaying: 'FINISHEDPLAYING'
+    onPlayingStarted: 'xstate.after(GO)#spelen.countdown.GO!'
     saveLatency: 'GUESSEDFRAGMENT'
     saveScene: 'GUESSEDFRAGMENT'
     setGuessedFragment: 'GUESSEDFRAGMENT'
