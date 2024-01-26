@@ -1,9 +1,9 @@
-import { TeamOptionalDefaultsSchema } from 'prisma/generated/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { api } from '~/utils/api'
 import toast from 'react-hot-toast'
+import { teamFormSchema } from 'types/FormSchema'
+import { z } from 'zod'
+import { Button } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -12,15 +12,14 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { teamFormSchema } from 'types/FormSchema'
+import { api } from '~/utils/api'
 
 const CreateTeamModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
 }) => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const teamQuery = api.team.getAllTeams.useQuery()
 
   const { mutate: addTeam } = api.team.createTeam.useMutation({

@@ -56,11 +56,18 @@ export const appSettingsFormSchema = z.object({
 
 export const questionFormSchema = z.object({
   question: z.string().min(1),
+  answerType: z.enum(['TEXT', 'NUMBER']),
 })
 
 export const questionAnswerSchema = z.object({
+  id: z.number(), // Assuming you want to keep track of the question ID
   question: z.string().min(1),
   answer: z.string().min(1),
+  answerType: z.string(), // Add this line
+})
+
+export const questionAnswerFormSchema = z.object({
+  questionAnswers: z.array(questionAnswerSchema),
 })
 
 export const signInFormSchema = z.object({
@@ -68,4 +75,3 @@ export const signInFormSchema = z.object({
   password: z.string().min(6),
 })
 
-export const questionAnswerFormSchema = z.array(questionAnswerSchema)

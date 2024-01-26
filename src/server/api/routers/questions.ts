@@ -10,6 +10,16 @@ export const questionsRouter = createTRPCRouter({
   createQuestion: protectedProcedure
     .input(QuestionOptionalDefaultsSchema)
     .mutation(async ({ ctx, input }) => {
+      const existingQuestion = await ctx.prisma.question.findFirst({
+        where: {
+          question: input.question,
+        },
+      })
+
+      if (existingQuestion) {
+        throw new Error('Question already exists')
+      }
+
       return await ctx.prisma.question.create({
         data: input,
       })
@@ -26,10 +36,11 @@ export const questionsRouter = createTRPCRouter({
   //   }),
 
   createQuestionAnswers: protectedProcedure
-    .input(z.array(QuestionAnswerOptionalDefaultsSchema))
+    .input(z.array(QuestionAnswerOptionalDefaultsSchema.omit({ id: true, answeredDate: true})))
     .mutation(async ({ ctx, input }) => {
-      const createOperations = input.map((data) => ctx.prisma.questionAnswer.create({ data }))
-      return await ctx.prisma.$transaction(createOperations)
+      await ctx.prisma.questionAnswer.createMany({
+        data: input,
+      })
     }),
 
   getAllQuestions: protectedProcedure.query(({ ctx }) => {

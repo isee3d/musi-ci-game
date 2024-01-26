@@ -51,7 +51,7 @@ const LoginPage = () => {
           <div className="flex flex-col items-center gap-2">
             <p className="text-xl">{getLoginText()}</p>
             <div className="flex flex-col gap-5">
-              <Button
+              {/* <Button
                 size={'lg'}
                 onClick={
                   session
@@ -60,7 +60,7 @@ const LoginPage = () => {
                 }
               >
                 {session ? 'Uitloggen' : 'Inloggen'}
-              </Button>
+              </Button> */}
               {session?.user.id && (
                 <Button size={'lg'} asChild>
                   <Link href={'/podium'}> Ga naar volgende pagina</Link>

@@ -14,20 +14,20 @@ import {
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { questionFormSchema } from 'types/FormSchema'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 
 const CreateQuestionModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
 }) => {
-  const ctx = api.useContext()
-  const questionQuery = api.question.getAllQuestions.useQuery()
+  const ctx = api.useUtils()
 
   const { mutate: addQuestion } = api.question.createQuestion.useMutation({
     onSuccess: () => {
       toast.success('Question created!')
       ctx.question.getAllQuestions.invalidate()
     },
-    onError: () => {
-      toast.error('Something went wrong!')
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 
@@ -36,18 +36,14 @@ const CreateQuestionModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAct
     resolver: zodResolver(questionFormSchema),
     defaultValues: {
       question: '',
+      answerType: 'TEXT',
     },
   })
 
   function onSubmit(data: z.infer<typeof questionFormSchema>) {
-    const exists = questionQuery.data?.find((question) => question.question === data.question)
-    if (!exists) {
       addQuestion(data)
       form.reset()
       setmodal(false)
-    } else {
-      toast.error('Vraag bestaat al!')
-    }
   }
 
   return (
@@ -65,6 +61,29 @@ const CreateQuestionModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAct
                   value={field.value || ''}
                   onChange={field.onChange}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="answerType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Antwoord op vraag is tekst of een nummer?</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="TEXT">Antwoord is tekst</SelectItem>
+                  <SelectItem value="NUMBER">Antwoord is een nummer</SelectItem>
+                </SelectContent>
+              </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

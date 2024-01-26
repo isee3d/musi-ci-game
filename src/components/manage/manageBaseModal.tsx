@@ -14,7 +14,7 @@ const ManageBaseModal: React.FC<{ title: string; children?: React.ReactNode }> =
           </div>
         </div>
       </div>
-      <div className="fixed inset-0 z-40 bg-slate-800 opacity-80"></div>
+      <div className="fixed inset-0 z-40 bg-slate-800 opacity-80"/>
     </>
   )
 }

@@ -1,3 +1,4 @@
+import { Question } from '@prisma/client'
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -13,7 +14,7 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageQuestionsPage = () => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const questionsQuery = api.question.getAllQuestions.useQuery()
   const { mutate: deleteQuestion, isLoading: isDeletingQuestion } = api.question.deleteQuestion.useMutation({
     onSuccess: () => {
@@ -26,6 +27,7 @@ const ManageQuestionsPage = () => {
   })
 
   const [createModal, setCreateModal] = useState(false)
+    const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null)
 
   return (
     <>
@@ -71,6 +73,15 @@ const ManageQuestionsPage = () => {
                     >
                       verwijderen
                     </Button>
+                     {/* <Button
+                      onClick={() => {
+                        setSelectedQuestion(question)
+                        setCreateModal(true)
+                      }}
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'px-4')}
+                    >
+                      Aanpassen
+                    </Button> */}
                   </div>
                 </div>
               )
