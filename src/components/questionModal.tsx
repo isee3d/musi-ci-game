@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
+import { Slider } from '~/components/ui/slider'
 import { Textarea } from '~/components/ui/textarea'
 import { api } from '~/utils/api'
 
@@ -46,13 +47,13 @@ const QuestionModal: React.FC<{
     defaultValues,
   })
 
-  const { fields} = useFieldArray({
+  const { fields } = useFieldArray({
     control: form.control,
     name: 'questionAnswers',
   })
 
   async function onSubmit(data: z.infer<typeof questionAnswerFormSchema>) {
-    const completeData = data.questionAnswers.map(({answerType, ...rest}) => {
+    const completeData = data.questionAnswers.map(({ answerType, ...rest }) => {
       return {
         ...rest,
         id_User: session?.user.id || '',
@@ -79,9 +80,18 @@ const QuestionModal: React.FC<{
                   <FormLabel>{item.question}</FormLabel>
                   <FormControl>
                     {item.answerType === 'NUMBER' ? (
-                      <Input type="number" placeholder="0" {...field} min="0" max="10" />
+                      <div className='flex flex-col text-center text-xl gap-2'>
+                        <span>{field.value === '' ? 0 : field.value}</span>
+                        <Slider
+                          onValueChange={(v) => field.onChange(v[0]?.toString())}
+                          defaultValue={[parseInt(field.value)]}
+                          min={0}
+                          max={10}
+                          step={1}
+                        />
+                      </div>
                     ) : (
-                      <Textarea placeholder="Your answer" {...field} />
+                      <Textarea maxLength={300} placeholder="Je antwoord" {...field} />
                     )}
                   </FormControl>
                   <FormMessage />
