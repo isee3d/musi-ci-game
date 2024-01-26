@@ -175,6 +175,9 @@ model SubLevel {
   cooldownTime      Int?
   playTime          Int?
   fragmentToShow    Int
+  fragmentToShowLuisteren   Int?
+  fragmentToShowSpelen      Int?
+  fragmentToShowUitdaging   Int?
   color             String?
   bpm               Int?
 }
@@ -313,6 +316,8 @@ model QuestionAnswer {
   question           String
   answer             String
   answeredDate       DateTime?       @default(now())
+
+  @@index([id_User])
 }
 
 model Question {

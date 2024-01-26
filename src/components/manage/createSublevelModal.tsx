@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Fragment, FragmentGroup, GameMode, Question } from '@prisma/client'
+import { Fragment, FragmentGroup, GameMode } from '@prisma/client'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -23,16 +23,13 @@ import { api } from '~/utils/api'
 const CreateSublevelModal: React.FC<{
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ setmodal }) => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const [addedGameModes, setAddedGameModes] = useState<GameMode[]>([])
   const [addedFragments, setAddedFragments] = useState<Fragment[]>([])
-  const [addedQuestions, setAddedQuestions] = useState<Question[]>([])
   const [addedFragmentGroups, setAddedFragmentGroups] = useState<FragmentGroup[]>([])
   const gameModeQuery = api.gameMode.getAllGameModes.useQuery()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
-  const questionQuery = api.question.getAllQuestions.useQuery()
   const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
-  const sublevelQuery = api.sublevel.getAllSubLevels.useQuery()
 
   const { mutate: addSublevel } = api.sublevel.createSubLevel.useMutation({
     onSuccess: () => {
@@ -50,14 +47,6 @@ const CreateSublevelModal: React.FC<{
 
   const onRemoveFragmentGroupButtonClick = (fragmentGroup: FragmentGroup) => {
     setAddedFragmentGroups(addedFragmentGroups.filter((f) => f.id !== fragmentGroup.id))
-  }
-
-  const onAddQuestionButtonClick = (question: Question) => {
-    setAddedQuestions([...addedQuestions, question])
-  }
-
-  const onRemoveQuestionButtonClick = (question: Question) => {
-    setAddedQuestions(addedQuestions.filter((q) => q.id !== question.id))
   }
 
   const onAddGameModeButtonClick = (gameMode: GameMode) => {
@@ -87,23 +76,16 @@ const CreateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    const exists = sublevelQuery?.data?.find((s) => s.name === data.name)
-    if (!exists) {
       addSublevel({
         ...data,
         fragments: addedFragments.map((f) => f.id),
         gameModes: addedGameModes.map((g) => g.id),
-        questions: addedQuestions.map((q) => q.id),
         fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
       })
       setAddedGameModes([])
       setAddedFragments([])
-      setAddedQuestions([])
       form.reset()
       setmodal(false)
-    } else {
-      toast.error('Sublevel naam already exists!')
-    }
   }
 
   return (
@@ -153,6 +135,70 @@ const CreateSublevelModal: React.FC<{
                       ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
                     }
                     placeholder="fragments to show"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fragmentToShowLuisteren"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>fragment to show in luisteren</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="fragments to show in luisteren"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fragmentToShowSpelen"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>fragment to show in spelen</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="fragments to show in spelen"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="fragmentToShowUitdaging"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>fragment to show in Uitdaging</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="fragments to show in uitdaging"
                     {...field}
                     onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
                   />
@@ -234,47 +280,6 @@ const CreateSublevelModal: React.FC<{
                       className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
                     >
                       Voeg fragment groep toe
-                    </Button>
-                  </div>
-                )
-              })}
-            </div>
-
-            <Label className="text-3xl">Toegevoegde Vragen</Label>
-            <div className="flex flex-col gap-y-2">
-              {addedQuestions.map((question) => {
-                return (
-                  <div
-                    key={question.id}
-                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
-                  >
-                    <h2 className="text-2xl font-bold">{question.question}</h2>
-                    <Button
-                      onClick={() => onRemoveQuestionButtonClick(question)}
-                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
-                    >
-                      Verwijder van sublevel
-                    </Button>
-                  </div>
-                )
-              })}
-            </div>
-            <Label className="text-3xl">Beschikbare vragen</Label>
-            <div className="flex flex-col gap-y-2">
-              {questionQuery.data?.map((question) => {
-                if (addedQuestions.find((addedQuestion) => addedQuestion.id === question.id))
-                  return null
-                return (
-                  <div
-                    key={question.id}
-                    className="grid min-w-full grid-cols-[1fr,auto,auto,auto] items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4"
-                  >
-                    <h2 className="text-2xl font-bold">{question.question}</h2>
-                    <Button
-                      onClick={() => onAddQuestionButtonClick(question)}
-                      className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'px-4')}
-                    >
-                      Voeg vraag toe
                     </Button>
                   </div>
                 )

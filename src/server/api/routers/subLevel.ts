@@ -10,12 +10,21 @@ export const subLevelRouter = createTRPCRouter({
       SubLevelOptionalDefaultsSchema.extend({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
-        questions: z.array(z.number().int()),
         fragmentGroups: z.array(z.number().int()),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { fragments, gameModes, questions, fragmentGroups, ...newInput } = input
+      const { fragments, gameModes, fragmentGroups, ...newInput } = input
+
+      const existingSublevel = await ctx.prisma.subLevel.findFirst({
+        where: {
+          name: newInput.name,
+        },
+      })
+
+      if (existingSublevel) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'Sublevel already exists' })
+      }
 
       return await ctx.prisma.subLevel.create({
         data: {
@@ -28,9 +37,6 @@ export const subLevelRouter = createTRPCRouter({
           },
           gameModes: {
             connect: gameModes.map((id) => ({ id })),
-          },
-          questions: {
-            connect: questions.map((id) => ({ id })),
           },
         },
       })
@@ -136,40 +142,30 @@ export const subLevelRouter = createTRPCRouter({
       return fragmentGroups
     }),
 
-  getQuestionsOfSublevel: publicProcedure
-    .input(z.object({ sublevelId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const { sublevelId: subLevelId } = input
-      const questions = await ctx.prisma.subLevel.findFirst({
-        where: {
-          id: parseInt(subLevelId),
-        },
-        select: {
-          questions: {
-            select: {
-              id: true,
-              question: true,
-            },
-          },
-        },
-      })
-      if (!questions) {
-        return []
-      }
-      return questions.questions
-    }),
-
   updateSubLevel: protectedProcedure
     .input(
       SubLevelSchema.extend({
         fragments: z.array(z.number().int()),
         gameModes: z.array(z.number().int()),
         fragmentGroups: z.array(z.number().int()),
-        questions: z.array(z.number().int()),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, gameModes, fragments, fragmentGroups, questions } = input
+      const { id, gameModes, fragments, fragmentGroups } = input
+
+      const duplicateSublevel = await ctx.prisma.subLevel.findFirst({
+        where: {
+          name: input.name,
+          id: {
+            not: id,
+          },
+        },
+      })
+
+      if (duplicateSublevel) {
+        throw new TRPCError({ code: 'CONFLICT', message: 'Sublevel bestaat al' })
+      }
+
       return await ctx.prisma.subLevel.update({
         where: { id },
         data: {
@@ -182,9 +178,6 @@ export const subLevelRouter = createTRPCRouter({
           },
           fragmentGroups: {
             set: fragmentGroups?.map((id) => ({ id })),
-          },
-          questions: {
-            set: questions?.map((id) => ({ id })),
           },
         },
       })

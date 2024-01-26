@@ -78,7 +78,11 @@ const ModePage = ({
         return (
           <LuisterenMachineContext.Provider>
             <Luisteren
-              fragmentsToShow={fragmentsToShow}
+              fragmentsToShow={
+                sublevelQuery.data?.fragmentToShowLuisteren
+                  ? sublevelQuery.data?.fragmentToShowLuisteren
+                  : fragmentsToShow
+              }
               fragments={fragments}
               levelId={levelId}
               sublevelId={sublevelId}
@@ -90,7 +94,11 @@ const ModePage = ({
         return (
           <SpelenMachineContext.Provider>
             <Spelen
-              fragmentsToShow={fragmentsToShow}
+              fragmentsToShow={
+                sublevelQuery.data?.fragmentToShowSpelen
+                  ? sublevelQuery.data?.fragmentToShowSpelen
+                  : fragmentsToShow
+              }
               fragments={fragments}
               levelId={levelId}
               sublevelId={sublevelId}
@@ -104,7 +112,11 @@ const ModePage = ({
           <UitdagingMachineContext.Provider>
             <Uitdaging
               gameId={gameId}
-              fragmentsToShow={fragmentsToShow}
+              fragmentsToShow={
+                sublevelQuery.data?.fragmentToShowUitdaging
+                  ? sublevelQuery.data?.fragmentToShowUitdaging
+                  : fragmentsToShow
+              }
               fragments={fragments}
               levelId={levelId}
               playTime={playTime}
@@ -155,9 +167,7 @@ const ModePage = ({
               disabled={isPlaying}
               asChild
             >
-              <Link
-                href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}
-              >
+              <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
                 {gameMode.name}
               </Link>
             </Button>
