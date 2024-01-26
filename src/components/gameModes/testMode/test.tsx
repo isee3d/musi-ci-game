@@ -101,10 +101,6 @@ const Test: React.FC<TestModeProps> = ({
     state.matches('FinishedPlayingTestMode'),
   )
 
-  const QuestionsOfSublevelQuery = api.sublevel.getQuestionsOfSublevel.useQuery({
-    sublevelId: sublevelId,
-  })
-
   const stopwatch = useStopwatch(1000)
   const { hours, minutes, seconds } = stopwatch.convertedTime
 

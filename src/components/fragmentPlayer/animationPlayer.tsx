@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { Suspense, use, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { getNotesPositions } from '~/components/fragmentPlayer/fragmentPlayerUtils'
@@ -61,6 +61,7 @@ interface AnimationPlayerOptions {
   showCorrectOutline?: boolean
   guessedFragment?: FragmentWithNotes
   isCorrect?: boolean
+  useBlueBorderCLick? : boolean
   onAnimationClicked?: (fragment: FragmentWithNotes) => void
   onAnimationComplete?: (fragment?: FragmentWithNotes) => void
 }
@@ -127,8 +128,10 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
   }
 
   function handleAnimationClicked() {
-    setIsBlueBorder(true)
-    setTimeout(() => setIsBlueBorder(false), 1000)
+    if(options?.useBlueBorderCLick) {
+      setIsBlueBorder(true)
+      setTimeout(() => setIsBlueBorder(false), 1000)
+    }
 
     if (options?.onAnimationClicked) {
       options.onAnimationClicked(animationFragment)

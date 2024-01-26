@@ -11,6 +11,7 @@ interface Props {
   backPath: string
   classNameParent?: string
   shouldRenderBackButton?: boolean
+  shouldRenderInstrument?: boolean
 }
 
 const ContentContainer: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const ContentContainer: React.FC<Props> = ({
   backPath,
   classNameParent,
   shouldRenderBackButton = true,
+  shouldRenderInstrument = false,
 }) => {
   const router = useRouter()
   const { shouldRenderCinieInContentContainer } = useLuisterenStore()
@@ -33,10 +35,22 @@ const ContentContainer: React.FC<Props> = ({
 
       <section className="flex grow flex-col items-center justify-center">
         <div className="container mx-auto flex min-h-fit  w-5/6 flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 ">
-          <div className="relative flex w-full justify-center border-b-2 border-primary py-4 text-center text-2xl font-extrabold tracking-tight md:text-3xl">
-            <h2 className="w-5/6">{title}</h2>
-            <div className="absolute left-3 top-3 h-12 w-12 bg-transparent">
+          <div className="relative flex w-full justify-between border-b-2 border-primary py-2  text-center text-2xl font-extrabold tracking-tight md:text-3xl">
+            <div className="relative mx-2 h-12 w-12 bg-transparent">
               {shouldRenderCinieInContentContainer && (
+                <Image
+                  src="/images/cinie-duim.jpg"
+                  alt="cinie"
+                  className="rounded-full "
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  fill
+                />
+              )}
+            </div>
+            <h2 className="w-5/6">{title}</h2>
+
+            <div className="relative mx-2 h-12 w-12 bg-transparent">
+              {shouldRenderInstrument && (
                 <Image
                   src="/images/cinie-duim.jpg"
                   alt="cinie"

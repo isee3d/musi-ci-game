@@ -34,7 +34,14 @@ export const levelRouter = createTRPCRouter({
           id: parseInt(levelId),
         },
         select: {
-          subLevels: true,
+          subLevels: {
+            select: {
+              gameModes: true,
+              id: true,
+              name: true,
+              color: true,
+            },
+          },
         },
       })
       if (!subLevels) {

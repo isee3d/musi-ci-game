@@ -132,6 +132,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
           key={fragment.id}
           animationFragment={fragment}
           options={{
+            useBlueBorderCLick: true,
             isClickable: checkIsClickable(),
             isAnimating: checkIsAnimating(fragment),
             showCorrectOutline: false,

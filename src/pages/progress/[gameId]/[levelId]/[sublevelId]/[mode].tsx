@@ -151,6 +151,7 @@ const ModePage = ({
       backPath={`/progress/${gameId}/${levelId}`}
       classNameParent="px-0 mt-0"
       shouldRenderBackButton={false}
+      shouldRenderInstrument={mode !== 'Test'}
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data
