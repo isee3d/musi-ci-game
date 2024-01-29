@@ -158,6 +158,7 @@ model Level{
    name              String      @unique
    description       String?
    color             String?
+   instrument        String?
 
    @@index([id_Game])
 }

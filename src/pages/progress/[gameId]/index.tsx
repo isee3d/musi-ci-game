@@ -7,6 +7,7 @@ import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
+import Image from 'next/image'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: levelsOfGame } = api.game.getLevelsOfGame.useQuery({
@@ -23,14 +24,18 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
         >
           <div className="flex w-full items-center justify-center">
             <div className="flex w-full justify-start space-x-4">
-              {/* <div
-                className="flex h-16 w-1/3 items-center justify-center rounded-lg border-4 text-center text-2xl font-bold"
-                style={{ borderColor: level.color ?? 'bg-background' }}
-              >
-              </div> */}
-              <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
+              <div className="relative flex h-16 w-full items-center justify-start gap-x-24 text-center text-2xl font-medium">
+                <div className="relative size-12 ">
+                  {level.instrument && (
+                    <Image
+                      src={level.instrument ?? ''}
+                      fill
+                      className="rounded-full"
+                      alt="instrument"
+                    />
+                  )}
+                </div>
                 <h2 style={{ color: level.color ?? 'bg-background' }}>{level.name}</h2>
-                <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
             </div>
           </div>

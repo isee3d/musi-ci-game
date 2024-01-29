@@ -40,6 +40,8 @@ const ModePage = ({
     sublevelId: sublevelId,
   })
 
+  const { data: level } = api.level.getLevelById.useQuery({ id: levelId })
+
   const fragmentGroupsQuery = api.sublevel.getFragmentGroupsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
@@ -151,7 +153,7 @@ const ModePage = ({
       backPath={`/progress/${gameId}/${levelId}`}
       classNameParent="px-0 mt-0"
       shouldRenderBackButton={false}
-      shouldRenderInstrument={mode !== 'Test'}
+      instrumentURL={mode !== 'Test' ? level?.instrument : undefined}
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data
@@ -205,6 +207,7 @@ export const getServerSideProps = async (
     await helpers.sublevel.getFragmentGroupsOfSublevel.prefetch({
       sublevelId: ctx.params.sublevelId,
     })
+    await helpers.level.getLevelById.prefetch({ id: ctx.params.levelId })
   }
 
   return {

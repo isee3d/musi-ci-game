@@ -17,7 +17,9 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
+import { instrumentConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -76,6 +78,7 @@ const UpdateLevelModal: React.FC<{
       name: level.name,
       description: level.description,
       color: level.color,
+      instrument: level.instrument ?? undefined,
     },
   })
 
@@ -87,6 +90,7 @@ const UpdateLevelModal: React.FC<{
         name: data.name,
         description: data.description,
         color: data.color,
+        instrument: data.instrument,
       })
       updateSublevelsOfLevel({
         levelId: level.id.toString(),
@@ -129,6 +133,32 @@ const UpdateLevelModal: React.FC<{
                   value={field.value || ''}
                   onChange={field.onChange}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="instrument"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pas instrument aan</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Kies het instrument dat hoort bij het level" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(instrumentConfig).map(([instrument, imagePath]) => (
+                      <SelectItem key={instrument} value={imagePath}>
+                        {instrument}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

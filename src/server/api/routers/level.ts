@@ -39,6 +39,7 @@ export const levelRouter = createTRPCRouter({
               gameModes: true,
               id: true,
               name: true,
+              fragmentToShow: true,
               color: true,
             },
           },

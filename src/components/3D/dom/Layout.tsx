@@ -22,10 +22,9 @@ type LayoutProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { data: session } = useSession()
-  const router = useRouter()
   const { isPlaying } = useLuisterenStore()
   const { logSignOutActivity } = useUserActivity()
-  const { data: questions } = api.question.getAllQuestions.useQuery()
+  const { data: questions } = api.question.getAllQuestions.useQuery(undefined, {enabled: session?.user.id !== undefined})
 
   const ref = useRef(null)
   const [questionModal, setQuestionModal] = useState(false)
@@ -33,7 +32,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   async function handleSignOut() {
     await logSignOutActivity()
     setQuestionModal(true)
-    // SHOW MODAL
   }
 
   return (

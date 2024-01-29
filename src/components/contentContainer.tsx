@@ -11,7 +11,7 @@ interface Props {
   backPath: string
   classNameParent?: string
   shouldRenderBackButton?: boolean
-  shouldRenderInstrument?: boolean
+  instrumentURL?: string | null
 }
 
 const ContentContainer: React.FC<Props> = ({
@@ -20,7 +20,7 @@ const ContentContainer: React.FC<Props> = ({
   backPath,
   classNameParent,
   shouldRenderBackButton = true,
-  shouldRenderInstrument = false,
+  instrumentURL = undefined,
 }) => {
   const router = useRouter()
   const { shouldRenderCinieInContentContainer } = useLuisterenStore()
@@ -50,10 +50,10 @@ const ContentContainer: React.FC<Props> = ({
             <h2 className="w-5/6">{title}</h2>
 
             <div className="relative mx-2 h-12 w-12 bg-transparent">
-              {shouldRenderInstrument && (
+              {instrumentURL && (
                 <Image
-                  src="/images/cinie-duim.jpg"
-                  alt="cinie"
+                  src={instrumentURL}
+                  alt="instrument"
                   className="rounded-full"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   fill

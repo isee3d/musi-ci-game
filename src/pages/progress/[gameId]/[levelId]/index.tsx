@@ -16,9 +16,11 @@ const SublevelsPage = ({
   gameId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: subLevelsOfLevelQuery } = api.level.getSubLevelsOfLevel.useQuery({ levelId })
+  const {data: level} = api.level.getLevelById.useQuery({id: levelId})
+
 
   return (
-    <ContentContainer shouldRenderInstrument title="Kies je sublevel" backPath={`/progress/${gameId}`}>
+    <ContentContainer instrumentURL={level?.instrument} title="Kies je sublevel" backPath={`/progress/${gameId}`}>
       {subLevelsOfLevelQuery?.map((sublevel) => (
         <Link
           key={sublevel.id}
@@ -54,6 +56,7 @@ export const getServerSideProps = async (
     throw new Error('invalid parameters')
 
   await helpers.level.getSubLevelsOfLevel.prefetch({ levelId: levelId })
+  await helpers.level.getLevelById.prefetch({ id: levelId })
 
   return {
     props: {

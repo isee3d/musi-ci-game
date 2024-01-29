@@ -65,7 +65,16 @@ const ManageLevels = () => {
                 >
                   <h2 className="text-2xl font-bold">{level.name}</h2>
                   <h2 className="text-xl">{level.description}</h2>
-                  <h2 className="text-xl">Kleur: {level.color}</h2>
+                  <div className="flex justify-center gap-2">
+                    <h2 className="flex flex-col justify-center  text-xl">Kleur: </h2>
+                    <div
+                      className="size-12 rounded-full"
+                      style={{
+                        backgroundColor: level.color ?? 'black',
+                      }}
+                    />
+                  </div>
+
                   <div className="flex flex-col gap-3 md:flex-row">
                     {isDeletingLevel && (
                       <div className="flex items-center justify-center">

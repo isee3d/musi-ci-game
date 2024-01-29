@@ -16,14 +16,16 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
+import { instrumentConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
 const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction<boolean>> }> = ({
   setmodal,
 }) => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const [addedSubLevels, setAddedSubLevels] = useState<SubLevel[]>([])
   const subLevelQuery = api.sublevel.getAllSubLevels.useQuery()
   const levelQuery = api.level.getAllLevels.useQuery()
@@ -50,6 +52,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
     resolver: zodResolver(levelFormSchema),
     defaultValues: {
       name: '',
+      instrument: instrumentConfig.drumstel
     },
   })
 
@@ -95,6 +98,32 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
                     value={field.value || ''}
                     onChange={field.onChange}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="instrument"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Selecteer instrument</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Kies het instrument dat hoort bij het level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(instrumentConfig).map(([instrument, imagePath]) => (
+                        <SelectItem key={instrument} value={imagePath}>
+                          {instrument}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

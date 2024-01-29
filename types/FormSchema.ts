@@ -4,6 +4,7 @@ export const levelFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
   color: z.string().nullish(),
+  instrument: z.string().optional(),
 })
 
 export const sublevelFormSchema = z.object({
