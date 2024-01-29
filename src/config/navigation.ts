@@ -1,5 +1,5 @@
-import { testSound } from "~/components/fragmentPlayer/audio/AudioControls";
-import { NavItem, PlayerNavItem } from "~/components/mobileNav";
+import { testSound } from '~/components/fragmentPlayer/audio/AudioControls'
+import { NavItem, PlayerNavItem } from '~/components/mobileNav'
 
 export const navItemsResearcher: NavItem[] = [
   {
@@ -8,7 +8,7 @@ export const navItemsResearcher: NavItem[] = [
   },
 ]
 
-export const navitemsTemplate: NavItem[] = [
+export const navItemsTemplate: NavItem[] = [
   {
     title: 'Levels beheren',
     href: '/manage/levels',
@@ -47,9 +47,9 @@ export const navitemsTemplate: NavItem[] = [
   },
 ]
 
-  async function runTestSound() {
-    await testSound()
-  }
+async function runTestSound() {
+  await testSound()
+}
 
 export const navItemsPlayer: PlayerNavItem[] = [
   {
@@ -67,12 +67,4 @@ export const navItemsPlayer: PlayerNavItem[] = [
     action: runTestSound,
     enableAfterLogin: false,
   },
-  {
-    title: 'Instellingen',
-    href: '/settings',
-    disabled: true,
-    enableAfterLogin: true,
-  }
 ]
-
-

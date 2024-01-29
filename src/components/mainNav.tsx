@@ -6,6 +6,8 @@ import { Icons } from '~/components/icons'
 import { useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
+import { navItemsTemplate } from '~/config/navigation'
 
 interface MainNavProps {
   items?: PlayerNavItem[]
@@ -29,12 +31,11 @@ export function MainNav({ items, children }: MainNavProps) {
             <Button
               key={index}
               onClick={() => item.action && item.action()}
-              disabled={(session?.user?.role === 'USER' && item.disabled) || isPlaying}
+              disabled={session?.user?.role === 'USER' || isPlaying}
               variant={'link'}
               style={{
                 display:
-                  (session?.user?.role === 'USER' && item.disabled) ||
-                  (!session && item.enableAfterLogin === true)
+                  session?.user?.role === 'USER' || (!session && item.enableAfterLogin)
                     ? 'none'
                     : 'inline-flex',
               }}
@@ -46,8 +47,7 @@ export function MainNav({ items, children }: MainNavProps) {
                     'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
                     'text-foreground',
                     session?.user.role === 'USER' &&
-                      item.disabled &&
-                      'cursor-not-allowed opacity-80',
+                    'cursor-not-allowed opacity-80',
                   )}
                   href={item.href === undefined ? '#' : item.href}
                 >
@@ -60,6 +60,22 @@ export function MainNav({ items, children }: MainNavProps) {
           ))}
         </nav>
       ) : null}
+      {session?.user.role === 'ADMIN' && (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button asChild variant={'link'}>
+              <Link href="/admin">Instellingen</Link>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {navItemsTemplate.map((item) => (
+              <DropdownMenuItem asChild>
+                <Link href={item.href}>{item.title}</Link>
+              </DropdownMenuItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       <button
         className="flex items-center space-x-2 md:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}

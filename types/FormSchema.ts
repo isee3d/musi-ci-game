@@ -18,10 +18,10 @@ export const sublevelFormSchema = z.object({
   description: z.string().nullish(),
   color: z.string().nullish(),
   bpm: z.number().int().positive().min(1),
-  fragmentToShow: z.number().int().positive().min(1),
-  fragmentToShowLuisteren: z.number().int().positive().nullish(),
-  fragmentToShowSpelen: z.number().int().positive().nullish(),
-  fragmentToShowUitdaging: z.number().int().positive().nullish(),
+  fragmentToShow: z.coerce.number().int().positive().min(1),
+  fragmentToShowLuisteren: z.coerce.number().int().optional(),
+  fragmentToShowSpelen: z.coerce.number().int().optional(),
+  fragmentToShowUitdaging: z.coerce.number().int().optional(),
 })
 
 export const teamFormSchema = z.object({
