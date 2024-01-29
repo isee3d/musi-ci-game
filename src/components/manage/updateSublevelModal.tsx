@@ -175,11 +175,13 @@ const UpdateSublevelModal: React.FC<{
                   <Input
                     type="number"
                     onKeyDown={(evt) =>
-                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                      ['e', 'E', '+', '-'].includes(evt.key)
                     }
                     placeholder="fragments to show in luisteren"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                    onChange={(e) =>
+                      field.onChange(e.target.value === '' ? null : parseInt(e.target.value) || null)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -200,7 +202,9 @@ const UpdateSublevelModal: React.FC<{
                     }
                     placeholder="fragments to show in spelen"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                    onChange={(e) =>
+                      field.onChange(e.target.value === '' ? null : parseInt(e.target.value) || 0)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -222,7 +226,9 @@ const UpdateSublevelModal: React.FC<{
                     }
                     placeholder="fragments to show in uitdaging"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                    onChange={(e) =>
+                      field.onChange(e.target.value === '' ? null : parseInt(e.target.value) || 0)
+                    }
                   />
                 </FormControl>
                 <FormMessage />

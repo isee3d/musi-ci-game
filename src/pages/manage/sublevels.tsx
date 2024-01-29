@@ -66,7 +66,15 @@ const ManageSublevels = () => {
                 >
                   <h2 className="text-2xl font-bold">{sublevel.name}</h2>
                   <h2 className="text-xl">{sublevel.description}</h2>
-                  <h2 className="text-xl">Kleur: {sublevel.color}</h2>
+                  <div className="flex justify-center gap-2">
+                    <h2 className="flex flex-col justify-center  text-xl">Kleur: </h2>
+                    <div
+                      className="size-12 rounded-full"
+                      style={{
+                        backgroundColor: sublevel.color ?? 'black',
+                      }}
+                    />
+                  </div>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     {isDeletingSublevel && (
                       <div className="flex items-center justify-center">

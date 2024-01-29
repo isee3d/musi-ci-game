@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+const emptyStringToUndefined = z.literal('').transform(() => undefined)
+
+export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
+  return schema.optional().or(emptyStringToUndefined)
+}
+
 export const levelFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullish(),
@@ -13,9 +19,9 @@ export const sublevelFormSchema = z.object({
   color: z.string().nullish(),
   bpm: z.number().int().positive().min(1),
   fragmentToShow: z.number().int().positive().min(1),
-  fragmentToShowLuisteren: z.number().int().positive().optional(),
-  fragmentToShowSpelen: z.number().int().positive().optional(),
-  fragmentToShowUitdaging: z.number().int().positive().optional(),
+  fragmentToShowLuisteren: z.number().int().positive().nullish(),
+  fragmentToShowSpelen: z.number().int().positive().nullish(),
+  fragmentToShowUitdaging: z.number().int().positive().nullish(),
 })
 
 export const teamFormSchema = z.object({
