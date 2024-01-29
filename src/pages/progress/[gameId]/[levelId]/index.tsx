@@ -31,7 +31,6 @@ const SublevelsPage = ({
             <div className="flex w-full justify-start space-x-4">
               <div className="relative flex h-16 w-full items-center justify-center text-2xl font-medium">
                 <h2 style={{color: sublevel.color ?? 'bg-background'}}>{sublevel.name}</h2>
-                <div className="absolute right-3 top-3 h-12 w-12 rounded-full bg-primary-foreground" />
               </div>
             </div>
           </div>
