@@ -41,15 +41,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={navItemsPlayer} />
             <Button
-              // disabled={isPlaying}
+              disabled={isPlaying}
               className="cursor-pointer bg-purple-500 text-white"
               onClick={(event) => {
                 event.preventDefault()
-                if (session) {
-                  handleSignOut()
-                } else {
-                  signIn()
-                }
+                session ? handleSignOut() : signIn()
               }}
             >
               {session ? 'Uitloggen' : 'Inloggen'}

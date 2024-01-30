@@ -1,5 +1,3 @@
-// import { returnAudioBuffer } from '~/components/fragmentPlayer/audio/AudioServiceUtils';
-// import AudioService from './AudioService';
 
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
@@ -41,18 +39,6 @@ type SampleIndex = { [key: string]: SampleData }
 
 export type NoteName = string
 
-// octaaf 12 verschillende noten
-//iedere octaaf omhgoog is verdubbbbelen van de frequentie
-// eerste C definieren op 131hz
-// volgende C is 262hz
-// volgende C is 524hz
-// volgende C is 1048hz
-
-// voor test duidelijk verschillende octaven gebruiken
-// in te stellen bij het maken van fragmenten
-// test1: [131 - 262] Hz [c3 - c4]
-// test2: [262 - 524] Hz [c4 - c5]    basenotes
-// test3: [524 - 1048] Hz [c5 - c6]
 export const baseNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 const generatePianoNotes = () => {

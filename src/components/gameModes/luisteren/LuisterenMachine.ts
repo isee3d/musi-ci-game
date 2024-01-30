@@ -1,9 +1,8 @@
-import { createMachine, assign } from 'xstate'
+import { assign, createMachine } from 'xstate'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndTransposeDirection,
-  FragmentWithNotesAndWeight,
+  FragmentWithNotesAndWeight
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'

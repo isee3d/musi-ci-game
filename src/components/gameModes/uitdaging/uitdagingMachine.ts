@@ -1,12 +1,11 @@
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
-import { createMachine, assign } from 'xstate'
+import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndTransposeDirection,
-  FragmentWithNotesAndWeight,
+  FragmentWithNotesAndWeight
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'

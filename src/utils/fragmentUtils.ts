@@ -1,6 +1,6 @@
+import { FragmentGroup } from "types/fragmentGroup";
 import { baseNotes, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard';
-import { FragmentGroup } from "types/fragmentGroup"
-import { FragmentWithNotes, FragmentWithNotesAndTransposeDirection, FragmentWithNotesAndWeight, FragmentWithNotesWeightAndTransposeDirection } from "~/components/fragmentPlayer/audio/fragmentWithNotes"
+import { FragmentWithNotes, FragmentWithNotesAndWeight } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
 
 export const getOriginalFragments = (
   shownFragments: FragmentWithNotesAndWeight[],
@@ -49,7 +49,7 @@ export const getOriginalFragmentsFromFragmentGroup = (
 // }
 
 export const getShownFragmentByFragmentId = (
-  shownFragments: FragmentWithNotesAndWeight[] | FragmentWithNotesAndTransposeDirection[],
+  shownFragments: FragmentWithNotesAndWeight[],
   fragmentId: number,
 ): FragmentWithNotes | undefined => {
   return shownFragments.find((frag) => frag.id === fragmentId)

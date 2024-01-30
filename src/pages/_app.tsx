@@ -41,13 +41,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const [showModal, setShowModal] = useState(true)
-  // const { init: initAudio } = useAudioServiceStore.getState()
-  // const router = useRouter()
 
   useEffect(() => {
-    // if (env.NEXT_PUBLIC_ENABLE_AUDIO === 'true') {
-    //   initAudio()
-    // }
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return
 
     if (typeof window !== 'undefined' && env.NEXT_PUBLIC_NODE_ENV === 'development') {
@@ -56,25 +51,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
         iframe: false,
       })
     }
-
-    // const initializeSilentAudio = () => {
-    //   console.log('in trigger mode')
-    //   if (router.pathname.includes('Luisteren')) {
-    //     setShowModal(true)
-    //   }
-    // }
-
-    // window.addEventListener('focus', initializeSilentAudio)
-    // window.addEventListener('blur', initializeSilentAudio)
-    // router.events.on('routeChangeComplete', initializeSilentAudio)
-    // document.addEventListener('visibilitychange', initializeSilentAudio)
-
-    // return () => {
-    //   window.removeEventListener('focus', initializeSilentAudio)
-    //   window.removeEventListener('blur', initializeSilentAudio)
-    //   router.events.off('routeChangeComplete', initializeSilentAudio)
-    //   document.removeEventListener('visibilitychange', initializeSilentAudio)
-    // }
   }, [])
 
   return (

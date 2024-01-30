@@ -14,8 +14,6 @@ export interface FragmentWithNotesAndWeight extends FragmentWithNotes {
     transpose?: string;
 }
 
-export type FragmentWithNotesAndTransposeDirection = FragmentWithNotes & { transpose: number, octave: 0 | 1 | 2 };
-
 export type FragmentWithNotesWeightAndTransposeDirection = FragmentWithNotesAndWeight & {
   transpose: number
   octave: 0 | 1 | 2
