@@ -1,13 +1,14 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
-import { LoadingPage } from '~/components/loading'
-import { buttonVariants } from '~/components/ui/button'
+import { Button } from '~/components/ui/button'
+import { routePaths } from '~/config/routing'
+import { titlesAndTexts } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
-import Image from 'next/image'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: levelsOfGame } = api.game.getLevelsOfGame.useQuery({
@@ -15,31 +16,38 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
   })
 
   return (
-    <ContentContainer backPath="/podium" title="Kies je level">
-      {levelsOfGame?.map((level) => (
-        <Link
+    <ContentContainer backPath={routePaths.home} title={titlesAndTexts.levelTitle}>
+      {levelsOfGame?.map((level, index) => (
+        <Button
           key={level.id}
-          className={cn(buttonVariants({ size: 'lg' }), 'h-20 w-full rounded-xl')}
-          href={`/progress/${gameId}/${level.id}`}
+          className={cn(
+            'h-20 w-full rounded-none border-t-4 border-gray-400',
+            index === levelsOfGame.length - 1 && 'rounded-b-2xl',
+          )}
+          asChild
         >
-          <div className="flex w-full items-center justify-center">
-            <div className="flex w-full justify-start space-x-4">
-              <div className="relative flex h-16 w-full items-center justify-start gap-x-24 text-center text-2xl font-medium">
-                <div className="relative size-12 ">
-                  {level.instrument && (
-                    <Image
-                      src={level.instrument ?? ''}
-                      fill
-                      className="rounded-full"
-                      alt="instrument"
-                    />
-                  )}
+          <Link href={routePaths.sublevelSelectPage(gameId, level.id)}>
+            <div className="flex w-full items-center justify-center">
+              <div className="flex w-full justify-start space-x-4">
+                <div className="relative flex h-16 w-full items-center justify-start gap-x-24 text-center text-2xl font-medium">
+                  <div className="relative size-14">
+                    {level.instrument && (
+                      <Image
+                        src={level.instrument ?? ''}
+                        fill
+                        className="rounded-full"
+                        alt="instrument"
+                      />
+                    )}
+                  </div>
+                  <h2 className="text-xl" style={{ color: level.color ?? 'bg-background' }}>
+                    {level.name}
+                  </h2>
                 </div>
-                <h2 style={{ color: level.color ?? 'bg-background' }}>{level.name}</h2>
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </Button>
       ))}
     </ContentContainer>
   )
@@ -62,7 +70,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId
     props: {
       session: auth.props.session,
       trpcState: helpers.dehydrate(),
-      gameId: gameId ?? '',
+      gameId: gameId ?? '1',
     },
   }
 }

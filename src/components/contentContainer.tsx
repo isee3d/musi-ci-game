@@ -8,7 +8,7 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 interface Props {
   children: React.ReactNode
   title: string
-  backPath: string
+  backPath?: string
   classNameParent?: string
   shouldRenderBackButton?: boolean
   instrumentURL?: string | null
@@ -17,8 +17,8 @@ interface Props {
 const ContentContainer: React.FC<Props> = ({
   children,
   title,
-  backPath,
   classNameParent,
+  backPath = '/',
   shouldRenderBackButton = true,
   instrumentURL = undefined,
 }) => {
@@ -34,52 +34,59 @@ const ContentContainer: React.FC<Props> = ({
       </Head>
 
       <section className="flex grow flex-col items-center justify-center">
-        <div className="container mx-auto flex min-h-fit  w-5/6 flex-col items-center justify-start rounded-2xl border-4 border-primary p-0 ">
-          <div className="relative flex w-full justify-between border-b-2 border-primary py-2  text-center text-2xl font-extrabold tracking-tight md:text-3xl">
-            <div className="relative mx-2 h-12 w-12 bg-transparent">
-              {shouldRenderCinieInContentContainer && (
-                <Image
-                  src="/images/cinie-duim.jpg"
-                  alt="cinie"
-                  className="rounded-full "
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill
-                />
-              )}
-            </div>
-            <h2 className="w-5/6">{title}</h2>
+        <div className="container mx-auto flex flex-col items-center justify-start gap-6 py-12">
+          <div className="w-full rounded-2xl">
+            <div className="relative flex w-full justify-start rounded-t-2xl bg-primary-foreground">
+              <div className="relative size-40 px-2">
+                {shouldRenderCinieInContentContainer && (
+                  <Image
+                    objectFit="fill"
+                    src="/images/cinie-duim.jpg"
+                    alt="cinie"
+                    className=""
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    fill
+                  />
+                )}
+              </div>
 
-            <div className="relative mx-2 h-12 w-12 bg-transparent">
-              {instrumentURL && (
-                <Image
-                  src={instrumentURL}
-                  alt="instrument"
-                  className="rounded-full"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill
-                />
+              <div className="flex w-full items-center justify-start px-36 pb-5">
+                <h2 className="text-3xl font-extrabold">{title}</h2>
+              </div>
+
+              <div className="relative size-36 px-8">
+                {instrumentURL && (
+                  <Image
+                    objectFit="cover"
+                    src={instrumentURL}
+                    alt="instrument"
+                    className=""
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    fill
+                  />
+                )}
+              </div>
+            </div>
+            <div
+              className={cn(
+                'flex w-full flex-col items-center justify-between',
+                classNameParent,
               )}
+            >
+              {children}
             </div>
           </div>
-          <div
-            className={cn(
-              'mt-8 flex w-full flex-col items-center justify-between gap-8 px-2 pb-8',
-              classNameParent,
-            )}
-          >
-            {children}
-          </div>
+          {shouldRenderBackButton && (
+            <Button
+              size={'lg'}
+              onClick={() => {
+                router.push(backPath)
+              }}
+            >
+              <h3 className="text-xl">Terug</h3>
+            </Button>
+          )}
         </div>
-        {shouldRenderBackButton && (
-          <Button
-            onClick={() => {
-              router.push(backPath)
-            }}
-            className={cn(buttonVariants({ size: 'lg' }), 'my-5 h-16 rounded-xl')}
-          >
-            <h3 className="text-xl">Terug</h3>
-          </Button>
-        )}
       </section>
     </>
   )

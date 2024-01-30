@@ -14,3 +14,8 @@ export const instrumentConfig = {
   fluit: '/images/instruments/fluit.jpg',
   zangeres: '/images/instruments/zangeres.jpg',
 } as const
+
+export const titlesAndTexts = {
+  sublevelTitle: 'Kies een sublevel',
+  levelTitle: 'Kies een level',
+} as const

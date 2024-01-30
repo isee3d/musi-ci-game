@@ -137,61 +137,6 @@ const NoteCreator: React.FC<{ newNotes: NoteCreate[], setNewNotes: Dispatch<SetS
         </Button>
       </form>
     </Form>
-    // <form onSubmit={ handleSubmit(onSubmit) }
-    //   className="m-2 flex w-full items-start space-x-4 rounded-lg shadow-md">
-    //   <div>
-    //     <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Noot</label>
-    //     <input
-    //       { ...register("name", validationRules.name) }
-    //       placeholder="Bijv: C4"
-    //       type='text'
-    //       autoComplete='off'
-    //       className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
-    //     <p className='text-red-600'>{ errors.name?.message }</p>
-    //   </div>
-
-    //   <div>
-    //     <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Starttijd</label>
-    //     <input
-    //       { ...register("time", validationRules.time) }
-    //       placeholder="Bijv: 0"
-    //       type='number'
-    //       onKeyDown={ (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault() }
-    //       autoComplete='off'
-    //       className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
-    //     <p className='text-red-600'>{ errors.time?.message }</p>
-    //   </div>
-
-    //   <div>
-    //     <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Duur</label>
-    //     <input { ...register("duration", validationRules.duration) }
-    //       type='number'
-    //       placeholder="Bijv: 0"
-    //       autoComplete='off'
-    //       onKeyDown={ (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault() }
-    //       className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
-    //     <p className='text-red-600'>{ errors.duration?.message }</p>
-    //   </div>
-
-    //   <div>
-    //     <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Volume</label>
-    //     <input
-    //       { ...register("speed", validationRules.speed) }
-    //       type='number'
-    //       placeholder="Bijv: 0"
-    //       autoComplete='off'
-    //       onKeyDown={ (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault() }
-    //       className="block w-full appearance-none rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" />
-    //     <p className='text-red-600'>{ errors.speed?.message }</p>
-    //   </div>
-
-    //   <button
-    //     type='button'
-    //     disabled={ !isValid }
-    //     className={ `mt-4 rounded-xl p-4 text-white ${isValid ? 'bg-green-500 hover:bg-green-600' : 'cursor-not-allowed bg-gray-400'}` }>
-    //     Add to fragment
-    //   </button>
-    // </form>
   )
 }
 

@@ -2,7 +2,7 @@ import { createActorContext } from '@xstate/react'
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import ContentContainer from '~/components/contentContainer'
 import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
@@ -13,6 +13,7 @@ import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { routePaths } from '~/config/routing'
 import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
@@ -39,22 +40,15 @@ const ModePage = ({
   const fragmentLevelQuery = api.sublevel.getFragmentsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
-
   const { data: level } = api.level.getLevelById.useQuery({ id: levelId })
-
   const fragmentGroupsQuery = api.sublevel.getFragmentGroupsOfSublevel.useQuery({
     sublevelId: sublevelId,
   })
-
   const sublevelQuery = api.sublevel.getSublevelById.useQuery(
     { id: sublevelId },
     {
       onSuccess: (data) => {
-        if (data.bpm) {
-          setBPM(data.bpm)
-        } else {
-          reset()
-        }
+        data.bpm ? setBPM(data.bpm) : reset()
       },
     },
   )
@@ -66,15 +60,7 @@ const ModePage = ({
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  useEffect(() => {
-    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(`/progress/${gameId}/${levelId}`)
-    }
-
-    setIsPlaying(false)
-  }, [])
-
-  function renderGameMode(mode: string) {
+  const renderGameMode = (mode: string) => {
     switch (mode) {
       case 'Luisteren':
         return (
@@ -147,37 +133,52 @@ const ModePage = ({
     }
   }
 
+  useEffect(() => {
+    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+      router.push(routePaths.sublevelSelectPage(gameId, parseInt(levelId)))
+    }
+
+    setIsPlaying(false)
+
+    return () => setIsPlaying(false)
+  }, [])
+
+  const renderedGameMode = useMemo(() => renderGameMode(mode), [mode])
+
   return (
     <ContentContainer
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
-      backPath={`/progress/${gameId}/${levelId}`}
-      classNameParent="px-0 mt-0"
+      classNameParent="border-x-4 border-b-4 border-primary rounded-b-2xl"
       shouldRenderBackButton={false}
       instrumentURL={mode !== 'Test' ? level?.instrument : undefined}
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data
           ?.filter((gameMode) => gameMode.name !== 'Test')
-          .map((gameMode, index) => (
+          .map((gameMode) => (
             <Button
-              key={index}
+              key={gameMode.id}
               className={cn(
-                buttonVariants({ size: 'lg' }),
-                'flex-auto rounded-none border border-background p-0 text-xl',
+                'h-12 flex-auto rounded-none text-xl',
                 mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
-                isPlaying ? 'cursor-not-allowed' : 'cursor-pointer',
               )}
               disabled={isPlaying}
+              style={{
+                pointerEvents: isPlaying ? 'none' : 'auto',
+                opacity: isPlaying ? 0.5 : 1,
+              }}
               asChild
             >
-              <Link href={`/progress/${gameId}/${levelId}/${sublevelId}/${gameMode.name}`}>
+              <Link
+                href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
+              >
                 {gameMode.name}
               </Link>
             </Button>
           ))}
       </div>
-      <div className="relative flex w-5/6 flex-col items-center justify-center gap-y-8 pt-4">
-        {renderGameMode(mode)}
+      <div className="relative flex w-full flex-col items-center justify-center gap-y-8 py-8">
+        {renderedGameMode}
       </div>
     </ContentContainer>
   )

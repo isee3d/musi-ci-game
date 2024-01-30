@@ -31,7 +31,7 @@ export function MainNav({ items, children }: MainNavProps) {
             <Button
               key={index}
               onClick={() => item.action && item.action()}
-              disabled={session?.user?.role === 'USER' || isPlaying}
+              disabled={isPlaying || session?.user?.role === 'USER'}
               variant={'link'}
               style={{
                 display:
@@ -46,8 +46,7 @@ export function MainNav({ items, children }: MainNavProps) {
                   className={cn(
                     'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
                     'text-foreground',
-                    session?.user.role === 'USER' &&
-                    'cursor-not-allowed opacity-80',
+                    session?.user.role === 'USER' && 'cursor-not-allowed opacity-80',
                   )}
                   href={item.href === undefined ? '#' : item.href}
                 >
@@ -72,7 +71,7 @@ export function MainNav({ items, children }: MainNavProps) {
               <DropdownMenuItem key={item.title} asChild>
                 <Link href={item.href}>{item.title}</Link>
               </DropdownMenuItem>
-              ))}
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

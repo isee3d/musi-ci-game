@@ -67,7 +67,6 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
           </div>
         </div>
       </div>
-      {/* Cover for the background so its a bit blurred out */}
       <div className="fixed inset-0 z-40 bg-black opacity-50 backdrop-blur-3xl"></div>
     </>
   )

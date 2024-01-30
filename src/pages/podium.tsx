@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
+import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
@@ -12,8 +13,8 @@ const PodiumPage = () => {
   return (
     <>
       <Head>
-        <title>Welkom Musi-CI</title>
-        <meta name="description" content="Voortgang levels" />
+        <title>Podium</title>
+        <meta name="description" content="Het podium" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -29,10 +30,9 @@ const PodiumPage = () => {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
-          <Button className="z-20 " asChild>
-            {/* Previously /progress/games for the games page */}
-            <Link href="/progress/1">
-              <h3>Kies je level</h3>
+          <Button asChild>
+            <Link href={routePaths.levelsPage}>
+              Kies je level
             </Link>
           </Button>
         </div>

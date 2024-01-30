@@ -144,8 +144,6 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
     }
   }
 
-  console
-
   return (
     <button
       disabled={!options?.isAnimating && !options?.isClickable}
