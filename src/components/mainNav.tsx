@@ -69,7 +69,7 @@ export function MainNav({ items, children }: MainNavProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {navItemsTemplate.map((item) => (
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem key={item.title} asChild>
                 <Link href={item.href}>{item.title}</Link>
               </DropdownMenuItem>
               ))}
