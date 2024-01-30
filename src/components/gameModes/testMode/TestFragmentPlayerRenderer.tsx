@@ -5,7 +5,7 @@ import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sub
 import { shallowEqual } from '@xstate/react'
 import { FragmentSceneData } from 'types/SceneData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'

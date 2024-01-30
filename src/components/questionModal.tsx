@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { questionAnswerFormSchema, teamFormSchema } from 'types/FormSchema'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'

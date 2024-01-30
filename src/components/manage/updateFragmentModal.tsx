@@ -1,14 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Fragment } from '@prisma/client'
-import { FragmentOptionalDefaultsSchema } from 'prisma/generated/zod'
+import { nanoid } from 'nanoid'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
+import { fragmentFormSchema } from 'types/FormSchema'
 import { NoteCreate } from 'types/Note'
 import { z } from 'zod'
 import NoteCreator from '~/components/creators/noteCreator'
 import { ExistingNote } from '~/components/existingNote'
-import { api } from '~/utils/api'
+import { Button } from '~/components/ui/button'
+import { Checkbox } from '~/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -17,13 +19,9 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
-import { Button, buttonVariants } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { cn } from '~/lib/utils'
-import { fragmentFormSchema } from 'types/FormSchema'
-import { Checkbox } from '~/components/ui/checkbox'
-import { nanoid } from 'nanoid'
+import { api } from '~/utils/api'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>

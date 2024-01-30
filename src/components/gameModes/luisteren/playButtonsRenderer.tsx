@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 import React from 'react'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { Button } from '~/components/ui/button'
 import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'

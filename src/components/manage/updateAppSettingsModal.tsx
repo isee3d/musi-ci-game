@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AppSettings } from '@prisma/client'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { appSettingsFormSchema } from 'types/FormSchema'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'

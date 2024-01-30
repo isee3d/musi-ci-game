@@ -2,7 +2,7 @@ import { GameMode } from '@prisma/client'
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { LoadingPage } from '~/components/loading'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
@@ -51,7 +51,7 @@ const ManageGameMode = () => {
           <LoadingPage />
         </div>
       )}
-      
+
       <main className="flex grow flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <h1 className="mb-10 py-3 text-center text-4xl font-extrabold tracking-tight text-white ">
           GameModes beheren

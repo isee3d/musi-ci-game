@@ -13,7 +13,7 @@ import { Button, buttonVariants } from '~/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { Textarea } from '~/components/ui/textarea'
 import { fragmentGroupFormSchema, teamFormSchema } from 'types/FormSchema'
 import { useState } from 'react'
@@ -27,8 +27,7 @@ interface BaseStaticModalProps {
 
 const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmentGroup }) => {
   const [addedFragments, setAddedFragments] = useState<Fragment[] | undefined>(fragmentGroup.fragments)
-  const ctx = api.useContext()
-  // const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
+  const ctx = api.useUtils()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
   const { mutate: updatefragmentGroup } = api.fragmentNote.updateFragmentGroup.useMutation({
     onSuccess: () => {
@@ -39,11 +38,6 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
       toast.error('Something went wrong!')
     },
   })
-
-  // const fragmentsOfFragmentGroup = api.fragmentNote.getFragmentsOfFragmentGroup.useQuery(
-  //   { id: fragmentGroup.id },
-  //   { onSuccess: (data) => setAddedFragments(data?.fragments) }
-  // )
 
   const onAddFragmentButtonClick = (fragment: Fragment) => {
     setAddedFragments((prev) => [...(prev ?? []), fragment])
@@ -59,16 +53,11 @@ const UpdateFragmentGroupModal: React.FC<BaseStaticModalProps> = ({ setmodal, fr
     defaultValues: {
       name: fragmentGroup.name,
       description: fragmentGroup.description,
-      fragments: fragmentGroup.fragments?.map((f) => f.id) ?? [],
+      fragments: fragmentGroup.fragments?.map((f: any) => f.id) ?? [],
     },
   })
 
   function onSubmit(data: z.infer<typeof fragmentGroupFormSchema>) {
-    console.log('comning here', addedFragments, fragmentGroup.id, data)
-    // const exists = fragmentGroupQuery.data?.find(
-    //   (t) => t.name === data.name && t.id !== fragmentGroup.id
-    // )
-    // if (!exists) {
       updatefragmentGroup({
         name: data.name,
         description: data.description,

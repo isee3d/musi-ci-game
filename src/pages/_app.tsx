@@ -4,7 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { type AppType } from 'next/app'
 import { Inter as FontSans, Poppins } from 'next/font/google'
 import localFont from 'next/font/local'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '~/components/ui/sonner'
 
 import { api } from '~/utils/api'
 import NextNProgress from 'nextjs-progressbar'

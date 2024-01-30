@@ -13,7 +13,7 @@ import { Button } from '~/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { Textarea } from '~/components/ui/textarea'
 import { teamFormSchema } from 'types/FormSchema'
 
