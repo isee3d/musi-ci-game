@@ -33,8 +33,8 @@ const UpdateSublevelModal: React.FC<{
   const fragmentGroupQuery = api.fragmentNote.getAllFragmentGroups.useQuery()
 
   const { mutate: updateSublevel } = api.sublevel.updateSubLevel.useMutation({
-    onSuccess: () => {
-      toast.success('Sublevel updated!')
+    onSuccess: (data) => {
+      toast.success(`${data.name} aangepast!`)
       ctx.sublevel.getAllSubLevels.invalidate()
     },
     onError: (error) => {
@@ -97,13 +97,20 @@ const UpdateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    updateSublevel({
+    const processedData = {
       ...data,
+      fragmentToShowLuisteren:
+        data.fragmentToShowLuisteren === undefined ? null : data.fragmentToShowLuisteren,
+      fragmentToShowSpelen:
+        data.fragmentToShowSpelen === undefined ? null : data.fragmentToShowSpelen,
+      fragmentToShowUitdaging:
+        data.fragmentToShowUitdaging === undefined ? null : data.fragmentToShowUitdaging,
       id: sublevel.id,
       fragments: addedFragments.map((f) => f.id),
       gameModes: addedGameModes.map((g) => g.id),
       fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
-    })
+    }
+    updateSublevel({ ...processedData })
     setAddedGameModes([])
     setAddedFragments([])
     form.reset()
