@@ -18,17 +18,12 @@ const StartUI: React.FC<StartUIProps> = ({ startSpelen }) => {
   }
 
   return (
-    <div className="flex flex-col justify-center gap-y-5">
-      <Button onClick={() => startSpelenAndCountdown()}>
-        <h3 className="text-center text-xl font-bold">Start met spelen</h3>
+    <div className="flex flex-col gap-y-5">
+      <Button size={'lg'} onClick={() => startSpelenAndCountdown()}>
+        Start met spelen
       </Button>
-      <Button
-        className={cn('m-0')}
-        onClick={() => {
-          router.back()
-        }}
-      >
-        <h3 className="text-center text-xl font-bold">Terug</h3>
+      <Button size={'lg'} onClick={router.back}>
+        Terug
       </Button>
     </div>
   )

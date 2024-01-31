@@ -64,28 +64,29 @@ const Luisteren: React.FC<LuisterenProps> = ({
       <h2 className="text-center text-4xl font-extrabold tracking-tight">Klik en luister</h2>
       {isIdleState && (
         <div className="flex flex-col gap-y-5">
-          <Button className={buttonVariants({ size: 'lg' })} onClick={() => startLuisteren()}>
+          <Button size={'lg'} onClick={startLuisteren}>
             Start met luisteren
           </Button>
-          <Button className={buttonVariants({ size: 'lg' })} onClick={() => router.back()}>
+          <Button size={'lg'} onClick={router.back}>
             Terug
           </Button>
         </div>
       )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
       {isfinishedPlayingState && <LuisterenFeedback />}
-      <div className=" flex justify-center space-x-5">
         {isPlayingState && <PlayButtonsRenderer />}
         {isfinishedPlayingState && (
           <Button
-            className={cn(buttonVariants({ size: 'lg' }), 'bg-purple-500 text-white hover:bg-purple-300')}
-            onClick={() => restartLuisteren()}
+            className={cn(
+              buttonVariants({ size: 'lg' }),
+              'bg-purple-500 text-white hover:bg-purple-300',
+            )}
+            onClick={restartLuisteren}
           >
             Speel opnieuw
           </Button>
         )}
         {isfinishedPlayingState && <BackToOverView levelId={levelId} />}
-      </div>
     </>
   )
 }

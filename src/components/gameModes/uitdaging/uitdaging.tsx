@@ -90,7 +90,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
         </>
       )}
       {idleState && <StartUitdagingUI startUitdaging={startUitdaging} />}
-      {(playingState || countdownState) && (
+      {playingState && (
         <h3 className="text-center text-4xl font-extrabold tracking-tight">
           {hours}:{minutes}:{seconds}
         </h3>

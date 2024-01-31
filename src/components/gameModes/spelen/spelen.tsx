@@ -71,9 +71,9 @@ const Spelen: React.FC<SpelenProps> = ({
   return (
     <>
       {!finishedState && (
-        <h3 className="pb-16 text-center text-4xl font-extrabold tracking-tight">
-          Klik en luister
-        </h3>
+        <h2 className="text-center text-4xl font-extrabold tracking-tight">
+          Luister en klik
+        </h2>
       )}
       {isIdleState && <StartRoundUI startSpelen={startSpelen} />}
       {countdownState && <CountdownPlayer />}

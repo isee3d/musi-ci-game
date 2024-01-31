@@ -1,8 +1,7 @@
-// 'use client'
+'use client'
 
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { ReactNode, useRef, useState } from 'react'
 import { MainNav } from '~/components/mainNav'
 import ManageBaseModal from '~/components/manage/manageBaseModal'

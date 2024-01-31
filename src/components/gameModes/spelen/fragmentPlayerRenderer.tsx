@@ -60,14 +60,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     setSceneStartTime,
   } = useLuisterenStore()
 
-  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
-    onSuccess: () => {
-      toast.success('levelResult created!')
-    },
-    onError: () => {
-      toast.error('Failed to upload new levelresult!')
-    },
-  })
+  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
 
   // local state
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(

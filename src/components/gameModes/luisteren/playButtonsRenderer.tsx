@@ -12,19 +12,12 @@ const PlayButtonsRenderer: React.FC = () => {
   const { send } = LuisterenMachineContext.useActorRef()
   const { resetSceneRelatedData, setEndTime, sceneData, addScene, getFormattedStoreData } =
     useLuisterenStore()
-  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
-    onSuccess: () => {
-      toast.success('levelResult created!')
-    },
-    onError: () => {
-      toast.error('Failed to upload new levelresult!')
-    },
-  })
+  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
 
   if (!sessionData?.user) return null
 
   return (
-    <>
+    <div className='flex justify-center gap-4'>
       <Button
         size={'lg'}
         onClick={() => {
@@ -33,7 +26,7 @@ const PlayButtonsRenderer: React.FC = () => {
           resetSceneRelatedData()
         }}
       >
-        <h3>hoger/lager</h3>
+        hoger/lager
       </Button>
       <Button
         size={'lg'}
@@ -43,9 +36,9 @@ const PlayButtonsRenderer: React.FC = () => {
           saveToDB(getFormattedStoreData(sessionData.user.id))
         }}
       >
-        <h3>Stop</h3>
+        Stop
       </Button>
-    </>
+    </div>
   )
 }
 

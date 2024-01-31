@@ -60,14 +60,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   )
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
-  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
-    onSuccess: () => {
-      toast.success('levelResult created!')
-    },
-    onError: () => {
-      toast.error('Failed to upload new levelresult!')
-    },
-  })
+  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
