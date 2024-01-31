@@ -20,14 +20,14 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
     endTime,
     startTime,
     setShouldRenderCinieInContentContainer,
+    setIsPlaying,
   } = useLuisterenStore()
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
+    setIsPlaying(false)
 
-    return () => {
-      setShouldRenderCinieInContentContainer(true)
-    }
+    return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
   return (

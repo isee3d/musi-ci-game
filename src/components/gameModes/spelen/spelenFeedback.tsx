@@ -20,14 +20,14 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
     endTime,
     startTime,
     setShouldRenderCinieInContentContainer,
+    setIsPlaying,
   } = useLuisterenStore()
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
+    setIsPlaying(false)
 
-    return () => {
-      setShouldRenderCinieInContentContainer(true)
-    }
+    return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
   return (

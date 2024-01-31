@@ -5,14 +5,13 @@ import Image from 'next/image'
 import { imagesConfig } from '~/config/site'
 
 const LuisterenFeedback: React.FC = () => {
-  const { score, endTime, startTime, setShouldRenderCinieInContentContainer } = useLuisterenStore()
+  const { score, endTime, startTime, setShouldRenderCinieInContentContainer, setIsPlaying, } = useLuisterenStore()
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
+    setIsPlaying(false)
 
-    return () => {
-      setShouldRenderCinieInContentContainer(true)
-    }
+    return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
   return (

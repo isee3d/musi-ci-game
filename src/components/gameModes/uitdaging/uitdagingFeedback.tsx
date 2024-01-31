@@ -19,13 +19,14 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
     endTime,
     startTime,
     setShouldRenderCinieInContentContainer,
+    setIsPlaying,
   } = useLuisterenStore()
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
-    return () => {
-      setShouldRenderCinieInContentContainer(true)
-    }
+    setIsPlaying(false)
+
+    return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
   return (
