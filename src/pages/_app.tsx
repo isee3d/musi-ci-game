@@ -5,6 +5,7 @@ import { type AppType } from 'next/app'
 import { Inter as FontSans, Poppins } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Toaster } from '~/components/ui/sonner'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { api } from '~/utils/api'
 import NextNProgress from 'nextjs-progressbar'
@@ -75,6 +76,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
             <Toaster position="bottom-center" />
             <NextNProgress color="#3b82f6" options={{ easing: 'ease', speed: 500 }} />
             <Component {...pageProps} />
+            <SpeedInsights />
           </Layout>
         </ThemeProvider>
       </main>
