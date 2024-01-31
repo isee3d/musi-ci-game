@@ -12,6 +12,7 @@ import Test from '~/components/gameModes/testMode/test'
 import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
 import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
+import { LoadingSpinner } from '~/components/loading'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
 import { env } from '~/env.mjs'
@@ -56,6 +57,7 @@ const ModePage = ({
     sublevelId: sublevelId,
   })
   const modeQuery = api.gameMode.getGameMode.useQuery({ name: mode })
+
   const fragmentsToShow = fragmentLevelQuery?.data?.fragmentToShow ?? 0
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
@@ -153,6 +155,7 @@ const ModePage = ({
       instrumentURL={mode !== 'Test' ? level?.instrument : undefined}
     >
       <div className="flex w-full">
+        {gameModesOfSublevelQuery?.isLoading && <LoadingSpinner />}
         {gameModesOfSublevelQuery?.data
           ?.filter((gameMode) => gameMode.name !== 'Test')
           .map((gameMode) => (
@@ -204,7 +207,7 @@ export const getServerSideProps = async (
     await helpers.sublevel.getFragmentsOfSublevel.prefetch({ sublevelId: ctx.params.sublevelId })
     await helpers.sublevel.getSublevelById.prefetch({ id: ctx.params.sublevelId })
     await helpers.gameMode.getGameMode.prefetch({ name: ctx.params.mode })
-    await helpers.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: ctx.params.sublevelId })
+    // await helpers.sublevel.getGameModesOfSublevel.prefetch({ sublevelId: ctx.params.sublevelId })
     await helpers.sublevel.getFragmentGroupsOfSublevel.prefetch({
       sublevelId: ctx.params.sublevelId,
     })

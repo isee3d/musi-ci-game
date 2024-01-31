@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
+import { LevelsSkeletonList, LoadingSpinner } from '~/components/loading'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
 import { titlesAndTexts } from '~/config/site'
@@ -11,44 +12,46 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
 const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { data: levelsOfGame } = api.game.getLevelsOfGame.useQuery({
+  const { data: levelsOfGame, isLoading } = api.game.getLevelsOfGame.useQuery({
     gameId: parseInt(gameId),
   })
 
   return (
     <ContentContainer backPath={routePaths.home} title={titlesAndTexts.levelTitle}>
-      {levelsOfGame?.map((level, index) => (
-        <Button
-          key={level.id}
-          className={cn(
-            'h-20 w-full rounded-none border-t-4 border-gray-400',
-            index === levelsOfGame.length - 1 && 'rounded-b-2xl',
-          )}
-          asChild
-        >
-          <Link href={routePaths.sublevelSelectPage(gameId, level.id)}>
-            <div className="flex w-full items-center justify-center">
-              <div className="flex w-full justify-start space-x-4">
-                <div className="relative flex h-16 w-full items-center justify-start gap-x-24 text-center text-2xl font-medium">
-                  <div className="relative size-14">
-                    {level.instrument && (
-                      <Image
-                        src={level.instrument ?? ''}
-                        fill
-                        className="rounded-full"
-                        alt="instrument"
-                      />
-                    )}
+      {isLoading && <LevelsSkeletonList />}
+      {levelsOfGame &&
+        levelsOfGame?.map((level, index) => (
+          <Button
+            key={level.id}
+            className={cn(
+              'h-20 w-full rounded-none border-t-4 border-gray-400',
+              index === levelsOfGame.length - 1 && 'rounded-b-2xl',
+            )}
+            asChild
+          >
+            <Link href={routePaths.sublevelSelectPage(gameId, level.id)}>
+              <div className="flex w-full items-center justify-center">
+                <div className="flex w-full justify-start space-x-4">
+                  <div className="relative flex h-16 w-full items-center justify-start gap-x-24 text-center text-2xl font-medium">
+                    <div className="relative size-14">
+                      {level.instrument && (
+                        <Image
+                          src={level.instrument ?? ''}
+                          fill
+                          className="rounded-full"
+                          alt="instrument"
+                        />
+                      )}
+                    </div>
+                    <h2 className="text-xl" style={{ color: level.color ?? 'bg-background' }}>
+                      {level.name}
+                    </h2>
                   </div>
-                  <h2 className="text-xl" style={{ color: level.color ?? 'bg-background' }}>
-                    {level.name}
-                  </h2>
                 </div>
               </div>
-            </div>
-          </Link>
-        </Button>
-      ))}
+            </Link>
+          </Button>
+        ))}
     </ContentContainer>
   )
 }
@@ -60,16 +63,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId
   if (auth.redirect) {
     return { redirect: auth.redirect }
   }
-  const helpers = generateServerSideHelper(auth.props.session)
+
+  // const helpers = generateServerSideHelper(auth.props.session)
 
   const gameId = ctx.params?.gameId
 
-  if (gameId) await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+  // if (gameId) await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
 
   return {
     props: {
       session: auth.props.session,
-      trpcState: helpers.dehydrate(),
+      // trpcState: helpers.dehydrate(),
       gameId: gameId ?? '1',
     },
   }
