@@ -2,7 +2,6 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
-import { LevelsSkeletonList, LoadingSpinner } from '~/components/loading'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
 import { titlesAndTexts } from '~/config/site'
@@ -18,9 +17,7 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
 
   return (
     <ContentContainer backPath={routePaths.home} title={titlesAndTexts.levelTitle}>
-      {isLoading && <LevelsSkeletonList />}
-      {levelsOfGame &&
-        levelsOfGame?.map((level, index) => (
+      {levelsOfGame?.map((level, index) => (
           <Button
             key={level.id}
             className={cn(
@@ -64,16 +61,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext<{ gameId
     return { redirect: auth.redirect }
   }
 
-  // const helpers = generateServerSideHelper(auth.props.session)
+  const helpers = generateServerSideHelper(auth.props.session)
 
   const gameId = ctx.params?.gameId
 
-  // if (gameId) await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
+  if (gameId) await helpers.game.getLevelsOfGame.prefetch({ gameId: parseInt(gameId) })
 
   return {
     props: {
       session: auth.props.session,
-      // trpcState: helpers.dehydrate(),
+      trpcState: helpers.dehydrate(),
       gameId: gameId ?? '1',
     },
   }

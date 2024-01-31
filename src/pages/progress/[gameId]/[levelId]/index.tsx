@@ -1,8 +1,7 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import ContentContainer from '~/components/contentContainer'
-import { LevelsSkeletonList, LoadingPage } from '~/components/loading'
-import { Button, buttonVariants } from '~/components/ui/button'
+import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
 import { titlesAndTexts } from '~/config/site'
 import { cn } from '~/lib/utils'
@@ -23,9 +22,7 @@ const SublevelsPage = ({
       title={titlesAndTexts.sublevelTitle}
       backPath={routePaths.levelSelectPage(gameId)}
     >
-      {isLoading && <LevelsSkeletonList />}
-      {subLevelsOfLevelQuery &&
-        subLevelsOfLevelQuery?.map((sublevel, index) => (
+      {subLevelsOfLevelQuery?.map((sublevel, index) => (
           <Button
             key={sublevel.id}
             className={cn(
@@ -65,7 +62,7 @@ export const getServerSideProps = async (
   if (typeof gameId !== 'string' || typeof levelId !== 'string')
     throw new Error('invalid parameters')
 
-  // await helpers.level.getSubLevelsOfLevel.prefetch({ levelId: levelId })
+  await helpers.level.getSubLevelsOfLevel.prefetch({ levelId: levelId })
   await helpers.level.getLevelById.prefetch({ id: levelId })
 
   return {
