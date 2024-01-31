@@ -15,7 +15,6 @@ interface UitdagingFeedbackProps {
 
 const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
   const {
-    reset,
     getPercentageCorrectlyAnswered,
     endTime,
     startTime,
@@ -49,10 +48,7 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
       </h3>
       <div className="flex justify-center">
         <Button asChild>
-          <Link
-            onClick={() => reset()}
-            href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}
-          >
+          <Link href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}>
             <h3>Rond de test af</h3>
           </Link>
         </Button>

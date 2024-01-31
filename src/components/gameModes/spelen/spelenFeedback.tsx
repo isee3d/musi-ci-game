@@ -15,7 +15,6 @@ interface SpelenFeedbackProps {
 const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
   const { gameId, levelId, restartSpelen } = path
   const {
-    reset,
     getPercentageCorrectlyAnswered,
     endTime,
     startTime,
@@ -57,7 +56,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
         >
           Speel opnieuw
         </Button>
-        <Button onClick={() => reset()} asChild>
+        <Button asChild>
           <Link href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}>
             <h3>Terug naar overzicht</h3>
           </Link>

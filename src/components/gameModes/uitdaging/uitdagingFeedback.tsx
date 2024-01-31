@@ -14,7 +14,6 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
   options: { gameId, levelId, restartUitdaging },
 }) => {
   const {
-    reset,
     getPercentageCorrectlyAnswered,
     endTime,
     startTime,
@@ -49,7 +48,7 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
           Speel opnieuw
         </Button>
         <Button asChild>
-          <Link onClick={reset} href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}>
+          <Link href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}>
             <h3>Terug naar overzicht</h3>
           </Link>
         </Button>

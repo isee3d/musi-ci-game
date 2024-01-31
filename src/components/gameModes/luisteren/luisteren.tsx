@@ -84,7 +84,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
             Speel opnieuw
           </Button>
         )}
-        {isfinishedPlayingState && <BackToOverView levelId={levelId} sublevelId={sublevelId} />}
+        {isfinishedPlayingState && <BackToOverView levelId={levelId} />}
       </div>
     </>
   )
