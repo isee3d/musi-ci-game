@@ -47,9 +47,7 @@ const Spelen: React.FC<SpelenProps> = ({
   )
 
   useEffect(() => {
-    return () => {
-      send({ type: 'EXITGAME' })
-    }
+    return () => send({ type: 'EXITGAME' })
   }, [])
 
   function restartSpelen() {

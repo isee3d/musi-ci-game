@@ -17,9 +17,15 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
-import { instrumentConfig } from '~/config/site'
+import { imagesConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -34,12 +40,12 @@ const UpdateLevelModal: React.FC<{
 
   const subLevelsOfLevelQuery = api.level.getSubLevelsOfLevel.useQuery(
     { levelId: level.id.toString() },
-    { onSuccess: (data) => setAddedSublevels(data) }
+    { onSuccess: (data) => setAddedSublevels(data) },
   )
 
   const otherSubLevelsQuery = api.level.getAllRemainingSubLevelsOfLevel.useQuery(
     { levelId: level.id.toString() },
-    { onSuccess: (data) => setRemainingSublevels(data) }
+    { onSuccess: (data) => setRemainingSublevels(data) },
   )
 
   const { mutate: updateLevel } = api.level.updateLevel.useMutation({
@@ -99,8 +105,7 @@ const UpdateLevelModal: React.FC<{
       })
       form.reset()
       setmodal(false)
-    }
-    else {
+    } else {
       toast.error('Level naam is al in gebruik!')
     }
   }
@@ -152,7 +157,7 @@ const UpdateLevelModal: React.FC<{
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.entries(instrumentConfig).map(([instrument, imagePath]) => (
+                    {Object.entries(imagesConfig).map(([instrument, imagePath]) => (
                       <SelectItem key={instrument} value={imagePath}>
                         {instrument}
                       </SelectItem>

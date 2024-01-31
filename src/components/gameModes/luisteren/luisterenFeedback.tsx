@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
 import Image from 'next/image'
+import { imagesConfig } from '~/config/site'
 
 const LuisterenFeedback: React.FC = () => {
   const { score, endTime, startTime, setShouldRenderCinieInContentContainer } = useLuisterenStore()
@@ -17,7 +18,7 @@ const LuisterenFeedback: React.FC = () => {
   return (
     <>
       <Image
-        src="/images/cinie-duim.jpg"
+        src={imagesConfig.cinie}
         alt="cinie"
         className=""
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

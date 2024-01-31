@@ -4,6 +4,8 @@ import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
 import Image from 'next/image'
+import { routePaths } from '~/config/routing'
+import { imagesConfig } from '~/config/site'
 
 interface UitdagingFeedbackProps {
   levelId: string
@@ -31,7 +33,7 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
   return (
     <>
       <Image
-        src="/images/cinie-duim.jpg"
+        src={imagesConfig.cinie}
         alt="cinie"
         className=""
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -47,7 +49,10 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
       </h3>
       <div className="flex justify-center">
         <Button asChild>
-          <Link onClick={() => reset()} href={`/progress/${gameId}/${levelId}`}>
+          <Link
+            onClick={() => reset()}
+            href={routePaths.sublevelSelectPage(gameId, parseInt(levelId))}
+          >
             <h3>Rond de test af</h3>
           </Link>
         </Button>

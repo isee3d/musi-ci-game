@@ -1,6 +1,7 @@
 export const routePaths = {
   home: '/',
   tutorial: '/tutorial',
+  podium: '/podium',
   login: '/login',
   levelsPage: 'progress/1',
   levelSelectPage: (gameId: string) => `/progress/${gameId}`,

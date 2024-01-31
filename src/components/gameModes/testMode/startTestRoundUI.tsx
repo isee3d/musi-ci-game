@@ -4,10 +4,20 @@ import { Button } from '~/components/ui/button'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
-const StartTestUI: React.FC = () => {
+interface StartTestProps {
+  startTest: () => void
+}
+
+const StartTestUI: React.FC<StartTestProps> = ({ startTest }) => {
   const { send } = TestModeMachineContext.useActorRef()
   const { setStartTime } = useLuisterenStore()
   const router = useRouter()
+
+  function startTestAndCountdown() {
+    startTest()
+    send('STARTCOUNTDOWN')
+    setStartTime(Date.now())
+  }
 
   return (
     <>
@@ -15,22 +25,11 @@ const StartTestUI: React.FC = () => {
         Veel success met de Test
       </h3>
       <div className="flex justify-center space-x-5">
-        <Button
-          size={'lg'}
-          onClick={() => {
-            send('STARTCOUNTDOWN')
-            setStartTime(Date.now())
-          }}
-        >
-          <h3>Start</h3>
+        <Button size={'lg'} onClick={startTestAndCountdown}>
+          Start
         </Button>
-        <Button
-          size={'lg'}
-          onClick={() => {
-            router.back()
-          }}
-        >
-          <h3>Terug</h3>
+        <Button size={'lg'} onClick={router.back}>
+          Terug
         </Button>
       </div>
     </>

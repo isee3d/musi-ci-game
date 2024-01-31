@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Button, buttonVariants } from '~/components/ui/button'
+import { imagesConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
@@ -41,7 +42,7 @@ const ContentContainer: React.FC<Props> = ({
                 {shouldRenderCinieInContentContainer && (
                   <Image
                     objectFit="fill"
-                    src="/images/cinie-duim.jpg"
+                    src={imagesConfig.cinie}
                     alt="cinie"
                     className=""
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -68,10 +69,7 @@ const ContentContainer: React.FC<Props> = ({
               </div>
             </div>
             <div
-              className={cn(
-                'flex w-full flex-col items-center justify-between',
-                classNameParent,
-              )}
+              className={cn('flex w-full flex-col items-center justify-between', classNameParent)}
             >
               {children}
             </div>

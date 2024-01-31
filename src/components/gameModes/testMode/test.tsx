@@ -90,6 +90,7 @@ const Test: React.FC<TestModeProps> = ({
   const { data: session } = useSession()
   const { send } = TestModeMachineContext.useActorRef()
   const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap } = useLuisterenStore()
+  const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
@@ -102,7 +103,6 @@ const Test: React.FC<TestModeProps> = ({
   )
 
   const stopwatch = useStopwatch(1000)
-  const { hours, minutes, seconds } = stopwatch.convertedTime
 
   const countdownTimings: CountdownTimings = useMemo(
     () => ({
@@ -114,11 +114,22 @@ const Test: React.FC<TestModeProps> = ({
     [mode],
   )
 
-  function getPauseOrResumeEvent() {
-    return isPausedState ? `RESUMEGAME` : `PAUSEGAME`
-  }
+  // useEffect(() => {
+  //   reset()
+  //   setStartTime(Date.now())
+  //   setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
+  //   send({
+  //     type: 'STARTROUND',
+  //     originalFragmentGroups: fragmentGroups as FragmentGroup[],
+  //     fragmentsToShow: fragmentsToShow,
+  //     countdownTimings: countdownTimings,
+  //     amountOfScenes: mode?.amountOfScenes ?? 0,
+  //     countdownActions: stopwatch.actions,
+  //     groups: fragmentGroups as FragmentGroup[],
+  //   })
+  // }, [])
 
-  useEffect(() => {
+  function startTest() {
     reset()
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
@@ -131,11 +142,11 @@ const Test: React.FC<TestModeProps> = ({
       countdownActions: stopwatch.actions,
       groups: fragmentGroups as FragmentGroup[],
     })
-  }, [])
+  }
 
   return (
     <>
-      {startRoundState && <StartTestUI />}
+      {idleState && <StartTestUI startTest={startTest} />}
       {countdownState && <TestCountdownPlayer />}
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
@@ -147,7 +158,7 @@ const Test: React.FC<TestModeProps> = ({
           disabled={!guessHeardFragmentState && !isPausedState}
           onClick={() => {
             send({
-              type: getPauseOrResumeEvent(),
+              type: isPausedState ? `RESUMEGAME` : `PAUSEGAME`,
             })
           }}
         >

@@ -63,7 +63,7 @@ export function MainNav({ items, children }: MainNavProps) {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button asChild variant={'link'}>
-              <Link href="/admin">Instellingen</Link>
+              <Link href="#">Instellingen</Link>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

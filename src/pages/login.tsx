@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import { LoadingPage } from '~/components/loading'
 import { Button } from '~/components/ui/button'
+import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuth } from '~/utils/authUtils'
 
@@ -63,7 +64,7 @@ const LoginPage = () => {
               </Button> */}
               {session?.user.id && (
                 <Button size={'lg'} asChild>
-                  <Link href={'/podium'}> Ga naar volgende pagina</Link>
+                  <Link href={routePaths.podium}> Ga naar volgende pagina</Link>
                 </Button>
               )}
             </div>

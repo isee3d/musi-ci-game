@@ -5,7 +5,7 @@ export const siteConfig = {
   version: 2.1,
 } as const
 
-export const instrumentConfig = {
+export const imagesConfig = {
   drumstel: '/images/instruments/drumstel.jpg',
   piano: '/images/instruments/piano.jpg',
   contrabas: '/images/instruments/contrabas.jpg',
@@ -13,6 +13,7 @@ export const instrumentConfig = {
   saxofoon: '/images/instruments/saxofoon.jpg',
   fluit: '/images/instruments/fluit.jpg',
   zangeres: '/images/instruments/zangeres.jpg',
+  cinie: '/images/cinie-duim.jpg',
 } as const
 
 export const titlesAndTexts = {

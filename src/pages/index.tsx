@@ -37,7 +37,7 @@ const WelcomePage = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" size={'lg'}>
-              <Link href={'/tutorial'}>
+              <Link href={routePaths.tutorial}>
                 <h2 className="text-xl">Bekijk uitleg</h2>
               </Link>
             </Button>

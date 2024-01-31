@@ -16,9 +16,15 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '~/components/ui/select'
 import { Textarea } from '~/components/ui/textarea'
-import { instrumentConfig } from '~/config/site'
+import { imagesConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { api } from '~/utils/api'
 
@@ -32,11 +38,11 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
   const { mutate: addLevel } = api.level.createLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
-        toast.success('level created!')
+      toast.success('level created!')
     },
     onError: (error) => {
       toast.error(error.message)
-    }
+    },
   })
 
   const onAddSublevelButtonClick = (sublevel: SubLevel) => {
@@ -52,7 +58,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
     resolver: zodResolver(levelFormSchema),
     defaultValues: {
       name: '',
-      instrument: instrumentConfig.drumstel
+      instrument: imagesConfig.drumstel,
     },
   })
 
@@ -63,8 +69,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
       setAddedSubLevels([])
       form.reset()
       setmodal(false)
-    }
-    else {
+    } else {
       toast.error('Level naam bestaat al!')
     }
   }
@@ -117,7 +122,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.entries(instrumentConfig).map(([instrument, imagePath]) => (
+                      {Object.entries(imagesConfig).map(([instrument, imagePath]) => (
                         <SelectItem key={instrument} value={imagePath}>
                           {instrument}
                         </SelectItem>
