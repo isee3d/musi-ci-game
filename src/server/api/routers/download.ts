@@ -441,11 +441,6 @@ export const downloadRouter = createTRPCRouter({
           subLevel: {
             select: {
               name: true,
-              questions: {
-                select: {
-                  question: true,
-                },
-              },
             },
           },
           gameMode: {
