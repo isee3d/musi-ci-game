@@ -59,7 +59,6 @@ const QuestionModal: React.FC<{
         id_User: session?.user.id || '',
       }
     })
-    console.log(completeData)
     await questionAnswerMutation.mutateAsync(completeData)
     signOut({ redirect: true, callbackUrl: '/login' })
     form.reset()

@@ -20,6 +20,9 @@ import { ThemeProvider } from '~/components/themeProvider'
 import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
 import '~/styles/globals.css'
+import { useRouter } from 'next/router'
+import { routeSoundIgnorePaths } from '~/config/routing'
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -42,7 +45,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const [showModal, setShowModal] = useState(true)
+  const router = useRouter()
+  const { audioContext } = useAudioServiceStore.getState()
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     if (env.NEXT_PUBLIC_XSTATE_DEV_TOOLS === 'false') return
@@ -54,6 +59,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (!audioContext) isIgnoreSoundPath()
+  }, [router.pathname])
+
+  const isIgnoreSoundPath = () => {
+    setShowModal(!routeSoundIgnorePaths.includes(router.pathname))
+  }
 
   return (
     <SessionProvider session={session}>

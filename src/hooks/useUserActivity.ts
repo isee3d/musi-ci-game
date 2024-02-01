@@ -15,7 +15,6 @@ export function useUserActivity() {
     const differenceInMinutes = Math.abs(now - lastEnteredWebsite) / 1000 / 60
 
     if (userId && !enteredWebsite && differenceInMinutes > 5) {
-      console.log(userId, enteredWebsite, differenceInMinutes, now, lastEnteredWebsite)
       setEnteredWebsite(true)
       setLastEnteredWebsite(Date.now())
       mutation.mutate({ userId: userId, activity: 'EnterWebsiteMessage' })
@@ -25,7 +24,6 @@ export function useUserActivity() {
   const logSignOutActivity = async () => {
     const userId = session?.user?.id
     if (!userId) return
-    console.log('signing out')
     await mutation.mutateAsync({ userId: userId, activity: 'SignOutMessage' })
   }
 

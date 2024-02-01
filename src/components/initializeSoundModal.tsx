@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { initializeSound, start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
@@ -12,23 +12,18 @@ interface BaseStaticModalProps {
 const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
   const { data: session } = useSession()
   const { audioContext, setAudioContext, init } = useAudioServiceStore()
-
   const [clickedButton, setClickedButton] = useState<boolean>(false)
 
-  useEffect(() => {
-    initializeAudio()
-  }, [])
-
-  async function initializeAudio(triggerThroughGesture?: boolean) {
+  async function initializeAudio(triggerThroughGesture: boolean = false) {
     //@ts-ignore
     window.start = start
 
     init()
 
     if (!audioContext) {
-      console.log('no audio context')
       const AudioContext = window.AudioContext || window.webkitAudioContext
       const context = new AudioContext()
+      context.resume()
       setAudioContext(context)
       setmodal(false)
     } else if (audioContext?.state === 'running') {

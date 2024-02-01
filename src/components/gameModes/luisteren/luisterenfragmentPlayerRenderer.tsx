@@ -51,7 +51,6 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
 
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
-    console.log('fragmentToPlay', fragmentToPlay)
     if (!fragmentToPlay) return
     setactiveFragmentPlayerIndex(fragmentToPlay.id)
     if (activeFragmentPlayerIndex === undefined) {

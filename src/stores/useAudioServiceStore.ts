@@ -1,3 +1,5 @@
+'use client'
+
 import { pianoNotesMap } from './../components/fragmentPlayer/audio/Keyboard'
 import { create } from 'zustand'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
@@ -149,7 +151,6 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     for (let fragment of fragments) {
       random -= fragment.weight
       if (random < 0) {
-        // console.log('chose fragment', fragment.id)
         adjustWeights(fragments, fragment)
         return fragment
       }
