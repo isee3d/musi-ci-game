@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { imagesConfig } from '~/config/site'
 
 const LuisterenFeedback: React.FC = () => {

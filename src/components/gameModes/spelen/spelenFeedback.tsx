@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { cn } from '~/lib/utils'
 import { routePaths } from '~/config/routing'
 import { imagesConfig } from '~/config/site'
