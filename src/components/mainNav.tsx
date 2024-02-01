@@ -57,24 +57,24 @@ export function MainNav({ items, children }: MainNavProps) {
               )}
             </Button>
           ))}
+          {session?.user.role === 'ADMIN' && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button asChild variant={'link'}>
+                  <Link href="#">Instellingen</Link>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {navItemsTemplate.map((item) => (
+                  <DropdownMenuItem key={item.title} asChild>
+                    <Link href={item.href}>{item.title}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
       ) : null}
-      {session?.user.role === 'ADMIN' && (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button asChild variant={'link'}>
-              <Link href="#">Instellingen</Link>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {navItemsTemplate.map((item) => (
-              <DropdownMenuItem key={item.title} asChild>
-                <Link href={item.href}>{item.title}</Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
       <button
         className="flex items-center space-x-2 md:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}

@@ -5,6 +5,7 @@ import Image from "next/legacy/image"
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
+import { cn } from '~/lib/utils'
 import { getSSRAuth } from '~/utils/authUtils'
 
 const WelcomePage = () => {
@@ -20,9 +21,16 @@ const WelcomePage = () => {
       </Head>
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <Image src="/images/podium.webp" objectFit='fill' layout='fill' className="" alt="podium" priority />
+        <Image
+          src="/images/podium.webp"
+          objectFit="fill"
+          layout="fill"
+          className=""
+          alt="podium"
+          priority
+        />
         <div className="container mx-auto flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-28 backdrop-blur-md md:w-1/2">
-          <div className='flex flex-col gap-4'>
+          <div className="flex flex-col gap-4">
             <h1 className="text-center text-5xl font-extrabold">
               WELKOM bij de Musi-CI Melody Game
             </h1>
@@ -32,13 +40,13 @@ const WelcomePage = () => {
           </div>
           <div className="flex gap-x-4">
             <Button size={'lg'} asChild>
-              <Link href={getNextPageRoute()}>
-                <h2 className="text-xl">Neem een kijkje</h2>
+              <Link className={cn('')} href={getNextPageRoute()}>
+                <h2 className="w-24 text-center text-xs md:text-base">Neem een kijkje</h2>
               </Link>
             </Button>
             <Button asChild variant="outline" size={'lg'}>
               <Link href={routePaths.tutorial}>
-                <h2 className="text-xl">Bekijk uitleg</h2>
+                <h2 className="w-24 text-center text-xs md:text-base">Bekijk uitleg</h2>
               </Link>
             </Button>
           </div>

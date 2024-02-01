@@ -2,6 +2,8 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
+import { navItemsTemplate } from '~/config/navigation'
 import { useLockBody } from '~/hooks/use-lock-body'
 import { cn } from '~/lib/utils'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -50,7 +52,7 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
           {items.map((item, index) => (
             <Button
               key={index}
-              disabled={session?.user.role === 'USER' && item.disabled || isPlaying}
+              disabled={(session?.user.role === 'USER' && item.disabled) || isPlaying}
               variant={'link'}
               style={{
                 display:
@@ -73,6 +75,22 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
               </Link>
             </Button>
           ))}
+          {session?.user.role === 'ADMIN' && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button asChild variant={'link'}>
+                  <Link href="#">Instellingen</Link>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {navItemsTemplate.map((item) => (
+                  <DropdownMenuItem key={item.title} asChild>
+                    <Link href={item.href}>{item.title}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
         {children}
       </div>
