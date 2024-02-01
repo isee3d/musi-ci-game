@@ -39,7 +39,7 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   )
   const stopwatch = useStopwatch(1000)
 
-  const { setLevelSublevelMode, reset } = useLuisterenStore()
+  const { setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
 
   const { hours, minutes, seconds } = stopwatch.convertedTime
 
@@ -52,6 +52,10 @@ const Uitdaging: React.FC<UitdagingProps> = ({
     }),
     [mode],
   )
+
+  useEffect(() => {
+    return () => setIsPlaying(false)
+  }, [])
 
   useEffect(() => {
     return () => {

@@ -89,7 +89,7 @@ const Test: React.FC<TestModeProps> = ({
 }) => {
   const { data: session } = useSession()
   const { send } = TestModeMachineContext.useActorRef()
-  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap } = useLuisterenStore()
+  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap, setIsPlaying } = useLuisterenStore()
   const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const restAfterAnsweringState = TestModeMachineContext.useSelector((state) =>
@@ -116,6 +116,10 @@ const Test: React.FC<TestModeProps> = ({
     }),
     [mode],
   )
+
+    useEffect(() => {
+      return () => setIsPlaying(false)
+    }, [])
 
   function startTest() {
     reset()

@@ -27,8 +27,7 @@ const Spelen: React.FC<SpelenProps> = ({
   mode,
 }) => {
   const { send } = SpelenMachineContext.useActorRef()
-  const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
-  const startRoundState = SpelenMachineContext.useSelector((state) => state.matches('startRound'))
+  const { setStartTime, setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
   const countdownState = SpelenMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = SpelenMachineContext.useSelector((state) => state.matches('playing'))
   const isIdleState = SpelenMachineContext.useSelector((state) => state.matches('idle'))
@@ -45,6 +44,10 @@ const Spelen: React.FC<SpelenProps> = ({
     }),
     [mode],
   )
+
+  useEffect(() => {
+    return () => setIsPlaying(false)
+  }, [])
 
   useEffect(() => {
     return () => send({ type: 'EXITGAME' })
@@ -71,9 +74,7 @@ const Spelen: React.FC<SpelenProps> = ({
   return (
     <>
       {!finishedState && (
-        <h2 className="text-center text-4xl font-extrabold tracking-tight">
-          Luister en klik
-        </h2>
+        <h2 className="text-center text-4xl font-extrabold tracking-tight">Luister en klik</h2>
       )}
       {isIdleState && <StartRoundUI startSpelen={startSpelen} />}
       {countdownState && <CountdownPlayer />}

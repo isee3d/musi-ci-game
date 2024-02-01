@@ -33,7 +33,11 @@ const Luisteren: React.FC<LuisterenProps> = ({
   const isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
     state.matches('finishedListening'),
   )
-  const { setStartTime, setLevelSublevelMode, reset } = useLuisterenStore()
+  const { setStartTime, setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
+
+  useEffect(() => {
+    return () => setIsPlaying(false)
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -43,7 +47,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
 
   function restartLuisteren() {
     send({
-      type: 'RESTARTMACHINE'
+      type: 'RESTARTMACHINE',
     })
     startLuisteren()
   }
@@ -74,19 +78,19 @@ const Luisteren: React.FC<LuisterenProps> = ({
       )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
       {isfinishedPlayingState && <LuisterenFeedback />}
-        {isPlayingState && <PlayButtonsRenderer />}
-        {isfinishedPlayingState && (
-          <Button
-            className={cn(
-              buttonVariants({ size: 'lg' }),
-              'bg-purple-500 text-white hover:bg-purple-300',
-            )}
-            onClick={restartLuisteren}
-          >
-            Speel opnieuw
-          </Button>
-        )}
-        {isfinishedPlayingState && <BackToOverView levelId={levelId} />}
+      {isPlayingState && <PlayButtonsRenderer />}
+      {isfinishedPlayingState && (
+        <Button
+          className={cn(
+            buttonVariants({ size: 'lg' }),
+            'bg-purple-500 text-white hover:bg-purple-300',
+          )}
+          onClick={restartLuisteren}
+        >
+          Speel opnieuw
+        </Button>
+      )}
+      {isfinishedPlayingState && <BackToOverView levelId={levelId} />}
     </>
   )
 }
