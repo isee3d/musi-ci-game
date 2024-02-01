@@ -12,8 +12,6 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageAppSettingsPage = () => {
-  // const ctx = api.useContext()
-
   const gameModesQuery = api.gameMode.getAllGameModes.useQuery()
   const appSettingsQuery = api.appSettings.getAllSettings.useQuery()
 
@@ -25,7 +23,7 @@ const ManageAppSettingsPage = () => {
   return (
     <>
       <Head>
-        <title></title>
+        <title>App instellingen beheren</title>
         <meta name="description" content="manage app settings" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -48,12 +46,12 @@ const ManageAppSettingsPage = () => {
                 >
                   <h2 className="text-2xl font-bold">{gameMode.name}</h2>
                   {gameMode.amountOfScenes && (
-                    <h2>Amount of scenes to play: {gameMode.amountOfScenes}</h2>
+                    <h2>Aantal scenes te spelen: {gameMode.amountOfScenes}</h2>
                   )}
-                  {gameMode.one && <h2>One: {gameMode.one} millisecondes</h2>}
-                  {gameMode.two && <h2>Two: {gameMode.two} millisecondes</h2>}
-                  {gameMode.three && <h2>Three: {gameMode.three} millisecondes</h2>}
-                  {gameMode.go && <h2>Go: {gameMode.go} millisecondes</h2>}
+                  {gameMode.one && <h2>Eerste seconde: {gameMode.one} millisecondes</h2>}
+                  {gameMode.two && <h2>Tweede seconde: {gameMode.two} millisecondes</h2>}
+                  {gameMode.three && <h2>Derde seconde: {gameMode.three} millisecondes</h2>}
+                  {gameMode.go && <h2>Go woord: {gameMode.go} millisecondes</h2>}
                   <Button
                     onClick={() => {
                       setSelectedGameMode(gameMode)
@@ -78,14 +76,28 @@ const ManageAppSettingsPage = () => {
           </h2>
           <div className="flex w-full flex-col gap-y-4">
             <div className="flex  flex-col items-center gap-4 rounded-md border-2 border-primary bg-primary/40 p-4 text-center">
-              <h2>
-                Fragment speler bolletje kleur:{' '}
-                {appSettingsQuery?.data?.fragmentDotColor ?? undefined} Hex
-              </h2>
-              <h2>
-                fragment speler lijntje kleur :{' '}
-                {appSettingsQuery?.data?.fragmentDotLineColor ?? undefined} Hex
-              </h2>
+              <div className="flex justify-center gap-2">
+                <h2 className="flex flex-col justify-center  text-xl">
+                  Fragment speler bolletje kleur:{' '}
+                </h2>
+                <div
+                  className="size-12 rounded-full"
+                  style={{
+                    backgroundColor: appSettingsQuery?.data?.fragmentDotColor ?? 'black',
+                  }}
+                />
+              </div>
+              <div className="flex justify-center gap-2">
+                <h2 className="flex flex-col justify-center  text-xl">
+                  Fragment speler lijntje kleur:{' '}
+                </h2>
+                <div
+                  className="size-12 rounded-full"
+                  style={{
+                    backgroundColor: appSettingsQuery?.data?.fragmentDotLineColor ?? 'black',
+                  }}
+                />
+              </div>
               <Button
                 onClick={() => {
                   setSelectedAppSettings(appSettingsQuery?.data ?? null)
