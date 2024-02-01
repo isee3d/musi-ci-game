@@ -61,12 +61,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, [])
 
   useEffect(() => {
-    if (!audioContext) isIgnoreSoundPath()
+    if (!audioContext) setShowModal(!routeSoundIgnorePaths.includes(router.pathname))
   }, [router.pathname])
 
-  const isIgnoreSoundPath = () => {
-    setShowModal(!routeSoundIgnorePaths.includes(router.pathname))
-  }
+  useEffect(() => {
+    console.log(
+      '%c Made with ❤️ by ISee3D',
+      'background: #3b82f6; color: #fff; padding: 0.5rem; border-radius: 0.5rem; font-size: 1rem;',
+    )
+  }, [])
 
   return (
     <SessionProvider session={session}>

@@ -92,6 +92,9 @@ const Test: React.FC<TestModeProps> = ({
   const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap } = useLuisterenStore()
   const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
+  const restAfterAnsweringState = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.restAfterAnswering'),
+  )
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
@@ -113,21 +116,6 @@ const Test: React.FC<TestModeProps> = ({
     }),
     [mode],
   )
-
-  // useEffect(() => {
-  //   reset()
-  //   setStartTime(Date.now())
-  //   setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
-  //   send({
-  //     type: 'STARTROUND',
-  //     originalFragmentGroups: fragmentGroups as FragmentGroup[],
-  //     fragmentsToShow: fragmentsToShow,
-  //     countdownTimings: countdownTimings,
-  //     amountOfScenes: mode?.amountOfScenes ?? 0,
-  //     countdownActions: stopwatch.actions,
-  //     groups: fragmentGroups as FragmentGroup[],
-  //   })
-  // }, [])
 
   function startTest() {
     reset()
@@ -153,9 +141,9 @@ const Test: React.FC<TestModeProps> = ({
         <Button
           className={cn(
             'cursor-not-allowed',
-            guessHeardFragmentState || isPausedState ? 'cursor-pointer' : '',
+            restAfterAnsweringState || isPausedState ? 'cursor-pointer' : '',
           )}
-          disabled={!guessHeardFragmentState && !isPausedState}
+          disabled={!restAfterAnsweringState && !isPausedState}
           onClick={() => {
             send({
               type: isPausedState ? `RESUMEGAME` : `PAUSEGAME`,
