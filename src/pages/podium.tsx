@@ -23,17 +23,15 @@ const PodiumPage = () => {
           <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Het podium</h2>
           <div className="relative flex h-[20vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
             <Image
+              layout="fill"
               src="/images/podium.webp"
-              fill
-              objectFit="contain"
+              objectFit="fill"
               alt="Podium"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
           <Button asChild>
-            <Link href={routePaths.levelsPage}>
-              Kies je level
-            </Link>
+            <Link href={routePaths.levelsPage}>Kies je level</Link>
           </Button>
         </div>
       </section>

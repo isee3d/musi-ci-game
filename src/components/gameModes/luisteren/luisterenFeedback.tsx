@@ -17,12 +17,13 @@ const LuisterenFeedback: React.FC = () => {
   return (
     <>
       <Image
-        src={imagesConfig.cinie}
-        alt="cinie"
-        className=""
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         width={200}
         height={200}
+        src={imagesConfig.cinie}
+        alt="cinie"
+        layout='fixed'
+        objectFit='contain'
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Je hebt {formatTime(endTime - startTime)} gespeeld

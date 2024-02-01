@@ -42,11 +42,11 @@ const ContentContainer: React.FC<Props> = ({
                 {shouldRenderCinieInContentContainer && (
                   <Image
                     objectFit="fill"
+                    layout="fill"
                     src={imagesConfig.cinie}
                     alt="cinie"
                     className=""
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill
                   />
                 )}
               </div>
@@ -58,12 +58,12 @@ const ContentContainer: React.FC<Props> = ({
               <div className="relative size-36 px-8">
                 {instrumentURL && (
                   <Image
+                    layout="fill"
                     objectFit="cover"
                     src={instrumentURL}
                     alt="instrument"
                     className=""
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill
                   />
                 )}
               </div>

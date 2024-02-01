@@ -20,7 +20,7 @@ const WelcomePage = () => {
       </Head>
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <Image src="/images/podium.webp" fill className="" alt="podium" priority />
+        <Image src="/images/podium.webp" objectFit='fill' layout='fill' className="" alt="podium" priority />
         <div className="container mx-auto flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-28 backdrop-blur-md md:w-1/2">
           <div className='flex flex-col gap-4'>
             <h1 className="text-center text-5xl font-extrabold">

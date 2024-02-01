@@ -32,12 +32,14 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
   return (
     <>
       <Image
+        width={200}
+        height={200}
+        layout="fixed"
         src={imagesConfig.cinie}
         alt="cinie"
         className=""
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        width={200}
-        height={200}
+        objectFit="fill"
       />
       <h3 className="text-center text-4xl font-extrabold tracking-tight">Test afgerond</h3>
       <h3 className="text-center text-4xl font-extrabold tracking-tight ">
