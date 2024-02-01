@@ -382,10 +382,20 @@ export const downloadRouter = createTRPCRouter({
       const selectedGameModesNumbers = selectedGameModes.map((gameMode) => parseInt(gameMode, 10))
 
       let whereClause = {}
+      let questionAnswersWhereClause = {}
+      let activitiesWhereClause = {}
 
       if (selectedUsers.length > 0) {
         //@ts-ignore
         whereClause.id_User = {
+          in: selectedUsers,
+        }
+        //@ts-ignore
+        activitiesWhereClause.id_User = {
+          in: selectedUsers,
+        }
+        //@ts-ignore
+        questionAnswersWhereClause.id_User = {
           in: selectedUsers,
         }
       }
@@ -415,27 +425,83 @@ export const downloadRouter = createTRPCRouter({
           //@ts-ignore
           whereClause.startTime.lte = date.to
         }
+
+        if (date.from && date.to) {
+          //@ts-ignore
+          questionAnswersWhereClause.answeredDate = {
+            gte: new Date(date.from),
+            lte: new Date(date.to),
+          }
+          //@ts-ignore
+          activitiesWhereClause.activity_Date = {
+            gte: new Date(date.from),
+            lte: new Date(date.to),
+          }
+        }
       }
 
-      return await ctx.prisma.levelResult.findMany({
+      const activities = await ctx.prisma.activity.findMany({
+        where: activitiesWhereClause,
+        select: {
+          user: {
+            select: {
+              participantId: true,
+            },
+          },
+          activity: true,
+          activity_Date: true,
+        },
+      })
+
+      const questionAnswers = await ctx.prisma.questionAnswer.findMany({
+        where: questionAnswersWhereClause,
+        select: {
+          user: {
+            select: {
+              participantId: true,
+            },
+          },
+          question: true,
+          answer: true,
+          answeredDate: true,
+        },
+      })
+
+      const levelResults = await ctx.prisma.levelResult.findMany({
         where: whereClause,
         select: {
           user: {
             select: {
               participantId: true,
-              questionAnswers: {
-                select: {
-                  question: true,
-                  answer: true,
-                  answeredDate: true,
-                },
-              },
-              activities: {
-                select: {
-                  activity: true,
-                  activity_Date: true,
-                },
-              },
+              // questionAnswers: {
+              //   where: date
+              //     ? {
+              //         answeredDate: {
+              //           gte: new Date(date.from ?? new Date()),
+              //           lte: new Date(date.to ?? new Date()),
+              //         },
+              //       }
+              //     : {},
+              //   select: {
+              //     question: true,
+              //     answer: true,
+              //     answeredDate: true,
+              //   },
+              // },
+              // activities: {
+              //   where: date
+              //     ? {
+              //         activity_Date: {
+              //           gte: date.from,
+              //           lte: date.to,
+              //         },
+              //       }
+              //     : {},
+              //   select: {
+              //     activity: true,
+              //     activity_Date: true,
+              //   },
+              // },
             },
           },
           subLevel: {
@@ -493,5 +559,11 @@ export const downloadRouter = createTRPCRouter({
           },
         },
       })
+
+      return {
+        levelResults,
+        questionAnswers,
+        activities,
+      }
     }),
 })

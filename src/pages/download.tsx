@@ -17,13 +17,38 @@ import { cn } from '~/lib/utils'
 import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
-  return data.reduce((acc: SplitDataByUser, item) => {
-    const participantId = item.user?.participantId
-    if (!participantId) return acc
-    if (!acc[participantId]) acc[participantId] = []
-    acc[participantId]!.push(item)
-    return acc
-  }, {})
+   const result: SplitDataByUser = {}
+
+   // Process levelResults
+   data.levelResults.forEach((levelResult) => {
+     const participantId = levelResult.user?.participantId
+     if (participantId) {
+       if (!result[participantId]) {
+         result[participantId] = {
+           levelResults: [],
+           questionAnswers: [],
+           activities: [],
+         }
+       }
+       result[participantId]?.levelResults.push(levelResult)
+     }
+   })
+
+   data.questionAnswers.forEach((questionAnswer) => {
+     const participantId = questionAnswer?.user?.participantId
+     if (participantId && result[participantId]) {
+       result[participantId]?.questionAnswers.push(questionAnswer)
+     }
+   })
+
+   data.activities.forEach((activity) => {
+     const participantId = activity?.user?.participantId
+     if (participantId && result[participantId]) {
+       result[participantId]?.activities.push(activity)
+     }
+   })
+
+   return result
 }
 
 const DateRangeSchema = z.object({
@@ -55,16 +80,9 @@ const headers = [
   'Teruggeluisterde fragmenten',
 ] as const
 
-const questionsHeaders = [
-  'Vraag',
-  'Antwoord',
-  'Datum',
-] as const
+const questionsHeaders = ['Vraag', 'Antwoord', 'Datum'] as const
 
-const activitiesHeaders = [
-  'Activiteit type',
-  'Datum',
-] as const
+const activitiesHeaders = ['Activiteit type', 'Datum'] as const
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -151,29 +169,25 @@ const DownloadPage = () => {
       })
 
       //Data filling
-      userData.forEach((data) => {
-        if (data.user && data.user.activities) {
-          data.user.activities.forEach((activity) => {
-            const row = [activity.activity, new Date(activity.activity_Date).toLocaleDateString()]
-            activitiesWorksheet.addRow(row)
-          })
+      userData.activities.forEach((data) => {
+        if (data.user && data.activity) {
+          const row = [data.activity, new Date(data.activity_Date).toLocaleDateString()]
+          activitiesWorksheet.addRow(row)
         }
       })
 
-      userData.forEach((data) => {
-        if (data.user && data.user.questionAnswers) {
-          data.user.questionAnswers.forEach((qa) => {
-            const row = [
-              qa.question,
-              qa.answer,
-              qa.answeredDate ? new Date(qa.answeredDate).toLocaleDateString() : '',
-            ]
-            questionsWorksheet.addRow(row)
-          })
+      userData.questionAnswers.forEach((data) => {
+        if (data.user) {
+          const row = [
+            data.question,
+            data.answer,
+            data.answeredDate ? new Date(data.answeredDate).toLocaleDateString() : '',
+          ]
+          questionsWorksheet.addRow(row)
         }
       })
 
-      userData.forEach((data) => {
+      userData.levelResults.forEach((data) => {
         data.Scenes.forEach((scene) => {
           const commonData = [
             participantId,
@@ -382,7 +396,6 @@ const DownloadPage = () => {
 }
 
 export default DownloadPage
-
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const auth = await getSSRAuthRedirectOnResearcherRole(ctx)
