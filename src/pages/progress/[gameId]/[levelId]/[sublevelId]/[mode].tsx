@@ -160,7 +160,7 @@ const ModePage = ({
             <Button
               key={gameMode.id}
               className={cn(
-                'h-12 flex-auto rounded-none text-xl',
+                'h-12 flex-auto min-w-0 overflow-hidden rounded-none text-xl',
                 mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
               )}
               disabled={isPlaying}

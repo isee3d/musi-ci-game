@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from "next/legacy/image"
+import Image from 'next/legacy/image'
 import { useRouter } from 'next/router'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { imagesConfig } from '~/config/site'
@@ -37,11 +37,11 @@ const ContentContainer: React.FC<Props> = ({
       <section className="flex grow flex-col items-center justify-center">
         <div className="container mx-auto flex flex-col items-center justify-start gap-6 py-12">
           <div className="w-full rounded-2xl">
-            <div className="relative flex w-full justify-start rounded-t-2xl bg-primary-foreground">
-              <div className="relative size-40 px-2">
+            <div className="relative flex w-full justify-between rounded-t-2xl bg-primary-foreground">
+              <div className="relative size-12 md:size-24">
                 {shouldRenderCinieInContentContainer && (
                   <Image
-                    objectFit="fill"
+                    objectFit="contain"
                     layout="fill"
                     src={imagesConfig.cinie}
                     alt="cinie"
@@ -51,15 +51,15 @@ const ContentContainer: React.FC<Props> = ({
                 )}
               </div>
 
-              <div className="flex w-full items-center justify-start px-36 pb-5">
-                <h2 className="text-3xl font-extrabold">{title}</h2>
-              </div>
+              <h2 className="flex items-center justify-center text-balance text-center text-3xl font-extrabold">
+                {title}
+              </h2>
 
-              <div className="relative size-36 px-8">
+              <div className="relative size-12 md:size-24">
                 {instrumentURL && (
                   <Image
                     layout="fill"
-                    objectFit="cover"
+                    objectFit="contain"
                     src={instrumentURL}
                     alt="instrument"
                     className=""

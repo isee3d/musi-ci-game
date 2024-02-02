@@ -23,7 +23,7 @@ const WelcomePage = () => {
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image
           src="/images/podium.webp"
-          objectFit="fill"
+          objectFit="cover"
           layout="fill"
           className=""
           alt="podium"
