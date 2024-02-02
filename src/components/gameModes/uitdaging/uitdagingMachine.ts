@@ -5,7 +5,7 @@ import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndWeight
+  FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -19,23 +19,26 @@ const transpose = (
 ) => {
   const { transposeWeightedFragments, chooseWeightedActiveFragment } =
     useAudioServiceStore.getState()
-  const { newUsedFragmentsMap, addNewUsedFragment, resetUsedFragments } =
-    useLuisterenStore.getState()
+  const { addNewUsedFragment } = useLuisterenStore.getState()
 
-  const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
-  const otherFragments = fragments.filter((f) => !f.useAlways)
-
-  const shuffledFragments = otherFragments.sort(() => Math.random() - 0.5)
-
-  const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
-  const selectedOtherFragments = shuffledFragments.slice(0, amountToSelect)
-  const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
-   console.log('selectedFragments', selectedFragments)
-  const newActiveFragment = chooseWeightedActiveFragment(selectedFragments)
+  const newActiveFragment = chooseWeightedActiveFragment(fragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
+
+  const alwaysUsedFragments = fragments.filter((f) => f.useAlways && f.id !== newActiveFragment.id)
+  let selectedFragments = [newActiveFragment]
+  selectedFragments = [...alwaysUsedFragments, ...selectedFragments]
+
+  const remainingFragments = fragments.filter((f) => !selectedFragments.includes(f))
+  const amountToFill = fragmentsToShow - selectedFragments.length
+  const additionalFragments = remainingFragments.slice(0, amountToFill)
+
+  selectedFragments = [...selectedFragments, ...additionalFragments]
+  console.log('selectedFragments', selectedFragments)
 
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
+
+  const weightAdjustedFragments = deepCopy(fragments)
 
   const transposedFragments = transposeWeightedFragments(
     selectedFragments,
@@ -46,7 +49,7 @@ const transpose = (
 
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
-  return { transposedFragments, newActiveFragment, pianoNotesMap }
+  return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragments }
 }
 
 export const uitdagingMachine = createMachine(
@@ -197,7 +200,7 @@ export const uitdagingMachine = createMachine(
       },
       ExitGame: {
         type: 'final',
-      }
+      },
     },
     on: {
       FINISHEDPLAYING: 'FinishedPlayingUitdagingMode',
@@ -284,16 +287,13 @@ export const uitdagingMachine = createMachine(
         const { setPlayedFragmentId, setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
-        const shuffledFragments = copiedFragments?.sort(() => Math.random() - 0.5)
-
-        const { transposedFragments, newActiveFragment, pianoNotesMap } = transpose(
-          shuffledFragments,
-          context.fragmentsToShow,
-          context.pianoNotesMap ?? new Map(),
-        )
+        console.log('shuffledFragments', copiedFragments.length)
+        const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragments } =
+          transpose(copiedFragments, context.fragmentsToShow, context.pianoNotesMap ?? new Map())
 
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
+          allLevelFragments: weightAdjustedFragments,
           guessedFragment: undefined,
           shownFragments: transposedFragments,
           activeFragment: newActiveFragment,
