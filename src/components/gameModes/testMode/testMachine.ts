@@ -137,7 +137,7 @@ function getPlayableOctavesForFragment(
   return playableOctaves
 }
 
-export const selectActiveAndTransposeFragmentsForScene = (
+export const transpose = (
   fragmentsToShow: number,
   amountOfScenes: number,
   fragmentGroups: FragmentGroupWithWeights[],
@@ -146,6 +146,7 @@ export const selectActiveAndTransposeFragmentsForScene = (
   const { chooseWeightedActiveFragment, transposeWeightedFragments } =
     useAudioServiceStore.getState()
   const { newUsedFragmentsMap, addNewUsedFragment } = useLuisterenStore.getState()
+
   const fragmentsForScene = getFragmentsToShow(fragmentGroups, fragmentsToShow, newUsedFragmentsMap)
 
   const potentialActiveFragments = filterPlayableFragments(
@@ -155,8 +156,22 @@ export const selectActiveAndTransposeFragmentsForScene = (
     newUsedFragmentsMap,
   )
 
+  const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
+
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
+
+  weightAdjustedFragmentGroups.forEach((group) => {
+    group.fragments.forEach((fragment, index) => {
+      const potentialMatch = potentialActiveFragments.find(
+        (potential) => potential.id === fragment.id,
+      )
+      if (potentialMatch) {
+        group.fragments[index] = potentialMatch
+      }
+    })
+  })
+
   const availableOctavesForNewActiveFragment = getPlayableOctavesForFragment(
     newActiveFragment.id,
     [3, 4, 5],
@@ -165,30 +180,19 @@ export const selectActiveAndTransposeFragmentsForScene = (
     fragmentGroups,
   )
 
-  console.log(
-    'newActiveFragment',
-    newActiveFragment.id,
-    'fragmentsInScene: ',
-    fragmentsForScene.map((f) => f.id),
-  )
-
   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
-  if (randomOctave === undefined) {
-    console.log('octaves: ', availableOctavesForNewActiveFragment)
-    console.log('potentialActiveFragments: ', potentialActiveFragments)
-    console.log('newActiveFragment: ', newActiveFragment)
-  }
-  // Call transpose function with the fragmentsForScene
+
   const transposedFragments = transposeWeightedFragments(
     fragmentsForScene,
     randomOctave ?? 0,
     [3, 4, 5],
     pianoNotesMap,
   )
+
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
-  return { transposedFragments, newActiveFragment, pianoNotesMap }
+  return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
 }
 
 export const testModeMachine = createMachine(
@@ -475,15 +479,15 @@ export const testModeMachine = createMachine(
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
         const copiedGroups = deepCopy(context.groups)
-        const { transposedFragments, newActiveFragment, pianoNotesMap } =
-          selectActiveAndTransposeFragmentsForScene(
-            context.fragmentsToShow,
-            context.amountOfScenes,
-            copiedGroups,
-            context.pianoNotesMap ?? new Map(),
-          )
+        const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups } = transpose(
+          context.fragmentsToShow,
+          context.amountOfScenes,
+          copiedGroups,
+          context.pianoNotesMap ?? new Map(),
+        )
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
+          groups: weightAdjustedFragmentGroups,
           guessedFragment: undefined,
           shownFragments: transposedFragments,
           activeFragment: newActiveFragment,

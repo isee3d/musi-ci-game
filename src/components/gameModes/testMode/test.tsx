@@ -9,7 +9,7 @@ import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFrag
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { selectActiveAndTransposeFragmentsForScene } from '~/components/gameModes/testMode/testMachine'
+import { transpose } from '~/components/gameModes/testMode/testMachine'
 import { Button, buttonVariants } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
@@ -41,12 +41,7 @@ function testAlgorithm(
   })) as FragmentGroupWithWeights[]
 
   for (let i = 0; i < times; i++) {
-    selectActiveAndTransposeFragmentsForScene(
-      fragmentsToShow,
-      amountOfScenes,
-      convertedFragmentGroups,
-      pianoNotesMap,
-    )
+    transpose(fragmentsToShow, amountOfScenes, convertedFragmentGroups, pianoNotesMap)
   }
 
   const { newUsedFragmentsMap } = useLuisterenStore.getState()
@@ -89,7 +84,8 @@ const Test: React.FC<TestModeProps> = ({
 }) => {
   const { data: session } = useSession()
   const { send } = TestModeMachineContext.useActorRef()
-  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap, setIsPlaying } = useLuisterenStore()
+  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap, setIsPlaying } =
+    useLuisterenStore()
   const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
   const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const restAfterAnsweringState = TestModeMachineContext.useSelector((state) =>
@@ -117,9 +113,9 @@ const Test: React.FC<TestModeProps> = ({
     [mode],
   )
 
-    useEffect(() => {
-      return () => setIsPlaying(false)
-    }, [])
+  useEffect(() => {
+    return () => setIsPlaying(false)
+  }, [])
 
   function startTest() {
     reset()
