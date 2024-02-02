@@ -17,30 +17,20 @@ const transpose = (
   fragmentsToShow: number,
   pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
 ) => {
-  const { transposeFragments, transposeWeightedFragments, chooseWeightedActiveFragment } =
+  const { transposeWeightedFragments, chooseWeightedActiveFragment } =
     useAudioServiceStore.getState()
   const { newUsedFragmentsMap, addNewUsedFragment, resetUsedFragments } =
     useLuisterenStore.getState()
 
-  // Filter out fragments that have been played based on usedFragmentsMap
-  let candidates = fragments.filter((f) => !newUsedFragmentsMap[f.id])
   const alwaysUsedFragments = fragments.filter((f) => f.useAlways)
+  const otherFragments = fragments.filter((f) => !f.useAlways)
 
-  if (
-    Object.keys(newUsedFragmentsMap).length === fragments.length ||
-    candidates.length + alwaysUsedFragments.length < fragmentsToShow
-  ) {
-    resetUsedFragments()
-    candidates = fragments
-  }
-
-  const shuffledFragments = candidates.sort(() => Math.random() - 0.5)
-  const otherFragments = shuffledFragments.filter((f) => !f.useAlways)
+  const shuffledFragments = otherFragments.sort(() => Math.random() - 0.5)
 
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
-  const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
+  const selectedOtherFragments = shuffledFragments.slice(0, amountToSelect)
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
-
+   console.log('selectedFragments', selectedFragments)
   const newActiveFragment = chooseWeightedActiveFragment(selectedFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
 

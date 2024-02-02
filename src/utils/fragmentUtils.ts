@@ -12,7 +12,7 @@ export const getOriginalFragments = (
     shownFragmentIds.includes(frag.id),
   )
 
-  console.log('originalFragments', originalFragments, 'shown: ', shownFragments, 'alllevelFragments: ', allLevelFragments)
+  // console.log('originalFragments', originalFragments, 'shown: ', shownFragments, 'alllevelFragments: ', allLevelFragments)
   return originalFragments
 }
 
@@ -75,6 +75,7 @@ export function adjustWeights(
   fragments.forEach((fragment) => {
     if (fragment.id === selectedFragment.id) {
       fragment.weight = Math.max(fragment.weight - decreaseAmount, 0)
+      console.log('fragment.weight and name', fragment.weight, fragment.name)
     } else {
       fragment.weight += increaseAmount
     }
