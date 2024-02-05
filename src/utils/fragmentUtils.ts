@@ -69,7 +69,7 @@ export function adjustWeights(
   fragments: FragmentWithNotesAndWeight[],
   selectedFragment: FragmentWithNotesAndWeight,
 ) {
-  const decreaseAmount = 5
+  const decreaseAmount = 10
   const increaseAmount = 10
 
   fragments.forEach((fragment) => {

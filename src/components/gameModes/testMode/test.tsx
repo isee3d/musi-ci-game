@@ -9,7 +9,7 @@ import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFrag
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { transpose } from '~/components/gameModes/testMode/testMachine'
+import { transpose } from '~/utils/testUtils'
 import { Button, buttonVariants } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
@@ -153,14 +153,14 @@ const Test: React.FC<TestModeProps> = ({
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
       )}
-      {/* {session?.user.role === 'ADMIN' && (
+      {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300)}
+          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300)}
         >
           Print Test algoritme validatie
         </Button>
-      )} */}
+      )}
       {isFinishedState && (
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}

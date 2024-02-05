@@ -13,12 +13,3 @@ export interface FragmentWithNotesAndWeight extends FragmentWithNotes {
     octave?: number;
     transpose?: string;
 }
-
-export type FragmentWithNotesWeightAndTransposeDirection = FragmentWithNotesAndWeight & {
-  transpose: number
-  octave: 0 | 1 | 2
-}
-
-export interface FragmentToPlay extends FragmentWithNotes {
-    mute: boolean;
-}

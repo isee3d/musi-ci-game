@@ -1,24 +1,20 @@
 'use client'
 
-import { pianoNotesMap } from './../components/fragmentPlayer/audio/Keyboard'
-import { create } from 'zustand'
+import { Note } from '@prisma/client'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
+import { create } from 'zustand'
+import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndWeight,
-  FragmentWithNotesWeightAndTransposeDirection,
+  FragmentWithNotesAndWeight
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard'
-import { Note } from '@prisma/client'
 import {
   adjustSingleItemWeight,
   adjustWeights,
-  canTranspose,
   getNoteIndex,
-  getNoteNameFromNoteIndex,
+  getNoteNameFromNoteIndex
 } from '~/utils/fragmentUtils'
-import { WeightedInterval } from 'types/SceneData'
 
 type AudioServiceState = {
   audioContext: AudioContext | undefined

@@ -12,188 +12,189 @@ import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
+import { transpose } from '~/utils/testUtils'
 
-function filterFragmentsWithUseAlways(fragmentGroups: FragmentGroupWithWeights[]) {
-  const filteredFragments: FragmentWithNotesAndWeight[] = []
+// function filterFragmentsWithUseAlways(fragmentGroups: FragmentGroupWithWeights[]) {
+//   const filteredFragments: FragmentWithNotesAndWeight[] = []
 
-  fragmentGroups.forEach((group) => {
-    group.fragments.forEach((fragment) => {
-      if (fragment.useAlways === true) {
-        filteredFragments.push(fragment)
-      }
-    })
-  })
+//   fragmentGroups.forEach((group) => {
+//     group.fragments.forEach((fragment) => {
+//       if (fragment.useAlways === true) {
+//         filteredFragments.push(fragment)
+//       }
+//     })
+//   })
 
-  return filteredFragments
-}
+//   return filteredFragments
+// }
 
-function getFragmentsToShow(
-  fragmentGroups: FragmentGroupWithWeights[],
-  fragmentsToShowSize: number,
-  usedFragmentsMap: {
-    [fragmentId: number]: {
-      [octaveNumber: number]: number
-    }
-  },
-) {
-  const alwaysUsedFragments = filterFragmentsWithUseAlways(fragmentGroups)
+// function getFragmentsToShow(
+//   fragmentGroups: FragmentGroupWithWeights[],
+//   fragmentsToShowSize: number,
+//   usedFragmentsMap: {
+//     [fragmentId: number]: {
+//       [octaveNumber: number]: number
+//     }
+//   },
+// ) {
+//   const alwaysUsedFragments = filterFragmentsWithUseAlways(fragmentGroups)
 
-  let fragmentsToShow = [...alwaysUsedFragments]
+//   let fragmentsToShow = [...alwaysUsedFragments]
 
-  fragmentGroups.forEach((group) => {
-    if (group.fragments.every((frag) => frag.useAlways)) {
-      return
-    }
+//   fragmentGroups.forEach((group) => {
+//     if (group.fragments.every((frag) => frag.useAlways)) {
+//       return
+//     }
 
-    let leastUsedFragments: FragmentWithNotesAndWeight[] = []
-    let minUsageCount = Number.MAX_VALUE
+//     let leastUsedFragments: FragmentWithNotesAndWeight[] = []
+//     let minUsageCount = Number.MAX_VALUE
 
-    group.fragments.forEach((fragment) => {
-      // Calculate the total usage across all octaves for this fragment
-      const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
-        (sum, count) => sum + count,
-        0,
-      )
+//     group.fragments.forEach((fragment) => {
+//       // Calculate the total usage across all octaves for this fragment
+//       const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
+//         (sum, count) => sum + count,
+//         0,
+//       )
 
-      if (totalUsageCount < minUsageCount) {
-        minUsageCount = totalUsageCount
-        leastUsedFragments = [fragment]
-      } else if (totalUsageCount === minUsageCount) {
-        leastUsedFragments.push(fragment)
-      }
-    })
+//       if (totalUsageCount < minUsageCount) {
+//         minUsageCount = totalUsageCount
+//         leastUsedFragments = [fragment]
+//       } else if (totalUsageCount === minUsageCount) {
+//         leastUsedFragments.push(fragment)
+//       }
+//     })
 
-    if (leastUsedFragments.length) {
-      // Randomly select a fragment from the least used fragments
-      const randomIndex = Math.floor(Math.random() * leastUsedFragments.length)
-      const randomLeastUsedFragment = leastUsedFragments[randomIndex]
-      if (randomLeastUsedFragment) {
-        fragmentsToShow.push(randomLeastUsedFragment)
-      }
-    }
-  })
+//     if (leastUsedFragments.length) {
+//       // Randomly select a fragment from the least used fragments
+//       const randomIndex = Math.floor(Math.random() * leastUsedFragments.length)
+//       const randomLeastUsedFragment = leastUsedFragments[randomIndex]
+//       if (randomLeastUsedFragment) {
+//         fragmentsToShow.push(randomLeastUsedFragment)
+//       }
+//     }
+//   })
 
-  return fragmentsToShow.slice(0, fragmentsToShowSize)
-}
+//   return fragmentsToShow.slice(0, fragmentsToShowSize)
+// }
 
-function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
-  let totalCount = 0
-  // Iterate through each fragment group
-  fragmentGroups.forEach((group) => {
-    // Add the count of fragments that do not have `useAlways` set to true
-    totalCount += group.fragments.length
-  })
+// function getTotalFragmentCount(fragmentGroups: FragmentGroupWithWeights[]) {
+//   let totalCount = 0
+//   // Iterate through each fragment group
+//   fragmentGroups.forEach((group) => {
+//     // Add the count of fragments that do not have `useAlways` set to true
+//     totalCount += group.fragments.length
+//   })
 
-  return totalCount
-}
+//   return totalCount
+// }
 
-function filterPlayableFragments(
-  sceneFragments: FragmentWithNotesAndWeight[],
-  fragmentGroups: FragmentGroupWithWeights[],
-  amountOfScenes: number,
-  usedFragmentsMap: {
-    [fragmentId: number]: {
-      [octaveNumber: number]: number
-    }
-  },
-) {
-  const totlaFragmentCount = getTotalFragmentCount(fragmentGroups)
-  const threshold = amountOfScenes / totlaFragmentCount
+// function filterPlayableFragments(
+//   sceneFragments: FragmentWithNotesAndWeight[],
+//   fragmentGroups: FragmentGroupWithWeights[],
+//   amountOfScenes: number,
+//   usedFragmentsMap: {
+//     [fragmentId: number]: {
+//       [octaveNumber: number]: number
+//     }
+//   },
+// ) {
+//   const totlaFragmentCount = getTotalFragmentCount(fragmentGroups)
+//   const threshold = amountOfScenes / totlaFragmentCount
 
-  return sceneFragments.filter((fragment) => {
-    // Calculate the total usage across all octaves for this fragment
-    const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
-      (sum, count) => sum + count,
-      0,
-    )
+//   return sceneFragments.filter((fragment) => {
+//     // Calculate the total usage across all octaves for this fragment
+//     const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
+//       (sum, count) => sum + count,
+//       0,
+//     )
 
-    return totalUsageCount < threshold // Compare the total usage count with the threshold
-  })
-}
+//     return totalUsageCount < threshold // Compare the total usage count with the threshold
+//   })
+// }
 
-function getPlayableOctavesForFragment(
-  newActiveFragmentId: number,
-  availableOctaves: number[],
-  amountOfScenes: number,
-  newUsedFragmentsMap: {
-    [fragmentId: number]: {
-      [octaveNumber: number]: number
-    }
-  },
-  fragmentGroups: FragmentGroupWithWeights[],
-) {
-  const totalFragmentCount = getTotalFragmentCount(fragmentGroups)
-  // Determine the threshold
-  const totalFragmentsPerOctave = availableOctaves.length
-  const threshold = Math.ceil(amountOfScenes / totalFragmentsPerOctave / totalFragmentCount)
-  // Get the usage map for the new active fragment
-  const fragmentUsageMap = newUsedFragmentsMap[newActiveFragmentId] || {}
-  // Filter out the octaves that have not exceeded the threshold
-  const playableOctaves = availableOctaves.filter((octave) => {
-    const usageCount = fragmentUsageMap[octave] || 0
-    return usageCount < threshold
-  })
+// function getPlayableOctavesForFragment(
+//   newActiveFragmentId: number,
+//   availableOctaves: number[],
+//   amountOfScenes: number,
+//   newUsedFragmentsMap: {
+//     [fragmentId: number]: {
+//       [octaveNumber: number]: number
+//     }
+//   },
+//   fragmentGroups: FragmentGroupWithWeights[],
+// ) {
+//   const totalFragmentCount = getTotalFragmentCount(fragmentGroups)
+//   // Determine the threshold
+//   const totalFragmentsPerOctave = availableOctaves.length
+//   const threshold = Math.ceil(amountOfScenes / totalFragmentsPerOctave / totalFragmentCount)
+//   // Get the usage map for the new active fragment
+//   const fragmentUsageMap = newUsedFragmentsMap[newActiveFragmentId] || {}
+//   // Filter out the octaves that have not exceeded the threshold
+//   const playableOctaves = availableOctaves.filter((octave) => {
+//     const usageCount = fragmentUsageMap[octave] || 0
+//     return usageCount < threshold
+//   })
 
-  return playableOctaves
-}
+//   return playableOctaves
+// }
 
-export const transpose = (
-  fragmentsToShow: number,
-  amountOfScenes: number,
-  fragmentGroups: FragmentGroupWithWeights[],
-  pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
-) => {
-  const { chooseWeightedActiveFragment, transposeWeightedFragments } =
-    useAudioServiceStore.getState()
-  const { newUsedFragmentsMap, addNewUsedFragment } = useLuisterenStore.getState()
+// export const transpose = (
+//   fragmentsToShow: number,
+//   amountOfScenes: number,
+//   fragmentGroups: FragmentGroupWithWeights[],
+//   pianoNotesMap: Map<string, { noteNumber: number; weight: number }>,
+// ) => {
+//   const { chooseWeightedActiveFragment, transposeWeightedFragments } =
+//     useAudioServiceStore.getState()
+//   const { newUsedFragmentsMap, addNewUsedFragment } = useLuisterenStore.getState()
 
-  const fragmentsForScene = getFragmentsToShow(fragmentGroups, fragmentsToShow, newUsedFragmentsMap)
+//   const fragmentsForScene = getFragmentsToShow(fragmentGroups, fragmentsToShow, newUsedFragmentsMap)
 
-  const potentialActiveFragments = filterPlayableFragments(
-    fragmentsForScene,
-    fragmentGroups,
-    amountOfScenes,
-    newUsedFragmentsMap,
-  )
+//   const potentialActiveFragments = filterPlayableFragments(
+//     fragmentsForScene,
+//     fragmentGroups,
+//     amountOfScenes,
+//     newUsedFragmentsMap,
+//   )
 
-  const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
+//   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
 
-  const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
-  if (!newActiveFragment) throw new Error('No new active fragment available')
+//   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
+//   if (!newActiveFragment) throw new Error('No new active fragment available')
 
-  weightAdjustedFragmentGroups.forEach((group) => {
-    group.fragments.forEach((fragment, index) => {
-      const potentialMatch = potentialActiveFragments.find(
-        (potential) => potential.id === fragment.id,
-      )
-      if (potentialMatch) {
-        group.fragments[index] = potentialMatch
-      }
-    })
-  })
+//   weightAdjustedFragmentGroups.forEach((group) => {
+//     group.fragments.forEach((fragment, index) => {
+//       const potentialMatch = potentialActiveFragments.find(
+//         (potential) => potential.id === fragment.id,
+//       )
+//       if (potentialMatch) {
+//         group.fragments[index] = potentialMatch
+//       }
+//     })
+//   })
 
-  const availableOctavesForNewActiveFragment = getPlayableOctavesForFragment(
-    newActiveFragment.id,
-    [3, 4, 5],
-    amountOfScenes,
-    newUsedFragmentsMap,
-    fragmentGroups,
-  )
+//   const availableOctavesForNewActiveFragment = getPlayableOctavesForFragment(
+//     newActiveFragment.id,
+//     [3, 4, 5],
+//     amountOfScenes,
+//     newUsedFragmentsMap,
+//     fragmentGroups,
+//   )
 
-  const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
-  const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
+//   const randomOctaveIndex = Math.floor(Math.random() * availableOctavesForNewActiveFragment.length)
+//   const randomOctave = availableOctavesForNewActiveFragment[randomOctaveIndex]
 
-  const transposedFragments = transposeWeightedFragments(
-    fragmentsForScene,
-    randomOctave ?? 0,
-    [3, 4, 5],
-    pianoNotesMap,
-  )
+//   const transposedFragments = transposeWeightedFragments(
+//     fragmentsForScene,
+//     randomOctave ?? 0,
+//     [3, 4, 5],
+//     pianoNotesMap,
+//   )
 
-  addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
+//   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
 
-  return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
-}
+//   return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
+// }
 
 export const testModeMachine = createMachine(
   {
