@@ -34,7 +34,7 @@ export const navItemsTemplate: NavItem[] = [
     href: '/manage/appSettings',
   },
   {
-    title: 'download data',
+    title: 'Download data',
     href: '/download',
   },
   {

@@ -15,40 +15,41 @@ import { Label } from '~/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
 import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
+import { LoadingSpinner } from '~/components/loading'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
-   const result: SplitDataByUser = {}
+  const result: SplitDataByUser = {}
 
-   // Process levelResults
-   data.levelResults.forEach((levelResult) => {
-     const participantId = levelResult.user?.participantId
-     if (participantId) {
-       if (!result[participantId]) {
-         result[participantId] = {
-           levelResults: [],
-           questionAnswers: [],
-           activities: [],
-         }
-       }
-       result[participantId]?.levelResults.push(levelResult)
-     }
-   })
+  // Process levelResults
+  data.levelResults.forEach((levelResult) => {
+    const participantId = levelResult.user?.participantId
+    if (participantId) {
+      if (!result[participantId]) {
+        result[participantId] = {
+          levelResults: [],
+          questionAnswers: [],
+          activities: [],
+        }
+      }
+      result[participantId]?.levelResults.push(levelResult)
+    }
+  })
 
-   data.questionAnswers.forEach((questionAnswer) => {
-     const participantId = questionAnswer?.user?.participantId
-     if (participantId && result[participantId]) {
-       result[participantId]?.questionAnswers.push(questionAnswer)
-     }
-   })
+  data.questionAnswers.forEach((questionAnswer) => {
+    const participantId = questionAnswer?.user?.participantId
+    if (participantId && result[participantId]) {
+      result[participantId]?.questionAnswers.push(questionAnswer)
+    }
+  })
 
-   data.activities.forEach((activity) => {
-     const participantId = activity?.user?.participantId
-     if (participantId && result[participantId]) {
-       result[participantId]?.activities.push(activity)
-     }
-   })
+  data.activities.forEach((activity) => {
+    const participantId = activity?.user?.participantId
+    if (participantId && result[participantId]) {
+      result[participantId]?.activities.push(activity)
+    }
+  })
 
-   return result
+  return result
 }
 
 const DateRangeSchema = z.object({
@@ -106,7 +107,6 @@ const DownloadPage = () => {
   const usersQuery = api.download.getAllUsers.useQuery(undefined, {
     enabled: true,
   })
-
   const sublevelsQuery = api.download.getAllSublevels.useQuery(undefined, {
     enabled: true,
   })
@@ -114,7 +114,11 @@ const DownloadPage = () => {
     enabled: true,
   })
 
-  const getExcelDataQuery = api.download.getFilteredExcelData.useQuery(
+  const {
+    data: excelData,
+    isLoading: isLoadingExceldata,
+    isFetching,
+  } = api.download.getFilteredExcelData.useQuery(
     {
       selectedUsers: selectedUsers,
       selectedSublevels: selectedSublevels,
@@ -130,6 +134,18 @@ const DownloadPage = () => {
       enabled: shouldDownload === true,
     },
   )
+
+  function getLoadingExcelDataState() {
+    if (isLoadingExceldata && !isFetching) {
+      return <h3>Klik hier om de download te starten, dit kan even duren</h3>
+    }
+    if (isLoadingExceldata && isFetching) {
+      return <h2>De download is bezig...</h2>
+    }
+    if (!isLoadingExceldata && !isFetching) {
+      return <h2>De download is gelukt, bekijk deze in de rechterbovenhoek</h2>
+    }
+  }
 
   const createExcelFilesPerUser = async (splitDataByUser: SplitDataByUser) => {
     for (const participantId in splitDataByUser) {
@@ -292,8 +308,8 @@ const DownloadPage = () => {
   return (
     <>
       <Head>
-        <title>Welkom Musi-CI</title>
-        <meta name="description" content="Voortgang levels" />
+        <title>Download data</title>
+        <meta name="description" content="Download data" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -379,16 +395,10 @@ const DownloadPage = () => {
           />
 
           <Button onClick={() => setShouldDownload(true)} size={'lg'}>
-            <h3>Klik hier om de download te starten, dit kan even duren</h3>
+            {getLoadingExcelDataState()}
           </Button>
 
-          {/* {shouldDownload && !activitiesQuery.data && <h2>De download is bezig...</h2>}
-
-          {activitiesQuery.data && (
-            <Button onClick={downloadExcel} size={'lg'}>
-              <h3>Download naar csv</h3>
-            </Button>
-          )} */}
+          {isLoadingExceldata && isFetching && <LoadingSpinner />}
         </div>
       </section>
     </>
