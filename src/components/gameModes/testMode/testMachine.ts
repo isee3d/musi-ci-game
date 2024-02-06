@@ -303,6 +303,7 @@ export const testModeMachine = createMachine(
           copiedGroups,
           context.pianoNotesMap ?? new Map(),
         )
+
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
           groups: weightAdjustedFragmentGroups,

@@ -9,7 +9,10 @@ import { toast } from 'sonner'
 import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
-import { getOriginalFragmentsFromFragmentGroup, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
+import {
+  getOriginalFragmentsFromFragmentGroup,
+  getShownFragmentByFragmentId,
+} from '~/utils/fragmentUtils'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -66,7 +69,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     })
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
-    setOriginalFragments(getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups))
+    setOriginalFragments(
+      getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups),
+    )
 
     if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
@@ -119,7 +124,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
   return (
     <>
-      <h3 className='text-4xl font-bold tracking-tight pb-4'>Klik op het gehoorde fragment</h3>
+      <h3 className="pb-4 text-4xl font-bold tracking-tight">Klik op het gehoorde fragment</h3>
       {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}

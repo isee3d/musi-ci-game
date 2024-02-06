@@ -15,7 +15,6 @@ import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import { api } from '~/utils/api'
 
 type LogType = {
   [fragmentId: string]: {
@@ -31,8 +30,9 @@ function testAlgorithm(
 ) {
   let log: LogType = {}
   let totalCount = 0
+  let amountPlayed = 0
 
-  const convertedFragmentGroups = fragmentGroups.map((group) => ({
+  let convertedFragmentGroups = fragmentGroups.map((group) => ({
     ...group,
     fragments: group.fragments.map((fragment) => ({
       ...fragment,
@@ -41,7 +41,11 @@ function testAlgorithm(
   })) as FragmentGroupWithWeights[]
 
   for (let i = 0; i < times; i++) {
+    if (amountPlayed === amountOfScenes) {
+      break
+    }
     transpose(fragmentsToShow, amountOfScenes, convertedFragmentGroups, pianoNotesMap)
+    amountPlayed++
   }
 
   const { newUsedFragmentsMap } = useLuisterenStore.getState()
@@ -156,7 +160,7 @@ const Test: React.FC<TestModeProps> = ({
       {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300)}
+          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300)}
         >
           Print Test algoritme validatie
         </Button>

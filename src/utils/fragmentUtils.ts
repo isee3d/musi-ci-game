@@ -1,6 +1,9 @@
-import { FragmentGroup } from "types/fragmentGroup";
-import { baseNotes, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard';
-import { FragmentWithNotes, FragmentWithNotesAndWeight } from "~/components/fragmentPlayer/audio/fragmentWithNotes";
+import { FragmentGroup } from 'types/fragmentGroup'
+import { baseNotes, pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
+import {
+  FragmentWithNotes,
+  FragmentWithNotesAndWeight,
+} from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 
 export const getOriginalFragments = (
   shownFragments: FragmentWithNotesAndWeight[],
@@ -8,11 +11,8 @@ export const getOriginalFragments = (
 ) => {
   const shownFragmentIds = shownFragments.map((frag) => frag.id)
 
-  const originalFragments = allLevelFragments.filter((frag) =>
-    shownFragmentIds.includes(frag.id),
-  )
+  const originalFragments = allLevelFragments.filter((frag) => shownFragmentIds.includes(frag.id))
 
-  // console.log('originalFragments', originalFragments, 'shown: ', shownFragments, 'alllevelFragments: ', allLevelFragments)
   return originalFragments
 }
 
@@ -22,31 +22,20 @@ export const getOriginalFragmentsFromFragmentGroup = (
 ): FragmentWithNotes[] => {
   if (!originalFragmentGroups) return []
   const shownFragmentIds = new Set(shownFragments.map((frag) => frag.id))
-
+  const addedFragmentIds = new Set<number>()
   let originalFragments: FragmentWithNotes[] = []
 
   originalFragmentGroups.forEach((group) => {
     group.fragments.forEach((fragment) => {
-      if (shownFragmentIds.has(fragment.id)) {
+      if (shownFragmentIds.has(fragment.id) && !addedFragmentIds.has(fragment.id)) {
         originalFragments.push(fragment)
+        addedFragmentIds.add(fragment.id)
       }
     })
   })
 
   return originalFragments
 }
-
-// export const getOriginalFragmentsFromFragmentGroup = (
-//   shownFragments: FragmentWithNotesAndWeight[],
-//   originalFragmentGroups: FragmentGroup[] | undefined,
-// ): FragmentWithNotes[] => {
-//   if (!originalFragmentGroups) return []
-//   const shownFragmentIds = shownFragments.map((frag) => frag.id)
-
-//   return originalFragmentGroups.filter((frag) =>
-//     shownFragmentIds.includes(frag.id),
-//   ) as FragmentWithNotes[]
-// }
 
 export const getShownFragmentByFragmentId = (
   shownFragments: FragmentWithNotesAndWeight[],
@@ -82,11 +71,9 @@ export function adjustWeights(
   })
 }
 
-export function adjustSingleItemWeight(
-  fragment: FragmentWithNotesAndWeight | undefined,
-) {
+export function adjustSingleItemWeight(fragment: FragmentWithNotesAndWeight | undefined) {
   const decreaseAmount = 5
-  if(!fragment) return fragment
+  if (!fragment) return fragment
   fragment.weight = Math.max(fragment.weight - decreaseAmount, 0)
   return fragment
 }

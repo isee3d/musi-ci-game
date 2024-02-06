@@ -75,6 +75,53 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
   const { fragmentGroups, fragmentsToShowSize, usedFragmentsMap } = options
   const alwaysUsedFragments = filterFragmentsWithUseAlways(fragmentGroups)
 
+  if (fragmentsToShowSize > 2) {
+    let leastUsedFragments: FragmentWithNotesAndWeight[] = []
+    let minUsageCount = Number.MAX_VALUE
+
+    // Find all least used fragments
+    fragmentGroups.forEach((group) => {
+      group.fragments.forEach((fragment) => {
+        if (fragment.useAlways) {
+          return // Skip useAlways fragments for this part of the logic
+        }
+        const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
+          (sum, count) => sum + count,
+          0,
+        )
+
+        if (totalUsageCount < minUsageCount) {
+          minUsageCount = totalUsageCount
+          leastUsedFragments = [fragment]
+        } else if (totalUsageCount === minUsageCount) {
+          leastUsedFragments.push(fragment)
+        }
+      })
+    })
+
+    // Randomly select one of the least used fragments
+    let selectedFragment: FragmentWithNotesAndWeight | undefined = undefined
+    if (leastUsedFragments.length > 0) {
+      const randomIndex = Math.floor(Math.random() * leastUsedFragments.length)
+      selectedFragment = leastUsedFragments[randomIndex]
+    }
+
+    // Find the group of the selected fragment and filter out useAlways if specified
+    let selectedGroupFragments: FragmentWithNotesAndWeight[] = []
+    if (selectedFragment) {
+      const selectedGroup = fragmentGroups.find((group) =>
+        group.fragments.some((frag) => frag.id === selectedFragment?.id),
+      )
+      if (selectedGroup) {
+        selectedGroupFragments = selectedGroup.fragments.filter(
+          (fragment) => !fragment.useAlways || fragment.id === selectedFragment?.id,
+        )
+      }
+    }
+
+    return [...alwaysUsedFragments, ...selectedGroupFragments]
+  }
+
   let fragmentsToShow = [...alwaysUsedFragments]
 
   fragmentGroups.forEach((group) => {
@@ -116,12 +163,15 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
 function getAmountOfFragmentsInTestmodeExtractedFromFragmentGroups(
   fragmentGroups: FragmentGroupWithWeights[],
 ) {
-  let totalCount = 0
+  const uniqueFragmentIds = new Set<number>()
+
   fragmentGroups.forEach((group) => {
-    totalCount += group.fragments.length
+    group.fragments.forEach((fragment) => {
+      uniqueFragmentIds.add(fragment.id)
+    })
   })
 
-  return totalCount
+  return uniqueFragmentIds.size
 }
 
 function filterPlayableFragments(options: FilterPlayableFragmentOptions) {
@@ -134,10 +184,11 @@ function filterPlayableFragments(options: FilterPlayableFragmentOptions) {
   const useAlwaysFragmentsCount = sceneFragments.filter((f) => f.useAlways).length
   const nonUseAlwaysFragmentsCount = amountOfFragmentsForTest - useAlwaysFragmentsCount
 
-  const thresholdPerUseAlwaysFragment = amountOfScenes / fragmentsToShow
-  const thresholdForNonUseAlways =
+  const thresholdPerUseAlwaysFragment = Math.ceil(amountOfScenes / fragmentsToShow)
+  const thresholdForNonUseAlways = Math.ceil(
     (amountOfScenes - thresholdPerUseAlwaysFragment * useAlwaysFragmentsCount) /
-    nonUseAlwaysFragmentsCount
+      nonUseAlwaysFragmentsCount,
+  )
 
   return sceneFragments.filter((fragment) => {
     const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
@@ -237,7 +288,6 @@ export const transpose = (
   })
 
   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
-
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
 
@@ -270,8 +320,7 @@ export const transpose = (
     [3, 4, 5],
     pianoNotesMap,
   )
-
+  
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
-
   return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
 }

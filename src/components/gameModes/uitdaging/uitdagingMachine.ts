@@ -33,7 +33,6 @@ const transpose = (
   const additionalFragments = remainingFragments.slice(0, amountToFill)
 
   selectedFragments = [...selectedFragments, ...additionalFragments]
-  console.log('selectedFragments', selectedFragments)
 
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
@@ -287,7 +286,6 @@ export const uitdagingMachine = createMachine(
         const { setPlayedFragmentId, setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
-        console.log('shuffledFragments', copiedFragments.length)
         const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragments } =
           transpose(copiedFragments, context.fragmentsToShow, context.pianoNotesMap ?? new Map())
 

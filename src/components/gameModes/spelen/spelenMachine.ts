@@ -33,7 +33,6 @@ const transpose = (
   const additionalFragments = remainingFragments.slice(0, amountToFill)
 
   selectedFragments = [...selectedFragments, ...additionalFragments]
-  console.log('selectedFragments', selectedFragments)
 
   const octaves = [3, 4, 5]
   const randomOctave = octaves[Math.floor(Math.random() * octaves.length)]
