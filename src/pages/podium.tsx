@@ -4,6 +4,7 @@ import Image from "next/legacy/image"
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
+import { imagesConfig } from '~/config/site'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 
@@ -24,7 +25,7 @@ const PodiumPage = () => {
           <div className="relative flex h-[20vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
             <Image
               layout="fill"
-              src="/images/podium.webp"
+              src={imagesConfig.podium}
               objectFit="fill"
               alt="Podium"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -5,6 +5,7 @@ import Image from "next/legacy/image"
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
+import { imagesConfig } from '~/config/site'
 import { cn } from '~/lib/utils'
 import { getSSRAuth } from '~/utils/authUtils'
 
@@ -22,7 +23,7 @@ const WelcomePage = () => {
 
       <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <Image
-          src="/images/podium.webp"
+          src={imagesConfig.podium}
           objectFit="cover"
           layout="fill"
           className=""

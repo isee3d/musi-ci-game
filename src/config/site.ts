@@ -6,14 +6,15 @@ export const siteConfig = {
 } as const
 
 export const imagesConfig = {
-  drumstel: '/images/instruments/drumstel.jpg',
-  piano: '/images/instruments/piano.jpg',
-  contrabas: '/images/instruments/contrabas.jpg',
-  gitaar: '/images/instruments/gitaar.jpg',
-  saxofoon: '/images/instruments/saxofoon.jpg',
-  fluit: '/images/instruments/fluit.jpg',
-  zangeres: '/images/instruments/zangeres.jpg',
-  cinie: '/images/cinie-duim.jpg',
+  drumstel: '/images/instruments/drumstel.png',
+  piano: '/images/instruments/piano.png',
+  contrabas: '/images/instruments/contrabas.png',
+  gitaar: '/images/instruments/gitaar.png',
+  saxofoon: '/images/instruments/saxofoon.png',
+  fluit: '/images/instruments/fluit.png',
+  zangeres: '/images/instruments/zangeres.png',
+  cinie: '/images/cini-duim.png',
+  podium: '/images/podium.png',
 } as const
 
 export const titlesAndTexts = {
