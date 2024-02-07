@@ -21,11 +21,11 @@ export const levelResultRouter = createTRPCRouter({
           score: input.score,
           Scenes: {
             create: input.Scenes.map((scene) => ({
-              chosenFragmentLatency: scene.chosenFragmentLatency ?? 0,
+              chosenFragmentLatency: scene.chosenFragmentLatency,
               id_chosenFragment: scene.id_chosenFragment ?? undefined,
               id_playedFragment: scene.id_playedFragment ?? undefined,
               startTime: scene.startTime ?? undefined,
-              answeredCorrectly: scene.answeredCorrectly ?? false,
+              answeredCorrectly: scene.answeredCorrectly,
               sceneFragments: {
                 create: scene.sceneFragments.map((fragment) => ({
                   id_fragment: fragment.id_fragment,

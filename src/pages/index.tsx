@@ -41,13 +41,13 @@ const WelcomePage = () => {
           </div>
           <div className="flex gap-x-4">
             <Button size={'lg'} asChild>
-              <Link className={cn('')} href={getNextPageRoute()}>
-                <h2 className="w-24 text-center text-xs md:text-base">Neem een kijkje</h2>
+              <Link href={getNextPageRoute()}>
+                <h2 className="text-xs md:text-base">Neem een kijkje</h2>
               </Link>
             </Button>
-            <Button asChild variant="outline" size={'lg'}>
-              <Link href={routePaths.tutorial}>
-                <h2 className="w-24 text-center text-xs md:text-base">Bekijk uitleg</h2>
+            <Button  asChild variant="outline" size={'lg'}>
+              <Link  href={routePaths.tutorial}>
+                <h2 className="text-xs md:text-base">Bekijk uitleg</h2>
               </Link>
             </Button>
           </div>
