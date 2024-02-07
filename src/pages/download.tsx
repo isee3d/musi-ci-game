@@ -1,5 +1,5 @@
 import { addDays, format } from 'date-fns'
-import { Fill, Workbook } from 'exceljs'
+import { Cell, Fill, Workbook } from 'exceljs'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
@@ -79,11 +79,11 @@ const headers = [
   'Positie gespeeld fragment',
   'Positie gekozen fragment',
   'Teruggeluisterde fragmenten',
-] as const
+]
 
-const questionsHeaders = ['Vraag', 'Antwoord', 'Datum'] as const
+const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 
-const activitiesHeaders = ['Activiteit type', 'Datum'] as const
+const activitiesHeaders = ['Activiteit type', 'Datum']
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -92,6 +92,10 @@ const getYesterdayDate = () => {
 
 type ExcelRoute = RouterOutputs['download']['getFilteredExcelData']
 type SplitDataByUser = { [participantId: string]: ExcelRoute }
+interface WorksheetInfo {
+  name: string
+  headers: string[]
+}
 
 const DownloadPage = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
@@ -153,42 +157,60 @@ const DownloadPage = () => {
       if (userData === undefined) continue
 
       const workbook = new Workbook()
-      const worksheet = workbook.addWorksheet('Speelresultaten')
-      const questionsWorksheet = workbook.addWorksheet('Vragen en antwoorden')
-      const activitiesWorksheet = workbook.addWorksheet('Activiteiten')
+      const worksheetsInfo: WorksheetInfo[] = [
+        { name: 'Speelresultaten', headers: headers },
+        { name: 'Vragen en antwoorden', headers: questionsHeaders },
+        { name: 'Activiteiten', headers: activitiesHeaders },
+      ]
 
-      // setup / styling
-      worksheet.views = [{ state: 'frozen', ySplit: 1 }]
-      questionsWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
-      activitiesWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      const createAndSetupWorksheet = (name: string, headers: string[]) => {
+        const worksheet = workbook.addWorksheet(name)
+        worksheet.views = [{ state: 'frozen', ySplit: 1 }]
 
-      const headerRowStyle: Fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFD9D9D9' },
+        const headerRow = worksheet.addRow(headers)
+        headerRow.eachCell((cell) => {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFD9D9D9' },
+          }
+          cell.font = { bold: true }
+        })
+
+        return worksheet
       }
 
-      const headerRow = worksheet.addRow(headers)
-      const questionsHeaderRow = questionsWorksheet.addRow(questionsHeaders)
-      const activitiesHeaderRow = activitiesWorksheet.addRow(activitiesHeaders)
-      questionsHeaderRow.eachCell((cell) => {
-        cell.fill = headerRowStyle
-        cell.font = { bold: true }
-      })
-      activitiesHeaderRow.eachCell((cell) => {
-        cell.fill = headerRowStyle
-        cell.font = { bold: true }
-      })
-      headerRow.eachCell((cell) => {
-        cell.fill = headerRowStyle
-        cell.font = { bold: true }
-      })
+      worksheetsInfo.forEach(({ name, headers }) => createAndSetupWorksheet(name, headers))
+      // const worksheet = workbook.addWorksheet('Speelresultaten')
+      // const questionsWorksheet = workbook.addWorksheet('Vragen en antwoorden')
+      // const activitiesWorksheet = workbook.addWorksheet('Activiteiten')
+
+      // setup / styling
+      // worksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      // questionsWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
+      // activitiesWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
+
+      // const headerRow = worksheet.addRow(headers)
+      // const questionsHeaderRow = questionsWorksheet.addRow(questionsHeaders)
+      // const activitiesHeaderRow = activitiesWorksheet.addRow(activitiesHeaders)
+      // questionsHeaderRow.eachCell((cell) => {
+      //   cell.fill = headerRowStyle
+      //   cell.font = { bold: true }
+      // })
+      // activitiesHeaderRow.eachCell((cell) => {
+      //   cell.fill = headerRowStyle
+      //   cell.font = { bold: true }
+      // })
+      // headerRow.eachCell((cell) => {
+      //   cell.fill = headerRowStyle
+      //   cell.font = { bold: true }
+      // })
 
       //Data filling
       userData.activities.forEach((data) => {
         if (data.user && data.activity) {
           const row = [data.activity, new Date(data.activity_Date).toLocaleDateString()]
-          activitiesWorksheet.addRow(row)
+           workbook.getWorksheet('Activiteiten')?.addRow(row)
         }
       })
 
@@ -199,7 +221,7 @@ const DownloadPage = () => {
             data.answer,
             data.answeredDate ? new Date(data.answeredDate).toLocaleDateString() : '',
           ]
-          questionsWorksheet.addRow(row)
+          workbook.getWorksheet('Vragen en antwoorden')?.addRow(row)
         }
       })
 
@@ -238,17 +260,16 @@ const DownloadPage = () => {
                 row = Array(commonDataLength).fill(null)
                 row.push(relFrag?.fragment?.name)
               }
-              worksheet.addRow(row)
+              workbook.getWorksheet('Speelresultaten')?.addRow(row)
             })
           } else {
-            worksheet.addRow(commonData)
+            workbook.getWorksheet('Speelresultaten')?.addRow(commonData)
           }
         })
       })
 
       // Formatting cells
-
-      worksheet.columns.forEach((column) => {
+      workbook.getWorksheet('Speelresultaten')?.columns.forEach((column) => {
         let maxColumnLength = 0
         // @ts-ignore
         column.eachCell({ includeEmpty: true }, (cell) => {
@@ -261,7 +282,7 @@ const DownloadPage = () => {
         column.width = maxColumnLength + 2
       })
 
-      questionsWorksheet.columns.forEach((column) => {
+      workbook.getWorksheet('Vragen en antwoorden')?.columns.forEach((column) => {
         let maxColumnLength = 0
         // @ts-ignore
         column.eachCell({ includeEmpty: true }, (cell) => {
@@ -274,18 +295,18 @@ const DownloadPage = () => {
         column.width = maxColumnLength + 2
       })
 
-      activitiesWorksheet.columns.forEach((column) => {
-        let maxColumnLength = 0
-        // @ts-ignore
-        column.eachCell({ includeEmpty: true }, (cell) => {
-          const columnLength = cell.text.length
-          if (columnLength > maxColumnLength) {
-            maxColumnLength = columnLength
-          }
-        })
+       workbook.getWorksheet('Activiteiten')?.columns.forEach((column) => {
+         let maxColumnLength = 0
+         // @ts-ignore
+         column.eachCell({ includeEmpty: true }, (cell) => {
+           const columnLength = cell.text.length
+           if (columnLength > maxColumnLength) {
+             maxColumnLength = columnLength
+           }
+         })
 
-        column.width = maxColumnLength + 2
-      })
+         column.width = maxColumnLength + 2
+       })
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
