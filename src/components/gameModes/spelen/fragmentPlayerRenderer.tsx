@@ -14,7 +14,7 @@ import { cn } from '~/lib/utils'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 const FragmentPlayerRenderer: React.FC = () => {
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { send } = SpelenMachineContext.useActorRef()
   const isAnimating = SpelenMachineContext.useSelector((state) => state.context.isAnimating)
@@ -46,7 +46,7 @@ const FragmentPlayerRenderer: React.FC = () => {
     state.matches('playing.listenToFragments'),
   )
 
-  if (!sessionData?.user) return null
+  if (!session?.user) return null
 
   const {
     addNewUserSceneAnswer,
@@ -174,8 +174,6 @@ const FragmentPlayerRenderer: React.FC = () => {
             setEndTime(Date.now())
             addScene(sceneData)
             send('FINISHEDPLAYING')
-            saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
-
             // The last shown scene if Played should also be saved...
             if (listenToFragmentsState) {
               const sceneData: FragmentSceneData[] = []
@@ -189,6 +187,7 @@ const FragmentPlayerRenderer: React.FC = () => {
               })
               AddSceneData(sceneData)
             }
+            saveToDB(getFormattedStoreData(session?.user.id))
           }}
         >
           Stop

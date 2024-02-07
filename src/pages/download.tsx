@@ -182,7 +182,21 @@ export default function DownloadPage() {
 
       // Data filling
 
-      const formatDate = (date: Date | null) => (date ? new Date(date).toLocaleDateString() : '')
+      const formatDate = (date: Date | null) => {
+        if (!date) return ''
+
+        const options: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }
+
+        return new Date(date).toLocaleString('nl-NL', options)
+      }
 
       const addRowToWorksheet = (worksheetName: string, rowData: any[]) => {
         workbook.getWorksheet(worksheetName)?.addRow(rowData)
@@ -211,16 +225,14 @@ export default function DownloadPage() {
             data.gameMode?.name,
             formatDate(scene.startTime),
             formatDate(
-              scene?.startTime?.getTime() !== undefined && scene.chosenFragmentLatency != null
-                ? new Date(scene.startTime.getTime() + scene.chosenFragmentLatency)
-                : null,
+              new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
             ),
             scene.chosenFragmentLatency,
             scene.playedFragment?.name,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
               ?.groundTone,
             scene.chosenFragment?.name,
-            scene.answeredCorrectly ? 1 : 0,
+            scene.answeredCorrectly === null  ? null : scene.answeredCorrectly ? 1 : 0,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
               ?.fragmentIndex,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.chosenFragment?.name)
