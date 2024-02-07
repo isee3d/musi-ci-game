@@ -227,15 +227,20 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
           }
         }) ?? []
 
-      // Use getRelistenCounts to gather and format relistenFragments data
-      const relistenCounts = getRelistenCounts()
-      const relistenFragments = Object.keys(relistenCounts).map((key) => {
+      let relistenCounts = {}
+      if (scene.relistenFragments) {
+        scene.relistenFragments.forEach((id_fragment) => {
+          //@ts-ignore
+          relistenCounts[id_fragment] = (relistenCounts[id_fragment] || 0) + 1
+        })
+      }
+      const relistenFragments = Object.keys(relistenCounts).map((id_fragment) => {
         return {
-          id_fragment: parseInt(key),
-          relistenCount: relistenCounts[parseInt(key)] as number,
+          id_fragment: parseInt(id_fragment),
+          //@ts-ignore
+          relistenCount: relistenCounts[id_fragment],
         }
       })
-
       return {
         chosenFragmentLatency: scene.chosenFragmentlatency,
         answeredCorrectly: scene.answeredCorrectly,

@@ -56,7 +56,9 @@ const FragmentPlayerRenderer: React.FC = () => {
     setChosenFragment,
     addScene,
     sceneData,
+    allPlayedScenes,
     getFormattedStoreData,
+    resetSceneRelatedData,
     setSceneStartTime,
   } = useLuisterenStore()
 
@@ -158,6 +160,10 @@ const FragmentPlayerRenderer: React.FC = () => {
           disabled={!listenToFragmentsState || isPlayingFragment}
           onClick={() => {
             addScene(sceneData)
+            console.log('scenedata: ', sceneData)
+            console.log('allplayedscenes: ', allPlayedScenes)
+            console.log('getFormattedStoreData: ', getFormattedStoreData(session?.user.id))
+            resetSceneRelatedData()
             send('FINISHEDLISTENING')
           }}
           className={cn(
@@ -171,9 +177,6 @@ const FragmentPlayerRenderer: React.FC = () => {
         <Button
           size={'lg'}
           onClick={() => {
-            setEndTime(Date.now())
-            addScene(sceneData)
-            send('FINISHEDPLAYING')
             // The last shown scene if Played should also be saved...
             if (listenToFragmentsState) {
               const sceneData: FragmentSceneData[] = []
@@ -187,7 +190,13 @@ const FragmentPlayerRenderer: React.FC = () => {
               })
               AddSceneData(sceneData)
             }
+            setEndTime(Date.now())
+            addScene(sceneData)
+            console.log('scenedata: ', sceneData)
+            console.log('allplayedscenes: ', allPlayedScenes)
+            resetSceneRelatedData()
             saveToDB(getFormattedStoreData(session?.user.id))
+            send('FINISHEDPLAYING')
           }}
         >
           Stop
