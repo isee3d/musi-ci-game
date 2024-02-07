@@ -86,7 +86,7 @@ const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 const activitiesHeaders = ['Activiteit type', 'Datum']
 
 const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
-type WorksheetName = typeof worksheetNames[number]
+type WorksheetName = (typeof worksheetNames)[number]
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -186,21 +186,24 @@ const DownloadPage = () => {
       worksheetsInfo.forEach(({ name, headers }) => createAndSetupWorksheet(name, headers))
 
       //Data filling
+
+      const formatDate = (date: Date | null) => (date ? new Date(date).toLocaleDateString() : '')
+
+      const addRowToWorksheet = (worksheetName: string, rowData: any[]) => {
+        workbook.getWorksheet(worksheetName)?.addRow(rowData)
+      }
+
       userData.activities.forEach((data) => {
         if (data.user && data.activity) {
-          const row = [data.activity, new Date(data.activity_Date).toLocaleDateString()]
-           workbook.getWorksheet('Activiteiten')?.addRow(row)
+          const row = [data.activity, formatDate(data.activity_Date)]
+          addRowToWorksheet('Activiteiten', row)
         }
       })
 
       userData.questionAnswers.forEach((data) => {
-        if (data.user) {
-          const row = [
-            data.question,
-            data.answer,
-            data.answeredDate ? new Date(data.answeredDate).toLocaleDateString() : '',
-          ]
-          workbook.getWorksheet('Vragen en antwoorden')?.addRow(row)
+        if (!data.user) {
+          const row = [data.question, data.answer, formatDate(data.answeredDate)]
+          addRowToWorksheet('Vragen en antwoorden', row)
         }
       })
 
@@ -208,13 +211,13 @@ const DownloadPage = () => {
         data.Scenes.forEach((scene) => {
           const commonData = [
             participantId,
-            new Date(data.startTime).toLocaleDateString(),
+            formatDate(data.startTime),
             data.subLevel?.name,
             data.gameMode?.name,
-            new Date(scene.startTime ?? -1).toLocaleTimeString(),
-            new Date(
-              (scene?.startTime?.getTime() ?? 0) + (scene?.chosenFragmentLatency ?? 0) ?? -1,
-            ).toLocaleTimeString(),
+            formatDate(scene.startTime),
+            formatDate(
+              new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
+            ),
             scene.chosenFragmentLatency,
             scene.playedFragment?.name,
             scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
@@ -239,14 +242,15 @@ const DownloadPage = () => {
                 row = Array(commonDataLength).fill(null)
                 row.push(relFrag?.fragment?.name)
               }
-              workbook.getWorksheet('Speelresultaten')?.addRow(row)
+              addRowToWorksheet('Speelresultaten', row)
             })
           } else {
-            workbook.getWorksheet('Speelresultaten')?.addRow(commonData)
+            addRowToWorksheet('Speelresultaten', commonData)
           }
         })
       })
 
+      // Column adjusting
       const adjustColumnWidths = (worksheetName: string) => {
         const worksheet = workbook.getWorksheet(worksheetName)
         worksheet?.columns.forEach((column) => {
