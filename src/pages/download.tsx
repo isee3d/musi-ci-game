@@ -1,21 +1,20 @@
 import { addDays, format } from 'date-fns'
-import { Cell, Fill, Workbook } from 'exceljs'
+import { Workbook } from 'exceljs'
 import { Calendar as CalendarIcon } from 'lucide-react'
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { MultiSelect } from '~/components/ui/multi-select'
 import { RouterOutputs, api } from '~/utils/api'
-
 import { z } from 'zod'
+import { LoadingSpinner } from '~/components/loading'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import { Label } from '~/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
 import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
-import { LoadingSpinner } from '~/components/loading'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   const result: SplitDataByUser = {}
@@ -80,13 +79,9 @@ const headers = [
   'Positie gekozen fragment',
   'Teruggeluisterde fragmenten',
 ]
-
 const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
-
 const activitiesHeaders = ['Activiteit type', 'Datum']
-
 const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
-type WorksheetName = (typeof worksheetNames)[number]
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -100,16 +95,21 @@ interface WorksheetInfo {
   headers: string[]
 }
 
-const DownloadPage = () => {
+export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
+  const [shouldDownload, setShouldDownload] = useState(false)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
     to: addDays(getYesterdayDate(), 2),
   })
 
-  const [shouldDownload, setShouldDownload] = useState(false)
+  useEffect(() => {
+    if (shouldDownload) {
+      setShouldDownload(false)
+    }
+  }, [shouldDownload])
 
   const usersQuery = api.download.getAllUsers.useQuery(undefined, {
     enabled: true,
@@ -120,12 +120,7 @@ const DownloadPage = () => {
   const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
     enabled: true,
   })
-
-  const {
-    data: excelData,
-    isLoading: isLoadingExceldata,
-    isFetching,
-  } = api.download.getFilteredExcelData.useQuery(
+  const { isLoading: isLoadingExceldata, isFetching } = api.download.getFilteredExcelData.useQuery(
     {
       selectedUsers: selectedUsers,
       selectedSublevels: selectedSublevels,
@@ -185,7 +180,7 @@ const DownloadPage = () => {
 
       worksheetsInfo.forEach(({ name, headers }) => createAndSetupWorksheet(name, headers))
 
-      //Data filling
+      // Data filling
 
       const formatDate = (date: Date | null) => (date ? new Date(date).toLocaleDateString() : '')
 
@@ -216,7 +211,9 @@ const DownloadPage = () => {
             data.gameMode?.name,
             formatDate(scene.startTime),
             formatDate(
-              new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
+              scene?.startTime?.getTime() !== undefined && scene.chosenFragmentLatency != null
+                ? new Date(scene.startTime.getTime() + scene.chosenFragmentLatency)
+                : null,
             ),
             scene.chosenFragmentLatency,
             scene.playedFragment?.name,
@@ -279,12 +276,6 @@ const DownloadPage = () => {
       link.click()
     }
   }
-
-  useEffect(() => {
-    if (shouldDownload) {
-      setShouldDownload(false)
-    }
-  }, [shouldDownload])
 
   return (
     <>
@@ -385,8 +376,6 @@ const DownloadPage = () => {
     </>
   )
 }
-
-export default DownloadPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const auth = await getSSRAuthRedirectOnResearcherRole(ctx)
