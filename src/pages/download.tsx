@@ -85,6 +85,9 @@ const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 
 const activitiesHeaders = ['Activiteit type', 'Datum']
 
+const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
+type WorksheetName = typeof worksheetNames[number]
+
 const getYesterdayDate = () => {
   const today = new Date()
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
@@ -181,30 +184,6 @@ const DownloadPage = () => {
       }
 
       worksheetsInfo.forEach(({ name, headers }) => createAndSetupWorksheet(name, headers))
-      // const worksheet = workbook.addWorksheet('Speelresultaten')
-      // const questionsWorksheet = workbook.addWorksheet('Vragen en antwoorden')
-      // const activitiesWorksheet = workbook.addWorksheet('Activiteiten')
-
-      // setup / styling
-      // worksheet.views = [{ state: 'frozen', ySplit: 1 }]
-      // questionsWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
-      // activitiesWorksheet.views = [{ state: 'frozen', ySplit: 1 }]
-
-      // const headerRow = worksheet.addRow(headers)
-      // const questionsHeaderRow = questionsWorksheet.addRow(questionsHeaders)
-      // const activitiesHeaderRow = activitiesWorksheet.addRow(activitiesHeaders)
-      // questionsHeaderRow.eachCell((cell) => {
-      //   cell.fill = headerRowStyle
-      //   cell.font = { bold: true }
-      // })
-      // activitiesHeaderRow.eachCell((cell) => {
-      //   cell.fill = headerRowStyle
-      //   cell.font = { bold: true }
-      // })
-      // headerRow.eachCell((cell) => {
-      //   cell.fill = headerRowStyle
-      //   cell.font = { bold: true }
-      // })
 
       //Data filling
       userData.activities.forEach((data) => {
@@ -268,45 +247,22 @@ const DownloadPage = () => {
         })
       })
 
-      // Formatting cells
-      workbook.getWorksheet('Speelresultaten')?.columns.forEach((column) => {
-        let maxColumnLength = 0
-        // @ts-ignore
-        column.eachCell({ includeEmpty: true }, (cell) => {
-          const columnLength = cell.text.length
-          if (columnLength > maxColumnLength) {
-            maxColumnLength = columnLength
-          }
+      const adjustColumnWidths = (worksheetName: string) => {
+        const worksheet = workbook.getWorksheet(worksheetName)
+        worksheet?.columns.forEach((column) => {
+          let maxColumnLength = 0
+          // @ts-ignore
+          column.eachCell({ includeEmpty: true }, (cell) => {
+            const columnLength = cell.value?.toString().length || 0
+            if (columnLength > maxColumnLength) {
+              maxColumnLength = columnLength
+            }
+          })
+          column.width = maxColumnLength + 4
         })
+      }
 
-        column.width = maxColumnLength + 2
-      })
-
-      workbook.getWorksheet('Vragen en antwoorden')?.columns.forEach((column) => {
-        let maxColumnLength = 0
-        // @ts-ignore
-        column.eachCell({ includeEmpty: true }, (cell) => {
-          const columnLength = cell.text.length
-          if (columnLength > maxColumnLength) {
-            maxColumnLength = columnLength
-          }
-        })
-
-        column.width = maxColumnLength + 2
-      })
-
-       workbook.getWorksheet('Activiteiten')?.columns.forEach((column) => {
-         let maxColumnLength = 0
-         // @ts-ignore
-         column.eachCell({ includeEmpty: true }, (cell) => {
-           const columnLength = cell.text.length
-           if (columnLength > maxColumnLength) {
-             maxColumnLength = columnLength
-           }
-         })
-
-         column.width = maxColumnLength + 2
-       })
+      worksheetNames.forEach((name) => adjustColumnWidths(name))
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
