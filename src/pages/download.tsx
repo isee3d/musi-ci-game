@@ -242,16 +242,22 @@ export default function DownloadPage() {
           const commonDataLength = commonData.length
 
           if (scene.relistenFragments.length > 0) {
-            scene.relistenFragments.forEach((relFrag, index) => {
-              let row
-              if (index === 0) {
-                row = [...commonData, relFrag?.fragment?.name]
-              } else {
-                // Create an array of nulls to align the relisten fragment in the correct column
-                row = Array(commonDataLength).fill(null)
-                row.push(relFrag?.fragment?.name)
+            scene.relistenFragments.forEach((relFrag) => {
+              // Check if there's a relistenCount and handle accordingly
+              if (relFrag.relistenCount && relFrag.relistenCount > 0) {
+                for (let i = 0; i < relFrag.relistenCount; i++) {
+                  // For the first row with this fragment, include commonData
+                  if (i === 0) {
+                    let row = [...commonData, relFrag?.fragment?.name] // Assume commonData does not include the place for fragment name
+                    addRowToWorksheet('Speelresultaten', row)
+                  } else {
+                    // Create an array of nulls for alignment, then add the fragment name
+                    let row = Array(commonData.length).fill(null) // commonDataLength replaced with commonData.length for clarity
+                    row.push(relFrag?.fragment?.name)
+                    addRowToWorksheet('Speelresultaten', row)
+                  }
+                }
               }
-              addRowToWorksheet('Speelresultaten', row)
             })
           } else {
             addRowToWorksheet('Speelresultaten', commonData)
