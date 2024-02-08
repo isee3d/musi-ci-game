@@ -213,7 +213,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     }, {})
   },
   getFormattedStoreData: (id_user: string) => {
-    const { startTime, endTime, score, level, subLevel, mode, allPlayedScenes, getRelistenCounts } =
+    const { startTime, endTime, score, level, subLevel, mode, allPlayedScenes } =
       get()
 
     const Scenes = allPlayedScenes.map((scene) => {

@@ -19,7 +19,8 @@ interface TestFragmentPlayerRendererProps {
 }
 
 const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({ mode }) => {
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
+  if (!session) return null
 
   const { send } = TestModeMachineContext.useActorRef()
   const isAnimating = TestModeMachineContext.useSelector((state) => state.context.isAnimating)
@@ -79,7 +80,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
-      saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
+      saveToDB(getFormattedStoreData(session?.user.id))
       send('FINISHEDPLAYING')
     }
   }, [shownFragments])

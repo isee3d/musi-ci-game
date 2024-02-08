@@ -15,6 +15,9 @@ import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { FragmentSceneData } from 'types/SceneData'
+import { Session } from 'next-auth'
+import { api } from '~/utils/api'
 
 type LogType = {
   [fragmentId: string]: {
@@ -27,10 +30,27 @@ function testAlgorithm(
   fragmentGroups: FragmentGroup[],
   fragmentsToShow: number,
   amountOfScenes: number,
+  session: Session,
+  saveToDB: any,
 ) {
+  const {
+    addNewUserSceneAnswer,
+    AddSceneData,
+    setEndTime,
+    setChosenFragment,
+    setChosenFragmentLatency,
+    setSceneStartTime,
+    setStartTime,
+    addScene,
+    resetSceneRelatedData,
+    setPlayedFragmentId,
+    setLevelSublevelMode,
+  } = useLuisterenStore.getState()
+
   let log: LogType = {}
   let totalCount = 0
-  let amountPlayed = 0
+
+  setLevelSublevelMode(10, 29, 4)
 
   let convertedFragmentGroups = fragmentGroups.map((group) => ({
     ...group,
@@ -40,15 +60,48 @@ function testAlgorithm(
     })),
   })) as FragmentGroupWithWeights[]
 
+  setStartTime(Date.now())
+
   for (let i = 0; i < times; i++) {
-    if (amountPlayed === amountOfScenes) {
-      break
+    const { transposedFragments: shownFragments, newActiveFragment } = transpose(
+      fragmentsToShow,
+      amountOfScenes,
+      convertedFragmentGroups,
+      pianoNotesMap,
+    )
+
+    // Save the new scene data to the store
+    const newSceneData: FragmentSceneData[] = []
+    shownFragments.forEach((fragment, index) => {
+      newSceneData.push({
+        id_fragment: fragment.id,
+        fragmentIndex: index,
+        groundTone: fragment.transpose ?? '',
+        octave: fragment.octave ?? -1,
+      })
+    })
+
+    AddSceneData(newSceneData)
+    setPlayedFragmentId(newActiveFragment.id)
+    setSceneStartTime(new Date())
+
+    // Choose a random fragment to simulate the user choosing a fragment
+    const userChosenFragment = shownFragments[Math.floor(Math.random() * shownFragments.length)]
+    const isCorrectChosen = userChosenFragment?.id === newActiveFragment.id
+
+    addNewUserSceneAnswer(isCorrectChosen)
+    setChosenFragment(userChosenFragment?.id)
+    setChosenFragmentLatency(Math.floor(Math.random() * 1000) + 1000)
+
+    if (i === times - 1) {
+      setEndTime(Date.now())
     }
-    transpose(fragmentsToShow, amountOfScenes, convertedFragmentGroups, pianoNotesMap)
-    amountPlayed++
+
+    addScene(useLuisterenStore.getState().sceneData)
+    resetSceneRelatedData()
   }
 
-  const { newUsedFragmentsMap } = useLuisterenStore.getState()
+  const { newUsedFragmentsMap, getFormattedStoreData } = useLuisterenStore.getState()
 
   // Update the log with the results of each iteration
   for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
@@ -62,7 +115,8 @@ function testAlgorithm(
   }
 
   console.log('Log of fragment usage by octave:', log, 'count:', totalCount)
-  console.log('pianoNotesMap', pianoNotesMap)
+  console.log('formattedData: ', getFormattedStoreData(session.user.id))
+  saveToDB(getFormattedStoreData(session.user.id))
 }
 
 interface TestModeProps {
@@ -104,6 +158,15 @@ const Test: React.FC<TestModeProps> = ({
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
+
+  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
+    onSuccess: (data) => {
+      console.log('succesfully saved data: ', data)
+    },
+    onError: (error) => {
+      console.error('error saving data: ', error)
+    }
+  })
 
   const stopwatch = useStopwatch(1000)
 
@@ -157,16 +220,17 @@ const Test: React.FC<TestModeProps> = ({
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
       )}
-      {/* {session?.user.role === 'ADMIN' && (
+      {isFinishedState && (
+        <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
+      )}
+
+      {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300)}
+          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300, session, saveToDB)}
         >
           Print Test algoritme validatie
         </Button>
-      )} */}
-      {isFinishedState && (
-        <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}
     </>
   )

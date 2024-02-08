@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cn } from '~/lib/utils'
 
 import { Check, X, ChevronsUpDown } from 'lucide-react'
-import { Button } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
 import {
   Command,
   CommandEmpty,
@@ -61,8 +61,10 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
                 onClick={() => handleUnselect(item)}
               >
                 {item}
-                <button
-                  className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                <Button
+                  className={cn( buttonVariants({ variant: 'secondary' }),
+                    'ml-1 h-4 w-4 p-0 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  )}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleUnselect(item)
@@ -75,7 +77,7 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
                   onClick={() => handleUnselect(item)}
                 >
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                </button>
+                </Button>
               </Badge>
             ))}
           </div>
