@@ -35,13 +35,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
-      <div className=" flex min-h-screen flex-col overflow-y-hidden">
-        <header className="container z-40 rounded-b-xl  backdrop-blur-md">
+      <div className=" flex min-h-dvh flex-col overflow-y-hidden">
+        <header className="container z-40 rounded-b-xl backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={navItemsPlayer} />
             <Button
               disabled={isPlaying}
-              className="cursor-pointer bg-purple-500 text-white"
+              variant={'highlight'}
               onClick={(event) => {
                 event.preventDefault()
                 session ? handleSignOut() : signIn()
@@ -59,7 +59,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
 
         {children}
-        <SiteFooter />
+        <SiteFooter className={''} />
         <Scene
           style={{
             position: 'fixed',

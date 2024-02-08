@@ -32,7 +32,7 @@ function getAnimationClass(
     : 'cursor-not-allowed bg-gray-400'
 
   return cn(
-    'rounded-2xl border-4 border-transparant shadow-md w-full md:w-1/2',
+    'rounded-2xl border-4 border-transparant shadow-md w-5/6 md:w-1/2',
     borderColorClass,
     blueBorderClass,
     bgColorClass,

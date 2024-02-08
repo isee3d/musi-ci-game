@@ -41,11 +41,13 @@ const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, suble
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         objectFit="fill"
       />
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">Test afgerond</h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+        Test afgerond
+      </h3>
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {formatTime(endTime - startTime)} gespeeld!
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
       <div className="flex justify-center">

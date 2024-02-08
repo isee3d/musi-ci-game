@@ -38,7 +38,7 @@ const ContentContainer: React.FC<Props> = ({
         <div className="container mx-auto flex flex-col items-center justify-start gap-6 py-12">
           <div className="w-full rounded-2xl">
             <div className="relative flex w-full justify-between rounded-t-2xl bg-primary-foreground">
-              <div className="relative size-12 md:size-24">
+              <div className="relative size-24">
                 {shouldRenderCinieInContentContainer && (
                   <Image
                     objectFit="contain"
@@ -51,11 +51,11 @@ const ContentContainer: React.FC<Props> = ({
                 )}
               </div>
 
-              <h2 className="flex items-center justify-center text-balance text-center text-3xl font-extrabold">
+              <h2 className="flex items-center justify-center text-balance text-center text-xl md:text-3xl mx-2 font-extrabold">
                 {title}
               </h2>
 
-              <div className="relative size-12 md:size-24">
+              <div className="relative size-24">
                 {instrumentURL && (
                   <Image
                     layout="fill"

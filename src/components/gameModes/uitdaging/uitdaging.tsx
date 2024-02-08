@@ -85,10 +85,10 @@ const Uitdaging: React.FC<UitdagingProps> = ({
     <>
       {idleState && (
         <>
-          <h3 className=" text-center text-4xl font-extrabold tracking-tight">
+          <h3 className=" text-center text-3xl font-extrabold tracking-tight md:text-4xl">
             Speel tegen de klok
           </h3>
-          <h3 className=" text-center text-4xl font-extrabold tracking-tight">
+          <h3 className=" text-center text-3xl font-extrabold tracking-tight md:text-4xl">
             Doe {mode?.amountOfScenes} opdrachten zo snel mogelijk
           </h3>
         </>

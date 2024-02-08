@@ -44,7 +44,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
-        <div className="relative mx-auto my-6 w-auto max-w-3xl rounded-lg border-4 border-accent-foreground">
+        <div className="relative m-6 w-auto max-w-3xl rounded-lg border-4 border-accent-foreground">
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-background shadow-lg outline-none focus:outline-none">
             <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
               <h3 className="text-3xl font-semibold text-center">Klik om het geluid in te schakelen. U hoort nu twee tonen</h3>

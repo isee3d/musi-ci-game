@@ -41,11 +41,11 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         objectFit="fill"
       />
-      <h3 className="pb-10 text-center text-5xl font-extrabold">Spelen afgerond</h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+      <h3 className="pb-10 text-center text-3xl font-extrabold md:text-4xl">Spelen afgerond</h3>
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
         Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
         Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight ">
@@ -53,7 +53,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
       </h3> */}
       <div className="flex justify-center gap-4">
         <Button
-          className={cn('bg-purple-500 text-white hover:bg-purple-300')}
+          variant={'highlight'}
           onClick={() => restartSpelen()}
         >
           Speel opnieuw

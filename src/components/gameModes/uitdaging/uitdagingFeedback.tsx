@@ -30,11 +30,11 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
 
   return (
     <>
-      <h3 className="text-center text-4xl font-extrabold">Uitdaging afgerond</h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+      <h3 className="text-center text-3xl font-extrabold md:text-4xl">Uitdaging afgerond</h3>
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
         je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight ">
+      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()} % goed
       </h3>
       {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
@@ -42,7 +42,7 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
       </h3> */}
       <div className="flex justify-center gap-4">
         <Button
-          className={cn('bg-purple-500 text-white hover:bg-purple-300')}
+          variant={'highlight'}
           onClick={restartUitdaging}
         >
           Speel opnieuw

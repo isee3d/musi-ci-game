@@ -2,7 +2,7 @@ import { createActorContext } from '@xstate/react'
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import ContentContainer from '~/components/contentContainer'
 import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
@@ -61,90 +61,89 @@ const ModePage = ({
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  const renderGameMode = (mode: string) => {
-    switch (mode) {
-      case 'Luisteren':
-        return (
-          <LuisterenMachineContext.Provider>
-            <Luisteren
-              fragmentsToShow={
-                sublevelQuery.data?.fragmentToShowLuisteren
-                  ? sublevelQuery.data?.fragmentToShowLuisteren
-                  : fragmentsToShow
-              }
-              fragments={fragments}
-              levelId={levelId}
-              sublevelId={sublevelId}
-              mode={modeQuery?.data}
-            />
-          </LuisterenMachineContext.Provider>
-        )
-      case 'Spelen':
-        return (
-          <SpelenMachineContext.Provider>
-            <Spelen
-              fragmentsToShow={
-                sublevelQuery.data?.fragmentToShowSpelen
-                  ? sublevelQuery.data?.fragmentToShowSpelen
-                  : fragmentsToShow
-              }
-              fragments={fragments}
-              levelId={levelId}
-              sublevelId={sublevelId}
-              gameId={gameId}
-              mode={modeQuery?.data}
-            />
-          </SpelenMachineContext.Provider>
-        )
-      case 'Uitdaging':
-        return (
-          <UitdagingMachineContext.Provider>
-            <Uitdaging
-              gameId={gameId}
-              fragmentsToShow={
-                sublevelQuery.data?.fragmentToShowUitdaging
-                  ? sublevelQuery.data?.fragmentToShowUitdaging
-                  : fragmentsToShow
-              }
-              fragments={fragments}
-              levelId={levelId}
-              playTime={playTime}
-              sublevelId={sublevelId}
-              mode={modeQuery?.data}
-            />
-          </UitdagingMachineContext.Provider>
-        )
-      case 'Test':
-        return (
-          <TestModeMachineContext.Provider>
-            <Test
-              gameId={gameId}
-              fragmentsToShow={fragmentsToShow}
-              fragments={fragments}
-              levelId={levelId}
-              playTime={playTime}
-              sublevelId={sublevelId}
-              mode={modeQuery?.data}
-              fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
-            />
-          </TestModeMachineContext.Provider>
-        )
-      default:
-        return null
-    }
-  }
+  const renderGameMode = useCallback(
+    (mode: string) => {
+      switch (mode) {
+        case 'Luisteren':
+          return (
+            <LuisterenMachineContext.Provider>
+              <Luisteren
+                fragmentsToShow={sublevelQuery.data?.fragmentToShowLuisteren ?? fragmentsToShow}
+                fragments={fragments}
+                levelId={levelId}
+                sublevelId={sublevelId}
+                mode={modeQuery?.data}
+              />
+            </LuisterenMachineContext.Provider>
+          )
+        case 'Spelen':
+          return (
+            <SpelenMachineContext.Provider>
+              <Spelen
+                fragmentsToShow={sublevelQuery.data?.fragmentToShowSpelen ?? fragmentsToShow}
+                fragments={fragments}
+                levelId={levelId}
+                sublevelId={sublevelId}
+                gameId={gameId}
+                mode={modeQuery?.data}
+              />
+            </SpelenMachineContext.Provider>
+          )
+        case 'Uitdaging':
+          return (
+            <UitdagingMachineContext.Provider>
+              <Uitdaging
+                gameId={gameId}
+                fragmentsToShow={sublevelQuery.data?.fragmentToShowUitdaging ?? fragmentsToShow}
+                fragments={fragments}
+                levelId={levelId}
+                playTime={playTime}
+                sublevelId={sublevelId}
+                mode={modeQuery?.data}
+              />
+            </UitdagingMachineContext.Provider>
+          )
+        case 'Test':
+          return (
+            <TestModeMachineContext.Provider>
+              <Test
+                gameId={gameId}
+                fragmentsToShow={fragmentsToShow}
+                fragments={fragments}
+                levelId={levelId}
+                playTime={playTime}
+                sublevelId={sublevelId}
+                mode={modeQuery?.data}
+                fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
+              />
+            </TestModeMachineContext.Provider>
+          )
+        default:
+          return null
+      }
+    },
+    [
+      sublevelQuery.data,
+      fragmentsToShow,
+      fragments,
+      levelId,
+      sublevelId,
+      modeQuery.data,
+      gameId,
+      playTime,
+      fragmentGroupsQuery.data,
+    ],
+  )
 
-  useEffect(() => {
-    if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-      router.push(routePaths.sublevelSelectPage(gameId, parseInt(levelId)))
-    }
+  // useEffect(() => {
+  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+  //     router.push(routePaths.sublevelSelectPage(gameId, parseInt(levelId)))
+  //   }
 
-    setIsPlaying(false)
+  //   setIsPlaying(false)
 
-    return () => setIsPlaying(false)
-  }, [])
-
-  const renderedGameMode = useMemo(() => renderGameMode(mode), [mode])
+  //   return () => setIsPlaying(false)
+  // }, [])
 
   return (
     <ContentContainer
@@ -160,7 +159,7 @@ const ModePage = ({
             <Button
               key={gameMode.id}
               className={cn(
-                'h-12 flex-auto min-w-0 overflow-hidden rounded-none text-xl',
+                'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
                 mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
               )}
               disabled={isPlaying}
@@ -173,13 +172,13 @@ const ModePage = ({
               <Link
                 href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
               >
-                {gameMode.name}
+                <h2 className='text-base md:text-xl'>{gameMode.name}</h2>
               </Link>
             </Button>
           ))}
       </div>
-      <div className="relative flex w-full flex-col items-center justify-center gap-y-8 py-8">
-        {renderedGameMode}
+      <div className="relative flex w-full flex-col items-center justify-center gap-y-4 md:gap-y-8 py-8">
+        {renderGameMode(mode)}
       </div>
     </ContentContainer>
   )

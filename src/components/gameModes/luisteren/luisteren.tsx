@@ -65,7 +65,9 @@ const Luisteren: React.FC<LuisterenProps> = ({
 
   return (
     <>
-      <h2 className="text-center text-4xl font-extrabold tracking-tight">Klik en luister</h2>
+      <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+        Klik en luister
+      </h2>
       {isIdleState && (
         <div className="flex flex-col gap-y-5">
           <Button size={'lg'} onClick={startLuisteren}>
@@ -81,10 +83,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
       {isPlayingState && <PlayButtonsRenderer />}
       {isfinishedPlayingState && (
         <Button
-          className={cn(
-            buttonVariants({ size: 'lg' }),
-            'bg-purple-500 text-white hover:bg-purple-300',
-          )}
+          className={cn(buttonVariants({ size: 'lg', variant: 'highlight' }))}
           onClick={restartLuisteren}
         >
           Speel opnieuw

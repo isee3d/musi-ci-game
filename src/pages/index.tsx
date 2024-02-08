@@ -30,9 +30,9 @@ const WelcomePage = () => {
           alt="podium"
           priority
         />
-        <div className="container mx-auto flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-28 backdrop-blur-md md:w-1/2">
+        <div className="container mx-auto my-28 md:my-0 flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 md:p-28 backdrop-blur-md w-4/5">
           <div className="flex flex-col gap-4">
-            <h1 className="text-center text-5xl font-extrabold">
+            <h1 className="text-center text-3xl md:text-5xl font-extrabold">
               WELKOM bij de Musi-CI Melody Game
             </h1>
             <h2 className="text-center text-xl font-bold">
@@ -40,14 +40,14 @@ const WelcomePage = () => {
             </h2>
           </div>
           <div className="flex gap-x-4">
-            <Button size={'lg'} asChild>
+            <Button className={cn('px-2 sm:px-8')} size={'lg'} asChild>
               <Link href={getNextPageRoute()}>
-                <h2 className="text-xs md:text-base">Neem een kijkje</h2>
+                <h2 className="text-center text-xs md:text-base">Neem een kijkje</h2>
               </Link>
             </Button>
-            <Button  asChild variant="outline" size={'lg'}>
-              <Link  href={routePaths.tutorial}>
-                <h2 className="text-xs md:text-base">Bekijk uitleg</h2>
+            <Button className={cn('px-2 sm:px-8')} asChild variant="outline" size={'lg'}>
+              <Link href={routePaths.tutorial}>
+                <h2 className="text-center text-xs md:text-base">Bekijk uitleg</h2>
               </Link>
             </Button>
           </div>
