@@ -46,9 +46,9 @@ const Signin = () => {
         <form
           autoComplete="off"
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex h-screen w-1/2 flex-col justify-center gap-8 p-24"
+          className="flex h-screen w-full md:w-1/2 flex-col justify-center gap-8 md:p-24"
         >
-          <h2 className="text-balance text-center py-4 text-4xl font-bold">
+          <h2 className="text-balance text-center py-4 text-xl lg:text-4xl font-bold">
             Musi-CI Melody Game Oefen met toonhoogtes en korte melodietjes
           </h2>
           <div className="flex flex-col gap-2">
