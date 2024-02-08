@@ -114,7 +114,14 @@ function testAlgorithm(
     }
   }
 
-  console.log('Log of fragment usage by octave:', log, 'count:', totalCount)
+  console.log(
+    'Log of fragment usage by octave:',
+    log,
+    'count:',
+    totalCount,
+    'ran with amountofFragmentsinScene: ',
+    fragmentsToShow,
+  )
   console.log('formattedData: ', getFormattedStoreData(session.user.id))
   saveToDB(getFormattedStoreData(session.user.id))
 }
@@ -165,7 +172,7 @@ const Test: React.FC<TestModeProps> = ({
     },
     onError: (error) => {
       console.error('error saving data: ', error)
-    }
+    },
   })
 
   const stopwatch = useStopwatch(1000)
@@ -224,14 +231,14 @@ const Test: React.FC<TestModeProps> = ({
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}
 
-      {session?.user.role === 'ADMIN' && (
+      {/* {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 2, 300, session, saveToDB)}
+          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300, session, saveToDB)}
         >
           Print Test algoritme validatie
         </Button>
-      )}
+      )} */}
     </>
   )
 }
