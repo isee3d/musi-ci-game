@@ -30,7 +30,7 @@ const WelcomePage = () => {
           alt="podium"
           priority
         />
-        <div className="container mx-auto my-28 md:my-0 flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 md:p-28 backdrop-blur-md w-4/5">
+        <div className="container mx-auto my-28 md:my-0 flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 md:p-48 backdrop-blur-md w-4/5">
           <div className="flex flex-col gap-4">
             <h1 className="text-center text-3xl md:text-5xl font-extrabold">
               WELKOM bij de Musi-CI Melody Game
