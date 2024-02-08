@@ -28,6 +28,8 @@ const WelcomePage = () => {
           layout="fill"
           className=""
           alt="podium"
+          quality={30}
+          placeholder='blur'
           priority
         />
         <div className="container mx-auto my-28 md:my-0 flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 md:p-48 backdrop-blur-md w-4/5">
