@@ -59,6 +59,7 @@ const DateRangeSchema = z.object({
 export const DownloadSettingsSchema = z.object({
   selectedUsers: z.array(z.string()),
   selectedSublevels: z.array(z.string()),
+  worksheets: z.array(z.string()),
   selectedGameModes: z.array(z.string()),
   date: z.optional(DateRangeSchema),
 })
@@ -81,7 +82,7 @@ const headers = [
 ]
 const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 const activitiesHeaders = ['Activiteit type', 'Datum']
-const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'] as const
+const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten']
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -99,11 +100,16 @@ export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
+  const [workSheets, setWorkSheets] = useState<string[]>([])
   const [shouldDownload, setShouldDownload] = useState(false)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
     to: addDays(getYesterdayDate(), 2),
   })
+
+  useEffect(() => {
+    setWorkSheets(worksheetNames)
+  }, [])
 
   useEffect(() => {
     if (shouldDownload) {
@@ -125,6 +131,7 @@ export default function DownloadPage() {
       selectedUsers: selectedUsers,
       selectedSublevels: selectedSublevels,
       selectedGameModes: selectedGameModes,
+      worksheets: workSheets,
       date: date,
     },
     {
@@ -202,68 +209,73 @@ export default function DownloadPage() {
         workbook.getWorksheet(worksheetName)?.addRow(rowData)
       }
 
-      userData.activities.forEach((data) => {
-        if (data.user && data.activity) {
-          const row = [data.activity, formatDate(data.activity_Date)]
-          addRowToWorksheet('Activiteiten', row)
-        }
-      })
-
-      userData.questionAnswers.forEach((data) => {
-        if (!data.user) {
-          const row = [data.question, data.answer, formatDate(data.answeredDate)]
-          addRowToWorksheet('Vragen en antwoorden', row)
-        }
-      })
-
-      userData.levelResults.forEach((data) => {
-        data.Scenes.forEach((scene) => {
-          const commonData = [
-            participantId,
-            formatDate(data.startTime),
-            data.subLevel?.name,
-            data.gameMode?.name,
-            formatDate(scene.startTime),
-            formatDate(
-              new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
-            ),
-            scene.chosenFragmentLatency,
-            scene.playedFragment?.name,
-            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
-              ?.groundTone,
-            scene.chosenFragment?.name,
-            scene.answeredCorrectly === null  ? null : scene.answeredCorrectly ? 1 : 0,
-            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
-              ?.fragmentIndex,
-            scene.sceneFragments.find((f) => f?.fragment?.name === scene?.chosenFragment?.name)
-              ?.fragmentIndex,
-          ]
-
-          const commonDataLength = commonData.length
-
-          if (scene.relistenFragments.length > 0) {
-            scene.relistenFragments.forEach((relFrag) => {
-              // Check if there's a relistenCount and handle accordingly
-              if (relFrag.relistenCount && relFrag.relistenCount > 0) {
-                for (let i = 0; i < relFrag.relistenCount; i++) {
-                  // For the first row with this fragment, include commonData
-                  if (i === 0) {
-                    let row = [...commonData, relFrag?.fragment?.name] // Assume commonData does not include the place for fragment name
-                    addRowToWorksheet('Speelresultaten', row)
-                  } else {
-                    // Create an array of nulls for alignment, then add the fragment name
-                    let row = Array(commonData.length).fill(null) // commonDataLength replaced with commonData.length for clarity
-                    row.push(relFrag?.fragment?.name)
-                    addRowToWorksheet('Speelresultaten', row)
-                  }
-                }
-              }
-            })
-          } else {
-            addRowToWorksheet('Speelresultaten', commonData)
+      if (workSheets.includes('Activiteiten')) {
+        userData.activities.forEach((data) => {
+          if (data.user && data.activity) {
+            const row = [data.activity, formatDate(data.activity_Date)]
+            addRowToWorksheet('Activiteiten', row)
           }
         })
-      })
+      }
+
+      if (workSheets.includes('Vragen en antwoorden')) {
+        console.log(workSheets)
+        userData.questionAnswers.forEach((data) => {
+          const row = [data.question, data.answer, formatDate(data.answeredDate)]
+          addRowToWorksheet('Vragen en antwoorden', row)
+        })
+      }
+
+      if (workSheets.includes('Speelresultaten')) {
+        userData.levelResults.forEach((data) => {
+          data.Scenes.forEach((scene) => {
+            const commonData = [
+              participantId,
+              formatDate(data.startTime),
+              data.subLevel?.name,
+              data.gameMode?.name,
+              formatDate(scene.startTime),
+              formatDate(
+                new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
+              ),
+              scene.chosenFragmentLatency,
+              scene.playedFragment?.name,
+              scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
+                ?.groundTone,
+              scene.chosenFragment?.name,
+              scene.answeredCorrectly === null ? null : scene.answeredCorrectly ? 1 : 0,
+              scene.sceneFragments.find((f) => f?.fragment?.name === scene?.playedFragment?.name)
+                ?.fragmentIndex,
+              scene.sceneFragments.find((f) => f?.fragment?.name === scene?.chosenFragment?.name)
+                ?.fragmentIndex,
+            ]
+
+            const commonDataLength = commonData.length
+
+            if (scene.relistenFragments.length > 0) {
+              scene.relistenFragments.forEach((relFrag) => {
+                // Check if there's a relistenCount and handle accordingly
+                if (relFrag.relistenCount && relFrag.relistenCount > 0) {
+                  for (let i = 0; i < relFrag.relistenCount; i++) {
+                    // For the first row with this fragment, include commonData
+                    if (i === 0) {
+                      let row = [...commonData, relFrag?.fragment?.name] // Assume commonData does not include the place for fragment name
+                      addRowToWorksheet('Speelresultaten', row)
+                    } else {
+                      // Create an array of nulls for alignment, then add the fragment name
+                      let row = Array(commonData.length).fill(null) // commonDataLength replaced with commonData.length for clarity
+                      row.push(relFrag?.fragment?.name)
+                      addRowToWorksheet('Speelresultaten', row)
+                    }
+                  }
+                }
+              })
+            } else {
+              addRowToWorksheet('Speelresultaten', commonData)
+            }
+          })
+        })
+      }
 
       // Column adjusting
       const adjustColumnWidths = (worksheetName: string) => {
@@ -381,6 +393,17 @@ export default function DownloadPage() {
             }
             selected={selectedGameModes}
             onChange={setSelectedGameModes}
+            className="w-[560px]"
+          />
+
+          <Label className="mb-1">Selecteer de gegevens worksheets</Label>
+          <MultiSelect
+            options={worksheetNames.map((sheet) => ({
+              value: sheet,
+              label: sheet,
+            }))}
+            selected={workSheets}
+            onChange={setWorkSheets}
             className="w-[560px]"
           />
 

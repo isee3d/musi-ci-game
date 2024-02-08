@@ -376,7 +376,7 @@ export const downloadRouter = createTRPCRouter({
   getFilteredExcelData: publicProcedure
     .input(DownloadSettingsSchema)
     .query(async ({ ctx, input }) => {
-      const { selectedUsers, selectedSublevels, selectedGameModes, date } = input
+      const { selectedUsers, selectedSublevels, selectedGameModes, date, worksheets } = input
 
       const selectedSublevelsNumbers = selectedSublevels.map((sublevel) => parseInt(sublevel, 10))
       const selectedGameModesNumbers = selectedGameModes.map((gameMode) => parseInt(gameMode, 10))
