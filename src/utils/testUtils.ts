@@ -3,12 +3,11 @@ import { FragmentWithNotesAndWeight } from '~/components/fragmentPlayer/audio/fr
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { getNoteIndex } from '~/utils/fragmentUtils'
 
 /*
  EXPLANATION OF TEST ALGORITHM
 
- 1) Get the least used fragments for the scene randomly if evenly used
+ 1) Get the least used fragments for the scene randomly if evenly used and make sure fragment going up first
  2) Get all potential fragments that haven't been used more than the threshold (amountOfScenes / totalFragmentCount)
     and adjust threshold for always used fragments
  3) Do a deep copy of the of all Fragments (fragmentGroups)
