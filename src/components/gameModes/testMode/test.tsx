@@ -26,7 +26,6 @@ type LogType = {
 }
 
 function testAlgorithm(
-  times: number,
   fragmentGroups: FragmentGroup[],
   fragmentsToShow: number,
   amountOfScenes: number,
@@ -62,7 +61,7 @@ function testAlgorithm(
 
   setStartTime(Date.now())
 
-  for (let i = 0; i < times; i++) {
+  for (let i = 0; i < 300; i++) {
     const { transposedFragments: shownFragments, newActiveFragment } = transpose(
       fragmentsToShow,
       amountOfScenes,
@@ -93,7 +92,7 @@ function testAlgorithm(
     setChosenFragment(userChosenFragment?.id)
     setChosenFragmentLatency(Math.floor(Math.random() * 1000) + 1000)
 
-    if (i === times - 1) {
+    if (i === amountOfScenes) {
       setEndTime(Date.now())
     }
 
@@ -123,7 +122,7 @@ function testAlgorithm(
     fragmentsToShow,
   )
   console.log('formattedData: ', getFormattedStoreData(session.user.id))
-  saveToDB(getFormattedStoreData(session.user.id))
+  // saveToDB(getFormattedStoreData(session.user.id))
 }
 
 interface TestModeProps {
@@ -165,6 +164,7 @@ const Test: React.FC<TestModeProps> = ({
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
+  const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
     onSuccess: (data) => {
@@ -231,14 +231,16 @@ const Test: React.FC<TestModeProps> = ({
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}
 
-      {/* {session?.user.role === 'ADMIN' && (
+      {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(300, fragmentGroups, 3, 300, session, saveToDB)}
+          onClick={() =>
+            testAlgorithm(fragmentGroups, 3, 300, session, saveToDB)
+          }
         >
           Print Test algoritme validatie
         </Button>
-      )} */}
+      )}
     </>
   )
 }

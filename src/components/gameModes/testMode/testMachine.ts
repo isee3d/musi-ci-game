@@ -32,7 +32,7 @@ export const testModeMachine = createMachine(
       countdownActions: undefined as StopwatchActions | undefined,
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
-      amountPlayed: 0 as number,
+      amountPlayed: 1 as number,
       groups: [] as FragmentGroupWithWeights[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },

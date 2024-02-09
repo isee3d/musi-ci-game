@@ -318,7 +318,7 @@ export const transpose = (
     amountOfScenes: amountOfScenes,
     usedFragmentsMap: newUsedFragmentsMap,
   })
-
+  console.log('potentialActiveFragments', potentialActiveFragments)
   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')
