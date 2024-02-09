@@ -146,7 +146,7 @@ const AnimationPlayer: React.FC<AnimationPlayerProps> = ({ animationFragment, op
 
   return (
     <button
-      disabled={!options?.isAnimating && !options?.isClickable}
+      disabled={!options?.isClickable}
       onClick={handleAnimationClicked}
       ref={containerRef}
       className={`${getAnimationClass(options, animationFragment, isBlueBorder)}`}
