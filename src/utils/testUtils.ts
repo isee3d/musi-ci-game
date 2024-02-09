@@ -3,6 +3,7 @@ import { FragmentWithNotesAndWeight } from '~/components/fragmentPlayer/audio/fr
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { deepCopy } from '~/utils/deepCopy'
+import { getNoteIndex } from '~/utils/fragmentUtils'
 
 /*
  EXPLANATION OF TEST ALGORITHM
@@ -24,6 +25,7 @@ import { deepCopy } from '~/utils/deepCopy'
 interface FilterLeastUsedFragmentOptions {
   fragmentGroups: FragmentGroupWithWeights[]
   fragmentsToShowSize: number
+  pianoNotesMap: Map<string, { noteNumber: number; weight: number }>
   usedFragmentsMap: {
     [fragmentId: number]: {
       [octaveNumber: number]: number
@@ -72,9 +74,10 @@ function filterFragmentsWithUseAlways(fragmentGroups: FragmentGroupWithWeights[]
 }
 
 function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) {
-  const { fragmentGroups, fragmentsToShowSize, usedFragmentsMap } = options
+  const { fragmentGroups, fragmentsToShowSize, usedFragmentsMap, pianoNotesMap } = options
   const alwaysUsedFragments = filterFragmentsWithUseAlways(fragmentGroups)
 
+  // Logic for showing more than 2 fragments
   if (fragmentsToShowSize > 2) {
     let leastUsedFragments: FragmentWithNotesAndWeight[] = []
     let minUsageCount = Number.MAX_VALUE
@@ -82,9 +85,8 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
     // Find all least used fragments
     fragmentGroups.forEach((group) => {
       group.fragments.forEach((fragment) => {
-        if (fragment.useAlways) {
-          return // Skip useAlways fragments for this part of the logic
-        }
+        if (fragment.useAlways) return
+
         const totalUsageCount = Object.values(usedFragmentsMap[fragment.id] || {}).reduce(
           (sum, count) => sum + count,
           0,
@@ -119,9 +121,37 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
       }
     }
 
+    // Sort the fragments in selectedGroupFragments on going up first
+
+    selectedGroupFragments.sort((a, b) => {
+      const aFirstNoteName = a.notes[0]?.name ?? ''
+      const aSecondNoteName = a.notes[1]?.name ?? ''
+      const bFirstNoteName = b.notes[0]?.name ?? ''
+      const bSecondNoteName = b.notes[1]?.name ?? ''
+
+      // Lookup the noteNumber for each note from the pianoNotesMap
+      const aFirstNoteNumber = pianoNotesMap.get(aFirstNoteName)?.noteNumber ?? 0
+      const aSecondNoteNumber = pianoNotesMap.get(aSecondNoteName)?.noteNumber ?? 0
+      const bFirstNoteNumber = pianoNotesMap.get(bFirstNoteName)?.noteNumber ?? 0
+      const bSecondNoteNumber = pianoNotesMap.get(bSecondNoteName)?.noteNumber ?? 0
+
+      // Determine if each fragment is "going up"
+      const aIsGoingUp = aSecondNoteNumber > aFirstNoteNumber
+      const bIsGoingUp = bSecondNoteNumber > bFirstNoteNumber
+      // Sort fragments that are "going up" first
+      if (aIsGoingUp && !bIsGoingUp) {
+        return -1 // a goes before b
+      } else if (!aIsGoingUp && bIsGoingUp) {
+        return 1 // b goes before a
+      } else {
+        // If both fragments are either going up or not, sort by the first note's index for consistency
+        return aFirstNoteNumber - bFirstNoteNumber
+      }
+    })
     return [...alwaysUsedFragments, ...selectedGroupFragments]
   }
 
+  // Logic for showing 2 fragments
   let fragmentsToShow = [...alwaysUsedFragments]
 
   fragmentGroups.forEach((group) => {
@@ -277,7 +307,10 @@ export const transpose = (
     fragmentGroups: fragmentGroups,
     fragmentsToShowSize: fragmentsToShow,
     usedFragmentsMap: newUsedFragmentsMap,
+    pianoNotesMap: pianoNotesMap,
   })
+
+  console.log('leastUsedFragmentsForScene', leastUsedFragmentsForScene)
 
   const potentialActiveFragments = filterPlayableFragments({
     sceneFragments: leastUsedFragmentsForScene,
@@ -320,7 +353,7 @@ export const transpose = (
     [3, 4, 5],
     pianoNotesMap,
   )
-  
+
   addNewUsedFragment(newActiveFragment.id, randomOctave ?? 0)
   return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
 }

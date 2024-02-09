@@ -21,17 +21,22 @@ export const getOriginalFragmentsFromFragmentGroup = (
   originalFragmentGroups: FragmentGroup[] | undefined,
 ): FragmentWithNotes[] => {
   if (!originalFragmentGroups) return []
-  const shownFragmentIds = new Set(shownFragments.map((frag) => frag.id))
-  const addedFragmentIds = new Set<number>()
+
   let originalFragments: FragmentWithNotes[] = []
+
+  const originalFragmentsMap = new Map<number, FragmentWithNotes>()
 
   originalFragmentGroups.forEach((group) => {
     group.fragments.forEach((fragment) => {
-      if (shownFragmentIds.has(fragment.id) && !addedFragmentIds.has(fragment.id)) {
-        originalFragments.push(fragment)
-        addedFragmentIds.add(fragment.id)
-      }
+      originalFragmentsMap.set(fragment.id, fragment)
     })
+  })
+
+  shownFragments.forEach((shownFragment) => {
+    const originalFragment = originalFragmentsMap.get(shownFragment.id)
+    if (originalFragment) {
+      originalFragments.push(originalFragment)
+    }
   })
 
   return originalFragments

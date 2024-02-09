@@ -160,9 +160,6 @@ const FragmentPlayerRenderer: React.FC = () => {
           disabled={!listenToFragmentsState || isPlayingFragment}
           onClick={() => {
             addScene(sceneData)
-            console.log('scenedata: ', sceneData)
-            console.log('allplayedscenes: ', allPlayedScenes)
-            console.log('getFormattedStoreData: ', getFormattedStoreData(session?.user.id))
             resetSceneRelatedData()
             send('FINISHEDLISTENING')
           }}
