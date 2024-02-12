@@ -73,7 +73,7 @@ export function adjustWeights(
     if (fragment.id === selectedFragment.id) {
       const decrease = fragment.useAlways ? decreaseAmountForUseAlways : decreaseAmount
       fragment.weight = Math.max(fragment.weight - decrease, 0)
-      console.log('fragment.weight and name', fragment.weight, fragment.name)
+      // console.log('fragment.weight and name', fragment.weight, fragment.name)
     } else {
       const increase = fragment.useAlways ? increaseAmountForUseAlways : increaseAmount
       fragment.weight += increase

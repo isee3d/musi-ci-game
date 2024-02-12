@@ -137,7 +137,7 @@ export default function DownloadPage() {
     {
       onSuccess(data: ExcelRoute) {
         const splitData = splitDataByUser(data)
-        console.log(JSON.stringify(splitData))
+        // console.log(JSON.stringify(splitData))
         createExcelFilesPerUser(splitData)
       },
       enabled: shouldDownload === true,
@@ -219,7 +219,6 @@ export default function DownloadPage() {
       }
 
       if (workSheets.includes('Vragen en antwoorden')) {
-        console.log(workSheets)
         userData.questionAnswers.forEach((data) => {
           const row = [data.question, data.answer, formatDate(data.answeredDate)]
           addRowToWorksheet('Vragen en antwoorden', row)

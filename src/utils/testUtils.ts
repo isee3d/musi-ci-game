@@ -309,8 +309,6 @@ export const transpose = (
     pianoNotesMap: pianoNotesMap,
   })
 
-  console.log('leastUsedFragmentsForScene', leastUsedFragmentsForScene)
-
   const potentialActiveFragments = filterPlayableFragments({
     sceneFragments: leastUsedFragmentsForScene,
     fragmentGroups: fragmentGroups,
@@ -318,7 +316,7 @@ export const transpose = (
     amountOfScenes: amountOfScenes,
     usedFragmentsMap: newUsedFragmentsMap,
   })
-  console.log('potentialActiveFragments', potentialActiveFragments)
+
   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
   const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
   if (!newActiveFragment) throw new Error('No new active fragment available')

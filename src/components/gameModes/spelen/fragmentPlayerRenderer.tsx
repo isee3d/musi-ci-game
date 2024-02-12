@@ -189,8 +189,8 @@ const FragmentPlayerRenderer: React.FC = () => {
             }
             setEndTime(Date.now())
             addScene(sceneData)
-            console.log('scenedata: ', sceneData)
-            console.log('allplayedscenes: ', allPlayedScenes)
+            // console.log('scenedata: ', sceneData)
+            // console.log('allplayedscenes: ', allPlayedScenes)
             resetSceneRelatedData()
             saveToDB(getFormattedStoreData(session?.user.id))
             send('FINISHEDPLAYING')

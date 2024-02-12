@@ -77,8 +77,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     if (mode?.amountOfScenes === null) {
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
     }
-    
-    console.log('amountPlayed: ', amountPlayed, 'mode?.amountOfScenes: ', mode?.amountOfScenes)
+
+    // console.log('amountPlayed: ', amountPlayed, 'mode?.amountOfScenes: ', mode?.amountOfScenes)
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
       saveToDB(getFormattedStoreData(session?.user.id))
