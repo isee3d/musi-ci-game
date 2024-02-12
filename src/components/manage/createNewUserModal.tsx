@@ -25,8 +25,8 @@ const CreateNewUserModal: React.FC<{ setmodal: React.Dispatch<React.SetStateActi
       toast.success('Speler aangemaakt!')
       ctx.user.getAllUsers.invalidate()
     },
-    onError: () => {
-      toast.error('Something went wrong!')
+    onError: (error) => {
+      toast.error(error.message)
     },
   })
 

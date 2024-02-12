@@ -160,7 +160,7 @@ export const usersRouter = createTRPCRouter({
         if (participantIdExists) {
           throw new TRPCError({
             code: 'FORBIDDEN',
-            message: 'Deelnemer nummer is al in gebruik, kies een uniek nummer',
+            message: 'Er is is iets misgegaan, Deelnemer nummer is al in gebruik, kies een uniek nummer',
           })
         }
       }
