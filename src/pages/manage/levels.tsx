@@ -74,7 +74,7 @@ const ManageLevels = () => {
                         backgroundColor: level.color ?? 'black',
                       }}
                     />
-                  h2</div>
+                  </div>
 
                   <div className="flex flex-col gap-3 md:flex-row">
                     {isDeletingLevel && (

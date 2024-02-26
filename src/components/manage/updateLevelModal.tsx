@@ -85,6 +85,7 @@ const UpdateLevelModal: React.FC<{
       description: level.description,
       color: level.color,
       instrument: level.instrument ?? undefined,
+      points: level.points,
     },
   })
 
@@ -97,6 +98,7 @@ const UpdateLevelModal: React.FC<{
         description: data.description,
         color: data.color,
         instrument: data.instrument,
+        points: data.points,
       })
       updateSublevelsOfLevel({
         levelId: level.id.toString(),
@@ -179,6 +181,23 @@ const UpdateLevelModal: React.FC<{
                 <Input
                   type="color"
                   value={field.value || 'red'}
+                  onChange={(e) => field.onChange(e.target.value)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="points"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Aantal punten om instrument te verdienen</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Vul punten in"
                   onChange={(e) => field.onChange(e.target.value)}
                 />
               </FormControl>

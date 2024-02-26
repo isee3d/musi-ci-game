@@ -17,8 +17,8 @@ import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 const ManageSublevels = () => {
   const ctx = api.useUtils()
   const { mutate: deleteSubLevel, isLoading: isDeletingSublevel } = api.sublevel.deleteSubLevel.useMutation({
-    onSuccess: () => {
-      toast.success('Sublevel verwijderd!')
+    onSuccess: (data) => {
+      toast.success(`${data.name} is verwijderd!`)
       ctx.sublevel.getAllSubLevels.invalidate()
     },
   })

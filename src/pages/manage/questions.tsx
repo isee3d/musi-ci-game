@@ -16,18 +16,19 @@ import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 const ManageQuestionsPage = () => {
   const ctx = api.useUtils()
   const questionsQuery = api.question.getAllQuestions.useQuery()
-  const { mutate: deleteQuestion, isLoading: isDeletingQuestion } = api.question.deleteQuestion.useMutation({
-    onSuccess: () => {
-      toast.success('vraag verwijderd!')
-      ctx.question.getAllQuestions.invalidate()
-    },
-    onError: () => {
-      toast.error('er is iets misgegaan')
-    },
-  })
+  const { mutate: deleteQuestion, isLoading: isDeletingQuestion } =
+    api.question.deleteQuestion.useMutation({
+      onSuccess: () => {
+        toast.success('vraag verwijderd!')
+        ctx.question.getAllQuestions.invalidate()
+      },
+      onError: () => {
+        toast.error('er is iets misgegaan')
+      },
+    })
 
   const [createModal, setCreateModal] = useState(false)
-    const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null)
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null)
 
   return (
     <>
@@ -73,7 +74,7 @@ const ManageQuestionsPage = () => {
                     >
                       verwijderen
                     </Button>
-                     {/* <Button
+                    {/* <Button
                       onClick={() => {
                         setSelectedQuestion(question)
                         setCreateModal(true)

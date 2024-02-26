@@ -11,7 +11,10 @@ export const levelFormSchema = z.object({
   description: z.string().nullish(),
   color: z.string().nullish(),
   instrument: z.string().optional(),
-  points: z.coerce.number().int().min(0),
+  points: z
+    .string()
+    .transform((val) => (val === '' ? undefined : parseInt(val)))
+    .nullable(),
 })
 
 export const sublevelFormSchema = z.object({
@@ -22,15 +25,35 @@ export const sublevelFormSchema = z.object({
   fragmentToShow: z.coerce.number().int().positive().min(1),
   fragmentToShowLuisteren: z
     .string()
-    .transform((val) => (val === '' ? undefined : parseInt(val)))
+    .transform((val) => (val === '' ? undefined : val))
     .optional(),
   fragmentToShowSpelen: z
     .string()
-    .transform((val) => (val === '' ? undefined : parseInt(val)))
+    .transform((val) => (val === '' ? undefined : val))
     .optional(),
   fragmentToShowUitdaging: z
     .string()
-    .transform((val) => (val === '' ? undefined : parseInt(val)))
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
+  mFactor: z
+    .string()
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
+  pFactor: z
+    .string()
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
+  sFactor: z
+    .string()
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
+  tFactor: z
+    .string()
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
+  kFactor: z
+    .string()
+    .transform((val) => (val === '' ? undefined : val))
     .optional(),
 })
 
@@ -94,4 +117,3 @@ export const signInFormSchema = z.object({
   participantId: z.string().min(1),
   password: z.string().min(6),
 })
-

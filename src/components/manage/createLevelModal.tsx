@@ -160,7 +160,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder='0'
+                    placeholder='vul punten in'
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>

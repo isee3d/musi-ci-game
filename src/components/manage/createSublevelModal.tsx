@@ -76,16 +76,27 @@ const CreateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-      addSublevel({
-        ...data,
-        fragments: addedFragments.map((f) => f.id),
-        gameModes: addedGameModes.map((g) => g.id),
-        fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
-      })
-      setAddedGameModes([])
-      setAddedFragments([])
-      form.reset()
-      setmodal(false)
+    addSublevel({
+      ...data,
+      fragmentToShowLuisteren:
+        data.fragmentToShowLuisteren === undefined ? null : parseInt(data.fragmentToShowLuisteren),
+      fragmentToShowSpelen:
+        data.fragmentToShowSpelen === undefined ? null : parseInt(data.fragmentToShowSpelen),
+      fragmentToShowUitdaging:
+        data.fragmentToShowUitdaging === undefined ? null : parseInt(data.fragmentToShowUitdaging),
+      mFactor: data.mFactor === undefined ? null : parseInt(data.mFactor),
+      pFactor: data.pFactor === undefined ? null : parseInt(data.pFactor),
+      sFactor: data.sFactor === undefined ? null : parseInt(data.sFactor),
+      tFactor: data.tFactor === undefined ? null : parseInt(data.tFactor),
+      kFactor: data.kFactor === undefined ? null : parseInt(data.kFactor),
+      fragments: addedFragments.map((f) => f.id),
+      gameModes: addedGameModes.map((g) => g.id),
+      fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
+    })
+    setAddedGameModes([])
+    setAddedFragments([])
+    form.reset()
+    setmodal(false)
   }
 
   return (
@@ -239,6 +250,111 @@ const CreateSublevelModal: React.FC<{
                     type="color"
                     value={field.value || 'FFF'}
                     onChange={(e) => field.onChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="mFactor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>mFactor</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="Bijv... 60"
+                    {...field}
+                    // onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="pFactor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>pFactor</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="Bijv... 60"
+                    {...field}
+                    // onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="sFactor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>sFactor</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="Bijv... 60"
+                    {...field}
+                    // onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tFactor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>tFactor</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="Bijv... 60"
+                    {...field}
+                    // onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="kFactor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>kFactor</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    onKeyDown={(evt) =>
+                      ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()
+                    }
+                    placeholder="Bijv... 60"
+                    {...field}
+                    // onChange={(e) => field.onChange(parseInt(e.target.value ?? 0))}
                   />
                 </FormControl>
                 <FormMessage />

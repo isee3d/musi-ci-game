@@ -9,6 +9,7 @@ generator zod {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -148,7 +149,7 @@ model SubLevel {
   pFactor           Int?
   sFactor           Int?
   tFactor           Int?
-  kFactor           Int?         
+  kFactor           Int?
 }
 
 model FragmentGroup {
