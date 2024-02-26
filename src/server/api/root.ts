@@ -4,10 +4,7 @@ import { fragmentNoteRouter } from "~/server/api/routers/fragmentNote";
 import { subLevelRouter } from "~/server/api/routers/subLevel";
 import { gameRouter } from "~/server/api/routers/game";
 import { gameModeRouter } from "~/server/api/routers/gameMode";
-import { kliniekRouter } from "~/server/api/routers/kliniek";
-import { roleRouter } from "~/server/api/routers/role";
 import { teamRouter } from "~/server/api/routers/team";
-import { typeCIRouter } from "~/server/api/routers/typeCI";
 import { usersRouter } from "~/server/api/routers/users";
 import { levelRouter } from "~/server/api/routers/level";
 import { levelResultRouter } from "~/server/api/routers/levelResult";
@@ -27,12 +24,9 @@ export const appRouter = createTRPCRouter({
   fragmentNote: fragmentNoteRouter,
   game: gameRouter,
   gameMode: gameModeRouter,
-  kliniek: kliniekRouter,
   level: levelRouter,
   sublevel: subLevelRouter,
-  role: roleRouter,
   team: teamRouter,
-  typeCI: typeCIRouter,
   user: usersRouter,
   levelResult: levelResultRouter,
   download: downloadRouter,

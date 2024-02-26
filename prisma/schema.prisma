@@ -67,12 +67,6 @@ model User {
   sessions          Session[]
 
   // Own defined fields
-  id_restGehoor     Int?
-  restGehoor        RestGehoor?       @relation(fields: [id_restGehoor], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  id_TypeCI         Int?
-  typeCI            TypeCI?           @relation(fields: [id_TypeCI], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
   role              String?       @default("USER")
 
   id_Team           Int?
@@ -81,6 +75,7 @@ model User {
   levelResults       LevelResult[]
   questionAnswers    QuestionAnswer[]
   activities         Activity[]
+  points             Points[]
 
   hadTraining       Boolean?         @default(false)
   experience        Int?             @default(0)
@@ -90,52 +85,16 @@ model User {
   preferSkipTutorial Boolean?        @default(false)
   createdAt         DateTime         @default(now())
 
-  @@index([id_restGehoor])
-  @@index([id_TypeCI])
   @@index([id_Team])
-}
-
-model RestGehoor {
-  id                Int      @id @default(autoincrement())
-  user             User[]
-
-  created_at        DateTime        @default(now())
-  restGehoor        Int
-}
-
-model TypeCI {
-  id                Int      @id @default(autoincrement())
-  user             User[]
-
-  name            String    @unique
-  merk              String
-}
-
-model Role {
-  id                  Int         @id @default(autoincrement())
-  // users               User[]
-
-  name                String         @unique
-}
-
-model Kliniek {
-  id                  Int        @id @default(autoincrement())
-  team                Team[]
-
-  name                String        @unique
 }
 
 model Team {
   id                Int         @id @default(autoincrement())
-  id_Kliniek        Int?
-  kliniek           Kliniek?        @relation(fields: [id_Kliniek], references: [id], onDelete: Cascade, onUpdate: Cascade)
   users             User[]
   game              Game[]
 
   name              String
   description       String?
-
-  @@index([id_Kliniek])
 }
 
 model Game {
@@ -159,6 +118,7 @@ model Level{
    description       String?
    color             String?
    instrument        String?
+   points            Int?
 
    @@index([id_Game])
 }
@@ -170,6 +130,7 @@ model SubLevel {
   gameModes         GameMode[]
   levelResult       LevelResult[]
   fragmentGroups    FragmentGroup[]
+  points            Points[]
 
   name              String      @unique
   description       String?
@@ -181,6 +142,13 @@ model SubLevel {
   fragmentToShowUitdaging   Int?
   color             String?
   bpm               Int?
+
+  // Points system values
+  mFactor           Int?
+  pFactor           Int?
+  sFactor           Int?
+  tFactor           Int?
+  kFactor           Int?         
 }
 
 model FragmentGroup {
@@ -338,3 +306,20 @@ model Activity {
 
   @@index([id_User])
 }
+
+model Points {
+  id                 Int          @id @default(autoincrement())
+  id_User            String
+  user               User?           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  id_sublevel        Int
+  sublevel           SubLevel?       @relation(fields: [id_sublevel], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  points             Int
+  points_Date        DateTime       @default(now())
+
+  @@index([id_User])
+  @@index([id_sublevel])
+}
+
+

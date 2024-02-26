@@ -151,6 +151,23 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="points"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Aantal punten om instrument te verdienen</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder='0'
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           {/* The two lists, the usblevels to add and all the sublevels to choose from */}
           {/* The available sublevels */}
           <div className="flex w-full flex-col">

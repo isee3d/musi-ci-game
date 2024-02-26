@@ -14,7 +14,7 @@ import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 
 const ManageLevels = () => {
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
   const { mutate: deleteLevel, isLoading: isDeletingLevel } = api.level.deleteLevel.useMutation({
     onSuccess: () => {
       ctx.level.getAllLevels.invalidate()
@@ -65,6 +65,7 @@ const ManageLevels = () => {
                 >
                   <h2 className="text-2xl font-bold">{level.name}</h2>
                   <h2 className="text-xl">{level.description}</h2>
+                  <h2 className="text-xl">{level.points}</h2>
                   <div className="flex justify-center gap-2">
                     <h2 className="flex flex-col justify-center  text-xl">Kleur: </h2>
                     <div
@@ -73,7 +74,7 @@ const ManageLevels = () => {
                         backgroundColor: level.color ?? 'black',
                       }}
                     />
-                  </div>
+                  h2</div>
 
                   <div className="flex flex-col gap-3 md:flex-row">
                     {isDeletingLevel && (
