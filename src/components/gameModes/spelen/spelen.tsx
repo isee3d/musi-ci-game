@@ -78,7 +78,7 @@ const Spelen: React.FC<SpelenProps> = ({
       )}
       {isIdleState && <StartRoundUI startSpelen={startSpelen} />}
       {countdownState && <CountdownPlayer />}
-      {(playingState || countdownState) && <FragmentPlayerRenderer />}
+      {(playingState || countdownState) && <FragmentPlayerRenderer sublevelId={sublevelId} />}
       {finishedState && <SpelenFeedback path={{ gameId, levelId, restartSpelen }} />}
     </>
   )

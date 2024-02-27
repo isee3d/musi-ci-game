@@ -10,15 +10,19 @@ import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
+import { calculatePoints } from '~/utils/pointssystem'
 
 interface UitdagingFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
+  sublevelId: string
 }
 
 const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererProps> = ({
   mode,
+  sublevelId,
 }) => {
   const { data: sessionData } = useSession()
+  const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
   const { send } = UitdagingMachineContext.useActorRef()
   const isAnimating = UitdagingMachineContext.useSelector((state) => state.context.isAnimating)
@@ -52,7 +56,12 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     setEndTime,
     setChosenFragment,
     getFormattedStoreData,
+    setScore,
     setSceneStartTime,
+    allPlayedScenes,
+    endTime,
+    startTime,
+    getPercentageCorrectlyAnswered,
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -82,10 +91,35 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
 
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
+      setScore(
+        calculatePoints({
+          mFactor: sublevel?.mFactor,
+          kFactor: sublevel?.kFactor,
+          pFactor: sublevel?.pFactor,
+          sFactor: sublevel?.sFactor,
+          tFactor: sublevel?.tFactor,
+          minutes: (endTime - startTime) / 60000,
+          percentCorrect: getPercentageCorrectlyAnswered(),
+          scenes: amountPlayed,
+          speed: averageChooseSpeed(),
+        }),
+      )
       saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
       send('FINISHEDPLAYING')
     }
   }, [shownFragments])
+
+  function averageChooseSpeed() {
+    const allLatencies = allPlayedScenes
+      .filter((scene) => typeof scene.chosenFragmentlatency === 'number')
+      .map((scene) => scene.chosenFragmentlatency) as number[]
+
+    const average =
+      allLatencies.length > 0
+        ? allLatencies.reduce((acc, cur) => acc + cur, 0) / allLatencies.length
+        : 0
+    return average
+  }
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
     return isAnimating === undefined ? activeFragmentPlayerIndex === fragment.id : isAnimating

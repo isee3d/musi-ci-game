@@ -12,9 +12,15 @@ import { useSession } from 'next-auth/react'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
+import { calculatePoints } from '~/utils/pointssystem'
 
-const FragmentPlayerRenderer: React.FC = () => {
+interface FragmentPlayerRendererProps {
+  sublevelId: string
+}
+
+const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ sublevelId }) => {
   const { data: session } = useSession()
+  const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
   const { send } = SpelenMachineContext.useActorRef()
   const isAnimating = SpelenMachineContext.useSelector((state) => state.context.isAnimating)
@@ -57,9 +63,15 @@ const FragmentPlayerRenderer: React.FC = () => {
     addScene,
     sceneData,
     allPlayedScenes,
+    luisterenClicks,
+    endTime,
+    startTime,
+    setScore,
     getFormattedStoreData,
+    getPercentageCorrectlyAnswered,
     resetSceneRelatedData,
     setSceneStartTime,
+    addLuisterenClick,
   } = useLuisterenStore()
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
@@ -119,9 +131,11 @@ const FragmentPlayerRenderer: React.FC = () => {
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
+      addLuisterenClick()
       return
     }
     if (listenToFragmentsState) {
+      addLuisterenClick()
       setIsPlayingFragment(true)
       setactiveFragmentPlayerIndex(fragmentToPlay.id)
       if (activeFragmentPlayerIndex === undefined) {
@@ -134,6 +148,41 @@ const FragmentPlayerRenderer: React.FC = () => {
   function onFragmentPlayingComplete() {
     setIsPlayingFragment(false)
     setactiveFragmentPlayerIndex(undefined)
+  }
+
+  const onFinishedPlaying = () => {
+    if (listenToFragmentsState) {
+      const sceneData: FragmentSceneData[] = []
+      shownFragments.forEach((fragment, index) => {
+        sceneData.push({
+          id_fragment: fragment.id,
+          fragmentIndex: index,
+          groundTone: fragment.transpose ?? '',
+          octave: fragment.octave ?? -1,
+        })
+      })
+      AddSceneData(sceneData)
+    }
+    setEndTime(Date.now())
+    addScene(sceneData)
+    setScore(
+      calculatePoints({
+        mFactor: sublevel?.mFactor,
+        kFactor: sublevel?.kFactor,
+        pFactor: sublevel?.pFactor,
+        sFactor: sublevel?.sFactor,
+        tFactor: sublevel?.tFactor,
+        minutes: (endTime - startTime) / 60000,
+        percentCorrect: getPercentageCorrectlyAnswered(),
+        scenes: allPlayedScenes.length,
+        clicks: luisterenClicks,
+      }),
+    )
+    // console.log('scenedata: ', sceneData)
+    // console.log('allplayedscenes: ', allPlayedScenes)
+    resetSceneRelatedData()
+    saveToDB(getFormattedStoreData(session?.user.id))
+    send('FINISHEDPLAYING')
   }
 
   return (
@@ -171,31 +220,7 @@ const FragmentPlayerRenderer: React.FC = () => {
         >
           <h3>Volgende</h3>
         </Button>
-        <Button
-          size={'lg'}
-          onClick={() => {
-            // The last shown scene if Played should also be saved...
-            if (listenToFragmentsState) {
-              const sceneData: FragmentSceneData[] = []
-              shownFragments.forEach((fragment, index) => {
-                sceneData.push({
-                  id_fragment: fragment.id,
-                  fragmentIndex: index,
-                  groundTone: fragment.transpose ?? '',
-                  octave: fragment.octave ?? -1,
-                })
-              })
-              AddSceneData(sceneData)
-            }
-            setEndTime(Date.now())
-            addScene(sceneData)
-            // console.log('scenedata: ', sceneData)
-            // console.log('allplayedscenes: ', allPlayedScenes)
-            resetSceneRelatedData()
-            saveToDB(getFormattedStoreData(session?.user.id))
-            send('FINISHEDPLAYING')
-          }}
-        >
+        <Button size={'lg'} onClick={() => onFinishedPlaying()}>
           Stop
         </Button>
       </div>

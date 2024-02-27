@@ -7,6 +7,7 @@ type LuisterenState = {
   endTime: number
   timePlayed: number
   score: number
+  luisterenClicks: number
   shouldRenderCinieInContentContainer: boolean
   level: number
   subLevel: number
@@ -35,6 +36,8 @@ type LuisterenActions = {
   addNewUserSceneAnswer: (isCorrect: boolean | undefined) => void
   getFormattedStoreData: (id_user: string) => FormattedData
   addScore: (score: number) => void
+  setScore: (score: number) => void
+  addLuisterenClick: () => void
   addScene: (scene: Scene) => void
   setTimePlayed: (time: number) => void
   setPlayedFragmentId: (fragmentId: number) => void
@@ -58,6 +61,7 @@ const initialState: LuisterenState = {
   endTime: 0,
   timePlayed: 0,
   score: 0,
+  luisterenClicks: 0,
   level: 0,
   subLevel: 0,
   mode: 0,
@@ -77,6 +81,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   shouldRenderCinieInContentContainer: true,
   timePlayed: 0,
   score: 0,
+  luisterenClicks: 0,
   startTime: 0,
   endTime: 0,
   level: 0,
@@ -185,6 +190,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     set(() => ({ shouldRenderCinieInContentContainer: shouldRender })),
   setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
   addScore: (score: number) => set((state) => ({ score: state.score + score })),
+  setScore: (score: number) => set((state) => ({ score })),
+  addLuisterenClick: () => set((state) => ({ luisterenClicks: state.luisterenClicks + 1 })),
   setStartTime: (time: number) => set((state) => ({ startTime: time })),
   setEndTime: (time: number) => set((state) => ({ endTime: time })),
   setTimePlayed: (time: number) => set((state) => ({ timePlayed: state.timePlayed + time })),
@@ -213,8 +220,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     }, {})
   },
   getFormattedStoreData: (id_user: string) => {
-    const { startTime, endTime, score, level, subLevel, mode, allPlayedScenes } =
-      get()
+    const { startTime, endTime, score, level, subLevel, mode, allPlayedScenes } = get()
 
     const Scenes = allPlayedScenes.map((scene) => {
       const sceneFragments =

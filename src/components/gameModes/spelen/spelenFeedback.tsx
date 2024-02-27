@@ -20,6 +20,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
     startTime,
     setShouldRenderCinieInContentContainer,
     setIsPlaying,
+    score,
   } = useLuisterenStore()
 
   useEffect(() => {
@@ -48,14 +49,11 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
       <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
         Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
-      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight ">
-        Felicitaties! -- gebaseerd op % en config
-      </h3> */}
+      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+        Je hebt {score} punten verdiend
+      </h3>
       <div className="flex justify-center gap-4">
-        <Button
-          variant={'highlight'}
-          onClick={() => restartSpelen()}
-        >
+        <Button variant={'highlight'} onClick={() => restartSpelen()}>
           Speel opnieuw
         </Button>
         <Button asChild>

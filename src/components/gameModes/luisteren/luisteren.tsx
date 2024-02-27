@@ -80,7 +80,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
       )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
       {isfinishedPlayingState && <LuisterenFeedback />}
-      {isPlayingState && <PlayButtonsRenderer />}
+      {isPlayingState && <PlayButtonsRenderer sublevelId={sublevelId} />}
       {isfinishedPlayingState && (
         <Button
           className={cn(buttonVariants({ size: 'lg', variant: 'highlight' }))}
