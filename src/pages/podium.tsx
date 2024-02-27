@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/legacy/image'
 import Link from 'next/link'
 import PodiumSVG from '~/components/podiumvisuals/podium'
-import BassOffSVG from "~/components/podiumvisuals/bassOff";
+import BassOffSVG from '~/components/podiumvisuals/bassOff'
 import BassOnSVG from '~/components/podiumvisuals/bassOn'
 import CiniSVG from '~/components/podiumvisuals/cini'
 import DrumsOffSVG from '~/components/podiumvisuals/drumsOff'
@@ -15,7 +15,7 @@ import GitaarOnSVG from '~/components/podiumvisuals/gitaarOn'
 import PianoOffSVG from '~/components/podiumvisuals/pianoOff'
 import PianoOnSVG from '~/components/podiumvisuals/pianoOn'
 import SaxOffSVG from '~/components/podiumvisuals/saxOff'
-import saxOnSVG from '~/components/podiumvisuals/saxOn'
+import SaxOnSVG from '~/components/podiumvisuals/saxOn'
 import ZangeresOffSVG from '~/components/podiumvisuals/zangeresOff'
 import ZangeresOnSVG from '~/components/podiumvisuals/zangeresOn'
 
@@ -44,20 +44,31 @@ const PodiumPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
-        <div className="container mx-auto flex flex-col items-center justify-center gap-4">
-          <h2 className="text-5xl tracking-tight sm:text-[5rem] ">Het podium</h2>
-          <div className="relative flex h-[20vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
-            <PodiumSVG />
-            {/* <Image
-              layout="fill"
-              src={imagesConfig.podium}
-              objectFit="fill"
-              alt="Podium"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            /> */}
+      <section className="relative items-center justify-center bg-[#756563] pt-24">
+        <PodiumSVG className="absolute top-0" width={'auto'} height={'100%'} />
+        <CiniSVG
+              className="absolute z-50 h-96 w-fit bottom-0 pb-36"
+              width={'auto'}
+              height={'auto'}
+            />
+        <div className="relative  flex flex-col items-center justify-center gap-4">
+          <div className="relative flex h-fit w-full justify-center px-12">
+            <div className="relative z-10 flex flex-col ">
+              <div className="flex h-5/6 w-full items-center justify-center">
+                <DrumsOnSVG width={'auto'} height={'auto'} />
+                <PianoOnSVG width={'auto'} height={'auto'} />
+                <BassOnSVG width={'auto'} height={'auto'} />
+                <GitaarOnSVG width={'auto'} height={'auto'} />
+              </div>
+
+              <div className="flex h-5/6 w-full">
+                <SaxOnSVG width={'auto'} height={'auto'} />
+                <ZangeresOnSVG width={'auto'} height={'auto'} />
+                <DwarsfluitOnSVG width={'auto'} height={'auto'} />
+              </div>
+            </div>
           </div>
-          <Button asChild>
+          <Button className="z-50 my-4" asChild>
             <Link href={routePaths.levelsPage}>Kies je level</Link>
           </Button>
         </div>

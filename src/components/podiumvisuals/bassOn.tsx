@@ -1,17 +1,19 @@
 import * as React from 'react'
-const SVGComponent = (props) => (
+const SVGComponent = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     id="Laag_4"
     data-name="Laag 4"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 390 490"
+    width="1em"
+    height="1em"
     {...props}
   >
     <defs>
       <style>
         {
-          '\n      .cls-1 {\n        fill: #dec4b1;\n      }\n\n      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {\n        stroke-width: 2.38px;\n      }\n\n      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {\n        stroke: #000;\n        stroke-linecap: round;\n        stroke-linejoin: round;\n      }\n\n      .cls-2, .cls-8 {\n        fill: #d33da5;\n      }\n\n      .cls-3 {\n        fill: #fefbce;\n      }\n\n      .cls-4 {\n        fill: #fd52c7;\n      }\n\n      .cls-5 {\n        fill: none;\n      }\n\n      .cls-6 {\n        fill: #f88ade;\n      }\n\n      .cls-9 {\n        fill: url(#Naamloos_verloop_18);\n        opacity: .2;\n      }\n\n      .cls-9, .cls-8, .cls-10 {\n        stroke-width: 0px;\n      }\n\n      .cls-10 {\n        fill: #fff;\n      }\n\n      .cls-7 {\n        stroke-width: 2.39px;\n      }\n    '
+          '\n      .basson-1 {\n        fill: #dec4b1;\n      }\n\n      .basson-1, .basson-2, .basson-3, .basson-4, .basson-5, .basson-6 {\n        stroke-width: 2.38px;\n      }\n\n      .basson-1, .basson-2, .basson-3, .basson-4, .basson-5, .basson-6, .basson-7 {\n        stroke: #000;\n        stroke-linecap: round;\n        stroke-linejoin: round;\n      }\n\n      .basson-2, .basson-8 {\n        fill: #d33da5;\n      }\n\n      .basson-3 {\n        fill: #fefbce;\n      }\n\n      .basson-4 {\n        fill: #fd52c7;\n      }\n\n      .basson-5 {\n        fill: none;\n      }\n\n      .basson-6 {\n        fill: #f88ade;\n      }\n\n      .basson-9 {\n        fill: url(#Naamloos_verloop_18);\n        opacity: .2;\n      }\n\n      .basson-9, .basson-8, .basson-10 {\n        stroke-width: 0px;\n      }\n\n      .basson-10 {\n        fill: #fff;\n      }\n\n      .basson-7 {\n        stroke-width: 2.39px;\n      }\n    '
         }
       </style>
       <linearGradient
@@ -37,86 +39,86 @@ const SVGComponent = (props) => (
     </defs>
     <g>
       <path
-        className="cls-9"
+        className="basson-9"
         d="m209.19,8.87s0,0,0,0l-.03-.09h0c-.85-2.68-6.85-4.76-14.15-4.76s-13.31,2.08-14.15,4.76h0L36.18,461.66h317.65L209.19,8.87Z"
       />
-      <ellipse className="cls-10" cx={195} cy={9.38} rx={14.23} ry={5.41} />
+      <ellipse className="basson-10" cx={195} cy={9.38} rx={14.23} ry={5.41} />
     </g>
     <g>
       <g>
         <path
-          className="cls-3"
+          className="basson-3"
           d="m216.17,451.79l1.49,8.92,16.7,6.42c1.66.64,2.94,1.98,3.51,3.67h0c.29.88-.36,1.8-1.3,1.8h-33.06c-.68,0-1.27-.46-1.44-1.12l-7.28-28.6"
         />
         <path
-          className="cls-3"
+          className="basson-3"
           d="m142.88,451.05v14.86l-12.69,4c-1.44.46-2.31,1.92-2.02,3.41l.44,2.24h30.57c.79,0,1.44-.62,1.48-1.41l1.42-28.52"
         />
         <polyline
-          className="cls-4"
+          className="basson-4"
           points="192.96 309.88 216.44 451.79 191.69 456.94 169.14 347.77 166.17 455.05 139.17 455.05 139.17 309.88"
         />
-        <path className="cls-5" d="m169.14,347.77v-13.85c0-1.64,1.33-2.97,2.97-2.97" />
-        <line className="cls-5" x1={142.88} y1={465.91} x2={148.83} y2={465.91} />
+        <path className="basson-5" d="m169.14,347.77v-13.85c0-1.64,1.33-2.97,2.97-2.97" />
+        <line className="basson-5" x1={142.88} y1={465.91} x2={148.83} y2={465.91} />
         <path
-          className="cls-8"
+          className="basson-8"
           d="m246.15,259.36c-2.24,0-4.51-.67-6.47-2.08l-44.88-32.09c-5.01-3.58-6.16-10.54-2.58-15.55,3.58-5.01,10.54-6.17,15.55-2.58l44.88,32.09c5.01,3.58,6.16,10.54,2.58,15.55-2.18,3.04-5.6,4.66-9.08,4.66Z"
         />
         <path
-          className="cls-5"
+          className="basson-5"
           d="m246.15,259.36c-2.24,0-4.51-.67-6.47-2.08l-44.88-32.09c-5.01-3.58-6.16-10.54-2.58-15.55,3.58-5.01,10.54-6.16,15.55-2.58l44.88,32.09c5.01,3.58,6.16,10.54,2.58,15.55-2.18,3.04-5.6,4.66-9.08,4.66Z"
         />
         <path
-          className="cls-2"
+          className="basson-2"
           d="m207.26,225.79c-.46,14.06-2.34,28.05-5.63,41.74l-10.16,42.35h-52.3v-78.59c0-6.68,4.46-12.55,10.91-14.32l44.82-12.37c2.85-.79,5.69-.59,8.21.35"
         />
         <path
-          className="cls-1"
+          className="basson-1"
           d="m188.97,188.9c-2.11.56-4.36.66-6.65.22-8.1-1.56-13.4-9.39-11.83-17.49l1.19-6.15c1.56-8.1,9.39-13.4,17.49-11.83,8.1,1.56,13.4,9.39,11.83,17.49l-1.19,6.15c-1.12,5.82-5.48,10.19-10.84,11.61Z"
         />
         <path
-          className="cls-8"
+          className="basson-8"
           d="m159.96,284.62c-5.2,0-9.86-3.66-10.92-8.96l-8.26-41.31c-1.21-6.04,2.71-11.91,8.74-13.11,6.03-1.21,11.91,2.71,13.11,8.74l8.26,41.31c1.21,6.04-2.71,11.91-8.74,13.11-.74.15-1.47.22-2.2.22Z"
         />
         <g>
           <path
-            className="cls-6"
+            className="basson-6"
             d="m236.83,255.02l-13.49-100.35,2.78-.29c.86-.09,1.47-.9,1.3-1.76l-.54-2.83,1.91-.2-1.13-5.96-1.91.2-1.41-7.4,1.91-.2-1.33-6.99-1.91.2-1.47-7.71c-.29-1.52-1.69-2.56-3.23-2.4l-10.82,1.14c-1.54.16-2.69,1.47-2.66,3.02l.17,7.85-1.91.2.15,7.11,1.91-.2.16,7.53-1.91.2.13,6.06,1.91-.2.06,2.88c.02.87.78,1.54,1.64,1.45l2.78-.29,7.67,100.96"
           />
           <path
-            className="cls-6"
+            className="basson-6"
             d="m216.42,241.35c-3.02,6.37-7.36,12.07-12.77,16.7l-8.58,7.35c-12.03,10.31-17.16,26.54-13.24,41.89l3.26,12.77c.15.59.66.98,1.27,1.06,7.71.97,13.7,11.63,13.56,24.57-.14,13.53-6.91,24.42-15.13,24.34-.11,0-.22-.03-.33-.03l-6.53,29.63c-4.4,19.95,5.5,40.31,23.91,49.17h0c14.44,6.95,30.54,9.75,46.48,8.07h0c16.29-1.71,31.77-8.02,44.62-18.21,15.7-12.45,20.62-34.17,12.33-52.41l-12.55-27.62c-.11.03-.2.07-.31.1-8.02,1.79-16.91-7.46-19.86-20.66-2.82-12.63.82-24.3,8.16-26.85.57-.2.99-.69,1.02-1.3l.53-13.17c.64-15.82-7.75-30.64-21.66-38.22l-9.92-5.41c-6.25-3.4-11.67-8.07-15.96-13.68"
           />
-          <line className="cls-5" x1={223.4} y1={358.57} x2={255.24} y2={355.22} />
-          <line className="cls-5" x1={232.81} y1={391.19} x2={252.82} y2={389.09} />
-          <line className="cls-5" x1={248.7} y1={460.41} x2={250.29} y2={475.57} />
+          <line className="basson-5" x1={223.4} y1={358.57} x2={255.24} y2={355.22} />
+          <line className="basson-5" x1={232.81} y1={391.19} x2={252.82} y2={389.09} />
+          <line className="basson-5" x1={248.7} y1={460.41} x2={250.29} y2={475.57} />
           <polyline
-            className="cls-5"
+            className="basson-5"
             points="251.23 456.5 251.61 460.11 245.79 460.72 245.41 457.11"
           />
         </g>
         <path
-          className="cls-1"
+          className="basson-1"
           d="m236.24,204.49l-2.8-7.79c-.59-1.63-1.46-3.15-2.57-4.48l-4.71-5.65c-1.13-1.36-2.8-2.14-4.57-2.14h0c-.97,0-1.83.63-2.12,1.55l-3.38,10.56c-.48,1.49.28,3.09,1.73,3.67l8.15,3.23,4.83,13.9"
         />
         <polyline
-          className="cls-2"
+          className="basson-2"
           points="256.53 244.4 238.26 202.88 226.09 212.55 234.06 234.55"
         />
         <path
-          className="cls-1"
+          className="basson-1"
           d="m215.73,296.04l15.31,6.64c2.84,1.23,5.16,3.4,6.57,6.15l1.96,3.82c1.2,2.33.73,5.18-1.16,7l-4.21,4.06c-.85.82-2.11,1.06-3.21.6l-1.15-.48c-1.64-.69-2.99-1.94-3.78-3.53l-3.53-7.06-1.74-.69c-3.31-1.3-6.2-3.5-8.35-6.34l-5.09-6.74"
         />
         <path
-          className="cls-5"
+          className="basson-5"
           d="m164.53,239.43l6.37,31.86c1.21,6.04-2.71,11.91-8.74,13.11-.74.15-1.47.22-2.2.22-5.2,0-9.86-3.66-10.92-8.96l-8.92-44.58c-.68-3.37.25-6.7,2.25-9.18"
         />
         <polyline
-          className="cls-2"
+          className="basson-2"
           points="154.03 282.39 207.83 309.2 216.75 294.34 167.4 266.04"
         />
       </g>
-      <polygon className="cls-7" points="186.36 321.12 198.25 341.87 195 327.15 186.36 321.12" />
+      <polygon className="basson-7" points="186.36 321.12 198.25 341.87 195 327.15 186.36 321.12" />
     </g>
   </svg>
 )

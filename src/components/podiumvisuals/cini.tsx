@@ -1,11 +1,13 @@
 import * as React from 'react'
-const SVGComponent = (props: any) => (
+const SVGComponent = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     id="Laag_2"
     data-name="Laag 2"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 420 414"
+    width="1em"
+    height="1em"
     {...props}
   >
     <defs>
