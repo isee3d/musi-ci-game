@@ -23,6 +23,7 @@ import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
+import { api } from '~/utils/api'
 
 interface MuteState {
   drums: boolean
@@ -36,6 +37,8 @@ interface MuteState {
 
 const PodiumPage = () => {
   useUserActivity()
+
+  const {data: levelPoints } = api.level.getPointsPerLevel.useQuery()
 
   const [isMuted, setIsMuted] = useState<MuteState>({
     drums: true,
@@ -62,7 +65,6 @@ const PodiumPage = () => {
   const toggleMute = (instrument: keyof MuteState) => {
     setIsMuted((prevMute) => {
       const newMuteState = !prevMute[instrument]
-      // Toggle the muted state of the audio element
       const audio = audioRefs.current[instrument]
       if (audio) {
         audio.muted = newMuteState
@@ -100,14 +102,7 @@ const PodiumPage = () => {
     }
   }, [])
 
-  /*
-  ToDo:
-  - Add podium logic for enabling the people based on points per level
-      - Make a trpc router for that that returns that
-  - Position the people on the podium                                                                         CHECK
-  - Add button to play sound, although start the separate instruments in the background in a useEffect        CHECK
-  - Toggle sounds and visuals for the people on the podium                                                    CHECK
-  */
+  console.log(levelPoints)
 
   return (
     <>

@@ -85,7 +85,7 @@ const UpdateLevelModal: React.FC<{
       description: level.description,
       color: level.color,
       instrument: level.instrument ?? undefined,
-      points: level.points,
+      points: level?.points?.toString() ?? undefined,
     },
   })
 
@@ -98,7 +98,7 @@ const UpdateLevelModal: React.FC<{
         description: data.description,
         color: data.color,
         instrument: data.instrument,
-        points: data.points,
+        points: data.points === undefined ? undefined : parseInt(data.points),
       })
       updateSublevelsOfLevel({
         levelId: level.id.toString(),
@@ -198,7 +198,7 @@ const UpdateLevelModal: React.FC<{
                 <Input
                   type="number"
                   placeholder="Vul punten in"
-                  onChange={(e) => field.onChange(e.target.value)}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

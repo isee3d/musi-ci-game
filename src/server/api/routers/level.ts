@@ -161,4 +161,34 @@ export const levelRouter = createTRPCRouter({
         where: { id },
       })
     }),
+
+    getPointsPerLevel: protectedProcedure.query(async ({ ctx }) => {
+      // Right now the points are in the levelresults table, so we need to get them from there and then sum them up per level for the active user
+      const levels = await ctx.prisma.level.findMany()
+
+      const levelResults = await ctx.prisma.levelResult.findMany({
+        where: {
+          id_User: ctx.session.user?.id,
+        },
+        select: {
+          id_level: true,
+          score: true,
+        },
+      })
+
+      const levelResultsMap = levelResults.reduce((acc, levelResult) => {
+        if (!acc[levelResult.id_level]) {
+          acc[levelResult.id_level] = 0
+        }
+        acc[levelResult.id_level] += levelResult.score
+        return acc
+      }, {} as Record<string, number>)
+
+      return levels.map((level) => {
+        return {
+          ...level,
+          points: levelResultsMap[level.id] || 0,
+        }
+      })
+    }),
 })

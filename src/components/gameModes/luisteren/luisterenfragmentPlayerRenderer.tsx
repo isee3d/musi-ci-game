@@ -18,7 +18,7 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
     undefined,
   )
-  const { addScore, AddSceneData, addRelistenFragment, setSceneStartTime, addLuisterenClick } = useLuisterenStore()
+  const { AddSceneData, addRelistenFragment, setSceneStartTime, addLuisterenClick } = useLuisterenStore()
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   useEffect(() => {
@@ -55,7 +55,6 @@ const LuisterenfragmentPlayerRenderer: React.FC = () => {
     setactiveFragmentPlayerIndex(fragmentToPlay.id)
     if (activeFragmentPlayerIndex === undefined) {
       start(fragmentToPlay)
-      addScore(100)
       addRelistenFragment(fragmentToPlay.id)
       addLuisterenClick()
     }

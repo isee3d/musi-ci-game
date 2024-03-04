@@ -13,8 +13,8 @@ export const levelFormSchema = z.object({
   instrument: z.string().optional(),
   points: z
     .string()
-    .transform((val) => (val === '' ? undefined : parseInt(val)))
-    .nullable(),
+    .transform((val) => (val === '' ? undefined : val))
+    .optional(),
 })
 
 export const sublevelFormSchema = z.object({

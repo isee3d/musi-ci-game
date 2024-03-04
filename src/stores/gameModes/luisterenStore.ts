@@ -35,7 +35,6 @@ type LuisterenActions = {
   setLevelSublevelMode: (level: number, subLevel: number, mode: number) => void
   addNewUserSceneAnswer: (isCorrect: boolean | undefined) => void
   getFormattedStoreData: (id_user: string) => FormattedData
-  addScore: (score: number) => void
   setScore: (score: number) => void
   addLuisterenClick: () => void
   addScene: (scene: Scene) => void
@@ -189,7 +188,6 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   setShouldRenderCinieInContentContainer: (shouldRender: boolean) =>
     set(() => ({ shouldRenderCinieInContentContainer: shouldRender })),
   setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
-  addScore: (score: number) => set((state) => ({ score: state.score + score })),
   setScore: (score: number) => set((state) => ({ score })),
   addLuisterenClick: () => set((state) => ({ luisterenClicks: state.luisterenClicks + 1 })),
   setStartTime: (time: number) => set((state) => ({ startTime: time })),

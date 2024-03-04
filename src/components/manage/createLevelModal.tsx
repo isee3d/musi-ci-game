@@ -65,7 +65,12 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
   function onSubmit(data: z.infer<typeof levelFormSchema>) {
     const exists = levelQuery.data?.find((level) => level.name === data.name)
     if (!exists) {
-      addLevel({ ...data, id_Game: 1, sublevels: addedSubLevels.map((s) => s.id) })
+      addLevel({
+        ...data,
+        id_Game: 1,
+        points: data.points === undefined ? undefined : parseInt(data.points),
+        sublevels: addedSubLevels.map((s) => s.id),
+      })
       setAddedSubLevels([])
       form.reset()
       setmodal(false)
@@ -160,7 +165,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder='vul punten in'
+                    placeholder="vul punten in"
                     onChange={(e) => field.onChange(e.target.value)}
                   />
                 </FormControl>
