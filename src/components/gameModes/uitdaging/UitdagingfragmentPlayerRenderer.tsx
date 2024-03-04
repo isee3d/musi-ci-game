@@ -21,7 +21,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   mode,
   sublevelId,
 }) => {
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
   const { send } = UitdagingMachineContext.useActorRef()
@@ -61,6 +61,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     allPlayedScenes,
     endTime,
     startTime,
+    score,
     getPercentageCorrectlyAnswered,
   } = useLuisterenStore()
 
@@ -70,6 +71,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation()
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
@@ -104,7 +106,8 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
           speed: averageChooseSpeed(),
         }),
       )
-      saveToDB(getFormattedStoreData(sessionData?.user.id ?? '1'))
+      saveToDB(getFormattedStoreData(session?.user.id ?? '1'))
+      saveScore({ id_User: session?.user.id ?? '-1', score: score, id_sublevel: parseInt(sublevelId) })
       send('FINISHEDPLAYING')
     }
   }, [shownFragments])

@@ -23,10 +23,12 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
     getFormattedStoreData,
     startTime,
     endTime,
+    score,
     setScore,
     luisterenClicks,
   } = useLuisterenStore()
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation()
 
   const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
@@ -44,6 +46,7 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
     )
     setEndTime(Date.now())
     saveToDB(getFormattedStoreData(session.user.id))
+    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId)})
   }
 
   return (

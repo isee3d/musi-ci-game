@@ -66,6 +66,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
     luisterenClicks,
     endTime,
     startTime,
+    score,
     setScore,
     getFormattedStoreData,
     getPercentageCorrectlyAnswered,
@@ -75,6 +76,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
   } = useLuisterenStore()
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation()
 
   // local state
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -182,6 +184,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
     // console.log('allplayedscenes: ', allPlayedScenes)
     resetSceneRelatedData()
     saveToDB(getFormattedStoreData(session?.user.id))
+    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
     send('FINISHEDPLAYING')
   }
 

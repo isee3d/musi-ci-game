@@ -169,35 +169,46 @@ export const levelRouter = createTRPCRouter({
         name: true,
         points: true,
         instrument: true,
+        subLevels: {
+          select: {
+            id: true,
+          },
+        },
       },
     })
 
-    const levelResults = await ctx.prisma.levelResult.findMany({
+    const scoreResults = await ctx.prisma.points.findMany({
       where: {
         id_User: ctx.session.user?.id,
       },
       select: {
-        id_level: true,
-        score: true,
+        id_sublevel: true,
+        points: true,
       },
     })
 
-    const levelResultsMap = levelResults.reduce(
-      (acc, levelResult) => {
-        if (!acc[levelResult.id_level]) {
-          acc[levelResult.id_level] = 0
+    const subLevelPointsMap = scoreResults.reduce(
+      (acc, scoreResult) => {
+        if (!acc[scoreResult.id_sublevel]) {
+          acc[scoreResult.id_sublevel] = 0
         }
-        acc[levelResult.id_level] += levelResult.score
+        acc[scoreResult.id_sublevel] += scoreResult.points
         return acc
       },
-      {} as Record<string, number>,
+      {} as Record<number, number>,
     )
 
-    return levels.map((level) => {
+    // Now, map the subLevel scores to levels
+    const levelScores = levels.map((level) => {
+      const totalLevelPoints = level.subLevels.reduce((total, subLevel) => {
+        return total + (subLevelPointsMap[subLevel.id] || 0)
+      }, 0)
       return {
         ...level,
-        score: levelResultsMap[level.id] || 0,
+        score: totalLevelPoints,
       }
     })
+
+    return levelScores
   }),
 })

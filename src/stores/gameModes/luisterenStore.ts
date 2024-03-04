@@ -218,7 +218,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     }, {})
   },
   getFormattedStoreData: (id_user: string) => {
-    const { startTime, endTime, score, level, subLevel, mode, allPlayedScenes } = get()
+    const { startTime, endTime, level, subLevel, mode, allPlayedScenes } = get()
 
     const Scenes = allPlayedScenes.map((scene) => {
       const sceneFragments =
@@ -263,7 +263,6 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       id_gameMode: mode,
       startTime: new Date(startTime),
       endTime: new Date(endTime),
-      score: score,
       Scenes: Scenes,
     }
   },

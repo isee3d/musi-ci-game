@@ -24,6 +24,7 @@ import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 import { api } from '~/utils/api'
+import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 interface MuteState {
   drums: boolean
@@ -37,10 +38,12 @@ interface MuteState {
 
 const PodiumPage = () => {
   useUserActivity()
+  const { audioContext } = useAudioServiceStore()
 
   const { data: levelPoints } = api.level.getPointsPerLevel.useQuery(undefined, {
     onSuccess: (levelPoints) => {
       if (levelPoints) {
+        console.log('levelPoints', levelPoints)
         const newUnlockedState = { ...unlocked }
         levelPoints.forEach((level) => {
           const instrumentNameMatch = level.instrument?.match(/\/images\/instruments\/(.+)\.png/)
@@ -53,8 +56,10 @@ const PodiumPage = () => {
               saxofoon: 'sax',
               fluit: 'dwarsfluit',
               zangeres: 'zangeres',
+              //@ts-ignore
             }[instrumentNameMatch[1]]
             if (instrumentKey && level.points && level.score >= (level.points || 0)) {
+              //@ts-ignore
               newUnlockedState[instrumentKey] = true
             }
           }
@@ -101,42 +106,46 @@ const PodiumPage = () => {
   }
 
   useEffect(() => {
-    audioRefs.current = {
-      drums: new Audio('/media/sampler/Salamander/A0.mp3'),
-      piano: new Audio('/media/sampler/Salamander/C4.mp3'),
-      bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
-      gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
-      sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
-      zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
-      dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
-    }
+    // This effect plays the audio after user interaction, as indicated by a change in audioContext
+    if (audioContext !== undefined) {
+       audioRefs.current = {
+         drums: new Audio('/media/sampler/Salamander/A0.mp3'),
+         piano: new Audio('/media/sampler/Salamander/C4.mp3'),
+         bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
+         gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
+         sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
+         zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
+         dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
+       }
 
-    const sounds = audioRefs.current
+      console.log('Playing audio')
+      const sounds = audioRefs.current
 
-    Object.values(sounds).forEach((sound) => {
-      sound.loop = true
-      sound.muted = true
-    })
-
-    Promise.all(
-      Object.values(sounds).map((sound) => {
-        return new Promise((resolve) => {
-          sound.oncanplaythrough = resolve
-        })
-      }),
-    ).then(() => {
-      Object.values(sounds).forEach((sound) =>
-        sound.play().catch((e) => console.error('Error playing sound:', e)),
-      )
-    })
-
-    return () => {
       Object.values(sounds).forEach((sound) => {
-        sound.pause()
-        sound.currentTime = 0
+        sound.loop = true
+        sound.muted = true
       })
+
+      Promise.all(
+        Object.values(sounds).map((sound) => {
+          return new Promise((resolve) => {
+            sound.oncanplaythrough = resolve
+          })
+        }),
+      ).then(() => {
+        Object.values(sounds).forEach((sound) =>
+          sound.play().catch((e) => console.error('Error playing sound:', e)),
+        )
+      })
+
+      return () => {
+        Object.values(sounds).forEach((sound) => {
+          sound.pause()
+          sound.currentTime = 0
+        })
+      }
     }
-  }, [])
+  }, [audioContext?.state])
 
   return (
     <>

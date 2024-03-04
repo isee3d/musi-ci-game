@@ -217,7 +217,6 @@ model LevelResult {
 
    startTime          DateTime
    endTime            DateTime
-   score              Int
 
    @@index([id_User])
    @@index([id_level])

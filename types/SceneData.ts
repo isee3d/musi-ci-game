@@ -34,7 +34,6 @@ export interface FormattedData {
     id_gameMode: number;
     startTime: Date;
     endTime: Date;
-    score: number;
     Scenes: FormattedScene[];
 }
 

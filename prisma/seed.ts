@@ -609,7 +609,6 @@ async function main() {
       },
       startTime: new Date(),
       endTime: new Date(),
-      score: 100,
     },
   })
 }

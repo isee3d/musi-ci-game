@@ -38,7 +38,7 @@ export const NoteScalarFieldEnumSchema = z.enum(['id','id_Fragment','name','time
 
 export const GameModeScalarFieldEnumSchema = z.enum(['id','name','amountOfScenes','one','two','three','go']);
 
-export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','id_level','id_subLevel','id_gameMode','startTime','endTime','score']);
+export const LevelResultScalarFieldEnumSchema = z.enum(['id','id_User','id_level','id_subLevel','id_gameMode','startTime','endTime']);
 
 export const SceneScalarFieldEnumSchema = z.enum(['id','id_chosenFragment','id_levelResult','id_playedFragment','chosenFragmentLatency','answeredCorrectly','startTime']);
 
@@ -762,7 +762,6 @@ export const LevelResultSchema = z.object({
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
 })
 
 export type LevelResult = z.infer<typeof LevelResultSchema>
@@ -1642,7 +1641,6 @@ export const LevelResultSelectSchema: z.ZodType<Prisma.LevelResultSelect> = z.ob
   id_gameMode: z.boolean().optional(),
   startTime: z.boolean().optional(),
   endTime: z.boolean().optional(),
-  score: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   Level: z.union([z.boolean(),z.lazy(() => LevelArgsSchema)]).optional(),
   subLevel: z.union([z.boolean(),z.lazy(() => SubLevelArgsSchema)]).optional(),
@@ -2839,7 +2837,6 @@ export const LevelResultWhereInputSchema: z.ZodType<Prisma.LevelResultWhereInput
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  score: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
   Level: z.union([ z.lazy(() => LevelNullableRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
   subLevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
@@ -2855,7 +2852,6 @@ export const LevelResultOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelRe
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
   startTime: z.lazy(() => SortOrderSchema).optional(),
   endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   Level: z.lazy(() => LevelOrderByWithRelationInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional(),
@@ -2877,7 +2873,6 @@ export const LevelResultWhereUniqueInputSchema: z.ZodType<Prisma.LevelResultWher
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  score: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
   Level: z.union([ z.lazy(() => LevelNullableRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
   subLevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
@@ -2893,7 +2888,6 @@ export const LevelResultOrderByWithAggregationInputSchema: z.ZodType<Prisma.Leve
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
   startTime: z.lazy(() => SortOrderSchema).optional(),
   endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => LevelResultCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => LevelResultAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => LevelResultMaxOrderByAggregateInputSchema).optional(),
@@ -2912,7 +2906,6 @@ export const LevelResultScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.L
   id_gameMode: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
-  score: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const SceneWhereInputSchema: z.ZodType<Prisma.SceneWhereInput> = z.object({
@@ -4339,7 +4332,6 @@ export const GameModeUncheckedUpdateManyInputSchema: z.ZodType<Prisma.GameModeUn
 export const LevelResultCreateInputSchema: z.ZodType<Prisma.LevelResultCreateInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -4355,14 +4347,12 @@ export const LevelResultUncheckedCreateInputSchema: z.ZodType<Prisma.LevelResult
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
 
 export const LevelResultUpdateInputSchema: z.ZodType<Prisma.LevelResultUpdateInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -4378,7 +4368,6 @@ export const LevelResultUncheckedUpdateInputSchema: z.ZodType<Prisma.LevelResult
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
@@ -4389,14 +4378,12 @@ export const LevelResultCreateManyInputSchema: z.ZodType<Prisma.LevelResultCreat
   id_subLevel: z.number().int(),
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const LevelResultUpdateManyMutationInputSchema: z.ZodType<Prisma.LevelResultUpdateManyMutationInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const LevelResultUncheckedUpdateManyInputSchema: z.ZodType<Prisma.LevelResultUncheckedUpdateManyInput> = z.object({
@@ -4407,7 +4394,6 @@ export const LevelResultUncheckedUpdateManyInputSchema: z.ZodType<Prisma.LevelRe
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneCreateInputSchema: z.ZodType<Prisma.SceneCreateInput> = z.object({
@@ -5740,16 +5726,14 @@ export const LevelResultCountOrderByAggregateInputSchema: z.ZodType<Prisma.Level
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
   startTime: z.lazy(() => SortOrderSchema).optional(),
-  endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional()
+  endTime: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const LevelResultAvgOrderByAggregateInputSchema: z.ZodType<Prisma.LevelResultAvgOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_level: z.lazy(() => SortOrderSchema).optional(),
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
-  id_gameMode: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional()
+  id_gameMode: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const LevelResultMaxOrderByAggregateInputSchema: z.ZodType<Prisma.LevelResultMaxOrderByAggregateInput> = z.object({
@@ -5759,8 +5743,7 @@ export const LevelResultMaxOrderByAggregateInputSchema: z.ZodType<Prisma.LevelRe
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
   startTime: z.lazy(() => SortOrderSchema).optional(),
-  endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional()
+  endTime: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const LevelResultMinOrderByAggregateInputSchema: z.ZodType<Prisma.LevelResultMinOrderByAggregateInput> = z.object({
@@ -5770,16 +5753,14 @@ export const LevelResultMinOrderByAggregateInputSchema: z.ZodType<Prisma.LevelRe
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
   id_gameMode: z.lazy(() => SortOrderSchema).optional(),
   startTime: z.lazy(() => SortOrderSchema).optional(),
-  endTime: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional()
+  endTime: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const LevelResultSumOrderByAggregateInputSchema: z.ZodType<Prisma.LevelResultSumOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   id_level: z.lazy(() => SortOrderSchema).optional(),
   id_subLevel: z.lazy(() => SortOrderSchema).optional(),
-  id_gameMode: z.lazy(() => SortOrderSchema).optional(),
-  score: z.lazy(() => SortOrderSchema).optional()
+  id_gameMode: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FragmentNullableRelationFilterSchema: z.ZodType<Prisma.FragmentNullableRelationFilter> = z.object({
@@ -8239,7 +8220,6 @@ export const TeamCreateOrConnectWithoutUsersInputSchema: z.ZodType<Prisma.TeamCr
 export const LevelResultCreateWithoutUserInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutUserInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   gameMode: z.lazy(() => GameModeCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -8253,7 +8233,6 @@ export const LevelResultUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
 
@@ -8445,7 +8424,6 @@ export const LevelResultScalarWhereInputSchema: z.ZodType<Prisma.LevelResultScal
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  score: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const QuestionAnswerUpsertWithWhereUniqueWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerUpsertWithWhereUniqueWithoutUserInput> = z.object({
@@ -8848,7 +8826,6 @@ export const SubLevelCreateOrConnectWithoutLevelsInputSchema: z.ZodType<Prisma.S
 export const LevelResultCreateWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutLevelInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   gameMode: z.lazy(() => GameModeCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -8862,7 +8839,6 @@ export const LevelResultUncheckedCreateWithoutLevelInputSchema: z.ZodType<Prisma
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
 
@@ -9043,7 +9019,6 @@ export const GameModeCreateOrConnectWithoutLevelsInputSchema: z.ZodType<Prisma.G
 export const LevelResultCreateWithoutSubLevelInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutSubLevelInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   gameMode: z.lazy(() => GameModeCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -9057,7 +9032,6 @@ export const LevelResultUncheckedCreateWithoutSubLevelInputSchema: z.ZodType<Pri
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
 
@@ -9844,7 +9818,6 @@ export const SubLevelCreateOrConnectWithoutGameModesInputSchema: z.ZodType<Prism
 export const LevelResultCreateWithoutGameModeInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutGameModeInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -9858,7 +9831,6 @@ export const LevelResultUncheckedCreateWithoutGameModeInputSchema: z.ZodType<Pri
   id_subLevel: z.number().int(),
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   Scenes: z.lazy(() => SceneUncheckedCreateNestedManyWithoutLevelResultInputSchema).optional()
 }).strict();
 
@@ -10349,7 +10321,6 @@ export const SceneFragmentCreateManySceneInputEnvelopeSchema: z.ZodType<Prisma.S
 export const LevelResultCreateWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultCreateWithoutScenesInput> = z.object({
   startTime: z.coerce.date(),
   endTime: z.coerce.date(),
-  score: z.number().int(),
   user: z.lazy(() => UserCreateNestedOneWithoutLevelResultsInputSchema).optional(),
   Level: z.lazy(() => LevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelCreateNestedOneWithoutLevelResultInputSchema).optional(),
@@ -10363,8 +10334,7 @@ export const LevelResultUncheckedCreateWithoutScenesInputSchema: z.ZodType<Prism
   id_subLevel: z.number().int(),
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const LevelResultCreateOrConnectWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultCreateOrConnectWithoutScenesInput> = z.object({
@@ -10493,7 +10463,6 @@ export const LevelResultUpdateToOneWithWhereWithoutScenesInputSchema: z.ZodType<
 export const LevelResultUpdateWithoutScenesInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutScenesInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -10508,7 +10477,6 @@ export const LevelResultUncheckedUpdateWithoutScenesInputSchema: z.ZodType<Prism
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const RelistenFragmentUpsertWithWhereUniqueWithoutSceneInputSchema: z.ZodType<Prisma.RelistenFragmentUpsertWithWhereUniqueWithoutSceneInput> = z.object({
@@ -11293,8 +11261,7 @@ export const LevelResultCreateManyUserInputSchema: z.ZodType<Prisma.LevelResultC
   id_subLevel: z.number().int(),
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const QuestionAnswerCreateManyUserInputSchema: z.ZodType<Prisma.QuestionAnswerCreateManyUserInput> = z.object({
@@ -11380,7 +11347,6 @@ export const SessionUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.
 export const LevelResultUpdateWithoutUserInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutUserInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   gameMode: z.lazy(() => GameModeUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -11394,7 +11360,6 @@ export const LevelResultUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
@@ -11405,7 +11370,6 @@ export const LevelResultUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Pri
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const QuestionAnswerUpdateWithoutUserInputSchema: z.ZodType<Prisma.QuestionAnswerUpdateWithoutUserInput> = z.object({
@@ -11635,8 +11599,7 @@ export const LevelResultCreateManyLevelInputSchema: z.ZodType<Prisma.LevelResult
   id_subLevel: z.number().int(),
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const SubLevelUpdateWithoutLevelsInputSchema: z.ZodType<Prisma.SubLevelUpdateWithoutLevelsInput> = z.object({
@@ -11708,7 +11671,6 @@ export const SubLevelUncheckedUpdateManyWithoutLevelsInputSchema: z.ZodType<Pris
 export const LevelResultUpdateWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutLevelInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   gameMode: z.lazy(() => GameModeUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -11722,7 +11684,6 @@ export const LevelResultUncheckedUpdateWithoutLevelInputSchema: z.ZodType<Prisma
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
@@ -11733,7 +11694,6 @@ export const LevelResultUncheckedUpdateManyWithoutLevelInputSchema: z.ZodType<Pr
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const LevelResultCreateManySubLevelInputSchema: z.ZodType<Prisma.LevelResultCreateManySubLevelInput> = z.object({
@@ -11742,8 +11702,7 @@ export const LevelResultCreateManySubLevelInputSchema: z.ZodType<Prisma.LevelRes
   id_level: z.number().int(),
   id_gameMode: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const PointsCreateManySublevelInputSchema: z.ZodType<Prisma.PointsCreateManySublevelInput> = z.object({
@@ -11853,7 +11812,6 @@ export const GameModeUncheckedUpdateManyWithoutLevelsInputSchema: z.ZodType<Pris
 export const LevelResultUpdateWithoutSubLevelInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutSubLevelInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   gameMode: z.lazy(() => GameModeUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -11867,7 +11825,6 @@ export const LevelResultUncheckedUpdateWithoutSubLevelInputSchema: z.ZodType<Pri
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
@@ -11878,7 +11835,6 @@ export const LevelResultUncheckedUpdateManyWithoutSubLevelInputSchema: z.ZodType
   id_gameMode: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const FragmentGroupUpdateWithoutSubLevelsInputSchema: z.ZodType<Prisma.FragmentGroupUpdateWithoutSubLevelsInput> = z.object({
@@ -12275,8 +12231,7 @@ export const LevelResultCreateManyGameModeInputSchema: z.ZodType<Prisma.LevelRes
   id_level: z.number().int(),
   id_subLevel: z.number().int(),
   startTime: z.coerce.date(),
-  endTime: z.coerce.date(),
-  score: z.number().int()
+  endTime: z.coerce.date()
 }).strict();
 
 export const SubLevelUpdateWithoutGameModesInputSchema: z.ZodType<Prisma.SubLevelUpdateWithoutGameModesInput> = z.object({
@@ -12348,7 +12303,6 @@ export const SubLevelUncheckedUpdateManyWithoutGameModesInputSchema: z.ZodType<P
 export const LevelResultUpdateWithoutGameModeInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutGameModeInput> = z.object({
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneWithoutLevelResultsNestedInputSchema).optional(),
   Level: z.lazy(() => LevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelUpdateOneWithoutLevelResultNestedInputSchema).optional(),
@@ -12362,7 +12316,6 @@ export const LevelResultUncheckedUpdateWithoutGameModeInputSchema: z.ZodType<Pri
   id_subLevel: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   Scenes: z.lazy(() => SceneUncheckedUpdateManyWithoutLevelResultNestedInputSchema).optional()
 }).strict();
 
@@ -12373,7 +12326,6 @@ export const LevelResultUncheckedUpdateManyWithoutGameModeInputSchema: z.ZodType
   id_subLevel: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   endTime: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  score: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SceneCreateManyLevelResultInputSchema: z.ZodType<Prisma.SceneCreateManyLevelResultInput> = z.object({

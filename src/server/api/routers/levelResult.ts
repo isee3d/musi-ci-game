@@ -1,10 +1,10 @@
-import { LevelResultOptionalDefaultsWithRelationsSchema } from "prisma/generated/zod";
-
 import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
-} from "~/server/api/trpc";
+  LevelResultOptionalDefaultsWithRelationsSchema,
+  PointsOptionalDefaultsSchema,
+} from 'prisma/generated/zod'
+import { z } from 'zod'
+
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const levelResultRouter = createTRPCRouter({
   saveLevelResult: protectedProcedure
@@ -18,7 +18,6 @@ export const levelResultRouter = createTRPCRouter({
           id_gameMode: input.id_gameMode,
           startTime: input.startTime,
           endTime: input.endTime,
-          score: input.score,
           Scenes: {
             create: input.Scenes.map((scene) => ({
               chosenFragmentLatency: scene.chosenFragmentLatency,
@@ -46,11 +45,17 @@ export const levelResultRouter = createTRPCRouter({
       })
     }),
 
-  // saveLevelResult: publicProcedure
-  //     .input(z.object({ text: z.string() }))
-  //     .query(({ input }) => {
-  //         return {
-  //             greeting: `Hello ${input.text}`,
-  //         };
-  //     }),
+  saveScore: protectedProcedure
+    .input(z.object({ id_User: z.string(), score: z.number(), id_sublevel: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id_User, score, id_sublevel } = input
+      const points = await ctx.prisma.points.create({
+        data: {
+          id_User,
+          id_sublevel,
+          points: score,
+        },
+      })
+      return points
+    }),
 })
