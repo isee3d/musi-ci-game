@@ -38,7 +38,7 @@ interface MuteState {
 const PodiumPage = () => {
   useUserActivity()
 
-  const {data: levelPoints } = api.level.getPointsPerLevel.useQuery()
+  const { data: levelPoints } = api.level.getPointsPerLevel.useQuery()
 
   const [isMuted, setIsMuted] = useState<MuteState>({
     drums: true,
@@ -48,6 +48,16 @@ const PodiumPage = () => {
     sax: true,
     zangeres: true,
     dwarsfluit: true,
+  })
+
+  const [unlocked, setUnlocked] = useState<MuteState>({
+    drums: false,
+    piano: false,
+    bass: false,
+    gitaar: false,
+    sax: false,
+    zangeres: false,
+    dwarsfluit: false,
   })
 
   const audioRefs = useRef<{
@@ -102,7 +112,31 @@ const PodiumPage = () => {
     }
   }, [])
 
-  console.log(levelPoints)
+  useEffect(() => {
+    // Process levelPoints to unlock instruments based on score
+    if (levelPoints) {
+      const newUnlockedState = { ...unlocked }
+      levelPoints.forEach((level) => {
+        const instrumentNameMatch = level.instrument?.match(/\/images\/instruments\/(.+)\.png/)
+        if (instrumentNameMatch) {
+          const instrumentKey = {
+            drumstel: 'drums',
+            piano: 'piano',
+            contrabas: 'bass',
+            gitaar: 'gitaar',
+            saxofoon: 'sax',
+            fluit: 'dwarsfluit',
+            zangeres: 'zangeres',
+          }[instrumentNameMatch[1]]
+
+          if (instrumentKey && level.score >= (level.points || 0)) {
+            newUnlockedState[instrumentKey] = true // Unlock the instrument
+          }
+        }
+      })
+      setUnlocked(newUnlockedState)
+    }
+  }, [levelPoints])
 
   return (
     <>
@@ -123,29 +157,41 @@ const PodiumPage = () => {
           <div className="relative flex h-fit w-full justify-center px-12">
             <div className="relative z-10 flex flex-col ">
               <div className="flex h-5/6 w-full items-center justify-center">
-                {isMuted.drums ? (
-                  <DrumsOffSVG onClick={() => toggleMute('drums')} width={'auto'} height={'auto'} />
+                {unlocked.drums ? (
+                  <DrumsOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <DrumsOnSVG onClick={() => toggleMute('drums')} width={'auto'} height={'auto'} />
-                )}
-                {isMuted.piano ? (
-                  <PianoOffSVG onClick={() => toggleMute('piano')} width={'auto'} height={'auto'} />
-                ) : (
-                  <PianoOnSVG onClick={() => toggleMute('piano')} width={'auto'} height={'auto'} />
-                )}
-                {isMuted.bass ? (
-                  <BassOffSVG onClick={() => toggleMute('bass')} width={'auto'} height={'auto'} />
-                ) : (
-                  <BassOnSVG onClick={() => toggleMute('bass')} width={'auto'} height={'auto'} />
-                )}
-                {isMuted.gitaar ? (
-                  <GitaarOffSVG
-                    onClick={() => toggleMute('gitaar')}
+                  <DrumsOnSVG
+                    className="hover:cursor-pointer"
+                    onClick={() => toggleMute('drums')}
                     width={'auto'}
                     height={'auto'}
                   />
+                )}
+                {isMuted.piano ? (
+                  <PianoOffSVG width={'auto'} height={'auto'} />
+                ) : (
+                  <PianoOnSVG
+                    className="hover:cursor-pointer"
+                    onClick={() => toggleMute('piano')}
+                    width={'auto'}
+                    height={'auto'}
+                  />
+                )}
+                {isMuted.bass ? (
+                  <BassOffSVG width={'auto'} height={'auto'} />
+                ) : (
+                  <BassOnSVG
+                    className="hover:cursor-pointer"
+                    onClick={() => toggleMute('bass')}
+                    width={'auto'}
+                    height={'auto'}
+                  />
+                )}
+                {isMuted.gitaar ? (
+                  <GitaarOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <GitaarOnSVG
+                    className="hover:cursor-pointer"
                     onClick={() => toggleMute('gitaar')}
                     width={'auto'}
                     height={'auto'}
@@ -154,31 +200,30 @@ const PodiumPage = () => {
               </div>
               <div className="flex h-5/6 w-full">
                 {isMuted.sax ? (
-                  <SaxOffSVG onClick={() => toggleMute('sax')} width={'auto'} height={'auto'} />
+                  <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <SaxOnSVG onClick={() => toggleMute('sax')} width={'auto'} height={'auto'} />
-                )}
-                {isMuted.zangeres ? (
-                  <ZangeresOffSVG
-                    onClick={() => toggleMute('zangeres')}
+                  <SaxOnSVG
+                    className="hover:cursor-pointer"
+                    onClick={() => toggleMute('sax')}
                     width={'auto'}
                     height={'auto'}
                   />
+                )}
+                {isMuted.zangeres ? (
+                  <ZangeresOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <ZangeresOnSVG
+                    className="hover:cursor-pointer"
                     onClick={() => toggleMute('zangeres')}
                     width={'auto'}
                     height={'auto'}
                   />
                 )}
                 {isMuted.dwarsfluit ? (
-                  <DwarsfluitOffSVG
-                    onClick={() => toggleMute('dwarsfluit')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <DwarsfluitOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <DwarsfluitOnSVG
+                    className="hover:cursor-pointer"
                     onClick={() => toggleMute('dwarsfluit')}
                     width={'auto'}
                     height={'auto'}
