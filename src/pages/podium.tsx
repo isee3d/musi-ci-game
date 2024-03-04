@@ -38,7 +38,31 @@ interface MuteState {
 const PodiumPage = () => {
   useUserActivity()
 
-  const { data: levelPoints } = api.level.getPointsPerLevel.useQuery()
+  const { data: levelPoints } = api.level.getPointsPerLevel.useQuery(undefined, {
+    onSuccess: (levelPoints) => {
+      if (levelPoints) {
+        const newUnlockedState = { ...unlocked }
+        levelPoints.forEach((level) => {
+          const instrumentNameMatch = level.instrument?.match(/\/images\/instruments\/(.+)\.png/)
+          if (instrumentNameMatch) {
+            const instrumentKey = {
+              drumstel: 'drums',
+              piano: 'piano',
+              contrabas: 'bass',
+              gitaar: 'gitaar',
+              saxofoon: 'sax',
+              fluit: 'dwarsfluit',
+              zangeres: 'zangeres',
+            }[instrumentNameMatch[1]]
+            if (instrumentKey && level.points && level.score >= (level.points || 0)) {
+              newUnlockedState[instrumentKey] = true
+            }
+          }
+        })
+        setUnlocked(newUnlockedState)
+      }
+    },
+  })
 
   const [isMuted, setIsMuted] = useState<MuteState>({
     drums: true,
@@ -60,17 +84,7 @@ const PodiumPage = () => {
     dwarsfluit: false,
   })
 
-  const audioRefs = useRef<{
-    [key in keyof MuteState]: HTMLAudioElement
-  }>({
-    drums: new Audio('/media/sampler/Salamander/A0.mp3'),
-    piano: new Audio('/media/sampler/Salamander/C4.mp3'),
-    bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
-    gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
-    sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
-    zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
-    dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
-  })
+  const audioRefs = useRef<{ [key in keyof MuteState]?: HTMLAudioElement }>({})
 
   const toggleMute = (instrument: keyof MuteState) => {
     setIsMuted((prevMute) => {
@@ -87,6 +101,16 @@ const PodiumPage = () => {
   }
 
   useEffect(() => {
+    audioRefs.current = {
+      drums: new Audio('/media/sampler/Salamander/A0.mp3'),
+      piano: new Audio('/media/sampler/Salamander/C4.mp3'),
+      bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
+      gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
+      sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
+      zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
+      dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
+    }
+
     const sounds = audioRefs.current
 
     Object.values(sounds).forEach((sound) => {
@@ -101,7 +125,9 @@ const PodiumPage = () => {
         })
       }),
     ).then(() => {
-      Object.values(sounds).forEach((sound) => sound.play())
+      Object.values(sounds).forEach((sound) =>
+        sound.play().catch((e) => console.error('Error playing sound:', e)),
+      )
     })
 
     return () => {
@@ -111,32 +137,6 @@ const PodiumPage = () => {
       })
     }
   }, [])
-
-  useEffect(() => {
-    // Process levelPoints to unlock instruments based on score
-    if (levelPoints) {
-      const newUnlockedState = { ...unlocked }
-      levelPoints.forEach((level) => {
-        const instrumentNameMatch = level.instrument?.match(/\/images\/instruments\/(.+)\.png/)
-        if (instrumentNameMatch) {
-          const instrumentKey = {
-            drumstel: 'drums',
-            piano: 'piano',
-            contrabas: 'bass',
-            gitaar: 'gitaar',
-            saxofoon: 'sax',
-            fluit: 'dwarsfluit',
-            zangeres: 'zangeres',
-          }[instrumentNameMatch[1]]
-
-          if (instrumentKey && level.score >= (level.points || 0)) {
-            newUnlockedState[instrumentKey] = true // Unlock the instrument
-          }
-        }
-      })
-      setUnlocked(newUnlockedState)
-    }
-  }, [levelPoints])
 
   return (
     <>
@@ -157,7 +157,7 @@ const PodiumPage = () => {
           <div className="relative flex h-fit w-full justify-center px-12">
             <div className="relative z-10 flex flex-col ">
               <div className="flex h-5/6 w-full items-center justify-center">
-                {unlocked.drums ? (
+                {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <DrumsOnSVG
@@ -167,7 +167,7 @@ const PodiumPage = () => {
                     height={'auto'}
                   />
                 )}
-                {isMuted.piano ? (
+                {!unlocked.piano ? (
                   <PianoOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <PianoOnSVG
@@ -177,7 +177,7 @@ const PodiumPage = () => {
                     height={'auto'}
                   />
                 )}
-                {isMuted.bass ? (
+                {!unlocked.bass ? (
                   <BassOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <BassOnSVG
@@ -187,7 +187,7 @@ const PodiumPage = () => {
                     height={'auto'}
                   />
                 )}
-                {isMuted.gitaar ? (
+                {!unlocked.gitaar ? (
                   <GitaarOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <GitaarOnSVG
@@ -199,7 +199,7 @@ const PodiumPage = () => {
                 )}
               </div>
               <div className="flex h-5/6 w-full">
-                {isMuted.sax ? (
+                {!unlocked.sax ? (
                   <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <SaxOnSVG
@@ -209,7 +209,7 @@ const PodiumPage = () => {
                     height={'auto'}
                   />
                 )}
-                {isMuted.zangeres ? (
+                {!unlocked.zangeres ? (
                   <ZangeresOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <ZangeresOnSVG
@@ -219,7 +219,7 @@ const PodiumPage = () => {
                     height={'auto'}
                   />
                 )}
-                {isMuted.dwarsfluit ? (
+                {!unlocked.dwarsfluit ? (
                   <DwarsfluitOffSVG width={'auto'} height={'auto'} />
                 ) : (
                   <DwarsfluitOnSVG

@@ -165,6 +165,7 @@ export const levelRouter = createTRPCRouter({
   getPointsPerLevel: protectedProcedure.query(async ({ ctx }) => {
     const levels = await ctx.prisma.level.findMany({
       select: {
+        id: true,
         name: true,
         points: true,
         instrument: true,
