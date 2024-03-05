@@ -49,13 +49,15 @@ export const levelResultRouter = createTRPCRouter({
     .input(z.object({ id_User: z.string(), score: z.number(), id_sublevel: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const { id_User, score, id_sublevel } = input
-      const points = await ctx.prisma.points.create({
+
+      if (score === 0) return
+
+      return await ctx.prisma.points.create({
         data: {
           id_User,
           id_sublevel,
           points: score,
         },
       })
-      return points
     }),
 })

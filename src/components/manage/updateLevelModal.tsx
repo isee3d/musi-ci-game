@@ -98,7 +98,7 @@ const UpdateLevelModal: React.FC<{
         description: data.description,
         color: data.color,
         instrument: data.instrument,
-        points: data.points === undefined ? undefined : parseInt(data.points),
+        points: data.points === undefined ? null : parseInt(data.points),
       })
       updateSublevelsOfLevel({
         levelId: level.id.toString(),

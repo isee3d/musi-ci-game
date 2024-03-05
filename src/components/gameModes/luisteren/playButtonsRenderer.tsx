@@ -23,7 +23,6 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
     getFormattedStoreData,
     startTime,
     endTime,
-    score,
     setScore,
     luisterenClicks,
   } = useLuisterenStore()
@@ -45,8 +44,9 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
       }),
     )
     setEndTime(Date.now())
+    const { score } = useLuisterenStore.getState()
     saveToDB(getFormattedStoreData(session.user.id))
-    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId)})
+    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
   }
 
   return (

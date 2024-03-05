@@ -61,7 +61,6 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     allPlayedScenes,
     endTime,
     startTime,
-    score,
     getPercentageCorrectlyAnswered,
   } = useLuisterenStore()
 
@@ -107,6 +106,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
         }),
       )
       saveToDB(getFormattedStoreData(session?.user.id ?? '1'))
+      const { score } = useLuisterenStore.getState()
       saveScore({ id_User: session?.user.id ?? '-1', score: score, id_sublevel: parseInt(sublevelId) })
       send('FINISHEDPLAYING')
     }

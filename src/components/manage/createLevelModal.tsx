@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { levelFormSchema } from 'types/FormSchema'
+import { Nullish } from 'types/nullish'
 import { z } from 'zod'
 import { Button, buttonVariants } from '~/components/ui/button'
 import {
@@ -68,7 +69,7 @@ const CreateLevelModal: React.FC<{ setmodal: React.Dispatch<React.SetStateAction
       addLevel({
         ...data,
         id_Game: 1,
-        points: data.points === undefined ? undefined : parseInt(data.points),
+        points: data.points === undefined ? null : parseInt(data.points),
         sublevels: addedSubLevels.map((s) => s.id),
       })
       setAddedSubLevels([])
