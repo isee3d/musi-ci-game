@@ -169,6 +169,7 @@ export const levelRouter = createTRPCRouter({
         name: true,
         points: true,
         instrument: true,
+        color: true,
         subLevels: {
           select: {
             id: true,

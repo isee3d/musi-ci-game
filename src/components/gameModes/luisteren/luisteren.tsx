@@ -79,7 +79,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
         </div>
       )}
       {isPlayingState && <LuisterenfragmentPlayerRenderer />}
-      {isfinishedPlayingState && <LuisterenFeedback />}
+      {isfinishedPlayingState && <LuisterenFeedback levelId={levelId} />}
       {isPlayingState && <PlayButtonsRenderer sublevelId={sublevelId} />}
       {isfinishedPlayingState && (
         <Button

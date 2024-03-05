@@ -1,13 +1,22 @@
-import Image from 'next/legacy/image'
-import { useEffect } from 'react'
+import Image from 'next/image'
+import { useEffect, useMemo, useState } from 'react'
 import { Progress } from '~/components/ui/progress'
 import { imagesConfig } from '~/config/site'
+import { cn } from '~/lib/utils'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { api } from '~/utils/api'
 import { formatTime } from '~/utils/time'
 
-const LuisterenFeedback: React.FC = () => {
-  const { score, endTime, startTime, setShouldRenderCinieInContentContainer, setIsPlaying } =
+interface LuisterenFeedbackProps {
+  levelId: string
+}
+
+const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ levelId }) => {
+  const { endTime, score, startTime, setShouldRenderCinieInContentContainer, setIsPlaying } =
     useLuisterenStore()
+
+  const { data: levelPoints } = api.level.getPointsPerLevel.useQuery()
+  const level = levelPoints?.find((level) => level.id === parseInt(levelId))
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
@@ -15,6 +24,14 @@ const LuisterenFeedback: React.FC = () => {
 
     return () => setShouldRenderCinieInContentContainer(true)
   }, [])
+
+  const progressValue = useMemo(() => {
+    if (!levelPoints) return 0
+    const level = levelPoints.find((level) => level.id === parseInt(levelId))
+    if (!level?.points) return 0
+    const progress = (level.score / level.points) * 100
+    return Math.min(progress, 100)
+  }, [levelPoints, levelId])
 
   return (
     <>
@@ -30,12 +47,19 @@ const LuisterenFeedback: React.FC = () => {
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
-        Je hebt {score} punten verdiend
-      </h3>
-      <div className=' w-1/2 px-12'>
-        <Progress className='text-orange-500' indicatorColor='bg-red-500' value={33} />
-      </div> */}
+      {score > 0 && (
+        <>
+          <h3 className="text-center text-4xl font-extrabold tracking-tight">
+            Je hebt {score} punten verdiend
+          </h3>
+          <div className=" w-1/2 px-12">
+            <Progress
+              indicatorColor={level?.color ? `${level.color}` : '#A020F0'}
+              value={progressValue}
+            />
+          </div>
+        </>
+      )}
     </>
   )
 }
