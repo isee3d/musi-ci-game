@@ -38,9 +38,9 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
       <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()} % goed
       </h3>
-      <h3 className="text-center text-4xl font-extrabold tracking-tight">
+      {/* <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Je hebt {score} punten verdiend
-      </h3>
+      </h3> */}
       <div className="flex justify-center gap-4">
         <Button variant={'highlight'} onClick={restartUitdaging}>
           Speel opnieuw
