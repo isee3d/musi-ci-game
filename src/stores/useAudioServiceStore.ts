@@ -7,13 +7,13 @@ import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndWeight
+  FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import {
   adjustSingleItemWeight,
   adjustWeights,
   getNoteIndex,
-  getNoteNameFromNoteIndex
+  getNoteNameFromNoteIndex,
 } from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
@@ -55,6 +55,8 @@ type AudioserviceAction = {
   ) => FragmentWithNotesAndWeight[]
   chooseWeightedActiveFragment: (
     fragments: FragmentWithNotesAndWeight[],
+    fragmentsToShow?: number,
+    gameMode?: string,
   ) => FragmentWithNotesAndWeight | undefined
 }
 
@@ -110,49 +112,53 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
     if (audioContext) return
     try {
       // return new Promise((resolve) => {
-        // setTimeout(async () => {
-          // window.AudioContext = window.AudioContext || window.webkitAudioContext
-          // const audioContext = new AudioContext()
-          // set({ audioContext })
-          // const audioTime = audioContext.currentTime
-          // set({ audioTime })
-          const piano = new Sampler([
-            { note: 'C5', path: '/media/sampler/Salamander/C5.mp3' },
-            { note: 'C4', path: '/media/sampler/Salamander/C4.mp3' },
-            { note: 'C3', path: '/media/sampler/Salamander/C3.mp3' },
-            { note: 'C2', path: '/media/sampler/Salamander/C2.mp3' },
-          ])
+      // setTimeout(async () => {
+      // window.AudioContext = window.AudioContext || window.webkitAudioContext
+      // const audioContext = new AudioContext()
+      // set({ audioContext })
+      // const audioTime = audioContext.currentTime
+      // set({ audioTime })
+      const piano = new Sampler([
+        { note: 'C5', path: '/media/sampler/Salamander/C5.mp3' },
+        { note: 'C4', path: '/media/sampler/Salamander/C4.mp3' },
+        { note: 'C3', path: '/media/sampler/Salamander/C3.mp3' },
+        { note: 'C2', path: '/media/sampler/Salamander/C2.mp3' },
+      ])
 
-          set({ piano })
+      set({ piano })
 
-          const soundBoard = new Sampler([
-            { note: 'C6', path: '/media/sampler/soundboard/tick_high.mp3' },
-            { note: 'C5', path: '/media/sampler/soundboard/tick_low.mp3' },
-          ])
+      const soundBoard = new Sampler([
+        { note: 'C6', path: '/media/sampler/soundboard/tick_high.mp3' },
+        { note: 'C5', path: '/media/sampler/soundboard/tick_low.mp3' },
+      ])
 
-          set({ soundBoard })
-          // set({ isInitialized: true })
-          // return resolve()
-        // }, 1000)
+      set({ soundBoard })
+      // set({ isInitialized: true })
+      // return resolve()
+      // }, 1000)
       // })
     } catch (e) {
       alert('Web Audio API not supported in this browser.')
       set({ hasSupport: false })
     }
   },
-  chooseWeightedActiveFragment: (fragments: FragmentWithNotesAndWeight[]) => {
+  chooseWeightedActiveFragment: (
+    fragments: FragmentWithNotesAndWeight[],
+    fragmentsToShow?: number,
+    gameMode?: string
+  ) => {
     let totalWeight = fragments.reduce((sum, fragment) => sum + fragment.weight, 0)
     let random = Math.random() * totalWeight
 
     for (let fragment of fragments) {
       random -= fragment.weight
       if (random < 0) {
-        adjustWeights(fragments, fragment)
+        adjustWeights(fragments, fragment, fragmentsToShow, gameMode)
         return fragment
       }
     }
     // Fallback
-    adjustSingleItemWeight(fragments[0])
+    // adjustSingleItemWeight(fragments[0])
     return fragments[0]
   },
   transposeWeightedFragments: (

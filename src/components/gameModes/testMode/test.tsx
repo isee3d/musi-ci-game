@@ -32,96 +32,130 @@ function testAlgorithm(
   session: Session,
   saveToDB: any,
 ) {
-  const {
-    addNewUserSceneAnswer,
-    AddSceneData,
-    setEndTime,
-    setChosenFragment,
-    setChosenFragmentLatency,
-    setSceneStartTime,
-    setStartTime,
-    addScene,
-    resetSceneRelatedData,
-    setPlayedFragmentId,
-    setLevelSublevelMode,
-  } = useLuisterenStore.getState()
+  let bigData = {}
+  for (let index = 0; index < 300; index++) {
+    const {
+      addNewUserSceneAnswer,
+      AddSceneData,
+      setEndTime,
+      setChosenFragment,
+      setChosenFragmentLatency,
+      setSceneStartTime,
+      setStartTime,
+      addScene,
+      resetSceneRelatedData,
+      setPlayedFragmentId,
+      setLevelSublevelMode,
+      reset,
+    } = useLuisterenStore.getState()
 
-  let log: LogType = {}
-  let totalCount = 0
+    let log: LogType = {}
+    let totalCount = 0
+    let playedFragmentIdArray: number[] = []
 
-  setLevelSublevelMode(10, 29, 4)
+    setLevelSublevelMode(10, 29, 4)
 
-  let convertedFragmentGroups = fragmentGroups.map((group) => ({
-    ...group,
-    fragments: group.fragments.map((fragment) => ({
-      ...fragment,
-      weight: 100,
-    })),
-  })) as FragmentGroupWithWeights[]
+    let convertedFragmentGroups = fragmentGroups.map((group) => ({
+      ...group,
+      fragments: group.fragments.map((fragment) => ({
+        ...fragment,
+        weight: 100,
+      })),
+    })) as FragmentGroupWithWeights[]
 
-  setStartTime(Date.now())
+    setStartTime(Date.now())
 
-  for (let i = 0; i < 300; i++) {
-    const { transposedFragments: shownFragments, newActiveFragment } = transpose(
-      fragmentsToShow,
-      amountOfScenes,
-      convertedFragmentGroups,
-      pianoNotesMap,
-    )
+    for (let i = 0; i < 300; i++) {
+      const { transposedFragments: shownFragments, newActiveFragment } = transpose(
+        fragmentsToShow,
+        amountOfScenes,
+        convertedFragmentGroups,
+        pianoNotesMap,
+      )
 
-    // Save the new scene data to the store
-    const newSceneData: FragmentSceneData[] = []
-    shownFragments.forEach((fragment, index) => {
-      newSceneData.push({
-        id_fragment: fragment.id,
-        fragmentIndex: index,
-        groundTone: fragment.transpose ?? '',
-        octave: fragment.octave ?? -1,
+      // Save the new scene data to the store
+      const newSceneData: FragmentSceneData[] = []
+      shownFragments.forEach((fragment, index) => {
+        newSceneData.push({
+          id_fragment: fragment.id,
+          fragmentIndex: index,
+          groundTone: fragment.transpose ?? '',
+          octave: fragment.octave ?? -1,
+        })
       })
-    })
 
-    AddSceneData(newSceneData)
-    setPlayedFragmentId(newActiveFragment.id)
-    setSceneStartTime(new Date())
+      AddSceneData(newSceneData)
+      setPlayedFragmentId(newActiveFragment.id)
+      playedFragmentIdArray.push(newActiveFragment.id)
+      setSceneStartTime(new Date())
 
-    // Choose a random fragment to simulate the user choosing a fragment
-    const userChosenFragment = shownFragments[Math.floor(Math.random() * shownFragments.length)]
-    const isCorrectChosen = userChosenFragment?.id === newActiveFragment.id
+      // Choose a random fragment to simulate the user choosing a fragment
+      const userChosenFragment = shownFragments[Math.floor(Math.random() * shownFragments.length)]
+      const isCorrectChosen = userChosenFragment?.id === newActiveFragment.id
 
-    addNewUserSceneAnswer(isCorrectChosen)
-    setChosenFragment(userChosenFragment?.id)
-    setChosenFragmentLatency(Math.floor(Math.random() * 1000) + 1000)
+      addNewUserSceneAnswer(isCorrectChosen)
+      setChosenFragment(userChosenFragment?.id)
+      setChosenFragmentLatency(Math.floor(Math.random() * 1000) + 1000)
 
-    if (i === amountOfScenes) {
-      setEndTime(Date.now())
+      if (i === amountOfScenes) {
+        setEndTime(Date.now())
+      }
+
+      addScene(useLuisterenStore.getState().sceneData)
+      resetSceneRelatedData()
     }
 
-    addScene(useLuisterenStore.getState().sceneData)
-    resetSceneRelatedData()
-  }
+    const { newUsedFragmentsMap, getFormattedStoreData } = useLuisterenStore.getState()
 
-  const { newUsedFragmentsMap, getFormattedStoreData } = useLuisterenStore.getState()
+    // Update the log with the results of each iteration
+    for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
+      log[fragmentId] = log[fragmentId] || {}
+      //@ts-ignore
+      for (const [octave, count] of Object.entries(octaveData)) {
+        // @ts-ignore
+        log[fragmentId][octave] = (log[fragmentId][octave] || 0) + count
+        totalCount += count
+      }
+    }
 
-  // Update the log with the results of each iteration
-  for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
-    log[fragmentId] = log[fragmentId] || {}
+    // console.log(
+    //   'Log of fragment usage by octave:',
+    //   log,
+    //   'count:',
+    //   totalCount,
+    //   'ran with amountofFragmentsinScene: ',
+    //   fragmentsToShow,
+    //   'played order of fragments: ',
+    //   playedFragmentIdArray,
+    // )
+
     //@ts-ignore
-    for (const [octave, count] of Object.entries(octaveData)) {
-      // @ts-ignore
-      log[fragmentId][octave] = (log[fragmentId][octave] || 0) + count
-      totalCount += count
-    }
-  }
+    bigData[index] = playedFragmentIdArray
 
-  console.log(
-    'Log of fragment usage by octave:',
-    log,
-    'count:',
-    totalCount,
-    'ran with amountofFragmentsinScene: ',
-    fragmentsToShow,
-  )
-  console.log('formattedData: ', getFormattedStoreData(session.user.id))
+    reset()
+    totalCount = 0
+    playedFragmentIdArray = []
+    log = {}
+  }
+  // const json = JSON.stringify(bigData)
+  // const blob = new Blob([buffer], {
+  //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  // })
+  // const link = document.createElement('a')
+  // link.href = URL.createObjectURL(blob)
+  // link.download = `data-${participantId}.xlsx`
+  // link.click()
+
+
+  // const blob = new Blob([json], { type: 'application/json' })
+  // const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.download = 'test2.json'
+  a.href =
+    'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bigData, null, 2))
+  a.click()
+  // console.log('bigData: ', bigData)
+  // console.log('formattedData: ', getFormattedStoreData(session.user.id))
   // saveToDB(getFormattedStoreData(session.user.id))
 }
 
@@ -231,16 +265,14 @@ const Test: React.FC<TestModeProps> = ({
         <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
       )}
 
-      {session?.user.role === 'ADMIN' && (
+      {/* {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() =>
-            testAlgorithm(fragmentGroups, 3, 300, session, saveToDB)
-          }
+          onClick={() => testAlgorithm(fragmentGroups, 3, 300, session, saveToDB)}
         >
           Print Test algoritme validatie
         </Button>
-      )}
+      )} */}
     </>
   )
 }

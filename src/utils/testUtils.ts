@@ -172,7 +172,7 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
         minUsageCount = totalUsageCount
         leastUsedFragments = [fragment]
       } else if (totalUsageCount === minUsageCount) {
-        leastUsedFragments.push(fragment)
+        fragmentsToShow.push(fragment)
       }
     })
 
@@ -185,8 +185,7 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
       }
     }
   })
-
-  return fragmentsToShow.slice(0, fragmentsToShowSize)
+  return fragmentsToShow
 }
 
 function getAmountOfFragmentsInTestmodeExtractedFromFragmentGroups(
@@ -318,7 +317,7 @@ export const transpose = (
   })
 
   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
-  const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments)
+  const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments, fragmentsToShow, 'test')
   if (!newActiveFragment) throw new Error('No new active fragment available')
 
   weightAdjustedFragmentGroups.forEach((group) => {

@@ -62,12 +62,25 @@ export function canTranspose(fragment: FragmentWithNotes, direction: number) {
 export function adjustWeights(
   fragments: FragmentWithNotesAndWeight[],
   selectedFragment: FragmentWithNotesAndWeight,
+  fragmentsToShow?: number,
+  gameMode?: string
 ) {
-  const decreaseAmount = 10
-  const increaseAmount = 10
+  let decreaseAmount = 15;
+  let increaseAmount = 15;
+  let decreaseAmountForUseAlways = 15;
+  let increaseAmountForUseAlways = 10;
 
-  const decreaseAmountForUseAlways = 15
-  const increaseAmountForUseAlways = 10
+  if(gameMode === 'test' && fragmentsToShow === 2) {
+    decreaseAmount = 15;
+    increaseAmount = 15;
+    decreaseAmountForUseAlways = 15;
+    increaseAmountForUseAlways = 60;
+  } else if(gameMode === 'test' && fragmentsToShow && fragmentsToShow > 2) {
+    decreaseAmount = 25;
+    increaseAmount = 25;
+    decreaseAmountForUseAlways = 5;
+    increaseAmountForUseAlways = 5;
+  }
 
   fragments.forEach((fragment) => {
     if (fragment.id === selectedFragment.id) {
