@@ -156,23 +156,23 @@ const PodiumPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="relative   items-center justify-center bg-[#756563] pt-24">
-        <PodiumSVG className="absolute top-0" width={'auto'} height={'100%'} />
+      <section className="relative  h-screen  items-center justify-center pt-24">
+        {/* <PodiumSVG className="absolute top-0" width={'auto'} height={'100%'} />
         <CiniSVG
           className="absolute bottom-0 z-50 h-96 w-fit pb-36"
           width={'auto'}
           height={'auto'}
-        />
+        /> */}
         <div className="relative  flex flex-col items-center justify-center gap-4">
-          <div className="relative flex h-fit w-full justify-center px-12">
-            {/* <Image
+          <div className="relative flex h-[50vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
+            <Image
               layout="fill"
               src={imagesConfig.podium}
               objectFit="fill"
               alt="Podium"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            /> */}
-            <div className="relative z-10 flex flex-col ">
+            />
+            {/* <div className="relative z-10 flex flex-col ">
               <div className="flex h-5/6 w-full items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
@@ -247,7 +247,7 @@ const PodiumPage = () => {
                   />
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
           <Button className="z-50 my-4" asChild>
             <Link href={routePaths.levelsPage}>Kies je level</Link>

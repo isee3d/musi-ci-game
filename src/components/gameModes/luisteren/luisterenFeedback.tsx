@@ -46,7 +46,7 @@ const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ levelId }) => {
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      {score > 0 && (
+      {/* {score > 0 && (
         <>
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
             Je hebt {score} punten verdiend
@@ -58,7 +58,7 @@ const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ levelId }) => {
             />
           </div>
         </>
-      )}
+      )} */}
     </>
   )
 }
