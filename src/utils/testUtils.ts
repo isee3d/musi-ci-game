@@ -172,7 +172,7 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
         minUsageCount = totalUsageCount
         leastUsedFragments = [fragment]
       } else if (totalUsageCount === minUsageCount) {
-        fragmentsToShow.push(fragment)
+        leastUsedFragments.push(fragment)
       }
     })
 
