@@ -185,7 +185,7 @@ function getFilteredLeastUsedFragments(options: FilterLeastUsedFragmentOptions) 
       }
     }
   })
-  return fragmentsToShow
+  return fragmentsToShow.slice(0, fragmentsToShowSize)
 }
 
 function getAmountOfFragmentsInTestmodeExtractedFromFragmentGroups(
