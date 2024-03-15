@@ -126,7 +126,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
   return (
     <>
-      <h3 className="pb-4 text-4xl font-bold tracking-tight">Klik op het gehoorde fragment</h3>
+      <h3 className="pb-4 text-xl lg:text-4xl font-bold tracking-tight">Klik op het gehoorde fragment</h3>
       {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}

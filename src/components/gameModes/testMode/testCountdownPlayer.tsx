@@ -5,7 +5,7 @@ const TestCountdownPlayer: React.FC = () => {
   const testStates = TestModeMachineContext.useSelector((state) => state.toStrings())
 
   return (
-    <div className="pointer-events-none p-14 flex h-full w-full items-center justify-center text-center text-7xl font-extrabold tracking-tight">
+    <div className="pointer-events-none p-14 flex h-full w-full items-center justify-center text-center text-xl lg:text-7xl font-extrabold tracking-tight">
       De test begint in: {testStates[1]?.split('.')[1]}
     </div>
   )

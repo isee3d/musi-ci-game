@@ -164,13 +164,13 @@ const PodiumPage = () => {
           height={'auto'}
         /> */}
         <div className="relative  flex flex-col items-center justify-center gap-4">
-          <div className="relative flex h-[50vh] w-[50vw] flex-col justify-center lg:h-[50vh]">
+          <div className="relative flex h-[50vh] w-full mx-4 flex-col justify-center lg:h-[50vh]">
             <Image
-              layout="fill"
+              fill
               src={imagesConfig.podium}
-              objectFit="fill"
+              objectFit="contain"
               alt="Podium"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             {/* <div className="relative z-10 flex flex-col ">
               <div className="flex h-5/6 w-full items-center justify-center">
