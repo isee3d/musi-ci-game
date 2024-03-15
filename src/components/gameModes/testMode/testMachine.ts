@@ -32,7 +32,7 @@ export const testModeMachine = createMachine(
       countdownActions: undefined as StopwatchActions | undefined,
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
-      amountPlayed: 1 as number,
+      amountPlayed: 0 as number,
       groups: [] as FragmentGroupWithWeights[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
@@ -178,9 +178,9 @@ export const testModeMachine = createMachine(
               1000: '#testMode.playing',
             },
             exit: [
-              assign({
-                amountPlayed: (context) => context.amountPlayed + 1,
-              }),
+              // assign({
+              //   amountPlayed: (context) => context.amountPlayed + 1,
+              // }),
               (context) => context.countdownActions?.resume(),
             ],
           },
@@ -306,6 +306,7 @@ export const testModeMachine = createMachine(
 
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {
+          amountPlayed: context.amountPlayed + 1,
           groups: weightAdjustedFragmentGroups,
           guessedFragment: undefined,
           shownFragments: transposedFragments,
