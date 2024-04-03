@@ -364,12 +364,12 @@ function getFragmentByName({fragmentName, fragments}: {fragmentName: string, fra
 }
 
 export function transposeTestOne(
-  amountPlayed: number,
+  index: number,
   fragments: FragmentWithNotes[],
 ) {
-  const scene = test_1[amountPlayed]
+  const scene = test_1[index]
   const { transposeFragments } = useAudioServiceStore.getState()
-  if (!scene) throw new Error(`Scene not found in test_1, ${amountPlayed}`)
+  if (!scene) throw new Error(`Scene not found in test_1, ${index}`)
   const newActiveFragment = getFragmentByName({
     fragmentName: scene.afspelen,
     fragments: fragments,
@@ -381,16 +381,15 @@ export function transposeTestOne(
   }
   const allFragments = [fragmentOne, fragmentTwo]
 
-  // Transpose fragments
   const transposedFragments = transposeFragments(allFragments, scene.octaaf, scene.grondtoon)
 
   return { transposedFragments, newActiveFragment }
 }
 
-export function transposeTestTwo(amountPlayed: number, fragments: FragmentWithNotes[]) {
-   const scene = test_2[amountPlayed]
+export function transposeTestTwo(index: number, fragments: FragmentWithNotes[]) {
+   const scene = test_2[index]
    const { transposeFragments } = useAudioServiceStore.getState()
-   if (!scene) throw new Error(`Scene not found in test_2, ${amountPlayed}`)
+   if (!scene) throw new Error(`Scene not found in test_2, ${index}`)
    const newActiveFragment = getFragmentByName({
      fragmentName: scene.afspelen,
      fragments: fragments,
@@ -403,7 +402,6 @@ export function transposeTestTwo(amountPlayed: number, fragments: FragmentWithNo
    }
    const allFragments = [fragmentOne, fragmentTwo, fragmentThree]
 
-   // Transpose fragments
    const transposedFragments = transposeFragments(allFragments, scene.octaaf, scene.grondtoon)
 
    return { transposedFragments, newActiveFragment }

@@ -4900,5 +4900,5 @@ export const test_2 = [
   },
 ] as const
 
-export type TestOne = typeof test_1[number]
-export type TestTwo = typeof test_2[number]
+export type TestOne = typeof test_1
+export type TestTwo = typeof test_2

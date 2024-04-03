@@ -75,7 +75,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     })
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
-     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
+    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
     // setOriginalFragments(
     //   getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups),
     // )

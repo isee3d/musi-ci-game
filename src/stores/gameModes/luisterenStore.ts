@@ -1,6 +1,7 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import { FormattedData, FragmentSceneData, Scene } from './../../../types/SceneData'
 import { create } from 'zustand'
+import { TestOne, TestTwo } from '~/components/gameModes/testMode/testJsonData'
 
 type LuisterenState = {
   startTime: number
@@ -21,6 +22,8 @@ type LuisterenState = {
       [octaveNumber: number]: number
     }
   }
+  TestOneArray: TestOne | undefined
+  TestTwoArray: TestTwo | undefined
 }
 
 type LuisterenActions = {
@@ -53,6 +56,10 @@ type LuisterenActions = {
   reset: () => void
   setIsPlaying: (isPlaying: boolean) => void
   setShouldRenderCinieInContentContainer: (shouldRender: boolean) => void
+  setTestOneArray: (testOneArray: TestOne) => void
+  setTestTwoArray: (testTwoArray: TestTwo) => void
+  removeItemFromTestOneArray: (index: number) => void
+  removeItemFromTestTwoArray: (index: number) => void
 }
 
 const initialState: LuisterenState = {
@@ -70,6 +77,8 @@ const initialState: LuisterenState = {
   isPlaying: false,
   usedFragmentsMap: {},
   newUsedFragmentsMap: {},
+  TestOneArray: undefined,
+  TestTwoArray: undefined,
 }
 
 const initialRoundState: Partial<LuisterenState> = {
@@ -91,6 +100,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   allPlayedScenes: [],
   usedFragmentsMap: [],
   newUsedFragmentsMap: [],
+  TestOneArray: undefined,
+  TestTwoArray: undefined,
   addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
     set((state) => {
       const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}
@@ -266,6 +277,21 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       Scenes: Scenes,
     }
   },
+  setTestOneArray: (testOneArray: TestOne) => set(() => ({ TestOneArray: testOneArray })),
+  setTestTwoArray: (testTwoArray: TestTwo) => set(() => ({ TestTwoArray: testTwoArray })),
+  removeItemFromTestOneArray: (index: number) =>
+  //@ts-ignore
+    set((state) => {
+      const newTestOneArray = state.TestOneArray?.filter((_, i) => i !== index)
+      return { TestOneArray: newTestOneArray }
+    }),
+  removeItemFromTestTwoArray: (index: number) =>
+  // @ts-ignore
+    set((state) => {
+      const newTestTwoArray = state.TestTwoArray?.filter((_, i) => i !== index)
+      return { TestTwoArray: newTestTwoArray }
+    }),
+
   reset: () => set(initialState),
   resetSceneRelatedData: () => set(initialRoundState),
 }))

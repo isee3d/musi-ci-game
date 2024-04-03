@@ -8,6 +8,7 @@ import {
   FragmentWithNotes,
   FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
@@ -185,9 +186,11 @@ export const testModeMachine = createMachine(
           countdownTimings,
         } = event
 
-        const { resetUsedFragments } = useLuisterenStore.getState()
+        const { resetUsedFragments, setTestOneArray, setTestTwoArray } = useLuisterenStore.getState()
 
         resetUsedFragments()
+        setTestOneArray(test_1)
+        setTestTwoArray(test_2)
 
         // Add a weight to every fragment at the start of the game
 
@@ -253,23 +256,34 @@ export const testModeMachine = createMachine(
         }
       }),
       onCountdownStarted: assign((context) => {
-        const { setPlayedFragmentId } = useLuisterenStore.getState()
+        const { setPlayedFragmentId, TestOneArray, TestTwoArray, removeItemFromTestOneArray, removeItemFromTestTwoArray } =
+          useLuisterenStore.getState()
+
         const originalFragments = deepCopy(context.originalFragments)
 
         let activeFragment: FragmentWithNotes | undefined = undefined
         let newTransposedFragments: FragmentWithNotes[] = []
 
         if (context.sublevelName === 'test_1') {
-          const { transposedFragments, newActiveFragment } = transposeTestOne(context.amountPlayed, originalFragments)
+          if(!TestOneArray) return {}
+          const nextTestItem = Math.floor(Math.random() * TestOneArray.length)
+          const { transposedFragments, newActiveFragment } = transposeTestOne(
+            nextTestItem,
+            originalFragments,
+          )
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
+          removeItemFromTestOneArray(nextTestItem)
         } else if (context.sublevelName === 'test_2') {
+            if(!TestTwoArray) return {}
+           const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
            const { transposedFragments, newActiveFragment } = transposeTestTwo(
-             context.amountPlayed,
+             nextTestItem,
              originalFragments,
            )
            activeFragment = newActiveFragment
            newTransposedFragments = transposedFragments
+           removeItemFromTestTwoArray(nextTestItem)
         }
 
         // const copiedGroups = deepCopy(context.groups)
