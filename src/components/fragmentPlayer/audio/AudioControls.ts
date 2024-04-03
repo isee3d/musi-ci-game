@@ -9,6 +9,7 @@ export async function start(
     onFinishedPlaying,
   }: { onStartPlaying?: () => void; onFinishedPlaying?: () => void } = {}
 ) {
+  console.log('start fragment', fragment)
   if (!fragment) return
 
   const { piano, ticksToMS } = useAudioServiceStore.getState()

@@ -164,9 +164,10 @@ interface TestModeProps {
   levelId: string
   sublevelId: string
   gameId: string
-  fragmentsToShow: number
-  fragmentGroups: FragmentGroup[]
-  playTime: number | null | undefined
+  sublevelName: string | undefined
+  // fragmentsToShow: number
+  // fragmentGroups: FragmentGroup[]
+  // playTime: number | null | undefined
   mode: GameMode | null | undefined
 }
 
@@ -175,9 +176,10 @@ const Test: React.FC<TestModeProps> = ({
   gameId,
   levelId,
   sublevelId,
-  fragmentsToShow,
-  fragmentGroups,
-  playTime,
+  sublevelName,
+  // fragmentsToShow,
+  // fragmentGroups,
+  // playTime,
   mode,
 }) => {
   const { data: session } = useSession()
@@ -233,10 +235,12 @@ const Test: React.FC<TestModeProps> = ({
       type: 'STARTROUND',
       // originalFragmentGroups: fragmentGroups as FragmentGroup[],
       // fragmentsToShow: fragmentsToShow,
-      // countdownTimings: countdownTimings,
-      // amountOfScenes: mode?.amountOfScenes ?? 0,
       // countdownActions: stopwatch.actions,
       // groups: fragmentGroups as FragmentGroup[],
+      sublevelName: sublevelName,
+      originalFragments: fragments,
+      countdownTimings: countdownTimings,
+      amountOfScenes: mode?.amountOfScenes ?? 0,
     })
   }
 
@@ -261,9 +265,7 @@ const Test: React.FC<TestModeProps> = ({
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
       )}
-      {isFinishedState && (
-        <TestFeedback gameId={gameId} levelId={levelId} sublevelId={sublevelId} />
-      )}
+      {isFinishedState && <TestFeedback gameId={gameId} levelId={levelId} />}
 
       {/* {session?.user.role === 'ADMIN' && (
         <Button

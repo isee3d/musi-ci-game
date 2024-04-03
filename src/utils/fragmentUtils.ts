@@ -6,8 +6,8 @@ import {
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 
 export const getOriginalFragments = (
-  shownFragments: FragmentWithNotesAndWeight[],
-  allLevelFragments: FragmentWithNotesAndWeight[],
+  shownFragments: FragmentWithNotesAndWeight[] | FragmentWithNotes[],
+  allLevelFragments: FragmentWithNotesAndWeight[] | FragmentWithNotes[],
 ) => {
   const shownFragmentIds = shownFragments.map((frag) => frag.id)
 
@@ -43,7 +43,7 @@ export const getOriginalFragmentsFromFragmentGroup = (
 }
 
 export const getShownFragmentByFragmentId = (
-  shownFragments: FragmentWithNotesAndWeight[],
+  shownFragments: FragmentWithNotesAndWeight[] | FragmentWithNotes[],
   fragmentId: number,
 ): FragmentWithNotes | undefined => {
   return shownFragments.find((frag) => frag.id === fragmentId)

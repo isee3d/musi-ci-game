@@ -10,9 +10,11 @@ import { api } from '~/utils/api'
 import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
 import {
+  getOriginalFragments,
   getOriginalFragmentsFromFragmentGroup,
   getShownFragmentByFragmentId,
 } from '~/utils/fragmentUtils'
+import { test_1 } from '~/components/gameModes/testMode/testJsonData'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -37,9 +39,12 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     (state) => state.context.shownFragments,
     shallowEqual,
   )
-  const originalFragmentGroups = TestModeMachineContext.useSelector(
-    (state) => state.context.originalFragmentGroups,
+  const allOriginalFragments = TestModeMachineContext.useSelector(
+    (state) => state.context.originalFragments,
   )
+  // const originalFragmentGroups = TestModeMachineContext.useSelector(
+  //   (state) => state.context.originalFragmentGroups,
+  // )
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
   )
@@ -70,16 +75,16 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     })
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
-    setOriginalFragments(
-      getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups),
-    )
+     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
+    // setOriginalFragments(
+    //   getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups),
+    // )
 
-    if (mode?.amountOfScenes === null) {
-      toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
-    }
+    // if (mode?.amountOfScenes === null) {
+    //   toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
+    // }
 
-    // console.log('amountPlayed: ', amountPlayed, 'mode?.amountOfScenes: ', mode?.amountOfScenes)
-    if (amountPlayed === mode?.amountOfScenes) {
+    if (amountPlayed === test_1.length - 1) {
       setEndTime(Date.now())
       saveToDB(getFormattedStoreData(session?.user.id))
       send('FINISHEDPLAYING')

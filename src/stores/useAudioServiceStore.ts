@@ -44,9 +44,9 @@ type AudioserviceAction = {
   returnAudioBuffer: (arrBuffer: ArrayBuffer) => Promise<AudioBuffer>
   transposeFragments: (
     fragments: FragmentWithNotes[],
-    direction: number,
-    octave?: number,
-  ) => FragmentWithNotes[] | FragmentWithNotesAndWeight[]
+    targetOctave: number,
+    startingLetter: string,
+  ) => FragmentWithNotes[]
   transposeWeightedFragments: (
     fragments: FragmentWithNotesAndWeight[],
     octave: number,
@@ -145,7 +145,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   chooseWeightedActiveFragment: (
     fragments: FragmentWithNotesAndWeight[],
     fragmentsToShow?: number,
-    gameMode?: string
+    gameMode?: string,
   ) => {
     let totalWeight = fragments.reduce((sum, fragment) => sum + fragment.weight, 0)
     let random = Math.random() * totalWeight
@@ -266,53 +266,57 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
 
     return transposedFragments
   },
-  transposeFragments: (fragments: FragmentWithNotes[], direction: number, octave?: number) => {
-    const newFragments: FragmentWithNotes[] = []
-
-    for (let fragment of fragments) {
-      if (!fragment) continue
-
-      // Assuming the first note in the fragment is the ground tone
-      const groundTone = fragment.notes[0]
-      if (!groundTone) continue
-
-      const groundToneNote = groundTone.name.replace(/\d/, '')
-      const groundToneOctave = parseInt(groundTone.name.replace(/\D+/, ''))
-
-      const groundToneIndex = baseNotes.findIndex((no) => no === groundToneNote)
-      const totalShift = groundToneIndex + direction
-
-      const transposedGroundToneOctave = groundToneOctave + Math.floor(totalShift / 12)
-      let transposedGroundToneIndex = totalShift % 12
-      if (transposedGroundToneIndex < 0) transposedGroundToneIndex += 12
-
-      const semitoneDifference =
-        transposedGroundToneIndex +
-        12 * transposedGroundToneOctave -
-        (groundToneIndex + 12 * groundToneOctave)
-
-      const notes: Note[] = []
-      for (let n of fragment.notes) {
-        const note = n.name.replace(/\d/, '')
-        const currentOctave = parseInt(n.name.replace(/\D+/, ''))
-
-        const currentIndex = baseNotes.findIndex((no) => no === note)
-        const totalShiftForNote = currentIndex + 12 * currentOctave + semitoneDifference
-
-        const newOctave = Math.floor(totalShiftForNote / 12)
-        const newIndex = totalShiftForNote % 12
-
-        const newNoteBase = baseNotes[newIndex] || 'C'
-        const newNoteName = newNoteBase + newOctave
-        n.name = newNoteName
-        notes.push(n)
+  transposeFragments: (
+    fragments: FragmentWithNotes[],
+    targetOctave: number,
+    startingLetter: string,
+  ) => {
+    return fragments.map((fragment) => {
+      if (fragment.notes.length === 0) {
+        return fragment // Return fragment as is if no notes are present
       }
 
-      fragment.notes = notes
-      newFragments.push(fragment)
-    }
+      // Determine the starting note's full designation (e.g., "C4") and its note index
+      const startingNoteDesignation = `${startingLetter}${targetOctave}`
+      const startingNoteIndex = getNoteIndex(startingNoteDesignation)
+      if (!startingNoteIndex) {
+        throw new Error(`Starting note ${startingNoteDesignation} not found in pianoNotesMap.`)
+      }
 
-    return newFragments
+      // Determine the first note in the fragment and its index
+      const firstNoteInFragment = fragment.notes[0]
+      if(!firstNoteInFragment) return fragment
+      const firstNoteIndex = getNoteIndex(firstNoteInFragment.name)
+      if (!firstNoteIndex) {
+        throw new Error(`First note ${firstNoteInFragment.name} not found in pianoNotesMap.`)
+      }
+
+      // Calculate the transposition interval
+      const transpositionInterval = startingNoteIndex.noteNumber - firstNoteIndex.noteNumber
+
+      // Apply the transposition interval to all notes in the fragment
+      fragment.notes.forEach((note) => {
+        const originalNoteIndex = getNoteIndex(note.name)
+        if (!originalNoteIndex) {
+          throw new Error(`Note ${note.name} not found in pianoNotesMap.`)
+        }
+        const transposedNoteIndex = originalNoteIndex.noteNumber + transpositionInterval
+        const transposedNoteName = getNoteNameFromNoteIndex(transposedNoteIndex)
+        if (transposedNoteName === null) {
+          throw new Error(
+            `Transposed note index ${transposedNoteIndex} not found in pianoNotesMap.`,
+          )
+        }
+        note.name = transposedNoteName // Update the note name to the transposed note
+      })
+
+      // Optionally update the octave of the fragment if needed
+      fragment.octave = targetOctave
+      if (fragment.notes[0] === undefined) return fragment
+      fragment.transpose = fragment.notes[0].name
+
+      return fragment
+    })
   },
   reset: () => {
     set(initialState)

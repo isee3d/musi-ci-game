@@ -7,13 +7,12 @@ import Image from "next/legacy/image"
 import { routePaths } from '~/config/routing'
 import { imagesConfig } from '~/config/site'
 
-interface UitdagingFeedbackProps {
+interface TestFeedbackProps {
   levelId: string
-  sublevelId: string
   gameId: string
 }
 
-const TestFeedback: React.FC<UitdagingFeedbackProps> = ({ gameId, levelId, sublevelId }) => {
+const TestFeedback: React.FC<TestFeedbackProps> = ({ gameId, levelId }) => {
   const {
     getPercentageCorrectlyAnswered,
     endTime,

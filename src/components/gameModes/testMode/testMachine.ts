@@ -11,7 +11,7 @@ import {
 import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { transpose } from '~/utils/testUtils'
+import { transpose, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export const testModeMachine = createMachine(
   {
@@ -21,18 +21,20 @@ export const testModeMachine = createMachine(
     context: {
       isClickable: undefined as boolean | undefined,
       isAnimating: undefined as boolean | undefined,
-      isLooping: undefined as boolean | undefined,
-      originalFragmentGroups: [] as FragmentGroup[],
-      selectedGroup: undefined as FragmentGroup | undefined,
+      sublevelName: undefined as string | undefined,
+      originalFragments: [] as FragmentWithNotes[],
+      // isLooping: undefined as boolean | undefined,
+      // originalFragmentGroups: [] as FragmentGroup[],
+      // selectedGroup: undefined as FragmentGroup | undefined,
       fragmentsToShow: 0 as number,
       activeFragment: undefined as FragmentWithNotes | undefined,
-      shownFragments: [] as FragmentWithNotesAndWeight[],
+      shownFragments: [] as FragmentWithNotes[],
       guessedFragment: undefined as FragmentWithNotes | undefined,
       countdownTimings: undefined as CountdownTimings | undefined,
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
-      groups: [] as FragmentGroupWithWeights[],
+      // groups: [] as FragmentGroupWithWeights[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
@@ -53,10 +55,12 @@ export const testModeMachine = createMachine(
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes | undefined }
         | {
             type: 'STARTROUND'
+            originalFragments: FragmentWithNotes[]
+            sublevelName: string | undefined
             // originalFragmentGroups: FragmentGroup[]
             // fragmentsToShow: number
-            // countdownTimings: CountdownTimings
-            // amountOfScenes: number
+            countdownTimings: CountdownTimings
+            amountOfScenes: number
             // groups: FragmentGroup[]
           },
     },
@@ -175,8 +179,10 @@ export const testModeMachine = createMachine(
         const {
           // originalFragmentGroups,
           // fragmentsToShow,
-          // amountOfScenes,
-          // countdownTimings,
+          amountOfScenes,
+          originalFragments,
+          sublevelName,
+          countdownTimings,
         } = event
 
         const { resetUsedFragments } = useLuisterenStore.getState()
@@ -196,9 +202,11 @@ export const testModeMachine = createMachine(
         return {
           // originalFragmentGroups: originalFragmentGroups,
           // fragmentsToShow,
-          // amountOfScenes,
-          // countdownTimings,
           // groups: convertedFragmentGroups,
+          amountOfScenes,
+          originalFragments,
+          sublevelName,
+          countdownTimings,
           pianoNotesMap: pianoNotesMap,
         }
       }),
@@ -238,7 +246,7 @@ export const testModeMachine = createMachine(
         return {
           isClickable: false,
           isAnimating: false,
-          isLooping: false,
+          // isLooping: false,
           activeFragment: undefined,
           guessedFragment: undefined,
           fragmentGroups: [],
@@ -246,21 +254,39 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
-        const copiedGroups = deepCopy(context.groups)
-        const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups } = transpose(
-          context.fragmentsToShow,
-          context.amountOfScenes,
-          copiedGroups,
-          context.pianoNotesMap ?? new Map(),
-        )
+        const originalFragments = deepCopy(context.originalFragments)
 
-        setPlayedFragmentId(newActiveFragment?.id ?? 0)
+        let activeFragment: FragmentWithNotes | undefined = undefined
+        let newTransposedFragments: FragmentWithNotes[] = []
+
+        if (context.sublevelName === 'test_1') {
+          const { transposedFragments, newActiveFragment } = transposeTestOne(context.amountPlayed, originalFragments)
+          activeFragment = newActiveFragment
+          newTransposedFragments = transposedFragments
+        } else if (context.sublevelName === 'test_2') {
+           const { transposedFragments, newActiveFragment } = transposeTestTwo(
+             context.amountPlayed,
+             originalFragments,
+           )
+           activeFragment = newActiveFragment
+           newTransposedFragments = transposedFragments
+        }
+
+        // const copiedGroups = deepCopy(context.groups)
+        // const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups } = transpose(
+        //   context.fragmentsToShow,
+        //   context.amountOfScenes,
+        //   copiedGroups,
+        //   context.pianoNotesMap ?? new Map(),
+        // )
+        console.log('activeFragment', activeFragment)
+        setPlayedFragmentId(activeFragment?.id ?? 0)
         return {
           amountPlayed: context.amountPlayed + 1,
-          groups: weightAdjustedFragmentGroups,
+          // groups: weightAdjustedFragmentGroups,
           guessedFragment: undefined,
-          shownFragments: transposedFragments,
-          activeFragment: newActiveFragment,
+          shownFragments: newTransposedFragments,
+          activeFragment: activeFragment,
           pianoNotesMap: pianoNotesMap,
         }
       }),

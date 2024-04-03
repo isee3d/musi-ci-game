@@ -108,13 +108,14 @@ const ModePage = ({
             <TestModeMachineContext.Provider>
               <Test
                 gameId={gameId}
-                fragmentsToShow={fragmentsToShow}
-                fragments={fragments}
                 levelId={levelId}
-                playTime={playTime}
                 sublevelId={sublevelId}
+                fragments={fragments}
                 mode={modeQuery?.data}
-                fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
+                sublevelName={sublevelQuery?.data?.name}
+                // fragmentsToShow={fragmentsToShow}
+                // playTime={playTime}
+                // fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
               />
             </TestModeMachineContext.Provider>
           )
