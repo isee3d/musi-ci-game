@@ -200,16 +200,16 @@ const Test: React.FC<TestModeProps> = ({
   )
   const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
 
-  const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
-    onSuccess: (data) => {
-      console.log('succesfully saved data: ', data)
-    },
-    onError: (error) => {
-      console.error('error saving data: ', error)
-    },
-  })
+  // const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
+  //   onSuccess: (data) => {
+  //     console.log('succesfully saved data: ', data)
+  //   },
+  //   onError: (error) => {
+  //     console.error('error saving data: ', error)
+  //   },
+  // })
 
-  const stopwatch = useStopwatch(1000)
+  // const stopwatch = useStopwatch(1000)
 
   const countdownTimings: CountdownTimings = useMemo(
     () => ({
@@ -231,12 +231,12 @@ const Test: React.FC<TestModeProps> = ({
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',
-      originalFragmentGroups: fragmentGroups as FragmentGroup[],
-      fragmentsToShow: fragmentsToShow,
-      countdownTimings: countdownTimings,
-      amountOfScenes: mode?.amountOfScenes ?? 0,
-      countdownActions: stopwatch.actions,
-      groups: fragmentGroups as FragmentGroup[],
+      // originalFragmentGroups: fragmentGroups as FragmentGroup[],
+      // fragmentsToShow: fragmentsToShow,
+      // countdownTimings: countdownTimings,
+      // amountOfScenes: mode?.amountOfScenes ?? 0,
+      // countdownActions: stopwatch.actions,
+      // groups: fragmentGroups as FragmentGroup[],
     })
   }
 

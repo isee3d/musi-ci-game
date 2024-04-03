@@ -29,7 +29,6 @@ export const testModeMachine = createMachine(
       shownFragments: [] as FragmentWithNotesAndWeight[],
       guessedFragment: undefined as FragmentWithNotes | undefined,
       countdownTimings: undefined as CountdownTimings | undefined,
-      countdownActions: undefined as StopwatchActions | undefined,
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
@@ -44,7 +43,6 @@ export const testModeMachine = createMachine(
       },
       events: {} as
         | { type: 'STARTCOUNTDOWN' }
-        | { type: 'STARTCOUNTDOWN' }
         | { type: 'FINISH' }
         | { type: 'RESTART' }
         | { type: 'SOUNDFINISHED' }
@@ -55,12 +53,11 @@ export const testModeMachine = createMachine(
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes | undefined }
         | {
             type: 'STARTROUND'
-            originalFragmentGroups: FragmentGroup[]
-            fragmentsToShow: number
-            countdownTimings: CountdownTimings
-            amountOfScenes: number
-            countdownActions: StopwatchActions
-            groups: FragmentGroup[]
+            // originalFragmentGroups: FragmentGroup[]
+            // fragmentsToShow: number
+            // countdownTimings: CountdownTimings
+            // amountOfScenes: number
+            // groups: FragmentGroup[]
           },
     },
     tsTypes: {} as import('./testMachine.typegen').Typegen0,
@@ -74,26 +71,14 @@ export const testModeMachine = createMachine(
           },
         },
       },
-      // answeringQuestions: {
-      //   description: 'The state where the user is answering the questions for the test',
-      //   on: {
-      //     ANSWEREDQUESTIONS: {
-      //       target: 'startRound',
-      //       actions: 'startPlaying',
-      //     },
-      //   },
-      // },
       startRound: {
         entry: 'initializeContext',
         description: 'Starts a new round & Shows the start and back to overview button',
         on: {
           STARTCOUNTDOWN: 'countdown',
         },
-        // exit: (context) => context.countdownActions?.start(),
-        // exit: "initTimer"
       },
       countdown: {
-        entry: (context) => context.countdownActions?.start(),
         initial: '3',
         description: 'Has all the chid states for counting down before a scene starts',
         states: {
@@ -134,7 +119,6 @@ export const testModeMachine = createMachine(
             exit: assign({ isClickable: false, isAnimating: true }),
           },
           playSound: {
-            entry: (context) => context.countdownActions?.resume(),
             invoke: {
               src: async (context) => await start(context.activeFragment),
               onDone: [
@@ -159,30 +143,13 @@ export const testModeMachine = createMachine(
                 actions: ['setGuessedFragment', 'saveLatency'],
               },
             },
-            // after: {
-            //   10000: {
-            //     target: 'didNotAnswerFragment',
-            //     actions: 'timedOutAnswering',
-            //   },
-            // },
           },
-          // didNotAnswerFragment: {
-          //   after: {
-          //     3000: 'restAfterAnswering',
-          //   },
-          // },
           restAfterAnswering: {
-            entry: [(context) => context.countdownActions?.pause(), 'saveScene'],
+            entry: ['saveScene'],
             description: 'In this state the users gets a 1 second rest and the timer has to stop',
             after: {
               1000: '#testMode.playing',
             },
-            exit: [
-              // assign({
-              //   amountPlayed: (context) => context.amountPlayed + 1,
-              // }),
-              (context) => context.countdownActions?.resume(),
-            ],
           },
         },
       },
@@ -193,7 +160,7 @@ export const testModeMachine = createMachine(
         },
       },
       FinishedPlayingTestMode: {
-        entry: [(context) => context.countdownActions?.reset(), 'onFinishedPlaying'],
+        entry: ['onFinishedPlaying'],
         type: 'final',
       },
     },
@@ -204,26 +171,12 @@ export const testModeMachine = createMachine(
   },
   {
     actions: {
-      // timedOutAnswering: assign((context, event) => {
-      //   const { setChosenFragmentLatency, setChosenFragment, addNewUserSceneAnswer } =
-      //     useLuisterenStore.getState()
-      //   context.countdownActions?.pause()
-      //   addNewUserSceneAnswer(undefined)
-      //   setChosenFragment(undefined)
-      //   if (context.latency) {
-      //     setChosenFragmentLatency(-1)
-      //   }
-      //   return {
-      //     guessedFragment: undefined,
-      //   }
-      // }),
       setupData: assign((_, event) => {
         const {
-          originalFragmentGroups,
-          fragmentsToShow,
-          amountOfScenes,
-          countdownTimings,
-          countdownActions,
+          // originalFragmentGroups,
+          // fragmentsToShow,
+          // amountOfScenes,
+          // countdownTimings,
         } = event
 
         const { resetUsedFragments } = useLuisterenStore.getState()
@@ -232,21 +185,20 @@ export const testModeMachine = createMachine(
 
         // Add a weight to every fragment at the start of the game
 
-        const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
-          ...group,
-          fragments: group.fragments.map((fragment) => ({
-            ...fragment,
-            weight: 100,
-          })),
-        }))
+        // const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
+        //   ...group,
+        //   fragments: group.fragments.map((fragment) => ({
+        //     ...fragment,
+        //     weight: 100,
+        //   })),
+        // }))
 
         return {
-          originalFragmentGroups: originalFragmentGroups,
-          fragmentsToShow,
-          amountOfScenes,
-          countdownTimings,
-          countdownActions,
-          groups: convertedFragmentGroups,
+          // originalFragmentGroups: originalFragmentGroups,
+          // fragmentsToShow,
+          // amountOfScenes,
+          // countdownTimings,
+          // groups: convertedFragmentGroups,
           pianoNotesMap: pianoNotesMap,
         }
       }),
@@ -274,7 +226,6 @@ export const testModeMachine = createMachine(
         resetSceneRelatedData()
       },
       setGuessedFragment: assign((context, event) => {
-        context.countdownActions?.pause()
         return {
           guessedFragment: event.guessedFragment || undefined,
         }
@@ -290,7 +241,6 @@ export const testModeMachine = createMachine(
           isLooping: false,
           activeFragment: undefined,
           guessedFragment: undefined,
-          // shownFragments: [],
           fragmentGroups: [],
         }
       }),
