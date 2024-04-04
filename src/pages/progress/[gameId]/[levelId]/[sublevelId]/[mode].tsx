@@ -161,7 +161,9 @@ const ModePage = ({
               key={gameMode.id}
               className={cn(
                 'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
-                mode !== gameMode.name ? 'bg-background text-accent-foreground' : '',
+                mode !== gameMode.name
+                  ? 'bg-background text-accent-foreground hover:bg-primary/20'
+                  : '',
               )}
               disabled={isPlaying}
               style={{
@@ -173,12 +175,12 @@ const ModePage = ({
               <Link
                 href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
               >
-                <h2 className='text-base md:text-xl'>{gameMode.name}</h2>
+                <h2 className="text-base md:text-xl">{gameMode.name}</h2>
               </Link>
             </Button>
           ))}
       </div>
-      <div className="relative flex w-full flex-col items-center justify-center gap-y-4 md:gap-y-8 py-8">
+      <div className="relative flex w-full flex-col items-center justify-center gap-y-4 py-8 md:gap-y-8">
         {renderGameMode(mode)}
       </div>
     </ContentContainer>

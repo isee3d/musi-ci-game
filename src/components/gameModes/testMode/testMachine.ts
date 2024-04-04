@@ -264,8 +264,8 @@ export const testModeMachine = createMachine(
         let activeFragment: FragmentWithNotes | undefined = undefined
         let newTransposedFragments: FragmentWithNotes[] = []
 
-        if (context.sublevelName === 'test_1') {
-          if(!TestOneArray) return {}
+        if (context.sublevelName === 'TEST, level 1') {
+          if (!TestOneArray) return {}
           const nextTestItem = Math.floor(Math.random() * TestOneArray.length)
           const { transposedFragments, newActiveFragment } = transposeTestOne(
             nextTestItem,
@@ -274,16 +274,16 @@ export const testModeMachine = createMachine(
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
           removeItemFromTestOneArray(nextTestItem)
-        } else if (context.sublevelName === 'test_2') {
-            if(!TestTwoArray) return {}
-           const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
-           const { transposedFragments, newActiveFragment } = transposeTestTwo(
-             nextTestItem,
-             originalFragments,
-           )
-           activeFragment = newActiveFragment
-           newTransposedFragments = transposedFragments
-           removeItemFromTestTwoArray(nextTestItem)
+        } else if (context.sublevelName === 'TEST, level 2') {
+          if (!TestTwoArray) return {}
+          const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
+          const { transposedFragments, newActiveFragment } = transposeTestTwo(
+            nextTestItem,
+            originalFragments,
+          )
+          activeFragment = newActiveFragment
+          newTransposedFragments = transposedFragments
+          removeItemFromTestTwoArray(nextTestItem)
         }
 
         // const copiedGroups = deepCopy(context.groups)

@@ -136,15 +136,16 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }
 
   useEffect(() => {
+    console.log(sublevelName === 'TEST, level 1')
     if (restAfterPlayingState) {
       console.log('coming here')
-      if (sublevelName === 'test_1') {
+      if (sublevelName === 'TEST, level 1') {
         if (TestOneArray?.length === 0) {
           setEndTime(Date.now())
           saveToDB(getFormattedStoreData(session?.user.id))
           send('FINISHEDPLAYING')
         }
-      } else if (sublevelName === 'test_2') {
+      } else if (sublevelName === 'TEST, level 2') {
         if (TestTwoArray?.length === 0) {
           setEndTime(Date.now())
           saveToDB(getFormattedStoreData(session?.user.id))
