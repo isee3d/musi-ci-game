@@ -14,7 +14,7 @@ import {
   getOriginalFragmentsFromFragmentGroup,
   getShownFragmentByFragmentId,
 } from '~/utils/fragmentUtils'
-import { test_1 } from '~/components/gameModes/testMode/testJsonData'
+import Test from '~/components/gameModes/testMode/test'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -42,6 +42,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const allOriginalFragments = TestModeMachineContext.useSelector(
     (state) => state.context.originalFragments,
   )
+  const sublevelName = TestModeMachineContext.useSelector((state) => state.context.sublevelName)
   // const originalFragmentGroups = TestModeMachineContext.useSelector(
   //   (state) => state.context.originalFragmentGroups,
   // )
@@ -57,6 +58,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     setChosenFragment,
     getFormattedStoreData,
     setSceneStartTime,
+    TestOneArray,
+    TestTwoArray,
   } = useLuisterenStore()
 
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
@@ -84,11 +87,25 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     //   toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
     // }
 
-    if (amountPlayed === test_1.length - 1) {
-      setEndTime(Date.now())
-      saveToDB(getFormattedStoreData(session?.user.id))
-      send('FINISHEDPLAYING')
+    if(sublevelName === 'test_1') {
+      if(TestOneArray?.length === 0) {
+          setEndTime(Date.now())
+          saveToDB(getFormattedStoreData(session?.user.id))
+          send('FINISHEDPLAYING')
+      }
     }
+    else if(sublevelName === 'test_2') {
+      if (TestTwoArray?.length === 0) {
+        setEndTime(Date.now())
+        saveToDB(getFormattedStoreData(session?.user.id))
+        send('FINISHEDPLAYING')
+      }
+    }
+    // if (amountPlayed === test_1.length - 1) {
+    //   setEndTime(Date.now())
+    //   saveToDB(getFormattedStoreData(session?.user.id))
+    //   send('FINISHEDPLAYING')
+    // }
   }, [shownFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {

@@ -2303,7 +2303,7 @@ export const test_1 = [
     fragment_1: 'kl.sec.dalend',
     fragment_2: 'gelijk',
   },
-] as const
+]
 
 export const test_2 = [
   {
@@ -4898,7 +4898,7 @@ export const test_2 = [
     fragment_2: 'gelijk',
     fragment_3: 'kl.sec.dalend',
   },
-] as const
+] 
 
 export type TestOne = typeof test_1
 export type TestTwo = typeof test_2
