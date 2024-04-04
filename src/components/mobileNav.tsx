@@ -20,6 +20,7 @@ export type PlayerNavItem = {
   action?: () => void
   disabled?: boolean
   enableAfterLogin?: boolean
+  role?: string[]
 }
 
 interface MobileNavProps {

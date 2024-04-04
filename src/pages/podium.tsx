@@ -249,7 +249,7 @@ const PodiumPage = () => {
               </div>
             </div> */}
           </div>
-          <Button className="z-50 my-4" asChild>
+          <Button className="my-4" asChild>
             <Link href={routePaths.levelsPage}>Kies je level</Link>
           </Button>
         </div>

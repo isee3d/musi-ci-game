@@ -18,7 +18,6 @@ export function MainNav({ items, children }: MainNavProps) {
   const { data: session } = useSession()
   const { isPlaying } = useLuisterenStore()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
-
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
@@ -27,36 +26,56 @@ export function MainNav({ items, children }: MainNavProps) {
       </Link>
       {items?.length ? (
         <nav className="hidden gap-6 md:flex">
-          {items?.map((item, index) => (
-            <Button
-              key={index}
-              onClick={() => item.action && item.action()}
-              disabled={isPlaying || session?.user?.role === 'USER'}
-              variant={'link'}
-              style={{
-                display:
-                  session?.user?.role === 'USER' || (!session && item.enableAfterLogin)
-                    ? 'none'
-                    : 'inline-flex',
-              }}
-              asChild={item.href !== undefined}
-            >
-              {item.href ? (
-                <Link
-                  className={cn(
-                    'flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm',
-                    'text-foreground',
-                    session?.user.role === 'USER' && 'cursor-not-allowed opacity-80',
-                  )}
-                  href={item.href === undefined ? '#' : item.href}
-                >
-                  {item.title}
-                </Link>
-              ) : (
-                <div>{item.title}</div>
-              )}
-            </Button>
-          ))}
+          {items?.map((item, index) => {
+            // Define a hierarchy for roles.
+            const roleHierarchy = {
+              ADMIN: 3,
+              RESEARCHER: 2,
+              USER: 1,
+              GUEST: 0, // Assuming a non-logged-in user has a 'GUEST' role.
+            }
+
+            // Determine the current user's role hierarchy. Default to 'GUEST' if not logged in.
+            const currentUserRoleHierarchy = session?.user
+            // @ts-ignore
+              ? roleHierarchy[session.user.role]
+              : roleHierarchy['GUEST']
+
+            // Check if the item should be displayed based on the login status.
+            const shouldDisplayBasedOnLogin =
+              !item.enableAfterLogin || (!!session && item.enableAfterLogin)
+
+            // Determine if the item should be displayed based on the user's role.
+            // If 'role' is not defined for an item, it's visible to all (hence the default to 'GUEST').
+            // Otherwise, check against the current user's role hierarchy.
+            const shouldDisplayBasedOnRole =
+              !item.role ||
+              // @ts-ignore
+              item.role.some((role) => currentUserRoleHierarchy >= roleHierarchy[role])
+
+            // Combine the login and role conditions to decide if the item should be displayed.
+            const shouldDisplay = shouldDisplayBasedOnLogin && shouldDisplayBasedOnRole
+
+            return shouldDisplay ? (
+              <Button
+                key={index}
+                onClick={() => item.action && item.action()}
+                variant={'link'}
+                asChild={item.href !== undefined}
+              >
+                {item.href ? (
+                  <Link
+                    className="flex items-center text-lg font-medium text-foreground transition-colors hover:text-foreground/80 sm:text-sm"
+                    href={item.href}
+                  >
+                    {item.title}
+                  </Link>
+                ) : (
+                  <div>{item.title}</div>
+                )}
+              </Button>
+            ) : null
+          })}
           {session?.user.role === 'ADMIN' && (
             <DropdownMenu>
               <DropdownMenuTrigger>

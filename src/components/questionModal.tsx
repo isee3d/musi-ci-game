@@ -35,7 +35,7 @@ const QuestionModal: React.FC<{
         questionAnswers: questions.map((question: any) => ({
           id: question.id,
           question: question.question,
-          answer: '', // Initialize answers as empty strings
+          answer: '5', // Initialize answers as empty strings
           answerType: question.answerType,
         })),
       }
@@ -79,8 +79,8 @@ const QuestionModal: React.FC<{
                   <FormLabel>{item.question}</FormLabel>
                   <FormControl>
                     {item.answerType === 'NUMBER' ? (
-                      <div className='flex flex-col text-center text-xl gap-2'>
-                        <span>{field.value === '' ? 0 : field.value}</span>
+                      <div className="flex flex-col gap-2 text-center text-xl">
+                        <span>{field.value === '' ? 5 : field.value}</span>
                         <Slider
                           onValueChange={(v) => field.onChange(v[0]?.toString())}
                           defaultValue={[parseInt(field.value)]}
@@ -90,7 +90,12 @@ const QuestionModal: React.FC<{
                         />
                       </div>
                     ) : (
-                      <Textarea maxLength={300} placeholder="Je antwoord" {...field} />
+                      <Textarea
+                        maxLength={300}
+                        defaultValue={''}
+                        onChange={(v) => field.onChange(v.target.value)}
+                        placeholder="Je antwoord"
+                      />
                     )}
                   </FormControl>
                   <FormMessage />
@@ -100,7 +105,16 @@ const QuestionModal: React.FC<{
           )
         })}
 
-        <Button type="submit">Verstuur antwoorden</Button>
+        <div className='flex gap-4'>
+          <Button type="submit">Verstuur antwoorden</Button>
+          <Button
+            onClick={() => {
+              setModal(false)
+            }}
+          >
+            Annuleren
+          </Button>
+        </div>
       </form>
     </Form>
   )

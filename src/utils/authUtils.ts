@@ -63,7 +63,7 @@ export const getSSRAuthRedirectOnResearcherRole = async (ctx: GetServerSideProps
   const session = await getServerAuthSession(ctx)
   const role = session?.user?.role as UserRole
 
-  if (!session?.user.id || !session?.user.isAllowedToPlay) {
+  if (!session?.user.id) {
     return {
       redirect: {
         destination: '/login',

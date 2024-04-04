@@ -33,10 +33,10 @@ export const navItemsTemplate: NavItem[] = [
     title: 'App instellingen',
     href: '/manage/appSettings',
   },
-  {
-    title: 'Download data',
-    href: '/download',
-  },
+  // {
+  //   title: 'Download data',
+  //   href: '/download',
+  // },
   {
     title: 'Vragen',
     href: '/manage/questions',
@@ -56,6 +56,7 @@ export const navItemsPlayer: PlayerNavItem[] = [
     title: 'Ga naar podium',
     href: '/podium',
     enableAfterLogin: true,
+    role: ['USER'],
   },
   {
     title: 'Ga naar uitleg',
@@ -67,4 +68,16 @@ export const navItemsPlayer: PlayerNavItem[] = [
     action: runTestSound,
     enableAfterLogin: false,
   },
+  {
+    title: 'Download data',
+    href: '/download',
+    enableAfterLogin: true,
+    role: ['ADMIN', 'RESEARCHER'],
+  },
 ]
+
+export const roleHierarchy = {
+  ADMIN: 3,
+  RESEARCHER: 2,
+  USER: 1,
+}
