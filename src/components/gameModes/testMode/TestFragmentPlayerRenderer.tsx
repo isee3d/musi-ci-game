@@ -49,6 +49,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
   )
+  const restAfterPlayingState = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.restAfterAnswering'),
+  )
   const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
 
   const {
@@ -87,20 +90,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     //   toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
     // }
 
-    if(sublevelName === 'test_1') {
-      if(TestOneArray?.length === 0) {
-          setEndTime(Date.now())
-          saveToDB(getFormattedStoreData(session?.user.id))
-          send('FINISHEDPLAYING')
-      }
-    }
-    else if(sublevelName === 'test_2') {
-      if (TestTwoArray?.length === 0) {
-        setEndTime(Date.now())
-        saveToDB(getFormattedStoreData(session?.user.id))
-        send('FINISHEDPLAYING')
-      }
-    }
     // if (amountPlayed === test_1.length - 1) {
     //   setEndTime(Date.now())
     //   saveToDB(getFormattedStoreData(session?.user.id))
@@ -146,9 +135,30 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     // setactiveFragmentPlayerIndex(undefined)
   }
 
+  useEffect(() => {
+    if (restAfterPlayingState) {
+      console.log('coming here')
+      if (sublevelName === 'test_1') {
+        if (TestOneArray?.length === 0) {
+          setEndTime(Date.now())
+          saveToDB(getFormattedStoreData(session?.user.id))
+          send('FINISHEDPLAYING')
+        }
+      } else if (sublevelName === 'test_2') {
+        if (TestTwoArray?.length === 0) {
+          setEndTime(Date.now())
+          saveToDB(getFormattedStoreData(session?.user.id))
+          send('FINISHEDPLAYING')
+        }
+      }
+    }
+  }, [restAfterPlayingState])
+
   return (
     <>
-      <h3 className="pb-4 text-xl lg:text-4xl font-bold tracking-tight">Klik op het gehoorde fragment</h3>
+      <h3 className="pb-4 text-xl font-bold tracking-tight lg:text-4xl">
+        Klik op het gehoorde fragment
+      </h3>
       {originalFragments.map((fragment) => (
         <AnimationPlayer
           key={fragment.id}
