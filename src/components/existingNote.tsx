@@ -50,10 +50,29 @@ export const ExistingNote: React.FC<{
     setNewNotes((prev) => prev.filter((note) => note.noteId !== noteId))
   }
 
-  const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
+  // const onUpdateNote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   e.preventDefault()
+  //   if (hasChanged) {
+  //     toast.success('Note geüpdatet!')
+  //     setNewNotes((prev) =>
+  //       prev.map((note) => {
+  //         if (note.noteId === noteId) {
+  //           return {
+  //             ...note,
+  //             name: noteValue,
+  //             time: startTimeValue,
+  //             duration: lengthValue,
+  //             speed: volumeValue,
+  //           }
+  //         }
+  //         return note
+  //       }),
+  //     )
+  //   }
+  // }
+
+  useEffect(() => {
     if (hasChanged) {
-      toast.success('Note geüpdatet!')
       setNewNotes((prev) =>
         prev.map((note) => {
           if (note.noteId === noteId) {
@@ -69,7 +88,7 @@ export const ExistingNote: React.FC<{
         }),
       )
     }
-  }
+  }, [hasChanged])
 
   return (
     <div className="m-2 flex w-full items-center justify-center space-x-4 rounded-lg shadow-md">

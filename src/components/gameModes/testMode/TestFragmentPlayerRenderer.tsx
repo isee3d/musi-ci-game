@@ -14,7 +14,7 @@ import {
   getOriginalFragmentsFromFragmentGroup,
   getShownFragmentByFragmentId,
 } from '~/utils/fragmentUtils'
-import Test from '~/components/gameModes/testMode/test'
+// import Test from '~/components/gameModes/testMode/test'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined

@@ -9,7 +9,7 @@ import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFrag
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { transpose } from '~/utils/testUtils'
+import { transpose, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 import { Button, buttonVariants } from '~/components/ui/button'
 import useStopwatch from '~/hooks/useStopwatch'
 import { cn } from '~/lib/utils'
@@ -18,6 +18,7 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { FragmentSceneData } from 'types/SceneData'
 import { Session } from 'next-auth'
 import { api } from '~/utils/api'
+import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
 
 type LogType = {
   [fragmentId: string]: {
@@ -26,11 +27,10 @@ type LogType = {
 }
 
 function testAlgorithm(
-  fragmentGroups: FragmentGroup[],
-  fragmentsToShow: number,
-  amountOfScenes: number,
-  session: Session,
-  saveToDB: any,
+  fragments: FragmentWithNotes[],
+  subLevelName: string,
+  // amountOfScenes: number,
+  // session: Session,
 ) {
   let bigData = {}
   for (let index = 0; index < 300; index++) {
@@ -47,6 +47,12 @@ function testAlgorithm(
       setPlayedFragmentId,
       setLevelSublevelMode,
       reset,
+      setTestOneArray,
+      setTestTwoArray,
+      TestOneArray,
+      TestTwoArray,
+      removeItemFromTestOneArray,
+      removeItemFromTestTwoArray,
     } = useLuisterenStore.getState()
 
     let log: LogType = {}
@@ -55,23 +61,28 @@ function testAlgorithm(
 
     setLevelSublevelMode(10, 29, 4)
 
-    let convertedFragmentGroups = fragmentGroups.map((group) => ({
-      ...group,
-      fragments: group.fragments.map((fragment) => ({
-        ...fragment,
-        weight: 100,
-      })),
-    })) as FragmentGroupWithWeights[]
-
+    setTestOneArray(test_1)
+    setTestTwoArray(test_2)
     setStartTime(Date.now())
 
-    for (let i = 0; i < 300; i++) {
-      const { transposedFragments: shownFragments, newActiveFragment } = transpose(
-        fragmentsToShow,
-        amountOfScenes,
-        convertedFragmentGroups,
-        pianoNotesMap,
-      )
+    let shownFragments: FragmentWithNotes[] = []
+    let activeFragment: FragmentWithNotes | null = null
+    for (let i = 0; i < 288; i++) {
+      if (subLevelName === 'TEST, level 1') {
+        const nextTestItem = Math.floor(Math.random() * (TestOneArray?.length ?? 0))
+        const { transposedFragments, newActiveFragment } = transposeTestOne(nextTestItem, fragments)
+        shownFragments = transposedFragments
+        activeFragment = newActiveFragment
+        removeItemFromTestOneArray(nextTestItem)
+      } else if (subLevelName === 'TEST, level 2') {
+        const nextTestItem = Math.floor(Math.random() * (TestTwoArray?.length ?? 0))
+        const { transposedFragments, newActiveFragment } = transposeTestTwo(nextTestItem, fragments)
+        shownFragments = transposedFragments
+        activeFragment = newActiveFragment
+        removeItemFromTestTwoArray(nextTestItem)
+      }
+
+      if (!activeFragment || !shownFragments) return
 
       // Save the new scene data to the store
       const newSceneData: FragmentSceneData[] = []
@@ -85,38 +96,40 @@ function testAlgorithm(
       })
 
       AddSceneData(newSceneData)
-      setPlayedFragmentId(newActiveFragment.id)
-      playedFragmentIdArray.push(newActiveFragment.id)
+      setPlayedFragmentId(activeFragment.id)
+      playedFragmentIdArray.push(activeFragment.id)
       setSceneStartTime(new Date())
 
-      // Choose a random fragment to simulate the user choosing a fragment
+      //   // Choose a random fragment to simulate the user choosing a fragment
       const userChosenFragment = shownFragments[Math.floor(Math.random() * shownFragments.length)]
-      const isCorrectChosen = userChosenFragment?.id === newActiveFragment.id
+      const isCorrectChosen = userChosenFragment?.id === activeFragment.id
 
       addNewUserSceneAnswer(isCorrectChosen)
       setChosenFragment(userChosenFragment?.id)
       setChosenFragmentLatency(Math.floor(Math.random() * 1000) + 1000)
 
-      if (i === amountOfScenes) {
+      if(i === 287) {
         setEndTime(Date.now())
       }
+      // if (i === amountOfScenes) {
+      //   setEndTime(Date.now())
+      // }
 
       addScene(useLuisterenStore.getState().sceneData)
       resetSceneRelatedData()
     }
 
-    const { newUsedFragmentsMap, getFormattedStoreData } = useLuisterenStore.getState()
 
-    // Update the log with the results of each iteration
-    for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
-      log[fragmentId] = log[fragmentId] || {}
-      //@ts-ignore
-      for (const [octave, count] of Object.entries(octaveData)) {
-        // @ts-ignore
-        log[fragmentId][octave] = (log[fragmentId][octave] || 0) + count
-        totalCount += count
-      }
-    }
+    // // Update the log with the results of each iteration
+    // for (const [fragmentId, octaveData] of Object.entries(newUsedFragmentsMap)) {
+    //   log[fragmentId] = log[fragmentId] || {}
+    //   //@ts-ignore
+    //   for (const [octave, count] of Object.entries(octaveData)) {
+    //     // @ts-ignore
+    //     log[fragmentId][octave] = (log[fragmentId][octave] || 0) + count
+    //     totalCount += count
+    //   }
+    // }
 
     // console.log(
     //   'Log of fragment usage by octave:',
@@ -137,6 +150,8 @@ function testAlgorithm(
     playedFragmentIdArray = []
     log = {}
   }
+   const { getFormattedStoreData } = useLuisterenStore.getState()
+   console.log('formattedData: ', getFormattedStoreData('123345'))
   // const json = JSON.stringify(bigData)
   // const blob = new Blob([buffer], {
   //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -146,14 +161,13 @@ function testAlgorithm(
   // link.download = `data-${participantId}.xlsx`
   // link.click()
 
-
   // const blob = new Blob([json], { type: 'application/json' })
   // const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.download = 'test2.json'
-  a.href =
-    'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bigData, null, 2))
-  a.click()
+  // const a = document.createElement('a')
+  // a.download = 'test2.json'
+  // a.href =
+  //   'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bigData, null, 2))
+  // a.click()
   // console.log('bigData: ', bigData)
   // console.log('formattedData: ', getFormattedStoreData(session.user.id))
   // saveToDB(getFormattedStoreData(session.user.id))
@@ -270,7 +284,7 @@ const Test: React.FC<TestModeProps> = ({
       {/* {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
-          onClick={() => testAlgorithm(fragmentGroups, 3, 300, session, saveToDB)}
+          onClick={() => testAlgorithm(fragments, sublevelName ?? '')}
         >
           Print Test algoritme validatie
         </Button>

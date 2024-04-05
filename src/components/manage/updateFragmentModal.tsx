@@ -30,7 +30,7 @@ interface BaseStaticModalProps {
 
 const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragment }) => {
   const [newNotes, setNewNotes] = useState<NoteCreate[]>([])
-  const ctx = api.useContext()
+  const ctx = api.useUtils()
 
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
 
@@ -45,8 +45,8 @@ const UpdateFragmentModal: React.FC<BaseStaticModalProps> = ({ setmodal, fragmen
   })
 
   const { mutate: updateFragment } = api.fragmentNote.updateFragment.useMutation({
-    onSuccess: () => {
-      toast.success('Fragment updated!')
+    onSuccess: (data) => {
+      toast.success(`Fragment ${data.name} is aangepast`)
       ctx.fragmentNote.getAllFragments.invalidate()
     },
     onError: () => {
