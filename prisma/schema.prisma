@@ -283,7 +283,7 @@ model QuestionAnswer {
   user               User?           @relation(fields: [id_User], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   question           String
-  answer             String
+  answer             String          @db.LongText
   answeredDate       DateTime?       @default(now())
 
   @@index([id_User])

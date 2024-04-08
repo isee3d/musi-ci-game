@@ -91,7 +91,6 @@ const QuestionModal: React.FC<{
                       </div>
                     ) : (
                       <Textarea
-                        maxLength={300}
                         defaultValue={''}
                         onChange={(v) => field.onChange(v.target.value)}
                         placeholder="Je antwoord"
@@ -105,7 +104,7 @@ const QuestionModal: React.FC<{
           )
         })}
 
-        <div className='flex gap-4'>
+        <div className="flex gap-4">
           <Button type="submit">Verstuur antwoorden</Button>
           <Button
             onClick={() => {
