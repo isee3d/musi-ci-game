@@ -1,5 +1,8 @@
 import { FragmentGroupWithWeights } from 'types/fragmentGroup'
-import { FragmentWithNotes, FragmentWithNotesAndWeight } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import {
+  FragmentWithNotes,
+  FragmentWithNotesAndWeight,
+} from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -318,7 +321,11 @@ export const transpose = (
   })
 
   const weightAdjustedFragmentGroups = deepCopy(fragmentGroups)
-  const newActiveFragment = chooseWeightedActiveFragment(potentialActiveFragments, fragmentsToShow, 'test')
+  const newActiveFragment = chooseWeightedActiveFragment(
+    potentialActiveFragments,
+    fragmentsToShow,
+    'test',
+  )
   if (!newActiveFragment) throw new Error('No new active fragment available')
 
   weightAdjustedFragmentGroups.forEach((group) => {
@@ -355,21 +362,25 @@ export const transpose = (
   return { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups }
 }
 
-
-
 // NEW UTILS FOR TESTMode
 
-function getFragmentByName({fragmentName, fragments}: {fragmentName: string, fragments: FragmentWithNotes[]}) {
+function getFragmentByName({
+  fragmentName,
+  fragments,
+}: {
+  fragmentName: string
+  fragments: FragmentWithNotes[]
+}) {
   return fragments.find((fragment) => fragment.name === fragmentName)
 }
 
-export function transposeTestOne(
-  index: number,
-  fragments: FragmentWithNotes[],
-) {
-  const scene = test_1[index]
+export function transposeTestOne(fragments: FragmentWithNotes[]) {
+  const { TestOneArray, removeItemFromTestOneArray } = useLuisterenStore.getState()
+  if (!TestOneArray) throw new Error('TestOneArray not found')
+  const nextTestItem = Math.floor(Math.random() * TestOneArray.length)
+  const scene = TestOneArray[nextTestItem]
   const { transposeFragments } = useAudioServiceStore.getState()
-  if (!scene) throw new Error(`Scene not found in test_1, ${index}`)
+  if (!scene) throw new Error(`Scene not found in test_1, ${nextTestItem}`)
   const newActiveFragment = getFragmentByName({
     fragmentName: scene.afspelen,
     fragments: fragments,
@@ -382,27 +393,30 @@ export function transposeTestOne(
   const allFragments = [fragmentOne, fragmentTwo]
 
   const transposedFragments = transposeFragments(allFragments, scene.octaaf, scene.grondtoon)
-
+  removeItemFromTestOneArray(nextTestItem)
   return { transposedFragments, newActiveFragment }
 }
 
-export function transposeTestTwo(index: number, fragments: FragmentWithNotes[]) {
-   const scene = test_2[index]
-   const { transposeFragments } = useAudioServiceStore.getState()
-   if (!scene) throw new Error(`Scene not found in test_2, ${index}`)
-   const newActiveFragment = getFragmentByName({
-     fragmentName: scene.afspelen,
-     fragments: fragments,
-   })
-   const fragmentOne = getFragmentByName({ fragmentName: scene.fragment_1, fragments: fragments })
-   const fragmentTwo = getFragmentByName({ fragmentName: scene.fragment_2, fragments: fragments })
-   const fragmentThree = getFragmentByName({ fragmentName: scene.fragment_3, fragments: fragments })
-   if (!newActiveFragment || !fragmentOne || !fragmentTwo || !fragmentThree) {
-     throw new Error('Fragment not found in fragments')
-   }
-   const allFragments = [fragmentOne, fragmentTwo, fragmentThree]
+export function transposeTestTwo(fragments: FragmentWithNotes[]) {
+  const { TestTwoArray, removeItemFromTestTwoArray } = useLuisterenStore.getState()
+  if (!TestTwoArray) throw new Error('TestOneArray not found')
+  const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
+  const scene = TestTwoArray[nextTestItem]
+  const { transposeFragments } = useAudioServiceStore.getState()
+  if (!scene) throw new Error(`Scene not found in test_2, ${nextTestItem}`)
+  const newActiveFragment = getFragmentByName({
+    fragmentName: scene.afspelen,
+    fragments: fragments,
+  })
+  const fragmentOne = getFragmentByName({ fragmentName: scene.fragment_1, fragments: fragments })
+  const fragmentTwo = getFragmentByName({ fragmentName: scene.fragment_2, fragments: fragments })
+  const fragmentThree = getFragmentByName({ fragmentName: scene.fragment_3, fragments: fragments })
+  if (!newActiveFragment || !fragmentOne || !fragmentTwo || !fragmentThree) {
+    throw new Error('Fragment not found in fragments')
+  }
+  const allFragments = [fragmentOne, fragmentTwo, fragmentThree]
 
-   const transposedFragments = transposeFragments(allFragments, scene.octaaf, scene.grondtoon)
-
-   return { transposedFragments, newActiveFragment }
+  const transposedFragments = transposeFragments(allFragments, scene.octaaf, scene.grondtoon)
+  removeItemFromTestTwoArray(nextTestItem)
+  return { transposedFragments, newActiveFragment }
 }

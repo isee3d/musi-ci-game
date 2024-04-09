@@ -186,7 +186,8 @@ export const testModeMachine = createMachine(
           countdownTimings,
         } = event
 
-        const { resetUsedFragments, setTestOneArray, setTestTwoArray } = useLuisterenStore.getState()
+        const { resetUsedFragments, setTestOneArray, setTestTwoArray } =
+          useLuisterenStore.getState()
 
         resetUsedFragments()
         setTestOneArray(test_1)
@@ -256,8 +257,13 @@ export const testModeMachine = createMachine(
         }
       }),
       onCountdownStarted: assign((context) => {
-        const { setPlayedFragmentId, TestOneArray, TestTwoArray, removeItemFromTestOneArray, removeItemFromTestTwoArray } =
-          useLuisterenStore.getState()
+        const {
+          setPlayedFragmentId,
+          TestOneArray,
+          TestTwoArray,
+          removeItemFromTestOneArray,
+          removeItemFromTestTwoArray,
+        } = useLuisterenStore.getState()
 
         const originalFragments = deepCopy(context.originalFragments)
 
@@ -265,25 +271,13 @@ export const testModeMachine = createMachine(
         let newTransposedFragments: FragmentWithNotes[] = []
 
         if (context.sublevelName === 'TEST, level 1') {
-          if (!TestOneArray) return {}
-          const nextTestItem = Math.floor(Math.random() * TestOneArray.length)
-          const { transposedFragments, newActiveFragment } = transposeTestOne(
-            nextTestItem,
-            originalFragments,
-          )
+          const { transposedFragments, newActiveFragment } = transposeTestOne(originalFragments)
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
-          removeItemFromTestOneArray(nextTestItem)
         } else if (context.sublevelName === 'TEST, level 2') {
-          if (!TestTwoArray) return {}
-          const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
-          const { transposedFragments, newActiveFragment } = transposeTestTwo(
-            nextTestItem,
-            originalFragments,
-          )
+          const { transposedFragments, newActiveFragment } = transposeTestTwo(originalFragments)
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
-          removeItemFromTestTwoArray(nextTestItem)
         }
 
         // const copiedGroups = deepCopy(context.groups)
