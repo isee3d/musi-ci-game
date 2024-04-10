@@ -303,14 +303,14 @@ const Test: React.FC<TestModeProps> = ({
       )}
       {isFinishedState && <TestFeedback gameId={gameId} levelId={levelId} />}
 
-      {session?.user.role === 'ADMIN' && (
+      {/* {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
           onClick={() => testAlgorithm(fragments, sublevelName ?? '')}
         >
           Print Test algoritme validatie
         </Button>
-      )}
+      )} */}
     </>
   )
 }
