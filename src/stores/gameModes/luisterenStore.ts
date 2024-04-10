@@ -1,7 +1,7 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import { FormattedData, FragmentSceneData, Scene } from './../../../types/SceneData'
 import { create } from 'zustand'
-import { TestOne, TestTwo } from '~/components/gameModes/testMode/testJsonData'
+import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
 
 type LuisterenState = {
   startTime: number
@@ -77,8 +77,8 @@ const initialState: LuisterenState = {
   isPlaying: false,
   usedFragmentsMap: {},
   newUsedFragmentsMap: {},
-  TestOneArray: undefined,
-  TestTwoArray: undefined,
+  TestOneArray: test_1,
+  TestTwoArray: test_2,
 }
 
 const initialRoundState: Partial<LuisterenState> = {
@@ -100,8 +100,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   allPlayedScenes: [],
   usedFragmentsMap: [],
   newUsedFragmentsMap: [],
-  TestOneArray: undefined,
-  TestTwoArray: undefined,
+  TestOneArray: test_1,
+  TestTwoArray: test_2,
   addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
     set((state) => {
       const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}
@@ -280,13 +280,13 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   setTestOneArray: (testOneArray: TestOne) => set(() => ({ TestOneArray: testOneArray })),
   setTestTwoArray: (testTwoArray: TestTwo) => set(() => ({ TestTwoArray: testTwoArray })),
   removeItemFromTestOneArray: (index: number) =>
-  //@ts-ignore
+    //@ts-ignore
     set((state) => {
       const newTestOneArray = state.TestOneArray?.filter((_, i) => i !== index)
       return { TestOneArray: newTestOneArray }
     }),
   removeItemFromTestTwoArray: (index: number) =>
-  // @ts-ignore
+    // @ts-ignore
     set((state) => {
       const newTestTwoArray = state.TestTwoArray?.filter((_, i) => i !== index)
       return { TestTwoArray: newTestTwoArray }

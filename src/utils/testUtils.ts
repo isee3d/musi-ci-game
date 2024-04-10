@@ -3,6 +3,7 @@ import {
   FragmentWithNotes,
   FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { log } from '~/components/gameModes/testMode/test'
 import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -364,6 +365,10 @@ export const transpose = (
 
 // NEW UTILS FOR TESTMode
 
+export function getFragmentById(fragmentId: number, fragments: FragmentWithNotes[]) {
+  return fragments.find((fragment) => fragment.id === fragmentId)
+}
+
 function getFragmentByName({
   fragmentName,
   fragments,
@@ -381,6 +386,7 @@ export function transposeTestOne(fragments: FragmentWithNotes[]) {
   const scene = TestOneArray[nextTestItem]
   const { transposeFragments } = useAudioServiceStore.getState()
   if (!scene) throw new Error(`Scene not found in test_1, ${nextTestItem}`)
+  log.push(scene.scene)
   const newActiveFragment = getFragmentByName({
     fragmentName: scene.afspelen,
     fragments: fragments,
@@ -402,8 +408,9 @@ export function transposeTestTwo(fragments: FragmentWithNotes[]) {
   if (!TestTwoArray) throw new Error('TestOneArray not found')
   const nextTestItem = Math.floor(Math.random() * TestTwoArray.length)
   const scene = TestTwoArray[nextTestItem]
-  const { transposeFragments } = useAudioServiceStore.getState()
   if (!scene) throw new Error(`Scene not found in test_2, ${nextTestItem}`)
+  log.push(scene.scene)
+  const { transposeFragments } = useAudioServiceStore.getState()
   const newActiveFragment = getFragmentByName({
     fragmentName: scene.afspelen,
     fragments: fragments,
