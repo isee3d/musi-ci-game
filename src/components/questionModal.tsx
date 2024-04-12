@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { signOut, useSession } from 'next-auth/react'
+import { SignOutResponse, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -25,6 +25,7 @@ const QuestionModal: React.FC<{
   questions: any
 }> = ({ setModal: setModal, questions }) => {
   const { data: session } = useSession()
+  const router = useRouter()
 
   const questionAnswerMutation = api.question.createQuestionAnswers.useMutation({
     onError: () => {
@@ -63,9 +64,8 @@ const QuestionModal: React.FC<{
     })
     await questionAnswerMutation.mutateAsync(completeData)
     try {
-      await signOut({ redirect: true, callbackUrl: '/' }).then(() => {
-        toast.success('Bedankt voor het invullen van de vragenlijst')
-      })
+      const signoutResponse: SignOutResponse = await signOut({ redirect: false, callbackUrl: '/' })
+      router.push(signoutResponse.url)
     } catch (error) {
       console.error(error)
     }
