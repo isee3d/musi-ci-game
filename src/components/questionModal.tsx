@@ -63,7 +63,7 @@ const QuestionModal: React.FC<{
     })
     await questionAnswerMutation.mutateAsync(completeData)
     try {
-      await signOut({ redirect: true, callbackUrl: '/login' }).then(() => {
+      await signOut({ redirect: true, callbackUrl: '/' }).then(() => {
         toast.success('Bedankt voor het invullen van de vragenlijst')
       })
     } catch (error) {
