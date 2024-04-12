@@ -86,7 +86,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         destination: '/progress/1',
-        permanent: false,
+        permanent: true,
       },
     }
   }

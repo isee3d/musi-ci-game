@@ -34,10 +34,11 @@ const Signin = () => {
     })
     if (signinResponse?.error) {
       toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })
-    } else if (signinResponse?.url) {
-      router.push(signinResponse.url)
-      form.reset()
     }
+    // } else if (signinResponse?.url) {
+    //   router.push(signinResponse.url)
+    //   form.reset()
+    // }
   }
 
   return (
