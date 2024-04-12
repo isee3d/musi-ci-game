@@ -29,8 +29,8 @@ const Signin = () => {
   async function onSubmit(data: z.infer<typeof signInFormSchema>) {
     const signinResponse = await signIn('credentials', {
       ...data,
-      redirect: false,
-      callbackUrl: '/podium',
+      redirect: true,
+      callbackUrl: '/progress/1',
     })
     if (signinResponse?.error) {
       toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })

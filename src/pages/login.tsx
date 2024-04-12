@@ -26,14 +26,13 @@ const LoginPage = () => {
     await signOut({ redirect: false, callbackUrl: '/login' })
   }
 
-  useEffect(() => {
-    console.log('session', session)
-    if(!session){
-      signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
-    }
-  }, [session])
+  // useEffect(() => {
+  //   if(!session){
+  //     signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
+  //   }
+  // }, [session])
 
-  if(!session) return <LoadingPage />
+  // if(!session) return <LoadingPage />
 
   return (
     <>
@@ -53,16 +52,16 @@ const LoginPage = () => {
           <div className="flex flex-col items-center gap-2">
             <p className="text-xl">{getLoginText()}</p>
             <div className="flex flex-col gap-5">
-              {/* <Button
+              <Button
                 size={'lg'}
                 onClick={
                   session
                     ? () => handleSignOut()
-                    : () => void signIn('credentials', { redirect: true, callbackUrl: '/podium/1' })
+                    : () => void signIn('credentials', { callbackUrl: '/progress/1' })
                 }
               >
                 {session ? 'Uitloggen' : 'Inloggen'}
-              </Button> */}
+              </Button>
               {session?.user.id && (
                 <Button size={'lg'} asChild>
                   <Link href={routePaths.podium}> Ga naar volgende pagina</Link>

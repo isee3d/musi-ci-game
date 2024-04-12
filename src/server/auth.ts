@@ -74,10 +74,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   providers: [
-    // GoogleProvider({
-    //   clientId: env.GOOGLE_CLIENT_ID,
-    //   clientSecret: env.GOOGLE_CLIENT_SECRET,
-    // }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -117,9 +113,9 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   // Custom signin page
-  // pages: {
-  //   signIn: '/auth/signin',
-  // },
+  pages: {
+    signIn: '/auth/signin',
+  },
 }
 
 /**
