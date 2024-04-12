@@ -63,7 +63,7 @@ const QuestionModal: React.FC<{
       }
     })
     await questionAnswerMutation.mutateAsync(completeData)
-    signOut({ redirect: true, callbackUrl: '/' })
+    await signOut({ redirect: true, callbackUrl: '/' })
     form.reset()
     setModal(false)
   }
