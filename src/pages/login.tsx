@@ -26,13 +26,13 @@ const LoginPage = () => {
     await signOut({ redirect: false, callbackUrl: '/login' })
   }
 
-  // useEffect(() => {
-  //   if(!session){
-  //     signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
-  //   }
-  // }, [session])
+  useEffect(() => {
+    if(!session){
+      signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
+    }
+  }, [session])
 
-  // if(!session) return <LoadingPage />
+  if(!session) return <LoadingPage />
 
   return (
     <>
