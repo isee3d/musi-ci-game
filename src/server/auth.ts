@@ -113,9 +113,9 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   // Custom signin page
-  pages: {
-    signIn: '/login',
-  },
+  // pages: {
+  //   signIn: '/login',
+  // },
 }
 
 /**
