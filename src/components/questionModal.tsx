@@ -25,15 +25,7 @@ const QuestionModal: React.FC<{
   questions: any
 }> = ({ setModal: setModal, questions }) => {
   const { data: session, status } = useSession()
-   const router = useRouter()
 
-   useEffect(() => {
-     if (status === 'authenticated') {
-       signOut({ redirect: false })
-     } else if (status === 'unauthenticated') {
-       router.push('/')
-     }
-   }, [status])
 
   const questionAnswerMutation = api.question.createQuestionAnswers.useMutation({
     onError: () => {
@@ -71,7 +63,7 @@ const QuestionModal: React.FC<{
       }
     })
     await questionAnswerMutation.mutateAsync(completeData)
-    signOut({ redirect: false, callbackUrl: '/' })
+    signOut({ redirect: true, callbackUrl: '/' })
     form.reset()
     setModal(false)
   }
