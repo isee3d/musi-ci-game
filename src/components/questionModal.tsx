@@ -24,7 +24,7 @@ const QuestionModal: React.FC<{
   setModal: React.Dispatch<React.SetStateAction<boolean>>
   questions: any
 }> = ({ setModal: setModal, questions }) => {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
 
   const questionAnswerMutation = api.question.createQuestionAnswers.useMutation({
     onError: () => {
@@ -63,7 +63,7 @@ const QuestionModal: React.FC<{
     })
     await questionAnswerMutation.mutateAsync(completeData)
     try {
-      await signOut({ redirect: true, callbackUrl: '/' }).then(() => {
+      await signOut({ redirect: true, callbackUrl: '/login' }).then(() => {
         toast.success('Bedankt voor het invullen van de vragenlijst')
       })
     } catch (error) {
