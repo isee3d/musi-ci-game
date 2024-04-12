@@ -27,6 +27,7 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
+    console.log('session', session)
     if(!session){
       signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
     }
@@ -57,7 +58,7 @@ const LoginPage = () => {
                 onClick={
                   session
                     ? () => handleSignOut()
-                    : () => void signIn('credentials', { redirect: true, callbackUrl: '/podium' })
+                    : () => void signIn('credentials', { redirect: true, callbackUrl: '/podium/1' })
                 }
               >
                 {session ? 'Uitloggen' : 'Inloggen'}
