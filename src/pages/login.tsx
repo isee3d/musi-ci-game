@@ -27,11 +27,11 @@ const LoginPage = () => {
     await signOut({ redirect: false, callbackUrl: '/login' })
   }
 
-  // useEffect(() => {
-  //   if(!session){
-  //     signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
-  //   }
-  // }, [session])
+  useEffect(() => {
+    if(!session){
+      signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
+    }
+  }, [session])
 
   // if(!session) return <LoadingPage />
 
@@ -43,11 +43,10 @@ const LoginPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="flex grow flex-col items-center justify-start">
-        {/* <div className="container flex flex-col items-center justify-start px-4 "> */}
-          {/* <h2 className=" font-heading text-center text-5xl tracking-tight">Musi-CI Melody Game</h2> */}
-          <Signin />
-          {/* <h2 className="md: text-center text-2xl leading-normal tracking-tight text-muted-foreground md:text-3xl">
+      <section className="flex grow flex-col items-center justify-center">
+        <div className="container flex flex-col items-center justify-center gap-4 px-4 py-16 ">
+          <h2 className=" font-heading text-center text-5xl tracking-tight">Musi-CI Melody Game</h2>
+          <h2 className="md: text-center text-2xl leading-normal tracking-tight text-muted-foreground md:text-3xl">
             Trainen met verschillen tussen toonhoogtes en korte melodietjes
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8"></div>
@@ -70,8 +69,8 @@ const LoginPage = () => {
                 </Button>
               )}
             </div>
-          </div> */}
-        {/* </div> */}
+          </div>
+        </div>
       </section>
     </>
   )
@@ -80,16 +79,5 @@ const LoginPage = () => {
 export default LoginPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const session = await getSSRAuth(ctx)
-
-  if(session.props.session){
-    return {
-      redirect: {
-        destination: '/progress/1',
-        permanent: true,
-      },
-    }
-  }
-
-  return session
+  return await getSSRAuth(ctx)
 }
