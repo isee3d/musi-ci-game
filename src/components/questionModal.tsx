@@ -26,7 +26,6 @@ const QuestionModal: React.FC<{
 }> = ({ setModal: setModal, questions }) => {
   const { data: session, status } = useSession()
 
-
   const questionAnswerMutation = api.question.createQuestionAnswers.useMutation({
     onError: () => {
       toast.error('Er is iets misgegaan')
@@ -63,7 +62,13 @@ const QuestionModal: React.FC<{
       }
     })
     await questionAnswerMutation.mutateAsync(completeData)
-    await signOut({ redirect: true, callbackUrl: '/' })
+    try {
+      await signOut({ redirect: true, callbackUrl: '/' }).then(() => {
+        toast.success('Bedankt voor het invullen van de vragenlijst')
+      })
+    } catch (error) {
+      console.error(error)
+    }
     form.reset()
     setModal(false)
   }
