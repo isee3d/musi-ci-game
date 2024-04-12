@@ -9,6 +9,7 @@ import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuth } from '~/utils/authUtils'
 import Signin from './auth/signin'
+import { redirect } from 'next/dist/server/api-utils'
 
 const LoginPage = () => {
   const { data: session } = useSession()
@@ -79,5 +80,16 @@ const LoginPage = () => {
 export default LoginPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  return await getSSRAuth(ctx)
+  const session = await getSSRAuth(ctx)
+
+   if (session.props.session) {
+     return {
+       redirect: {
+         destination: '/progress/1',
+         permanent: true,
+       },
+     }
+   }
+
+  return session
 }
