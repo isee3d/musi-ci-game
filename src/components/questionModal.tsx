@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { questionAnswerFormSchema, teamFormSchema } from 'types/FormSchema'
@@ -22,7 +24,16 @@ const QuestionModal: React.FC<{
   setModal: React.Dispatch<React.SetStateAction<boolean>>
   questions: any
 }> = ({ setModal: setModal, questions }) => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+   const router = useRouter()
+
+   useEffect(() => {
+     if (status === 'authenticated') {
+       signOut({ redirect: false })
+     } else if (status === 'unauthenticated') {
+       router.push('/')
+     }
+   }, [status])
 
   const questionAnswerMutation = api.question.createQuestionAnswers.useMutation({
     onError: () => {
@@ -60,7 +71,7 @@ const QuestionModal: React.FC<{
       }
     })
     await questionAnswerMutation.mutateAsync(completeData)
-    await signOut({ redirect: true, callbackUrl: '/login' })
+    signOut({ redirect: false, callbackUrl: '/' })
     form.reset()
     setModal(false)
   }
