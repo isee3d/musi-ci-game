@@ -64,7 +64,10 @@ const QuestionModal: React.FC<{
     })
     await questionAnswerMutation.mutateAsync(completeData)
     try {
-      const signoutResponse: SignOutResponse = await signOut({ redirect: false, callbackUrl: '/' })
+      let signoutResponse: SignOutResponse = await signOut({ redirect: false, callbackUrl: '/' })
+      if(session){
+        signoutResponse = await signOut({ redirect: false, callbackUrl: '/' })
+      }
       router.push(signoutResponse.url)
     } catch (error) {
       console.error(error)
