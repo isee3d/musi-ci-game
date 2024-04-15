@@ -52,7 +52,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const restAfterPlayingState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.restAfterAnswering'),
   )
-  const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
+  const initialPlayingState = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.initializePlaying'),
+  )
 
   const {
     addNewUserSceneAnswer,
@@ -70,6 +72,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
 
   useEffect(() => {
+    if(initialPlayingState) {
     const sceneData: FragmentSceneData[] = []
     shownFragments.forEach((fragment, index) => {
       sceneData.push({
@@ -95,7 +98,8 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     //   saveToDB(getFormattedStoreData(session?.user.id))
     //   send('FINISHEDPLAYING')
     // }
-  }, [shownFragments])
+  }
+  }, [initialPlayingState])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
     return isAnimating ?? false

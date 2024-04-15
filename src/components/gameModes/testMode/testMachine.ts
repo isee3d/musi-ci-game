@@ -145,12 +145,11 @@ export const testModeMachine = createMachine(
             on: {
               GUESSEDFRAGMENT: {
                 target: 'restAfterAnswering',
-                actions: ['setGuessedFragment', 'saveLatency'],
+                actions: ['setGuessedFragment', 'saveLatency', 'saveScene'],
               },
             },
           },
           restAfterAnswering: {
-            entry: ['saveScene'],
             description: 'In this state the users gets a 1 second rest and the timer has to stop',
             after: {
               1000: '#testMode.playing',
