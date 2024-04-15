@@ -282,7 +282,7 @@ const Test: React.FC<TestModeProps> = ({
 
   return (
     <>
-      {/* {idleState && <StartTestUI startTest={startTest} />}
+      {idleState && <StartTestUI startTest={startTest} />}
       {countdownState && <TestCountdownPlayer />}
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
@@ -300,8 +300,8 @@ const Test: React.FC<TestModeProps> = ({
         >
           {isPausedState ? `Hervat` : `Pauzeer`}
         </Button>
-      )} */}
-      <TestFeedback gameId={gameId} levelId={levelId} />
+      )}
+      {isFinishedState && <TestFeedback gameId={gameId} levelId={levelId} />}
 
       {/* {session?.user.role === 'ADMIN' && (
         <Button
