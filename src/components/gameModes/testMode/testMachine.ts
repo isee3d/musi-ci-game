@@ -113,9 +113,9 @@ export const testModeMachine = createMachine(
         entry: 'onCountdownStarted',
         initial: 'initializePlaying',
         states: {
-          hist: {
-            type: 'history',
-          },
+          // hist: {
+          //   type: 'history',
+          // },
           initializePlaying: {
             description: 'Loads the new view, at the moment the fragments need to initialize...',
             after: {
@@ -160,7 +160,7 @@ export const testModeMachine = createMachine(
       pausedGame: {
         description: 'The state where the game is paused',
         on: {
-          RESUMEGAME: 'playing.hist',
+          RESUMEGAME: 'playing',
         },
       },
       FinishedPlayingTestMode: {
@@ -192,20 +192,7 @@ export const testModeMachine = createMachine(
         setTestOneArray(test_1)
         setTestTwoArray(test_2)
 
-        // Add a weight to every fragment at the start of the game
-
-        // const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
-        //   ...group,
-        //   fragments: group.fragments.map((fragment) => ({
-        //     ...fragment,
-        //     weight: 100,
-        //   })),
-        // }))
-
         return {
-          // originalFragmentGroups: originalFragmentGroups,
-          // fragmentsToShow,
-          // groups: convertedFragmentGroups,
           amountOfScenes,
           originalFragments,
           sublevelName,
@@ -256,20 +243,15 @@ export const testModeMachine = createMachine(
         }
       }),
       onCountdownStarted: assign((context) => {
-        const {
-          setPlayedFragmentId,
-          TestOneArray,
-          TestTwoArray,
-          removeItemFromTestOneArray,
-          removeItemFromTestTwoArray,
-        } = useLuisterenStore.getState()
-
+        const { setPlayedFragmentId } = useLuisterenStore.getState()
+        console.log('im coming in this state')
         const originalFragments = deepCopy(context.originalFragments)
 
         let activeFragment: FragmentWithNotes | undefined = undefined
         let newTransposedFragments: FragmentWithNotes[] = []
 
         if (context.sublevelName === 'TEST, level 1') {
+          console.log('going to remove from test one')
           const { transposedFragments, newActiveFragment } = transposeTestOne(originalFragments)
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
@@ -278,15 +260,6 @@ export const testModeMachine = createMachine(
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
         }
-
-        // const copiedGroups = deepCopy(context.groups)
-        // const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups } = transpose(
-        //   context.fragmentsToShow,
-        //   context.amountOfScenes,
-        //   copiedGroups,
-        //   context.pianoNotesMap ?? new Map(),
-        // )
-        console.log('activeFragment', activeFragment)
         setPlayedFragmentId(activeFragment?.id ?? 0)
         return {
           amountPlayed: context.amountPlayed + 1,

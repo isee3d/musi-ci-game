@@ -99,7 +99,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     //   send('FINISHEDPLAYING')
     // }
   }
-  }, [initialPlayingState])
+  }, [shownFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
     return isAnimating ?? false
@@ -142,7 +142,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   useEffect(() => {
     console.log(sublevelName === 'TEST, level 1')
     if (restAfterPlayingState) {
-      console.log('coming here')
       if (sublevelName === 'TEST, level 1') {
         if (TestOneArray?.length === 0) {
           setEndTime(Date.now())
