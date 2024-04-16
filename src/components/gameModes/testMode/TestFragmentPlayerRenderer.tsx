@@ -1,20 +1,17 @@
+import { GameMode } from '@prisma/client'
+import { shallowEqual } from '@xstate/react'
+import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
+import { FragmentSceneData } from 'types/SceneData'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
-import { shallowEqual } from '@xstate/react'
-import { FragmentSceneData } from 'types/SceneData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import { toast } from 'sonner'
 import { api } from '~/utils/api'
-import { useSession } from 'next-auth/react'
-import { GameMode } from '@prisma/client'
 import {
   getOriginalFragments,
-  getOriginalFragmentsFromFragmentGroup,
-  getShownFragmentByFragmentId,
+  getShownFragmentByFragmentId
 } from '~/utils/fragmentUtils'
-// import Test from '~/components/gameModes/testMode/test'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -43,9 +40,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     (state) => state.context.originalFragments,
   )
   const sublevelName = TestModeMachineContext.useSelector((state) => state.context.sublevelName)
-  // const originalFragmentGroups = TestModeMachineContext.useSelector(
-  //   (state) => state.context.originalFragmentGroups,
-  // )
   const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.guessHeardFragment'),
   )
@@ -85,19 +79,6 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
-    // setOriginalFragments(
-    //   getOriginalFragmentsFromFragmentGroup(shownFragments, originalFragmentGroups),
-    // )
-
-    // if (mode?.amountOfScenes === null) {
-    //   toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
-    // }
-
-    // if (amountPlayed === test_1.length - 1) {
-    //   setEndTime(Date.now())
-    //   saveToDB(getFormattedStoreData(session?.user.id))
-    //   send('FINISHEDPLAYING')
-    // }
   }
   }, [shownFragments])
 
@@ -136,11 +117,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   }
 
   function onFragmentPlayingComplete() {
-    // setactiveFragmentPlayerIndex(undefined)
   }
 
   useEffect(() => {
-    console.log(sublevelName === 'TEST, level 1')
     if (restAfterPlayingState) {
       if (sublevelName === 'TEST, level 1') {
         if (TestOneArray?.length === 0) {

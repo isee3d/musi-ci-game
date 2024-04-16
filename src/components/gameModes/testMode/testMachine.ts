@@ -1,18 +1,15 @@
 import { CountdownTimings } from 'types/Timings'
-import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
-  FragmentWithNotes,
-  FragmentWithNotesAndWeight,
+  FragmentWithNotes
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
-import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { transpose, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
+import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export const testModeMachine = createMachine(
   {
@@ -24,9 +21,6 @@ export const testModeMachine = createMachine(
       isAnimating: undefined as boolean | undefined,
       sublevelName: undefined as string | undefined,
       originalFragments: [] as FragmentWithNotes[],
-      // isLooping: undefined as boolean | undefined,
-      // originalFragmentGroups: [] as FragmentGroup[],
-      // selectedGroup: undefined as FragmentGroup | undefined,
       fragmentsToShow: 0 as number,
       activeFragment: undefined as FragmentWithNotes | undefined,
       shownFragments: [] as FragmentWithNotes[],
@@ -35,7 +29,6 @@ export const testModeMachine = createMachine(
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
-      // groups: [] as FragmentGroupWithWeights[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
@@ -58,11 +51,8 @@ export const testModeMachine = createMachine(
             type: 'STARTROUND'
             originalFragments: FragmentWithNotes[]
             sublevelName: string | undefined
-            // originalFragmentGroups: FragmentGroup[]
-            // fragmentsToShow: number
             countdownTimings: CountdownTimings
             amountOfScenes: number
-            // groups: FragmentGroup[]
           },
     },
     tsTypes: {} as import('./testMachine.typegen').Typegen0,
@@ -113,9 +103,6 @@ export const testModeMachine = createMachine(
         entry: 'onCountdownStarted',
         initial: 'initializePlaying',
         states: {
-          // hist: {
-          //   type: 'history',
-          // },
           initializePlaying: {
             description: 'Loads the new view, at the moment the fragments need to initialize...',
             after: {
@@ -177,8 +164,6 @@ export const testModeMachine = createMachine(
     actions: {
       setupData: assign((_, event) => {
         const {
-          // originalFragmentGroups,
-          // fragmentsToShow,
           amountOfScenes,
           originalFragments,
           sublevelName,
@@ -236,7 +221,6 @@ export const testModeMachine = createMachine(
         return {
           isClickable: false,
           isAnimating: false,
-          // isLooping: false,
           activeFragment: undefined,
           guessedFragment: undefined,
           fragmentGroups: [],
@@ -244,14 +228,12 @@ export const testModeMachine = createMachine(
       }),
       onCountdownStarted: assign((context) => {
         const { setPlayedFragmentId } = useLuisterenStore.getState()
-        console.log('im coming in this state')
         const originalFragments = deepCopy(context.originalFragments)
 
         let activeFragment: FragmentWithNotes | undefined = undefined
         let newTransposedFragments: FragmentWithNotes[] = []
 
         if (context.sublevelName === 'TEST, level 1') {
-          console.log('going to remove from test one')
           const { transposedFragments, newActiveFragment } = transposeTestOne(originalFragments)
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
@@ -263,7 +245,6 @@ export const testModeMachine = createMachine(
         setPlayedFragmentId(activeFragment?.id ?? 0)
         return {
           amountPlayed: context.amountPlayed + 1,
-          // groups: weightAdjustedFragmentGroups,
           guessedFragment: undefined,
           shownFragments: newTransposedFragments,
           activeFragment: activeFragment,
