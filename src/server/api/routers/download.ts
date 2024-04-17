@@ -440,6 +440,7 @@ export const downloadRouter = createTRPCRouter({
         }
       }
 
+
       const activities = await ctx.prisma.activity.findMany({
         where: activitiesWhereClause,
         select: {

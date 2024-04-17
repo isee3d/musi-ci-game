@@ -126,6 +126,7 @@ export default function DownloadPage() {
   const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
     enabled: true,
   })
+
   const { isLoading: isLoadingExceldata, isFetching } = api.download.getFilteredExcelData.useQuery(
     {
       selectedUsers: selectedUsers,
@@ -136,6 +137,9 @@ export default function DownloadPage() {
     },
     {
       onSuccess(data: ExcelRoute) {
+        console.log('Date:', date)
+        console.log('Data:', data)
+        console.log('Selected users:', selectedUsers)
         const splitData = splitDataByUser(data)
         // console.log(JSON.stringify(splitData))
         createExcelFilesPerUser(splitData)
@@ -306,6 +310,23 @@ export default function DownloadPage() {
     }
   }
 
+  const handleDateSelect = (range: DateRange | undefined) => {
+    // if(!range) return
+    console.log('Range:', range)
+    if (range) {
+      if (range.from && range.to) {
+        const adjustedRange = {
+          ...range,
+          to: new Date(range.to.setHours(23, 59, 59, 999)),
+        }
+        setDate(adjustedRange)
+        return
+      }
+      setDate(range)
+    }
+    setDate(range)
+  }
+
   return (
     <>
       <Head>
@@ -362,7 +383,7 @@ export default function DownloadPage() {
                   mode="range"
                   defaultMonth={date?.from}
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={handleDateSelect}
                   numberOfMonths={2}
                 />
               </PopoverContent>
