@@ -45,10 +45,10 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
   return (
     <>
       <h3 className="text-center text-3xl font-extrabold md:text-4xl">Uitdaging afgerond</h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl ">
         je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()} % goed
       </h3>
       {/* {score > 0 && (

@@ -56,10 +56,10 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
         objectFit="fill"
       />
       <h3 className="pb-10 text-center text-3xl font-extrabold md:text-4xl">Spelen afgerond</h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl">
         Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl">
         Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
       {/* {score > 0 && (

@@ -43,10 +43,10 @@ const TestFeedback: React.FC<TestFeedbackProps> = ({ gameId, levelId }) => {
       <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
         Test afgerond
       </h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {formatTime(endTime - startTime)} gespeeld!
       </h3>
-      <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl ">
+      <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()}% goed
       </h3>
       <div className="flex justify-center">

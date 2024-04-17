@@ -102,7 +102,6 @@ const UpdateSublevelModal: React.FC<{
   })
 
   function onSubmit(data: z.infer<typeof sublevelFormSchema>) {
-    console.log(data)
     const processedData = {
       ...data,
       fragmentToShowLuisteren:

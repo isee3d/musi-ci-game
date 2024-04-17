@@ -1,24 +1,18 @@
 import { GameMode } from '@prisma/client'
-import { useSession } from 'next-auth/react'
 import React, { useEffect, useMemo } from 'react'
+import { FragmentSceneData } from 'types/SceneData'
 import { CountdownTimings } from 'types/Timings'
-import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
-import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { transpose, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
-import { Button, buttonVariants } from '~/components/ui/button'
-import useStopwatch from '~/hooks/useStopwatch'
+import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import { FragmentSceneData } from 'types/SceneData'
-import { Session } from 'next-auth'
-import { api } from '~/utils/api'
-import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export let log: number[] = []
 
@@ -105,7 +99,7 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
         octave: parseInt(match[2], 10),
       }
     } else {
-      return null // or handle invalid input as needed
+      return null
     }
   }
 
@@ -113,7 +107,6 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
     return a.toString() === b.toString()
   }
 
-  // TODO: Reconstruct the test_1 json based on given data
   if (subLevelName === 'TEST, level 1') {
     const generatedTest_1: TestOne = []
     useLuisterenStore.getState().allPlayedScenes.forEach((scene, index) => {
@@ -171,28 +164,6 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
     console.log('generatedTest_2: ', JSON.stringify(generatedTest_2))
     console.log(compareArrays(generatedTest_2, test_2))
   }
-
-  // const { getFormattedStoreData } = useLuisterenStore.getState()
-  // console.log('formattedData: ', getFormattedStoreData('123345'))
-  // const json = JSON.stringify(bigData)
-  // const blob = new Blob([buffer], {
-  //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  // })
-  // const link = document.createElement('a')
-  // link.href = URL.createObjectURL(blob)
-  // link.download = `data-${participantId}.xlsx`
-  // link.click()
-
-  // const blob = new Blob([json], { type: 'application/json' })
-  // const url = URL.createObjectURL(blob)
-  // const a = document.createElement('a')
-  // a.download = 'test2.json'
-  // a.href =
-  //   'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bigData, null, 2))
-  // a.click()
-  // console.log('bigData: ', bigData)
-  // console.log('formattedData: ', getFormattedStoreData(session.user.id))
-  // saveToDB(getFormattedStoreData(session.user.id))
 }
 
 interface TestModeProps {
@@ -201,9 +172,6 @@ interface TestModeProps {
   sublevelId: string
   gameId: string
   sublevelName: string | undefined
-  // fragmentsToShow: number
-  // fragmentGroups: FragmentGroup[]
-  // playTime: number | null | undefined
   mode: GameMode | null | undefined
 }
 
@@ -213,41 +181,21 @@ const Test: React.FC<TestModeProps> = ({
   levelId,
   sublevelId,
   sublevelName,
-  // fragmentsToShow,
-  // fragmentGroups,
-  // playTime,
   mode,
 }) => {
-  const { data: session } = useSession()
   const { send } = TestModeMachineContext.useActorRef()
-  const { setLevelSublevelMode, reset, setStartTime, newUsedFragmentsMap, setIsPlaying } =
+  const { setLevelSublevelMode, reset, setStartTime, setIsPlaying } =
     useLuisterenStore()
   const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
-  const startRoundState = TestModeMachineContext.useSelector((state) => state.matches('startRound'))
   const restAfterAnsweringState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.restAfterAnswering'),
   )
   const countdownState = TestModeMachineContext.useSelector((state) => state.matches('countdown'))
   const playingState = TestModeMachineContext.useSelector((state) => state.matches('playing'))
-  const guessHeardFragmentState = TestModeMachineContext.useSelector((state) =>
-    state.matches('playing.guessHeardFragment'),
-  )
   const isPausedState = TestModeMachineContext.useSelector((state) => state.matches('pausedGame'))
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
-  const amountPlayed = TestModeMachineContext.useSelector((state) => state.context.amountPlayed)
-
-  // const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation({
-  //   onSuccess: (data) => {
-  //     console.log('succesfully saved data: ', data)
-  //   },
-  //   onError: (error) => {
-  //     console.error('error saving data: ', error)
-  //   },
-  // })
-
-  // const stopwatch = useStopwatch(1000)
 
   const countdownTimings: CountdownTimings = useMemo(
     () => ({
@@ -269,10 +217,6 @@ const Test: React.FC<TestModeProps> = ({
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',
-      // originalFragmentGroups: fragmentGroups as FragmentGroup[],
-      // fragmentsToShow: fragmentsToShow,
-      // countdownActions: stopwatch.actions,
-      // groups: fragmentGroups as FragmentGroup[],
       sublevelName: sublevelName,
       originalFragments: fragments,
       countdownTimings: countdownTimings,

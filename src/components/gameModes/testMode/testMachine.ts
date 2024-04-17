@@ -1,18 +1,15 @@
 import { CountdownTimings } from 'types/Timings'
-import { FragmentGroup, FragmentGroupWithWeights } from 'types/fragmentGroup'
 import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
-  FragmentWithNotes,
-  FragmentWithNotesAndWeight,
+  FragmentWithNotes
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
-import { StopwatchActions } from '~/hooks/useStopwatch'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { transpose, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
+import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export const testModeMachine = createMachine(
   {
@@ -24,9 +21,6 @@ export const testModeMachine = createMachine(
       isAnimating: undefined as boolean | undefined,
       sublevelName: undefined as string | undefined,
       originalFragments: [] as FragmentWithNotes[],
-      // isLooping: undefined as boolean | undefined,
-      // originalFragmentGroups: [] as FragmentGroup[],
-      // selectedGroup: undefined as FragmentGroup | undefined,
       fragmentsToShow: 0 as number,
       activeFragment: undefined as FragmentWithNotes | undefined,
       shownFragments: [] as FragmentWithNotes[],
@@ -35,7 +29,6 @@ export const testModeMachine = createMachine(
       latency: undefined as Latency | undefined,
       amountOfScenes: 0 as number,
       amountPlayed: 0 as number,
-      // groups: [] as FragmentGroupWithWeights[],
       pianoNotesMap: undefined as Map<string, { noteNumber: number; weight: number }> | undefined,
     },
     schema: {
@@ -58,11 +51,8 @@ export const testModeMachine = createMachine(
             type: 'STARTROUND'
             originalFragments: FragmentWithNotes[]
             sublevelName: string | undefined
-            // originalFragmentGroups: FragmentGroup[]
-            // fragmentsToShow: number
             countdownTimings: CountdownTimings
             amountOfScenes: number
-            // groups: FragmentGroup[]
           },
     },
     tsTypes: {} as import('./testMachine.typegen').Typegen0,
@@ -113,9 +103,6 @@ export const testModeMachine = createMachine(
         entry: 'onCountdownStarted',
         initial: 'initializePlaying',
         states: {
-          hist: {
-            type: 'history',
-          },
           initializePlaying: {
             description: 'Loads the new view, at the moment the fragments need to initialize...',
             after: {
@@ -145,12 +132,11 @@ export const testModeMachine = createMachine(
             on: {
               GUESSEDFRAGMENT: {
                 target: 'restAfterAnswering',
-                actions: ['setGuessedFragment', 'saveLatency'],
+                actions: ['setGuessedFragment', 'saveLatency', 'saveScene'],
               },
             },
           },
           restAfterAnswering: {
-            entry: ['saveScene'],
             description: 'In this state the users gets a 1 second rest and the timer has to stop',
             after: {
               1000: '#testMode.playing',
@@ -161,7 +147,7 @@ export const testModeMachine = createMachine(
       pausedGame: {
         description: 'The state where the game is paused',
         on: {
-          RESUMEGAME: 'playing.hist',
+          RESUMEGAME: 'playing',
         },
       },
       FinishedPlayingTestMode: {
@@ -178,8 +164,6 @@ export const testModeMachine = createMachine(
     actions: {
       setupData: assign((_, event) => {
         const {
-          // originalFragmentGroups,
-          // fragmentsToShow,
           amountOfScenes,
           originalFragments,
           sublevelName,
@@ -193,20 +177,7 @@ export const testModeMachine = createMachine(
         setTestOneArray(test_1)
         setTestTwoArray(test_2)
 
-        // Add a weight to every fragment at the start of the game
-
-        // const convertedFragmentGroups = originalFragmentGroups.map((group) => ({
-        //   ...group,
-        //   fragments: group.fragments.map((fragment) => ({
-        //     ...fragment,
-        //     weight: 100,
-        //   })),
-        // }))
-
         return {
-          // originalFragmentGroups: originalFragmentGroups,
-          // fragmentsToShow,
-          // groups: convertedFragmentGroups,
           amountOfScenes,
           originalFragments,
           sublevelName,
@@ -250,21 +221,13 @@ export const testModeMachine = createMachine(
         return {
           isClickable: false,
           isAnimating: false,
-          // isLooping: false,
           activeFragment: undefined,
           guessedFragment: undefined,
           fragmentGroups: [],
         }
       }),
       onCountdownStarted: assign((context) => {
-        const {
-          setPlayedFragmentId,
-          TestOneArray,
-          TestTwoArray,
-          removeItemFromTestOneArray,
-          removeItemFromTestTwoArray,
-        } = useLuisterenStore.getState()
-
+        const { setPlayedFragmentId } = useLuisterenStore.getState()
         const originalFragments = deepCopy(context.originalFragments)
 
         let activeFragment: FragmentWithNotes | undefined = undefined
@@ -279,19 +242,9 @@ export const testModeMachine = createMachine(
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
         }
-
-        // const copiedGroups = deepCopy(context.groups)
-        // const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragmentGroups } = transpose(
-        //   context.fragmentsToShow,
-        //   context.amountOfScenes,
-        //   copiedGroups,
-        //   context.pianoNotesMap ?? new Map(),
-        // )
-        console.log('activeFragment', activeFragment)
         setPlayedFragmentId(activeFragment?.id ?? 0)
         return {
           amountPlayed: context.amountPlayed + 1,
-          // groups: weightAdjustedFragmentGroups,
           guessedFragment: undefined,
           shownFragments: newTransposedFragments,
           activeFragment: activeFragment,
