@@ -27,13 +27,14 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
   const { data: levelPoints } = api.level.getPointsPerLevel.useQuery()
   const level = levelPoints?.find((level) => level.id === parseInt(levelId))
 
-    const progressValue = useMemo(() => {
+    const progressValue = () => {
       if (!levelPoints) return 0
       const level = levelPoints.find((level) => level.id === parseInt(levelId))
       if (!level?.points) return 0
+      console.log(levelPoints, level?.points, level?.score)
       const progress = (level.score / level.points) * 100
       return Math.min(progress, 100)
-    }, [levelPoints, levelId])
+    }
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
@@ -51,19 +52,19 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
       <h3 className="text-center text-xl font-extrabold tracking-tight md:text-4xl ">
         Je hebt {getPercentageCorrectlyAnswered()} % goed
       </h3>
-      {/* {score > 0 && (
+      {score > 0 && (
         <>
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
-            Je hebt {score} punten verdiend
+            Je hebt {Number(score).toFixed(2)} punten verdiend
           </h3>
           <div className=" w-1/2 px-12">
             <Progress
               indicatorColor={level?.color ? `${level.color}` : '#A020F0'}
-              value={progressValue}
+              value={progressValue()}
             />
           </div>
         </>
-      )} */}
+      )}
       <div className="flex justify-center gap-4">
         <Button variant={'highlight'} onClick={restartUitdaging}>
           Speel opnieuw

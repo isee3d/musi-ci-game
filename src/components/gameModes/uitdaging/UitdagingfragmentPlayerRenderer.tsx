@@ -59,7 +59,6 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     setScore,
     setSceneStartTime,
     allPlayedScenes,
-    endTime,
     startTime,
     getPercentageCorrectlyAnswered,
   } = useLuisterenStore()
@@ -70,7 +69,11 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
-  const { mutate: saveScore } = api.levelResult.saveScore.useMutation()
+     const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
+       onSuccess: () => {
+         send('FINISHEDPLAYING')
+       },
+     })
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
@@ -92,6 +95,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
 
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
+      const { endTime } = useLuisterenStore.getState()
       setScore(
         calculatePoints({
           mFactor: sublevel?.mFactor,
@@ -108,7 +112,6 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       saveToDB(getFormattedStoreData(session?.user.id ?? '1'))
       const { score } = useLuisterenStore.getState()
       saveScore({ id_User: session?.user.id ?? '-1', score: score, id_sublevel: parseInt(sublevelId) })
-      send('FINISHEDPLAYING')
     }
   }, [shownFragments])
 

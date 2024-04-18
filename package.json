@@ -2,9 +2,10 @@
   "name": "musi-ci-web-game",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@8.15.6",
   "scripts": {
     "build": "next build",
-    "dev": "next dev --turbo",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev --turbo",
     "dev-o": "pnpm run open-browser && next dev",
     "postinstall": "pnpx prisma generate",
     "lint": "next lint",
@@ -104,6 +105,7 @@
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "autoprefixer": "^10.4.17",
+    "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.2.2",
     "eslint-config-prettier": "^9.1.0",
@@ -118,7 +120,7 @@
     "simple-zustand-devtools": "^1.1.0",
     "tailwindcss": "^3.4.1",
     "tsx": "^3.14.0",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.5",
     "url-loader": "^4.1.1",
     "zod-prisma-types": "^2.8.1"
   },

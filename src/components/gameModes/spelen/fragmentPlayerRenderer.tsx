@@ -64,7 +64,6 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
     sceneData,
     allPlayedScenes,
     luisterenClicks,
-    endTime,
     startTime,
     setScore,
     getFormattedStoreData,
@@ -75,7 +74,11 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
   } = useLuisterenStore()
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
-  const { mutate: saveScore } = api.levelResult.saveScore.useMutation()
+   const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
+     onSuccess: () => {
+       send('FINISHEDPLAYING')
+     },
+   })
 
   // local state
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -165,6 +168,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
       AddSceneData(sceneData)
     }
     setEndTime(Date.now())
+    const { endTime } = useLuisterenStore.getState()
     addScene(sceneData)
     setScore(
       calculatePoints({
@@ -179,13 +183,10 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
         clicks: luisterenClicks,
       }),
     )
-    // console.log('scenedata: ', sceneData)
-    // console.log('allplayedscenes: ', allPlayedScenes)
     resetSceneRelatedData()
     saveToDB(getFormattedStoreData(session?.user.id))
     const { score } = useLuisterenStore.getState()
     saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
-    send('FINISHEDPLAYING')
   }
 
   return (

@@ -24,13 +24,14 @@ const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ levelId }) => {
     return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
-  const progressValue = useMemo(() => {
+  const progressValue = () => {
     if (!levelPoints) return 0
     const level = levelPoints.find((level) => level.id === parseInt(levelId))
     if (!level?.points) return 0
+    console.log(levelPoints, level?.points, level?.score)
     const progress = (level.score / level.points) * 100
     return Math.min(progress, 100)
-  }, [levelPoints, levelId])
+  }
 
   return (
     <>
@@ -46,19 +47,19 @@ const LuisterenFeedback: React.FC<LuisterenFeedbackProps> = ({ levelId }) => {
       <h3 className="text-center text-4xl font-extrabold tracking-tight">
         Je hebt {formatTime(endTime - startTime)} gespeeld
       </h3>
-      {/* {score > 0 && (
+      {score > 0 && (
         <>
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
-            Je hebt {score} punten verdiend
+            Je hebt {Number(score).toFixed(2)} punten verdiend
           </h3>
           <div className=" w-1/2 px-12">
             <Progress
               indicatorColor={level?.color ? `${level.color}` : '#A020F0'}
-              value={progressValue}
+              value={progressValue()}
             />
           </div>
         </>
-      )} */}
+      )}
     </>
   )
 }

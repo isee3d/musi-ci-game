@@ -5,7 +5,7 @@
       "name": "Next.js: debug server-side",
       "type": "node-terminal",
       "request": "launch",
-      "command": "pnpm dev"
+      "command": "npm run dev"
     },
     {
       "name": "Next.js: debug client-side",
@@ -15,13 +15,21 @@
     },
     {
       "name": "Next.js: debug full stack",
-      "type": "node-terminal",
+      "type": "node",
       "request": "launch",
-      "command": "pnpm dev",
+      "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+      "runtimeArgs": [
+        "--inspect"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
       "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
+        "action": "debugWithChrome",
+        "killOnServerStop": true,
+        "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s",
-        "action": "debugWithChrome"
+        "webRoot": "${workspaceFolder}"
       }
     }
   ]
