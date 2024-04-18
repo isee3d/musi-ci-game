@@ -157,11 +157,11 @@ const PodiumPage = () => {
       </Head>
 
       <section className="relative min-h-screen  items-center justify-center pt-24">
-        <PodiumSVG className="absolute top-0 h-full w-full" />
-        <CiniSVG className="absolute bottom-0 z-50 h-96 w-fit " />
         <div className="relative  flex flex-col items-center justify-center gap-12">
-          <div className="relative flex  h-fit w-full justify-center px-12">
-            <div className="relative flex flex-col ">
+          <div className="relative flex  h-fit w-full justify-center">
+            <PodiumSVG className="absolute top-0 h-full w-full" />
+            <CiniSVG className="absolute left-0 bottom-0 z-50 h-1/6 w-full" />
+            <div className="relative flex flex-col">
               <div className="flex h-5/6 w-full items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
