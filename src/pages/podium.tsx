@@ -109,15 +109,15 @@ const PodiumPage = () => {
   useEffect(() => {
     // This effect plays the audio after user interaction, as indicated by a change in audioContext
     if (audioContext !== undefined) {
-       audioRefs.current = {
-         drums: new Audio('/media/sampler/Salamander/A0.mp3'),
-         piano: new Audio('/media/sampler/Salamander/C4.mp3'),
-         bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
-         gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
-         sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
-         zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
-         dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
-       }
+      audioRefs.current = {
+        drums: new Audio('/media/sampler/Salamander/A0.mp3'),
+        piano: new Audio('/media/sampler/Salamander/C4.mp3'),
+        bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
+        gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
+        sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
+        zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
+        dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
+      }
 
       console.log('Playing audio')
       const sounds = audioRefs.current
@@ -156,23 +156,12 @@ const PodiumPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="relative  h-screen  items-center justify-center pt-24">
-        {/* <PodiumSVG className="absolute top-0" width={'auto'} height={'100%'} />
-        <CiniSVG
-          className="absolute bottom-0 z-50 h-96 w-fit pb-36"
-          width={'auto'}
-          height={'auto'}
-        /> */}
-        <div className="relative  flex flex-col items-center justify-center gap-4">
-          <div className="relative flex h-[50vh] w-full mx-4 flex-col justify-center lg:h-[50vh]">
-            <Image
-              fill
-              src={imagesConfig.podium}
-              objectFit="contain"
-              alt="Podium"
-              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-            {/* <div className="relative z-10 flex flex-col ">
+      <section className="relative min-h-screen  items-center justify-center pt-24">
+        <PodiumSVG className="absolute top-0 h-full w-full" />
+        <CiniSVG className="absolute bottom-0 z-50 h-96 w-fit " />
+        <div className="relative  flex flex-col items-center justify-center gap-12">
+          <div className="relative flex  h-fit w-full justify-center px-12">
+            <div className="relative flex flex-col ">
               <div className="flex h-5/6 w-full items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
@@ -247,9 +236,9 @@ const PodiumPage = () => {
                   />
                 )}
               </div>
-            </div> */}
+            </div>
           </div>
-          <Button className="my-4" asChild>
+          <Button className="relative border shadow-2xl shadow-primary-foreground" asChild>
             <Link href={routePaths.levelsPage}>Kies je level</Link>
           </Button>
         </div>
