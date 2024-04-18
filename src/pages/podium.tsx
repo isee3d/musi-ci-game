@@ -17,7 +17,6 @@ import SaxOffSVG from '~/components/podiumvisuals/saxOff'
 import SaxOnSVG from '~/components/podiumvisuals/saxOn'
 import ZangeresOffSVG from '~/components/podiumvisuals/zangeresOff'
 import ZangeresOnSVG from '~/components/podiumvisuals/zangeresOn'
-import Image from 'next/image'
 
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '~/components/ui/button'
@@ -156,84 +155,91 @@ const PodiumPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <section className="relative min-h-screen  items-center justify-center pt-24">
+      <section className="relative min-h-fit items-center justify-center pt-24">
         <div className="relative  flex flex-col items-center justify-center gap-12">
-          <div className="relative flex  h-fit w-full justify-center">
-            <PodiumSVG className="absolute top-0 h-full w-full" />
-            <CiniSVG className="absolute bottom-0 left-0 z-50 h-1/2 lg:h-2/5 xl:h-1/3 w-fit pointer-events-none" />
-            <div className="relative flex flex-col w-full px-24 md:px-36 lg:px48">
+          <div className="relative flex  h-fit w-full justify-center pt-24 overflow-hidden rounded-t-[5%] bg-gradient-to-t from-[#55474b] from-5% to-[#746465] ">
+            <PodiumSVG className="absolute top-0 h-full w-full translate-y-[15%]" />
+            <CiniSVG className="pointer-events-none absolute bottom-0 left-0  h-1/3 sm:h-1/2 w-fit " />
+            <div className="relative flex w-full flex-col px-[10%]">
               <div className="flex h-5/6 w-full items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <DrumsOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('drums')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      onClick={() => toggleMute('drums')}
+                    ></div>
+                    <DrumsOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
                 {!unlocked.piano ? (
                   <PianoOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <PianoOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('piano')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer "
+                      onClick={() => toggleMute('piano')}
+                    ></div>
+                    <PianoOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
                 {!unlocked.bass ? (
                   <BassOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <BassOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('bass')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="hover:cursor-pointermx-auto absolute left-1/4 top-1/4 z-50  h-4/5 w-1/2 border border-red-500 "
+                      onClick={() => toggleMute('bass')}
+                    ></div>
+                    <BassOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
                 {!unlocked.gitaar ? (
                   <GitaarOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <GitaarOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('gitaar')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      onClick={() => toggleMute('gitaar')}
+                    ></div>
+                    <GitaarOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
               </div>
-              <div className="flex h-5/6 w-full mb-4">
+              <div className="flex h-5/6 w-full -translate-y-[50%] px-[12%]">
                 {!unlocked.sax ? (
                   <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <SaxOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('sax')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4  z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      onClick={() => toggleMute('sax')}
+                    ></div>
+                    <SaxOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
                 {!unlocked.zangeres ? (
                   <ZangeresOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <ZangeresOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('zangeres')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      onClick={() => toggleMute('zangeres')}
+                    ></div>
+                    <ZangeresOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
                 {!unlocked.dwarsfluit ? (
                   <DwarsfluitOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <DwarsfluitOnSVG
-                    className="hover:cursor-pointer"
-                    onClick={() => toggleMute('dwarsfluit')}
-                    width={'auto'}
-                    height={'auto'}
-                  />
+                  <div className="relative h-full w-full">
+                    <div
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer "
+                      onClick={() => toggleMute('dwarsfluit')}
+                    ></div>
+                    <DwarsfluitOnSVG width={'auto'} height={'auto'} />
+                  </div>
                 )}
               </div>
             </div>

@@ -35,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-auto" style={{ touchAction: 'auto' }}>
-      <div className=" flex min-h-dvh flex-col overflow-y-hidden">
+      <div className=" flex min-h-fit md:min-h-dvh flex-col overflow-y-hidden">
         <header className="container z-40 rounded-b-xl backdrop-blur-md">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={navItemsPlayer} />
