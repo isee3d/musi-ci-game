@@ -160,8 +160,8 @@ const PodiumPage = () => {
         <div className="relative  flex flex-col items-center justify-center gap-12">
           <div className="relative flex  h-fit w-full justify-center">
             <PodiumSVG className="absolute top-0 h-full w-full" />
-            <CiniSVG className="absolute left-0 bottom-0 z-50 h-1/6 w-full" />
-            <div className="relative flex flex-col">
+            <CiniSVG className="absolute bottom-0 left-0 z-50 h-1/2 lg:h-2/5 xl:h-1/3 w-fit pointer-events-none" />
+            <div className="relative flex flex-col w-full px-24 md:px-36 lg:px48">
               <div className="flex h-5/6 w-full items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
@@ -204,7 +204,7 @@ const PodiumPage = () => {
                   />
                 )}
               </div>
-              <div className="flex h-5/6 w-full">
+              <div className="flex h-5/6 w-full mb-4">
                 {!unlocked.sax ? (
                   <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
