@@ -38,7 +38,7 @@ export const calculatePoints = ({
   // Define an optimal speed value
   const optimalSpeed = 1500
   const penaltyRate = 0.1 // Adjust this rate as needed
-  const rewardRate = 0.1 // Adjust this rate as needed
+  const rewardRate = 0.5 // Adjust this rate as needed
 
   // Dynamically adjust tFactor based on the deviation from optimalSpeed
   if (safeSpeed > optimalSpeed) {
