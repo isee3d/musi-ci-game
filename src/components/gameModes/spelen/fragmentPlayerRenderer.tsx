@@ -176,7 +176,6 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
         kFactor: sublevel?.kFactor,
         pFactor: sublevel?.pFactor,
         sFactor: sublevel?.sFactor,
-        tFactor: sublevel?.tFactor,
         minutes: (endTime - startTime) / 60000,
         percentCorrect: getPercentageCorrectlyAnswered(),
         scenes: allPlayedScenes.length,

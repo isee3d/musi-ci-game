@@ -167,7 +167,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 hover:cursor-pointer"
                       onClick={() => toggleMute('drums')}
                     ></div>
                     <DrumsOnSVG width={'auto'} height={'auto'} />
@@ -178,7 +178,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer "
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer "
                       onClick={() => toggleMute('piano')}
                     ></div>
                     <PianoOnSVG width={'auto'} height={'auto'} />
@@ -189,7 +189,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="hover:cursor-pointermx-auto absolute left-1/4 top-1/4 z-50  h-4/5 w-1/2 border border-red-500 "
+                      className="hover:cursor-pointer mx-auto absolute left-1/4 top-1/4 z-50  h-4/5 w-1/2 "
                       onClick={() => toggleMute('bass')}
                     ></div>
                     <BassOnSVG width={'auto'} height={'auto'} />
@@ -200,7 +200,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('gitaar')}
                     ></div>
                     <GitaarOnSVG width={'auto'} height={'auto'} />
@@ -213,7 +213,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4  z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      className="absolute left-1/4 top-1/4  z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('sax')}
                     ></div>
                     <SaxOnSVG width={'auto'} height={'auto'} />
@@ -224,7 +224,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer"
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('zangeres')}
                     ></div>
                     <ZangeresOnSVG width={'auto'} height={'auto'} />
@@ -235,7 +235,7 @@ const PodiumPage = () => {
                 ) : (
                   <div className="relative h-full w-full">
                     <div
-                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 border border-red-500 hover:cursor-pointer "
+                      className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer "
                       onClick={() => toggleMute('dwarsfluit')}
                     ></div>
                     <DwarsfluitOnSVG width={'auto'} height={'auto'} />
