@@ -36,7 +36,7 @@ export const calculatePoints = ({
   const safeKFactor = kFactor ?? 0
 
   // Define an optimal speed value
-  const optimalSpeed = 10
+  const optimalSpeed = 1500
   const penaltyRate = 0.1 // Adjust this rate as needed
   const rewardRate = 0.1 // Adjust this rate as needed
 
