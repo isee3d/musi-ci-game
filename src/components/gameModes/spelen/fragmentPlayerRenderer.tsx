@@ -170,22 +170,27 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
     setEndTime(Date.now())
     const { endTime } = useLuisterenStore.getState()
     addScene(sceneData)
-    setScore(
-      calculatePoints({
-        mFactor: sublevel?.mFactor,
-        kFactor: sublevel?.kFactor,
-        pFactor: sublevel?.pFactor,
-        sFactor: sublevel?.sFactor,
-        minutes: (endTime - startTime) / 60000,
-        percentCorrect: getPercentageCorrectlyAnswered(),
-        scenes: allPlayedScenes.length,
-        clicks: luisterenClicks,
-      }),
-    )
     resetSceneRelatedData()
-    saveToDB(getFormattedStoreData(session?.user.id))
-    const { score } = useLuisterenStore.getState()
-    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
+    if(allPlayedScenes.length > 0){
+      setScore(
+        calculatePoints({
+          mFactor: sublevel?.mFactor,
+          kFactor: sublevel?.kFactor,
+          pFactor: sublevel?.pFactor,
+          sFactor: sublevel?.sFactor,
+          minutes: (endTime - startTime) / 60000,
+          percentCorrect: getPercentageCorrectlyAnswered(),
+          scenes: allPlayedScenes.length,
+          clicks: luisterenClicks,
+        }),
+      )
+      saveToDB(getFormattedStoreData(session?.user.id))
+      const { score } = useLuisterenStore.getState()
+      saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
+    }
+    else {
+      send('FINISHEDPLAYING')
+    }
   }
 
   return (

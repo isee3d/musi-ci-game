@@ -13,8 +13,9 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    finishedPlayingAction: 'FINISHEDLISTENING'
     initializeShownFragments: 'STARTROUND'
-    resetPlaying: 'FINISHEDLISTENING'
+    resetPlaying: 'EXITGAME' | 'RESTARTMACHINE' | 'xstate.init'
     setupData: 'STARTROUND'
     shuffleFragments: 'SHUFFLEFRAGMENTS'
   }

@@ -24,11 +24,14 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
     startTime,
     setScore,
     luisterenClicks,
+    allPlayedScenes,
   } = useLuisterenStore()
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
-  const { mutate: saveScore } = api.levelResult.saveScore.useMutation({ onSuccess: () => {
-     send('FINISHEDLISTENING')
-  }})
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
+    onSuccess: () => {
+      send('FINISHEDLISTENING')
+    },
+  })
 
   const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
@@ -37,16 +40,21 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
   const onFinishedPlaying = () => {
     setEndTime(Date.now())
     const { endTime } = useLuisterenStore.getState()
-    const calculatedscore = calculatePoints({
-      minutes: (endTime - startTime) / 60000,
-      clicks: luisterenClicks,
-      mFactor: sublevel?.mFactor,
-      kFactor: sublevel?.kFactor,
-    })
-    setScore(calculatedscore)
-    const { score } = useLuisterenStore.getState()
-    saveToDB(getFormattedStoreData(session.user.id))
-    saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
+    if (allPlayedScenes.length > 0) {
+      setScore(
+        calculatePoints({
+          minutes: (endTime - startTime) / 60000,
+          clicks: luisterenClicks,
+          mFactor: sublevel?.mFactor,
+          kFactor: sublevel?.kFactor,
+        }),
+      )
+      const { score } = useLuisterenStore.getState()
+      saveToDB(getFormattedStoreData(session.user.id))
+      saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
+    } else {
+      send('FINISHEDLISTENING')
+    }
   }
 
   return (

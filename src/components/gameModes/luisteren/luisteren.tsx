@@ -33,12 +33,9 @@ const Luisteren: React.FC<LuisterenProps> = ({
   const isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
     state.matches('finishedListening'),
   )
-  const { setStartTime, setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
+  const { setStartTime, setLevelSublevelMode, reset, resetSceneRelatedData, setIsPlaying } = useLuisterenStore()
 
   useEffect(() => {
-    // upon entering luisteren mode, reset store
-     reset()
-
     return () => setIsPlaying(false)
   }, [])
 
@@ -57,7 +54,6 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }
 
   function startLuisteren() {
-
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({

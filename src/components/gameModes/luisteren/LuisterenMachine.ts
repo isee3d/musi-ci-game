@@ -2,7 +2,7 @@ import { assign, createMachine } from 'xstate'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
   FragmentWithNotes,
-  FragmentWithNotesAndWeight
+  FragmentWithNotesAndWeight,
 } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
@@ -63,6 +63,7 @@ export const luisterenMachine = createMachine(
     tsTypes: {} as import('./LuisterenMachine.typegen').Typegen0,
     states: {
       idle: {
+        entry: 'resetPlaying',
         description: 'The state where the context data will be initialized',
         on: {
           STARTROUND: { target: 'playing', actions: 'setupData' },
@@ -76,26 +77,26 @@ export const luisterenMachine = createMachine(
         },
       },
       finishedListening: {
-        entry: 'resetPlaying',
+        entry: 'finishedPlayingAction',
         description: 'The state where the user is done playing',
       },
       exitGame: {
         type: 'final',
-      }
+      },
     },
     on: {
       SHUFFLEFRAGMENTS: {
         actions: 'shuffleFragments',
       },
       EXITGAME: {
-        target: 'exitGame'
+        target: 'exitGame',
       },
       RESTARTMACHINE: {
         target: 'idle',
         actions: assign({
           allLevelFragments: [],
-          fragmentsToShow:  0,
-          shownFragments:  [],
+          fragmentsToShow: 0,
+          shownFragments: [],
           pianoNotesMap: undefined,
         }),
       },
@@ -128,9 +129,14 @@ export const luisterenMachine = createMachine(
           shownFragments: transposedFragments,
         }
       }),
-      resetPlaying: assign((_, event) => {
+      finishedPlayingAction: assign((_, event) => {
         const { setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(false)
+        return {}
+      }),
+      resetPlaying: assign((_, event) => {
+        const { reset } = useLuisterenStore.getState()
+        reset()
         return {}
       }),
       shuffleFragments: assign((context) => {
