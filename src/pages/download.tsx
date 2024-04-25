@@ -139,6 +139,8 @@ export default function DownloadPage() {
       onSuccess(data: ExcelRoute) {
         console.log('Date:', date)
         console.log('Data:', data)
+        console.log('Selected sublevels:', selectedSublevels)
+        console.log('Selected game modes:', selectedGameModes)
         console.log('Selected users:', selectedUsers)
         const splitData = splitDataByUser(data)
         // console.log(JSON.stringify(splitData))

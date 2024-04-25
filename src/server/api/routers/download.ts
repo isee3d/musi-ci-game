@@ -474,35 +474,6 @@ export const downloadRouter = createTRPCRouter({
           user: {
             select: {
               participantId: true,
-              // questionAnswers: {
-              //   where: date
-              //     ? {
-              //         answeredDate: {
-              //           gte: new Date(date.from ?? new Date()),
-              //           lte: new Date(date.to ?? new Date()),
-              //         },
-              //       }
-              //     : {},
-              //   select: {
-              //     question: true,
-              //     answer: true,
-              //     answeredDate: true,
-              //   },
-              // },
-              // activities: {
-              //   where: date
-              //     ? {
-              //         activity_Date: {
-              //           gte: date.from,
-              //           lte: date.to,
-              //         },
-              //       }
-              //     : {},
-              //   select: {
-              //     activity: true,
-              //     activity_Date: true,
-              //   },
-              // },
             },
           },
           subLevel: {

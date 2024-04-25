@@ -36,6 +36,9 @@ const Luisteren: React.FC<LuisterenProps> = ({
   const { setStartTime, setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
 
   useEffect(() => {
+    // upon entering luisteren mode, reset store
+     reset()
+
     return () => setIsPlaying(false)
   }, [])
 
@@ -46,6 +49,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }, [])
 
   function restartLuisteren() {
+    reset()
     send({
       type: 'RESTARTMACHINE',
     })
@@ -53,7 +57,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }
 
   function startLuisteren() {
-    reset()
+
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
