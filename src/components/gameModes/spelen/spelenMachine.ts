@@ -105,6 +105,7 @@ export const spelenMachine = createMachine(
     tsTypes: {} as import('./spelenMachine.typegen').Typegen0,
     states: {
       idle: {
+        entry: 'resetPlaying',
         description: 'The state where the context data will be initialized',
         on: {
           STARTROUND: {
@@ -285,16 +286,18 @@ export const spelenMachine = createMachine(
         setIsPlaying(false)
         return {}
       }),
+      resetPlaying: assign((_, event) => {
+        const { reset } = useLuisterenStore.getState()
+        reset()
+        return {}
+      }),
       onCountdownStarted: assign((context) => {
         const { setIsPlaying, setPlayedFragmentId } = useLuisterenStore.getState()
         setIsPlaying(true)
         const copiedFragments = deepCopy(context.allLevelFragments)
 
-        const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragments } = transpose(
-          copiedFragments,
-          context.fragmentsToShow,
-          context.pianoNotesMap ?? new Map(),
-        )
+        const { transposedFragments, newActiveFragment, pianoNotesMap, weightAdjustedFragments } =
+          transpose(copiedFragments, context.fragmentsToShow, context.pianoNotesMap ?? new Map())
 
         setPlayedFragmentId(newActiveFragment?.id ?? 0)
         return {

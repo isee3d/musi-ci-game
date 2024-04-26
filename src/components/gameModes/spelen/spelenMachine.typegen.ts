@@ -23,6 +23,12 @@ export interface Typegen0 {
     initializeContext: 'STARTROUND'
     onCountdownStarted: 'FINISHEDLISTENING' | 'STARTCOUNTDOWN'
     onFinishedPlaying: 'CANCELLEDPLAYING' | 'FINISHEDPLAYING'
+    resetPlaying:
+      | 'CANCELLEDPLAYING'
+      | 'EXITGAME'
+      | 'FINISHEDPLAYING'
+      | 'RESTARTMACHINE'
+      | 'xstate.init'
     saveLatency: 'GUESSEDFRAGMENT'
     setGuessedFragment: 'GUESSEDFRAGMENT'
     setupData: 'STARTROUND'

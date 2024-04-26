@@ -60,7 +60,6 @@ const Spelen: React.FC<SpelenProps> = ({
   }
 
   function startSpelen() {
-    reset()
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({

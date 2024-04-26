@@ -33,6 +33,7 @@ export interface Typegen0 {
       | 'xstate.stop'
     onFinishedPlaying: 'FINISHEDPLAYING'
     onPlayingStarted: 'xstate.after(GO)#spelen.countdown.GO!'
+    resetPlaying: 'EXITGAME' | 'FINISHEDPLAYING' | 'RESTARTMACHINE' | 'xstate.init'
     saveLatency: 'GUESSEDFRAGMENT'
     saveScene: 'GUESSEDFRAGMENT'
     setGuessedFragment: 'GUESSEDFRAGMENT'

@@ -70,7 +70,6 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   }
 
   function startUitdaging() {
-    reset()
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
       type: 'STARTROUND',

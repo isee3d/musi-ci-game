@@ -98,6 +98,7 @@ export const uitdagingMachine = createMachine(
     tsTypes: {} as import('./uitdagingMachine.typegen').Typegen0,
     states: {
       idle: {
+        entry: 'resetPlaying',
         description: 'The state where the context data will be initialized',
         on: {
           STARTROUND: {
@@ -272,6 +273,11 @@ export const uitdagingMachine = createMachine(
         const { setIsPlaying } = useLuisterenStore.getState()
         setIsPlaying(false)
       },
+      resetPlaying: assign((_, event) => {
+        const { reset } = useLuisterenStore.getState()
+        reset()
+        return {}
+      }),
       initializeContext: assign(() => {
         return {
           isClickable: false,
