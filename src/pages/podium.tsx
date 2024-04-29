@@ -161,7 +161,7 @@ const PodiumPage = () => {
             <PodiumSVG className="absolute top-0 h-full w-full translate-y-[15%]" />
             <CiniSVG className="pointer-events-none absolute bottom-0 left-0  h-1/3 sm:h-1/2 w-fit " />
             <div className="relative flex w-full flex-col px-[10%]">
-              <div className="flex h-5/6 w-full items-center justify-center">
+              <div className="flex items-center justify-center">
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
                 ) : (
@@ -207,7 +207,7 @@ const PodiumPage = () => {
                   </div>
                 )}
               </div>
-              <div className="flex h-5/6 w-full -translate-y-[50%] px-[12%]">
+              <div className="flex -translate-y-[50%] px-[12.5%]">
                 {!unlocked.sax ? (
                   <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
