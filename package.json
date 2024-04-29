@@ -67,6 +67,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^3.3.1",
     "dayjs": "1.11.10",
+    "decimal.js": "^10.4.3",
     "embla-carousel-react": "8.0.0-rc20",
     "exceljs": "4.4.0",
     "glsl-random": "0.0.5",

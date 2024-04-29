@@ -145,11 +145,11 @@ model SubLevel {
   bpm               Int?
 
   // Points system values
-  mFactor           Int?
-  pFactor           Int?
-  sFactor           Int?
-  tFactor           Int?
-  kFactor           Int?
+  mFactor           Decimal? @db.Decimal(5, 2)
+  pFactor           Decimal? @db.Decimal(5, 2)
+  sFactor           Decimal? @db.Decimal(5, 2)
+  tFactor           Decimal? @db.Decimal(5, 2)
+  kFactor           Decimal? @db.Decimal(5, 2)
 }
 
 model FragmentGroup {

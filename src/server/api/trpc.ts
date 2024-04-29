@@ -66,8 +66,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * errors on the backend.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
 import { ZodError } from "zod";
+import superjson from "~/utils/superjson";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

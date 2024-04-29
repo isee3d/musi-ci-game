@@ -109,12 +109,14 @@ const UpdateSublevelModal: React.FC<{
       fragmentToShowSpelen:
         data.fragmentToShowSpelen === undefined ? null : parseInt(data.fragmentToShowSpelen),
       fragmentToShowUitdaging:
-        data.fragmentToShowUitdaging === undefined ? null : parseInt(data.fragmentToShowUitdaging),
-      mFactor: data.mFactor === undefined ? null : parseInt(data.mFactor),
-      pFactor: data.pFactor === undefined ? null : parseInt(data.pFactor),
-      sFactor: data.sFactor === undefined ? null : parseInt(data.sFactor),
-      tFactor: data.tFactor === undefined ? null : parseInt(data.tFactor),
-      kFactor: data.kFactor === undefined ? null : parseInt(data.kFactor),
+        data.fragmentToShowUitdaging === undefined
+          ? null
+          : parseInt(data.fragmentToShowUitdaging),
+      mFactor: data.mFactor === undefined ? null : parseFloat(data.mFactor),
+      pFactor: data.pFactor === undefined ? null : parseFloat(data.pFactor),
+      sFactor: data.sFactor === undefined ? null : parseFloat(data.sFactor),
+      tFactor: data.tFactor === undefined ? null : parseFloat(data.tFactor),
+      kFactor: data.kFactor === undefined ? null : parseFloat(data.kFactor),
       id: sublevel.id,
       fragments: addedFragments.map((f) => f.id),
       gameModes: addedGameModes.map((g) => g.id),
