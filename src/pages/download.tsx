@@ -20,7 +20,7 @@ const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   const result: SplitDataByUser = {}
 
   // Process levelResults
-  data.levelResults.forEach((levelResult) => {
+  data.levelResults?.forEach((levelResult) => {
     const participantId = levelResult.user?.participantId
     if (participantId) {
       if (!result[participantId]) {
@@ -30,21 +30,21 @@ const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
           activities: [],
         }
       }
-      result[participantId]?.levelResults.push(levelResult)
+      result[participantId]?.levelResults?.push(levelResult)
     }
   })
 
-  data.questionAnswers.forEach((questionAnswer) => {
+  data.questionAnswers?.forEach((questionAnswer) => {
     const participantId = questionAnswer?.user?.participantId
     if (participantId && result[participantId]) {
-      result[participantId]?.questionAnswers.push(questionAnswer)
+      result[participantId]?.questionAnswers?.push(questionAnswer)
     }
   })
 
-  data.activities.forEach((activity) => {
+  data.activities?.forEach((activity) => {
     const participantId = activity?.user?.participantId
     if (participantId && result[participantId]) {
-      result[participantId]?.activities.push(activity)
+      result[participantId]?.activities?.push(activity)
     }
   })
 
