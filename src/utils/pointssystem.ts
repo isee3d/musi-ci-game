@@ -1,14 +1,16 @@
+import Decimal from "decimal.js"
+
 interface PointsCalculatorParams {
   minutes?: number | null
   percentCorrect?: number | null
   scenes?: number | null
   speed?: number | null // Average latency
   clicks?: number | null
-  mFactor?: number | null
-  pFactor?: number | null
-  sFactor?: number | null
-  tFactor?: number | null // Factor for speed penalty or reward
-  kFactor?: number | null
+  mFactor?: Decimal | null
+  pFactor?: Decimal | null
+  sFactor?: Decimal | null
+  tFactor?: Decimal | null // Factor for speed penalty or reward
+  kFactor?: Decimal | null
 }
 
 export const calculatePoints = ({
@@ -42,12 +44,12 @@ export const calculatePoints = ({
 
   // Dynamically adjust tFactor based on the deviation from optimalSpeed
   if (safeSpeed > optimalSpeed) {
-    const potentialTFactor = safeTFactor - (safeSpeed - optimalSpeed) * penaltyRate
+    const potentialTFactor = safeTFactor as number - (safeSpeed - optimalSpeed) * penaltyRate
     // Ensure tFactor does not become negative
     safeTFactor = Math.max(0, potentialTFactor)
   } else {
     // Apply reward for speed lower than or equal to optimal
-    safeTFactor += (optimalSpeed - safeSpeed) * rewardRate
+    (safeTFactor as number) += (optimalSpeed - safeSpeed) * rewardRate
   }
 
   console.log('safeMinutes', safeMinutes, 'safeMFacotr', safeMFactor, 'safePercentCorrect', safePercentCorrect, 'safePFactor', safePFactor, 'safeScenes', safeScenes, 'safeSFactor', safeSFactor, 'safeSpeed', safeSpeed, 'safeTFactor', safeTFactor, 'safeClicks', safeClicks, 'safeKFactor', safeKFactor

@@ -146,7 +146,7 @@ export default function DownloadPage() {
         if (data.levelResults && data.levelResults.length === 0) {
           toast.info('Geen speelresultaten gevonden voor de geselecteerde filters')
         }
-        if(data.questionAnswers && data.questionAnswers.length === 0) {
+        if (data.questionAnswers && data.questionAnswers.length === 0) {
           toast.info('Geen vragen en antwoorden gevonden voor de geselecteerde filters')
         }
         const splitData = splitDataByUser(data)
@@ -262,20 +262,18 @@ export default function DownloadPage() {
                 ?.fragmentIndex,
             ]
 
-            // const commonDataLength = commonData.length
+            let commonDataWritten = false
 
             if (scene.relistenFragments.length > 0) {
               scene.relistenFragments.forEach((relFrag) => {
-                // Check if there's a relistenCount and handle accordingly
                 if (relFrag.relistenCount && relFrag.relistenCount > 0) {
                   for (let i = 0; i < relFrag.relistenCount; i++) {
-                    // For the first row with this fragment, include commonData
-                    if (i === 0) {
-                      let row = [...commonData, relFrag?.fragment?.name] // Assume commonData does not include the place for fragment name
+                    if (!commonDataWritten) {
+                      let row = [...commonData, relFrag?.fragment?.name]
                       addRowToWorksheet('Speelresultaten', row)
+                      commonDataWritten = true
                     } else {
-                      // Create an array of nulls for alignment, then add the fragment name
-                      let row = Array(commonData.length).fill(null) // commonDataLength replaced with commonData.length for clarity
+                      let row = Array(commonData.length).fill(null)
                       row.push(relFrag?.fragment?.name)
                       addRowToWorksheet('Speelresultaten', row)
                     }

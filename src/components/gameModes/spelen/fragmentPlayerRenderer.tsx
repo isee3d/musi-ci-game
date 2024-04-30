@@ -74,11 +74,11 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
   } = useLuisterenStore()
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
-   const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
-     onSuccess: () => {
-       send('FINISHEDPLAYING')
-     },
-   })
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
+    onSuccess: () => {
+      send('FINISHEDPLAYING')
+    },
+  })
 
   // local state
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -156,22 +156,23 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
 
   const onFinishedPlaying = () => {
     if (listenToFragmentsState) {
-      const sceneData: FragmentSceneData[] = []
+      const newSceneData: FragmentSceneData[] = []
       shownFragments.forEach((fragment, index) => {
-        sceneData.push({
+        newSceneData.push({
           id_fragment: fragment.id,
           fragmentIndex: index,
           groundTone: fragment.transpose ?? '',
           octave: fragment.octave ?? -1,
         })
       })
-      AddSceneData(sceneData)
+      AddSceneData(newSceneData)
+      const { sceneData } = useLuisterenStore.getState()
+      addScene(sceneData)
     }
     setEndTime(Date.now())
     const { endTime } = useLuisterenStore.getState()
-    addScene(sceneData)
     resetSceneRelatedData()
-    if(allPlayedScenes.length > 0){
+    if (allPlayedScenes.length > 0) {
       setScore(
         calculatePoints({
           mFactor: sublevel?.mFactor,
@@ -187,8 +188,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
       saveToDB(getFormattedStoreData(session?.user.id))
       const { score } = useLuisterenStore.getState()
       saveScore({ id_User: session.user.id, score: score, id_sublevel: parseInt(sublevelId) })
-    }
-    else {
+    } else {
       send('FINISHEDPLAYING')
     }
   }
