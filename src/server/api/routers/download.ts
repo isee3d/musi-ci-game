@@ -8,7 +8,7 @@ export const downloadRouter = createTRPCRouter({
       select: {
         id: true,
         participantId: true,
-        activities: true
+        activities: true,
       },
     })
 
@@ -47,7 +47,11 @@ export const downloadRouter = createTRPCRouter({
 
       let whereClause = {}
       let questionAnswersWhereClause = {}
+      let levelResultsData = null
+      let activitiesData = null
+      let questionAnswersData = null
       let activitiesWhereClause = {}
+
       const dataPromises = []
 
       if (selectedUsers.length > 0) {
@@ -106,110 +110,104 @@ export const downloadRouter = createTRPCRouter({
       }
 
       if (worksheets.includes('Activiteiten')) {
-        dataPromises.push(
-          ctx.prisma.activity.findMany({
-            where: activitiesWhereClause,
-            select: {
-              user: {
-                select: {
-                  participantId: true,
-                },
+        activitiesData = await ctx.prisma.activity.findMany({
+          where: activitiesWhereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
               },
-              activity: true,
-              activity_Date: true,
             },
-          }),
-        )
+            activity: true,
+            activity_Date: true,
+          },
+        })
       }
 
       if (worksheets.includes('Vragen en antwoorden')) {
-        dataPromises.push(
-          ctx.prisma.questionAnswer.findMany({
-            where: questionAnswersWhereClause,
-            select: {
-              user: {
-                select: {
-                  participantId: true,
-                },
+        questionAnswersData = await ctx.prisma.questionAnswer.findMany({
+          where: questionAnswersWhereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
               },
-              question: true,
-              answer: true,
-              answeredDate: true,
             },
-          }),
-        )
+            question: true,
+            answer: true,
+            answeredDate: true,
+          },
+        })
       }
 
       if (worksheets.includes('Speelresultaten')) {
-        dataPromises.push(
-          ctx.prisma.levelResult.findMany({
-            where: whereClause,
-            select: {
-              user: {
-                select: {
-                  participantId: true,
-                },
+        levelResultsData = await ctx.prisma.levelResult.findMany({
+          where: whereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
               },
-              subLevel: {
-                select: {
-                  name: true,
-                },
+            },
+            subLevel: {
+              select: {
+                name: true,
               },
-              gameMode: {
-                select: {
-                  name: true,
-                },
+            },
+            gameMode: {
+              select: {
+                name: true,
               },
-              startTime: true,
-              endTime: true,
-              Scenes: {
-                select: {
-                  id: true,
-                  chosenFragment: {
-                    select: {
-                      name: true,
-                    },
+            },
+            startTime: true,
+            endTime: true,
+            Scenes: {
+              select: {
+                id: true,
+                chosenFragment: {
+                  select: {
+                    name: true,
                   },
-                  id_levelResult: true,
-                  playedFragment: {
-                    select: {
-                      name: true,
-                    },
+                },
+                id_levelResult: true,
+                playedFragment: {
+                  select: {
+                    name: true,
                   },
-                  chosenFragmentLatency: true,
-                  startTime: true,
-                  answeredCorrectly: true,
-                  relistenFragments: {
-                    select: {
-                      fragment: {
-                        select: {
-                          name: true,
-                        },
+                },
+                chosenFragmentLatency: true,
+                startTime: true,
+                answeredCorrectly: true,
+                relistenFragments: {
+                  select: {
+                    fragment: {
+                      select: {
+                        name: true,
                       },
-                      relistenCount: true,
                     },
+                    relistenCount: true,
                   },
-                  sceneFragments: {
-                    select: {
-                      fragment: {
-                        select: {
-                          name: true,
-                        },
+                },
+                sceneFragments: {
+                  select: {
+                    fragment: {
+                      select: {
+                        name: true,
                       },
-                      fragmentIndex: true,
-                      groundTone: true,
-                      octave: true,
                     },
+                    fragmentIndex: true,
+                    groundTone: true,
+                    octave: true,
                   },
                 },
               },
             },
-          }),
-        )
+          },
+        })
       }
 
-      const [activitiesData, questionAnswersData, levelResultsData] =
-        await Promise.all(dataPromises)
+      // const [activitiesData, questionAnswersData, levelResultsData] =
+      //   await Promise.all(dataPromises)
 
       return {
         levelResults: levelResultsData,

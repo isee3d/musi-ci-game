@@ -83,6 +83,8 @@ const headers = [
 const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 const activitiesHeaders = ['Activiteit type', 'Datum']
 
+const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten']
+
 const getYesterdayDate = () => {
   const today = new Date()
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
@@ -99,7 +101,7 @@ export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
-  const [workSheets, setWorkSheets] = useState<string[]>(['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'])
+  const [workSheets, setWorkSheets] = useState<string[]>([])
   const [shouldDownload, setShouldDownload] = useState(false)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
@@ -250,7 +252,7 @@ export default function DownloadPage() {
                 ?.fragmentIndex,
             ]
 
-            const commonDataLength = commonData.length
+            // const commonDataLength = commonData.length
 
             if (scene.relistenFragments.length > 0) {
               scene.relistenFragments.forEach((relFrag) => {
@@ -293,7 +295,7 @@ export default function DownloadPage() {
         })
       }
 
-      workSheets.forEach((name) => adjustColumnWidths(name))
+      worksheetNames.forEach((name) => adjustColumnWidths(name))
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
@@ -415,7 +417,7 @@ export default function DownloadPage() {
 
           <Label className="mb-1">Selecteer de gegevens worksheets</Label>
           <MultiSelect
-            options={workSheets.map((sheet) => ({
+            options={worksheetNames.map((sheet) => ({
               value: sheet,
               label: sheet,
             }))}
