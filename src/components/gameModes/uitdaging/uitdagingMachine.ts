@@ -242,6 +242,7 @@ export const uitdagingMachine = createMachine(
           countdownTimings: event.countdownTimings,
           countdownActions: event.countdownActions,
           pianoNotesMap: pianoNotesMap,
+          amountPlayed: 0,
         }
       }),
       saveLatency: assign({

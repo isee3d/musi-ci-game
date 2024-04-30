@@ -93,6 +93,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       toast.error('Het aantal scenes is niet gespecificeerd for deze game mode')
     }
 
+    console.log('amountPlayed', amountPlayed, 'mode?.amountOfScenes', mode?.amountOfScenes)
     if (amountPlayed === mode?.amountOfScenes) {
       setEndTime(Date.now())
       const { endTime } = useLuisterenStore.getState()

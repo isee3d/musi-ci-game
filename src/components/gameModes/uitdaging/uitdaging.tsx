@@ -54,11 +54,8 @@ const Uitdaging: React.FC<UitdagingProps> = ({
   )
 
   useEffect(() => {
-    return () => setIsPlaying(false)
-  }, [])
-
-  useEffect(() => {
     return () => {
+      setIsPlaying(false)
       send({ type: 'EXITGAME' })
     }
   }, [])
