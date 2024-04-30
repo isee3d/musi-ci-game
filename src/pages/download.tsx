@@ -101,7 +101,7 @@ export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
-  const [workSheets, setWorkSheets] = useState<string[]>([])
+  const [workSheets, setWorkSheets] = useState<string[]>(worksheetNames)
   const [shouldDownload, setShouldDownload] = useState(false)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
