@@ -82,7 +82,6 @@ const headers = [
 ]
 const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 const activitiesHeaders = ['Activiteit type', 'Datum']
-const worksheetNames = ['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten']
 
 const getYesterdayDate = () => {
   const today = new Date()
@@ -100,16 +99,12 @@ export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
-  const [workSheets, setWorkSheets] = useState<string[]>([])
+  const [workSheets, setWorkSheets] = useState<string[]>(['Speelresultaten', 'Vragen en antwoorden', 'Activiteiten'])
   const [shouldDownload, setShouldDownload] = useState(false)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
     to: addDays(getYesterdayDate(), 2),
   })
-
-  useEffect(() => {
-    setWorkSheets(worksheetNames)
-  }, [])
 
   useEffect(() => {
     if (shouldDownload) {
@@ -216,7 +211,7 @@ export default function DownloadPage() {
       }
 
       if (workSheets.includes('Activiteiten')) {
-        userData.activities.forEach((data) => {
+        userData.activities?.forEach((data) => {
           if (data.user && data.activity) {
             const row = [data.activity, formatDate(data.activity_Date)]
             addRowToWorksheet('Activiteiten', row)
@@ -225,14 +220,14 @@ export default function DownloadPage() {
       }
 
       if (workSheets.includes('Vragen en antwoorden')) {
-        userData.questionAnswers.forEach((data) => {
+        userData.questionAnswers?.forEach((data) => {
           const row = [data.question, data.answer, formatDate(data.answeredDate)]
           addRowToWorksheet('Vragen en antwoorden', row)
         })
       }
 
       if (workSheets.includes('Speelresultaten')) {
-        userData.levelResults.forEach((data) => {
+        userData.levelResults?.forEach((data) => {
           data.Scenes.forEach((scene) => {
             const commonData = [
               participantId,
@@ -298,7 +293,7 @@ export default function DownloadPage() {
         })
       }
 
-      worksheetNames.forEach((name) => adjustColumnWidths(name))
+      workSheets.forEach((name) => adjustColumnWidths(name))
 
       // Generate Excel and trigger download
       const buffer = await workbook.xlsx.writeBuffer()
@@ -420,7 +415,7 @@ export default function DownloadPage() {
 
           <Label className="mb-1">Selecteer de gegevens worksheets</Label>
           <MultiSelect
-            options={worksheetNames.map((sheet) => ({
+            options={workSheets.map((sheet) => ({
               value: sheet,
               label: sheet,
             }))}

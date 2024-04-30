@@ -384,6 +384,9 @@ export const downloadRouter = createTRPCRouter({
       let whereClause = {}
       let questionAnswersWhereClause = {}
       let activitiesWhereClause = {}
+      let activitiesData = null
+      let questionAnswersData = null
+      let levelResultsData = null
 
       if (selectedUsers.length > 0) {
         //@ts-ignore
@@ -440,102 +443,107 @@ export const downloadRouter = createTRPCRouter({
         }
       }
 
-
-      const activities = await ctx.prisma.activity.findMany({
-        where: activitiesWhereClause,
-        select: {
-          user: {
-            select: {
-              participantId: true,
-            },
-          },
-          activity: true,
-          activity_Date: true,
-        },
-      })
-
-      const questionAnswers = await ctx.prisma.questionAnswer.findMany({
-        where: questionAnswersWhereClause,
-        select: {
-          user: {
-            select: {
-              participantId: true,
-            },
-          },
-          question: true,
-          answer: true,
-          answeredDate: true,
-        },
-      })
-
-      const levelResults = await ctx.prisma.levelResult.findMany({
-        where: whereClause,
-        select: {
-          user: {
-            select: {
-              participantId: true,
-            },
-          },
-          subLevel: {
-            select: {
-              name: true,
-            },
-          },
-          gameMode: {
-            select: {
-              name: true,
-            },
-          },
-          startTime: true,
-          endTime: true,
-          Scenes: {
-            select: {
-              id: true,
-              chosenFragment: {
-                select: {
-                  name: true,
-                },
+      if (worksheets.includes('Activiteiten')) {
+        activitiesData = await ctx.prisma.activity.findMany({
+          where: activitiesWhereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
               },
-              id_levelResult: true,
-              playedFragment: {
-                select: {
-                  name: true,
-                },
+            },
+            activity: true,
+            activity_Date: true,
+          },
+        })
+      }
+
+      if (worksheets.includes('Vragen en antwoorden')) {
+        questionAnswersData = await ctx.prisma.questionAnswer.findMany({
+          where: questionAnswersWhereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
               },
-              chosenFragmentLatency: true,
-              startTime: true,
-              answeredCorrectly: true,
-              relistenFragments: {
-                select: {
-                  fragment: {
-                    select: {
-                      name: true,
-                    },
+            },
+            question: true,
+            answer: true,
+            answeredDate: true,
+          },
+        })
+      }
+
+      if (worksheets.includes('Speelresultaten')) {
+        levelResultsData = await ctx.prisma.levelResult.findMany({
+          where: whereClause,
+          select: {
+            user: {
+              select: {
+                participantId: true,
+              },
+            },
+            subLevel: {
+              select: {
+                name: true,
+              },
+            },
+            gameMode: {
+              select: {
+                name: true,
+              },
+            },
+            startTime: true,
+            endTime: true,
+            Scenes: {
+              select: {
+                id: true,
+                chosenFragment: {
+                  select: {
+                    name: true,
                   },
-                  relistenCount: true,
                 },
-              },
-              sceneFragments: {
-                select: {
-                  fragment: {
-                    select: {
-                      name: true,
-                    },
+                id_levelResult: true,
+                playedFragment: {
+                  select: {
+                    name: true,
                   },
-                  fragmentIndex: true,
-                  groundTone: true,
-                  octave: true,
+                },
+                chosenFragmentLatency: true,
+                startTime: true,
+                answeredCorrectly: true,
+                relistenFragments: {
+                  select: {
+                    fragment: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                    relistenCount: true,
+                  },
+                },
+                sceneFragments: {
+                  select: {
+                    fragment: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                    fragmentIndex: true,
+                    groundTone: true,
+                    octave: true,
+                  },
                 },
               },
             },
           },
-        },
-      })
+        })
+      }
 
       return {
-        levelResults,
-        questionAnswers,
-        activities,
+        levelResults: levelResultsData,
+        questionAnswers: questionAnswersData,
+        activities: activitiesData,
       }
     }),
 })
