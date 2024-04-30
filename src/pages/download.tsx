@@ -15,6 +15,7 @@ import { Label } from '~/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
 import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
+import { toast } from 'sonner'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   const result: SplitDataByUser = {}
@@ -139,6 +140,15 @@ export default function DownloadPage() {
         console.log('Selected sublevels:', selectedSublevels)
         console.log('Selected game modes:', selectedGameModes)
         console.log('Selected users:', selectedUsers)
+        if (data.activities && data.activities.length === 0) {
+          toast.info('Geen activities gevonden voor de geselecteerde filters')
+        }
+        if (data.levelResults && data.levelResults.length === 0) {
+          toast.info('Geen speelresultaten gevonden voor de geselecteerde filters')
+        }
+        if(data.questionAnswers && data.questionAnswers.length === 0) {
+          toast.info('Geen vragen en antwoorden gevonden voor de geselecteerde filters')
+        }
         const splitData = splitDataByUser(data)
         // console.log(JSON.stringify(splitData))
         createExcelFilesPerUser(splitData)
