@@ -25,7 +25,6 @@ import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
 import { api } from '~/utils/api'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
-import { imagesConfig } from '~/config/site'
 
 interface MuteState {
   drums: boolean
@@ -109,13 +108,13 @@ const PodiumPage = () => {
     // This effect plays the audio after user interaction, as indicated by a change in audioContext
     if (audioContext !== undefined) {
       audioRefs.current = {
-        drums: new Audio('/media/sampler/Salamander/A0.mp3'),
-        piano: new Audio('/media/sampler/Salamander/C4.mp3'),
-        bass: new Audio('/media/sampler/Salamander/Ds4.mp3'),
-        gitaar: new Audio('/media/sampler/Salamander/Fs2.mp3'),
-        sax: new Audio('/media/sampler/Salamander/Fs5.mp3'),
-        zangeres: new Audio('/media/sampler/Salamander/C8.mp3'),
-        dwarsfluit: new Audio('/media/sampler/Salamander/C5.mp3'),
+        drums: new Audio('/media/podium/sound-drums.mp3'),
+        piano: new Audio('/media/podium/sound-piano.mp3'),
+        bass: new Audio('/media/podium/sound-contrabas.mp3'),
+        gitaar: new Audio('/media/podium/sound-gitaar.mp3'),
+        sax: new Audio('/media/podium/sound-sax.mp3'),
+        zangeres: new Audio('/media/podium/sound-zang.mp3'),
+        dwarsfluit: new Audio('/media/podium/sound-fluit.mp3'),
       }
 
       console.log('Playing audio')
