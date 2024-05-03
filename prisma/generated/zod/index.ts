@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import Decimal from 'decimal.js';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -8,11 +9,14 @@ import type { Prisma } from '@prisma/client';
 // DECIMAL
 //------------------------------------------------------
 
-export const DecimalJSLikeSchema: z.ZodType<Prisma.DecimalJsLike> = z.object({ d: z.array(z.number()), e: z.number(), s: z.number(), toFixed: z.function().args().returns(z.string()), });
+export const DecimalJsLikeSchema: z.ZodType<Prisma.DecimalJsLike> = z.object({
+  d: z.array(z.number()),
+  e: z.number(),
+  s: z.number(),
+  toFixed: z.function(z.tuple([]), z.string()),
+})
 
-export const DecimalJSLikeListSchema: z.ZodType<Prisma.DecimalJsLike[]> = z.object({ d: z.array(z.number()), e: z.number(), s: z.number(), toFixed: z.function().args().returns(z.string()), }).array();
-
-export const DECIMAL_STRING_REGEX = /^[0-9.,e+-bxffo_cp]+$|Infinity|NaN/;
+export const DECIMAL_STRING_REGEX = /^(?:-?Infinity|NaN|-?(?:0[bB][01]+(?:\.[01]+)?(?:[pP][-+]?\d+)?|0[oO][0-7]+(?:\.[0-7]+)?(?:[pP][-+]?\d+)?|0[xX][\da-fA-F]+(?:\.[\da-fA-F]+)?(?:[pP][-+]?\d+)?|(?:\d+|\d*\.\d+)(?:[eE][-+]?\d+)?))$/;
 
 export const isValidDecimalInput =
   (v?: null | string | number | Prisma.DecimalJsLike): v is string | number | Prisma.DecimalJsLike => {
@@ -473,11 +477,11 @@ export const SubLevelSchema = z.object({
   fragmentToShowUitdaging: z.number().int().nullish(),
   color: z.string().nullish(),
   bpm: z.number().int().nullish(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: "Field 'mFactor' must be a Decimal. Location: ['Models', 'SubLevel']",  }).nullish(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: "Field 'pFactor' must be a Decimal. Location: ['Models', 'SubLevel']",  }).nullish(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: "Field 'sFactor' must be a Decimal. Location: ['Models', 'SubLevel']",  }).nullish(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: "Field 'tFactor' must be a Decimal. Location: ['Models', 'SubLevel']",  }).nullish(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: "Field 'kFactor' must be a Decimal. Location: ['Models', 'SubLevel']",  }).nullish(),
+  mFactor: z.instanceof(Prisma.Decimal, { message: "Field 'mFactor' must be a Decimal. Location: ['Models', 'SubLevel']"}).nullish(),
+  pFactor: z.instanceof(Prisma.Decimal, { message: "Field 'pFactor' must be a Decimal. Location: ['Models', 'SubLevel']"}).nullish(),
+  sFactor: z.instanceof(Prisma.Decimal, { message: "Field 'sFactor' must be a Decimal. Location: ['Models', 'SubLevel']"}).nullish(),
+  tFactor: z.instanceof(Prisma.Decimal, { message: "Field 'tFactor' must be a Decimal. Location: ['Models', 'SubLevel']"}).nullish(),
+  kFactor: z.instanceof(Prisma.Decimal, { message: "Field 'kFactor' must be a Decimal. Location: ['Models', 'SubLevel']"}).nullish(),
 })
 
 export type SubLevel = z.infer<typeof SubLevelSchema>
@@ -2442,11 +2446,11 @@ export const SubLevelWhereInputSchema: z.ZodType<Prisma.SubLevelWhereInput> = z.
   fragmentToShowUitdaging: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   color: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   bpm: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
   levels: z.lazy(() => LevelListRelationFilterSchema).optional(),
   fragments: z.lazy(() => FragmentListRelationFilterSchema).optional(),
   gameModes: z.lazy(() => GameModeListRelationFilterSchema).optional(),
@@ -2507,11 +2511,11 @@ export const SubLevelWhereUniqueInputSchema: z.ZodType<Prisma.SubLevelWhereUniqu
   fragmentToShowUitdaging: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
   color: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   bpm: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
-  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
   levels: z.lazy(() => LevelListRelationFilterSchema).optional(),
   fragments: z.lazy(() => FragmentListRelationFilterSchema).optional(),
   gameModes: z.lazy(() => GameModeListRelationFilterSchema).optional(),
@@ -2559,11 +2563,11 @@ export const SubLevelScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.SubL
   fragmentToShowUitdaging: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
   color: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   bpm: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
-  mFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  pFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  sFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  tFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  kFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  mFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  pFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  sFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  tFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  kFactor: z.union([ z.lazy(() => DecimalNullableWithAggregatesFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
 }).strict();
 
 export const FragmentGroupWhereInputSchema: z.ZodType<Prisma.FragmentGroupWhereInput> = z.object({
@@ -3942,11 +3946,11 @@ export const SubLevelCreateInputSchema: z.ZodType<Prisma.SubLevelCreateInput> = 
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -3967,11 +3971,11 @@ export const SubLevelUncheckedCreateInputSchema: z.ZodType<Prisma.SubLevelUnchec
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -3991,11 +3995,11 @@ export const SubLevelUpdateInputSchema: z.ZodType<Prisma.SubLevelUpdateInput> = 
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -4016,11 +4020,11 @@ export const SubLevelUncheckedUpdateInputSchema: z.ZodType<Prisma.SubLevelUnchec
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -4041,11 +4045,11 @@ export const SubLevelCreateManyInputSchema: z.ZodType<Prisma.SubLevelCreateManyI
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable()
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable()
 }).strict();
 
 export const SubLevelUpdateManyMutationInputSchema: z.ZodType<Prisma.SubLevelUpdateManyMutationInput> = z.object({
@@ -4059,11 +4063,11 @@ export const SubLevelUpdateManyMutationInputSchema: z.ZodType<Prisma.SubLevelUpd
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SubLevelUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SubLevelUncheckedUpdateManyInput> = z.object({
@@ -4078,11 +4082,11 @@ export const SubLevelUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SubLevelUn
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const FragmentGroupCreateInputSchema: z.ZodType<Prisma.FragmentGroupCreateInput> = z.object({
@@ -5390,14 +5394,14 @@ export const LevelSumOrderByAggregateInputSchema: z.ZodType<Prisma.LevelSumOrder
 }).strict();
 
 export const DecimalNullableFilterSchema: z.ZodType<Prisma.DecimalNullableFilter> = z.object({
-  equals: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  in: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  notIn: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  lt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  lte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  not: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableFilterSchema) ]).optional().nullable(),
+  equals: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  in: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  notIn: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  lt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  lte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  not: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableFilterSchema) ]).optional().nullable(),
 }).strict();
 
 export const FragmentListRelationFilterSchema: z.ZodType<Prisma.FragmentListRelationFilter> = z.object({
@@ -5520,14 +5524,14 @@ export const SubLevelSumOrderByAggregateInputSchema: z.ZodType<Prisma.SubLevelSu
 }).strict();
 
 export const DecimalNullableWithAggregatesFilterSchema: z.ZodType<Prisma.DecimalNullableWithAggregatesFilter> = z.object({
-  equals: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  in: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  notIn: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  lt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  lte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  not: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  equals: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  in: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  notIn: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  lt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  lte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  not: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _avg: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
   _sum: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
@@ -6761,11 +6765,11 @@ export const PointsUncheckedCreateNestedManyWithoutSublevelInputSchema: z.ZodTyp
 }).strict();
 
 export const NullableDecimalFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableDecimalFieldUpdateOperationsInput> = z.object({
-  set: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  increment: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  decrement: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  multiply: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  divide: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional()
+  set: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  increment: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  decrement: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  multiply: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  divide: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional()
 }).strict();
 
 export const LevelUpdateManyWithoutSubLevelsNestedInputSchema: z.ZodType<Prisma.LevelUpdateManyWithoutSubLevelsNestedInput> = z.object({
@@ -7956,25 +7960,25 @@ export const NestedFloatFilterSchema: z.ZodType<Prisma.NestedFloatFilter> = z.ob
 }).strict();
 
 export const NestedDecimalNullableFilterSchema: z.ZodType<Prisma.NestedDecimalNullableFilter> = z.object({
-  equals: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  in: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  notIn: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  lt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  lte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  not: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableFilterSchema) ]).optional().nullable(),
+  equals: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  in: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  notIn: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  lt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  lte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  not: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableFilterSchema) ]).optional().nullable(),
 }).strict();
 
 export const NestedDecimalNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDecimalNullableWithAggregatesFilter> = z.object({
-  equals: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  in: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  notIn: z.union([z.number().array(),z.string().array(),DecimalJSLikeListSchema,]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
-  lt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  lte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gt: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  gte: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
-  not: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  equals: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  in: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  notIn: z.union([z.number().array(),z.string().array(),z.instanceof(Decimal).array(),z.instanceof(Prisma.Decimal).array(),DecimalJsLikeSchema.array(),]).refine((v) => Array.isArray(v) && (v as any[]).every((v) => isValidDecimalInput(v)), { message: 'Must be a Decimal' }).optional().nullable(),
+  lt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  lte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gt: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  gte: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional(),
+  not: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NestedDecimalNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _avg: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
   _sum: z.lazy(() => NestedDecimalNullableFilterSchema).optional(),
@@ -8862,11 +8866,11 @@ export const SubLevelCreateWithoutLevelsInputSchema: z.ZodType<Prisma.SubLevelCr
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -8886,11 +8890,11 @@ export const SubLevelUncheckedCreateWithoutLevelsInputSchema: z.ZodType<Prisma.S
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -8989,11 +8993,11 @@ export const SubLevelScalarWhereInputSchema: z.ZodType<Prisma.SubLevelScalarWher
   fragmentToShowUitdaging: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   color: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   bpm: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
-  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  mFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  pFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  sFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  tFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
+  kFactor: z.union([ z.lazy(() => DecimalNullableFilterSchema),z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }) ]).optional().nullable(),
 }).strict();
 
 export const LevelResultUpsertWithWhereUniqueWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultUpsertWithWhereUniqueWithoutLevelInput> = z.object({
@@ -9338,11 +9342,11 @@ export const SubLevelCreateWithoutFragmentGroupsInputSchema: z.ZodType<Prisma.Su
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -9362,11 +9366,11 @@ export const SubLevelUncheckedCreateWithoutFragmentGroupsInputSchema: z.ZodType<
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -9447,11 +9451,11 @@ export const SubLevelCreateWithoutFragmentsInputSchema: z.ZodType<Prisma.SubLeve
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -9471,11 +9475,11 @@ export const SubLevelUncheckedCreateWithoutFragmentsInputSchema: z.ZodType<Prism
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -9854,11 +9858,11 @@ export const SubLevelCreateWithoutGameModesInputSchema: z.ZodType<Prisma.SubLeve
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -9878,11 +9882,11 @@ export const SubLevelUncheckedCreateWithoutGameModesInputSchema: z.ZodType<Prism
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedCreateNestedManyWithoutSubLevelInputSchema).optional(),
@@ -10046,11 +10050,11 @@ export const SubLevelCreateWithoutLevelResultInputSchema: z.ZodType<Prisma.SubLe
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -10070,11 +10074,11 @@ export const SubLevelUncheckedCreateWithoutLevelResultInputSchema: z.ZodType<Pri
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -10257,11 +10261,11 @@ export const SubLevelUpdateWithoutLevelResultInputSchema: z.ZodType<Prisma.SubLe
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -10281,11 +10285,11 @@ export const SubLevelUncheckedUpdateWithoutLevelResultInputSchema: z.ZodType<Pri
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -11157,11 +11161,11 @@ export const SubLevelCreateWithoutPointsInputSchema: z.ZodType<Prisma.SubLevelCr
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -11181,11 +11185,11 @@ export const SubLevelUncheckedCreateWithoutPointsInputSchema: z.ZodType<Prisma.S
   fragmentToShowUitdaging: z.number().int().optional().nullable(),
   color: z.string().optional().nullable(),
   bpm: z.number().int().optional().nullable(),
-  mFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  pFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  sFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  tFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
-  kFactor: z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  mFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  pFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  sFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  tFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
+  kFactor: z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedCreateNestedManyWithoutSubLevelsInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedCreateNestedManyWithoutLevelInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedCreateNestedManyWithoutLevelsInputSchema).optional(),
@@ -11279,11 +11283,11 @@ export const SubLevelUpdateWithoutPointsInputSchema: z.ZodType<Prisma.SubLevelUp
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -11303,11 +11307,11 @@ export const SubLevelUncheckedUpdateWithoutPointsInputSchema: z.ZodType<Prisma.S
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -11693,11 +11697,11 @@ export const SubLevelUpdateWithoutLevelsInputSchema: z.ZodType<Prisma.SubLevelUp
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -11717,11 +11721,11 @@ export const SubLevelUncheckedUpdateWithoutLevelsInputSchema: z.ZodType<Prisma.S
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -11741,11 +11745,11 @@ export const SubLevelUncheckedUpdateManyWithoutLevelsInputSchema: z.ZodType<Pris
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const LevelResultUpdateWithoutLevelInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutLevelInput> = z.object({
@@ -12002,11 +12006,11 @@ export const SubLevelUpdateWithoutFragmentGroupsInputSchema: z.ZodType<Prisma.Su
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -12026,11 +12030,11 @@ export const SubLevelUncheckedUpdateWithoutFragmentGroupsInputSchema: z.ZodType<
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
@@ -12050,11 +12054,11 @@ export const SubLevelUncheckedUpdateManyWithoutFragmentGroupsInputSchema: z.ZodT
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const NoteCreateManyFragmentInputSchema: z.ZodType<Prisma.NoteCreateManyFragmentInput> = z.object({
@@ -12131,11 +12135,11 @@ export const SubLevelUpdateWithoutFragmentsInputSchema: z.ZodType<Prisma.SubLeve
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUpdateManyWithoutLevelsNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -12155,11 +12159,11 @@ export const SubLevelUncheckedUpdateWithoutFragmentsInputSchema: z.ZodType<Prism
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   gameModes: z.lazy(() => GameModeUncheckedUpdateManyWithoutLevelsNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -12179,11 +12183,11 @@ export const SubLevelUncheckedUpdateManyWithoutFragmentsInputSchema: z.ZodType<P
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneUpdateWithoutChosenFragmentInputSchema: z.ZodType<Prisma.SceneUpdateWithoutChosenFragmentInput> = z.object({
@@ -12325,11 +12329,11 @@ export const SubLevelUpdateWithoutGameModesInputSchema: z.ZodType<Prisma.SubLeve
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUpdateManyWithoutLevelNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -12349,11 +12353,11 @@ export const SubLevelUncheckedUpdateWithoutGameModesInputSchema: z.ZodType<Prism
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   levels: z.lazy(() => LevelUncheckedUpdateManyWithoutSubLevelsNestedInputSchema).optional(),
   fragments: z.lazy(() => FragmentUncheckedUpdateManyWithoutLevelNestedInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultUncheckedUpdateManyWithoutSubLevelNestedInputSchema).optional(),
@@ -12373,11 +12377,11 @@ export const SubLevelUncheckedUpdateManyWithoutGameModesInputSchema: z.ZodType<P
   fragmentToShowUitdaging: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   color: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   bpm: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  mFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  pFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  sFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  tFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  kFactor: z.union([ z.union([z.number(),z.string(),DecimalJSLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  mFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  pFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  sFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  tFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  kFactor: z.union([ z.union([z.number(),z.string(),z.instanceof(Decimal),z.instanceof(Prisma.Decimal),DecimalJsLikeSchema,]).refine((v) => isValidDecimalInput(v), { message: 'Must be a Decimal' }),z.lazy(() => NullableDecimalFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const LevelResultUpdateWithoutGameModeInputSchema: z.ZodType<Prisma.LevelResultUpdateWithoutGameModeInput> = z.object({
@@ -12515,7 +12519,7 @@ export const AccountFindFirstArgsSchema: z.ZodType<Prisma.AccountFindFirstArgs> 
   skip: z.number().optional(),
   distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AccountFindFirstOrThrowArgs> = z.object({
   select: AccountSelectSchema.optional(),
@@ -12527,7 +12531,7 @@ export const AccountFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AccountFindFirs
   skip: z.number().optional(),
   distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountFindManyArgsSchema: z.ZodType<Prisma.AccountFindManyArgs> = z.object({
   select: AccountSelectSchema.optional(),
@@ -12539,7 +12543,7 @@ export const AccountFindManyArgsSchema: z.ZodType<Prisma.AccountFindManyArgs> = 
   skip: z.number().optional(),
   distinct: z.union([ AccountScalarFieldEnumSchema,AccountScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountAggregateArgsSchema: z.ZodType<Prisma.AccountAggregateArgs> = z.object({
   where: AccountWhereInputSchema.optional(),
@@ -12547,7 +12551,7 @@ export const AccountAggregateArgsSchema: z.ZodType<Prisma.AccountAggregateArgs> 
   cursor: AccountWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const AccountGroupByArgsSchema: z.ZodType<Prisma.AccountGroupByArgs> = z.object({
   where: AccountWhereInputSchema.optional(),
@@ -12556,21 +12560,21 @@ export const AccountGroupByArgsSchema: z.ZodType<Prisma.AccountGroupByArgs> = z.
   having: AccountScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const AccountFindUniqueArgsSchema: z.ZodType<Prisma.AccountFindUniqueArgs> = z.object({
   select: AccountSelectSchema.optional(),
   include: AccountIncludeSchema.optional(),
   where: AccountWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.AccountFindUniqueOrThrowArgs> = z.object({
   select: AccountSelectSchema.optional(),
   include: AccountIncludeSchema.optional(),
   where: AccountWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionFindFirstArgsSchema: z.ZodType<Prisma.SessionFindFirstArgs> = z.object({
   select: SessionSelectSchema.optional(),
@@ -12582,7 +12586,7 @@ export const SessionFindFirstArgsSchema: z.ZodType<Prisma.SessionFindFirstArgs> 
   skip: z.number().optional(),
   distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SessionFindFirstOrThrowArgs> = z.object({
   select: SessionSelectSchema.optional(),
@@ -12594,7 +12598,7 @@ export const SessionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SessionFindFirs
   skip: z.number().optional(),
   distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionFindManyArgsSchema: z.ZodType<Prisma.SessionFindManyArgs> = z.object({
   select: SessionSelectSchema.optional(),
@@ -12606,7 +12610,7 @@ export const SessionFindManyArgsSchema: z.ZodType<Prisma.SessionFindManyArgs> = 
   skip: z.number().optional(),
   distinct: z.union([ SessionScalarFieldEnumSchema,SessionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionAggregateArgsSchema: z.ZodType<Prisma.SessionAggregateArgs> = z.object({
   where: SessionWhereInputSchema.optional(),
@@ -12614,7 +12618,7 @@ export const SessionAggregateArgsSchema: z.ZodType<Prisma.SessionAggregateArgs> 
   cursor: SessionWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SessionGroupByArgsSchema: z.ZodType<Prisma.SessionGroupByArgs> = z.object({
   where: SessionWhereInputSchema.optional(),
@@ -12623,21 +12627,21 @@ export const SessionGroupByArgsSchema: z.ZodType<Prisma.SessionGroupByArgs> = z.
   having: SessionScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SessionFindUniqueArgsSchema: z.ZodType<Prisma.SessionFindUniqueArgs> = z.object({
   select: SessionSelectSchema.optional(),
   include: SessionIncludeSchema.optional(),
   where: SessionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.SessionFindUniqueOrThrowArgs> = z.object({
   select: SessionSelectSchema.optional(),
   include: SessionIncludeSchema.optional(),
   where: SessionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenFindFirstArgsSchema: z.ZodType<Prisma.VerificationTokenFindFirstArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
@@ -12648,7 +12652,7 @@ export const VerificationTokenFindFirstArgsSchema: z.ZodType<Prisma.Verification
   skip: z.number().optional(),
   distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenFindFirstOrThrowArgsSchema: z.ZodType<Prisma.VerificationTokenFindFirstOrThrowArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
@@ -12659,7 +12663,7 @@ export const VerificationTokenFindFirstOrThrowArgsSchema: z.ZodType<Prisma.Verif
   skip: z.number().optional(),
   distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenFindManyArgsSchema: z.ZodType<Prisma.VerificationTokenFindManyArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
@@ -12670,7 +12674,7 @@ export const VerificationTokenFindManyArgsSchema: z.ZodType<Prisma.VerificationT
   skip: z.number().optional(),
   distinct: z.union([ VerificationTokenScalarFieldEnumSchema,VerificationTokenScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenAggregateArgsSchema: z.ZodType<Prisma.VerificationTokenAggregateArgs> = z.object({
   where: VerificationTokenWhereInputSchema.optional(),
@@ -12678,7 +12682,7 @@ export const VerificationTokenAggregateArgsSchema: z.ZodType<Prisma.Verification
   cursor: VerificationTokenWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenGroupByArgsSchema: z.ZodType<Prisma.VerificationTokenGroupByArgs> = z.object({
   where: VerificationTokenWhereInputSchema.optional(),
@@ -12687,19 +12691,19 @@ export const VerificationTokenGroupByArgsSchema: z.ZodType<Prisma.VerificationTo
   having: VerificationTokenScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenFindUniqueArgsSchema: z.ZodType<Prisma.VerificationTokenFindUniqueArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
   where: VerificationTokenWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.VerificationTokenFindUniqueOrThrowArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
   where: VerificationTokenWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.object({
   select: UserSelectSchema.optional(),
@@ -12711,7 +12715,7 @@ export const UserFindFirstArgsSchema: z.ZodType<Prisma.UserFindFirstArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
@@ -12723,7 +12727,7 @@ export const UserFindFirstOrThrowArgsSchema: z.ZodType<Prisma.UserFindFirstOrThr
   skip: z.number().optional(),
   distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.object({
   select: UserSelectSchema.optional(),
@@ -12735,7 +12739,7 @@ export const UserFindManyArgsSchema: z.ZodType<Prisma.UserFindManyArgs> = z.obje
   skip: z.number().optional(),
   distinct: z.union([ UserScalarFieldEnumSchema,UserScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserAggregateArgsSchema: z.ZodType<Prisma.UserAggregateArgs> = z.object({
   where: UserWhereInputSchema.optional(),
@@ -12743,7 +12747,7 @@ export const UserAggregateArgsSchema: z.ZodType<Prisma.UserAggregateArgs> = z.ob
   cursor: UserWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const UserGroupByArgsSchema: z.ZodType<Prisma.UserGroupByArgs> = z.object({
   where: UserWhereInputSchema.optional(),
@@ -12752,21 +12756,21 @@ export const UserGroupByArgsSchema: z.ZodType<Prisma.UserGroupByArgs> = z.object
   having: UserScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const UserFindUniqueArgsSchema: z.ZodType<Prisma.UserFindUniqueArgs> = z.object({
   select: UserSelectSchema.optional(),
   include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.UserFindUniqueOrThrowArgs> = z.object({
   select: UserSelectSchema.optional(),
   include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamFindFirstArgsSchema: z.ZodType<Prisma.TeamFindFirstArgs> = z.object({
   select: TeamSelectSchema.optional(),
@@ -12778,7 +12782,7 @@ export const TeamFindFirstArgsSchema: z.ZodType<Prisma.TeamFindFirstArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamFindFirstOrThrowArgs> = z.object({
   select: TeamSelectSchema.optional(),
@@ -12790,7 +12794,7 @@ export const TeamFindFirstOrThrowArgsSchema: z.ZodType<Prisma.TeamFindFirstOrThr
   skip: z.number().optional(),
   distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamFindManyArgsSchema: z.ZodType<Prisma.TeamFindManyArgs> = z.object({
   select: TeamSelectSchema.optional(),
@@ -12802,7 +12806,7 @@ export const TeamFindManyArgsSchema: z.ZodType<Prisma.TeamFindManyArgs> = z.obje
   skip: z.number().optional(),
   distinct: z.union([ TeamScalarFieldEnumSchema,TeamScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamAggregateArgsSchema: z.ZodType<Prisma.TeamAggregateArgs> = z.object({
   where: TeamWhereInputSchema.optional(),
@@ -12810,7 +12814,7 @@ export const TeamAggregateArgsSchema: z.ZodType<Prisma.TeamAggregateArgs> = z.ob
   cursor: TeamWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const TeamGroupByArgsSchema: z.ZodType<Prisma.TeamGroupByArgs> = z.object({
   where: TeamWhereInputSchema.optional(),
@@ -12819,21 +12823,21 @@ export const TeamGroupByArgsSchema: z.ZodType<Prisma.TeamGroupByArgs> = z.object
   having: TeamScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const TeamFindUniqueArgsSchema: z.ZodType<Prisma.TeamFindUniqueArgs> = z.object({
   select: TeamSelectSchema.optional(),
   include: TeamIncludeSchema.optional(),
   where: TeamWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.TeamFindUniqueOrThrowArgs> = z.object({
   select: TeamSelectSchema.optional(),
   include: TeamIncludeSchema.optional(),
   where: TeamWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameFindFirstArgsSchema: z.ZodType<Prisma.GameFindFirstArgs> = z.object({
   select: GameSelectSchema.optional(),
@@ -12845,7 +12849,7 @@ export const GameFindFirstArgsSchema: z.ZodType<Prisma.GameFindFirstArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameFindFirstOrThrowArgs> = z.object({
   select: GameSelectSchema.optional(),
@@ -12857,7 +12861,7 @@ export const GameFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameFindFirstOrThr
   skip: z.number().optional(),
   distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameFindManyArgsSchema: z.ZodType<Prisma.GameFindManyArgs> = z.object({
   select: GameSelectSchema.optional(),
@@ -12869,7 +12873,7 @@ export const GameFindManyArgsSchema: z.ZodType<Prisma.GameFindManyArgs> = z.obje
   skip: z.number().optional(),
   distinct: z.union([ GameScalarFieldEnumSchema,GameScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameAggregateArgsSchema: z.ZodType<Prisma.GameAggregateArgs> = z.object({
   where: GameWhereInputSchema.optional(),
@@ -12877,7 +12881,7 @@ export const GameAggregateArgsSchema: z.ZodType<Prisma.GameAggregateArgs> = z.ob
   cursor: GameWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const GameGroupByArgsSchema: z.ZodType<Prisma.GameGroupByArgs> = z.object({
   where: GameWhereInputSchema.optional(),
@@ -12886,21 +12890,21 @@ export const GameGroupByArgsSchema: z.ZodType<Prisma.GameGroupByArgs> = z.object
   having: GameScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const GameFindUniqueArgsSchema: z.ZodType<Prisma.GameFindUniqueArgs> = z.object({
   select: GameSelectSchema.optional(),
   include: GameIncludeSchema.optional(),
   where: GameWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.GameFindUniqueOrThrowArgs> = z.object({
   select: GameSelectSchema.optional(),
   include: GameIncludeSchema.optional(),
   where: GameWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelFindFirstArgsSchema: z.ZodType<Prisma.LevelFindFirstArgs> = z.object({
   select: LevelSelectSchema.optional(),
@@ -12912,7 +12916,7 @@ export const LevelFindFirstArgsSchema: z.ZodType<Prisma.LevelFindFirstArgs> = z.
   skip: z.number().optional(),
   distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelFindFirstOrThrowArgs> = z.object({
   select: LevelSelectSchema.optional(),
@@ -12924,7 +12928,7 @@ export const LevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelFindFirstOrT
   skip: z.number().optional(),
   distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelFindManyArgsSchema: z.ZodType<Prisma.LevelFindManyArgs> = z.object({
   select: LevelSelectSchema.optional(),
@@ -12936,7 +12940,7 @@ export const LevelFindManyArgsSchema: z.ZodType<Prisma.LevelFindManyArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ LevelScalarFieldEnumSchema,LevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelAggregateArgsSchema: z.ZodType<Prisma.LevelAggregateArgs> = z.object({
   where: LevelWhereInputSchema.optional(),
@@ -12944,7 +12948,7 @@ export const LevelAggregateArgsSchema: z.ZodType<Prisma.LevelAggregateArgs> = z.
   cursor: LevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelGroupByArgsSchema: z.ZodType<Prisma.LevelGroupByArgs> = z.object({
   where: LevelWhereInputSchema.optional(),
@@ -12953,21 +12957,21 @@ export const LevelGroupByArgsSchema: z.ZodType<Prisma.LevelGroupByArgs> = z.obje
   having: LevelScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelFindUniqueArgsSchema: z.ZodType<Prisma.LevelFindUniqueArgs> = z.object({
   select: LevelSelectSchema.optional(),
   include: LevelIncludeSchema.optional(),
   where: LevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.LevelFindUniqueOrThrowArgs> = z.object({
   select: LevelSelectSchema.optional(),
   include: LevelIncludeSchema.optional(),
   where: LevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelFindFirstArgsSchema: z.ZodType<Prisma.SubLevelFindFirstArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
@@ -12979,7 +12983,7 @@ export const SubLevelFindFirstArgsSchema: z.ZodType<Prisma.SubLevelFindFirstArgs
   skip: z.number().optional(),
   distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SubLevelFindFirstOrThrowArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
@@ -12991,7 +12995,7 @@ export const SubLevelFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SubLevelFindFi
   skip: z.number().optional(),
   distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelFindManyArgsSchema: z.ZodType<Prisma.SubLevelFindManyArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
@@ -13003,7 +13007,7 @@ export const SubLevelFindManyArgsSchema: z.ZodType<Prisma.SubLevelFindManyArgs> 
   skip: z.number().optional(),
   distinct: z.union([ SubLevelScalarFieldEnumSchema,SubLevelScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelAggregateArgsSchema: z.ZodType<Prisma.SubLevelAggregateArgs> = z.object({
   where: SubLevelWhereInputSchema.optional(),
@@ -13011,7 +13015,7 @@ export const SubLevelAggregateArgsSchema: z.ZodType<Prisma.SubLevelAggregateArgs
   cursor: SubLevelWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelGroupByArgsSchema: z.ZodType<Prisma.SubLevelGroupByArgs> = z.object({
   where: SubLevelWhereInputSchema.optional(),
@@ -13020,21 +13024,21 @@ export const SubLevelGroupByArgsSchema: z.ZodType<Prisma.SubLevelGroupByArgs> = 
   having: SubLevelScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelFindUniqueArgsSchema: z.ZodType<Prisma.SubLevelFindUniqueArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
   include: SubLevelIncludeSchema.optional(),
   where: SubLevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.SubLevelFindUniqueOrThrowArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
   include: SubLevelIncludeSchema.optional(),
   where: SubLevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupFindFirstArgsSchema: z.ZodType<Prisma.FragmentGroupFindFirstArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
@@ -13046,7 +13050,7 @@ export const FragmentGroupFindFirstArgsSchema: z.ZodType<Prisma.FragmentGroupFin
   skip: z.number().optional(),
   distinct: z.union([ FragmentGroupScalarFieldEnumSchema,FragmentGroupScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentGroupFindFirstOrThrowArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
@@ -13058,7 +13062,7 @@ export const FragmentGroupFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentG
   skip: z.number().optional(),
   distinct: z.union([ FragmentGroupScalarFieldEnumSchema,FragmentGroupScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupFindManyArgsSchema: z.ZodType<Prisma.FragmentGroupFindManyArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
@@ -13070,7 +13074,7 @@ export const FragmentGroupFindManyArgsSchema: z.ZodType<Prisma.FragmentGroupFind
   skip: z.number().optional(),
   distinct: z.union([ FragmentGroupScalarFieldEnumSchema,FragmentGroupScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupAggregateArgsSchema: z.ZodType<Prisma.FragmentGroupAggregateArgs> = z.object({
   where: FragmentGroupWhereInputSchema.optional(),
@@ -13078,7 +13082,7 @@ export const FragmentGroupAggregateArgsSchema: z.ZodType<Prisma.FragmentGroupAgg
   cursor: FragmentGroupWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupGroupByArgsSchema: z.ZodType<Prisma.FragmentGroupGroupByArgs> = z.object({
   where: FragmentGroupWhereInputSchema.optional(),
@@ -13087,21 +13091,21 @@ export const FragmentGroupGroupByArgsSchema: z.ZodType<Prisma.FragmentGroupGroup
   having: FragmentGroupScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupFindUniqueArgsSchema: z.ZodType<Prisma.FragmentGroupFindUniqueArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
   include: FragmentGroupIncludeSchema.optional(),
   where: FragmentGroupWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FragmentGroupFindUniqueOrThrowArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
   include: FragmentGroupIncludeSchema.optional(),
   where: FragmentGroupWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentFindFirstArgsSchema: z.ZodType<Prisma.FragmentFindFirstArgs> = z.object({
   select: FragmentSelectSchema.optional(),
@@ -13113,7 +13117,7 @@ export const FragmentFindFirstArgsSchema: z.ZodType<Prisma.FragmentFindFirstArgs
   skip: z.number().optional(),
   distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentFindFirstOrThrowArgs> = z.object({
   select: FragmentSelectSchema.optional(),
@@ -13125,7 +13129,7 @@ export const FragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.FragmentFindFi
   skip: z.number().optional(),
   distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentFindManyArgsSchema: z.ZodType<Prisma.FragmentFindManyArgs> = z.object({
   select: FragmentSelectSchema.optional(),
@@ -13137,7 +13141,7 @@ export const FragmentFindManyArgsSchema: z.ZodType<Prisma.FragmentFindManyArgs> 
   skip: z.number().optional(),
   distinct: z.union([ FragmentScalarFieldEnumSchema,FragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentAggregateArgsSchema: z.ZodType<Prisma.FragmentAggregateArgs> = z.object({
   where: FragmentWhereInputSchema.optional(),
@@ -13145,7 +13149,7 @@ export const FragmentAggregateArgsSchema: z.ZodType<Prisma.FragmentAggregateArgs
   cursor: FragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupByArgsSchema: z.ZodType<Prisma.FragmentGroupByArgs> = z.object({
   where: FragmentWhereInputSchema.optional(),
@@ -13154,21 +13158,21 @@ export const FragmentGroupByArgsSchema: z.ZodType<Prisma.FragmentGroupByArgs> = 
   having: FragmentScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentFindUniqueArgsSchema: z.ZodType<Prisma.FragmentFindUniqueArgs> = z.object({
   select: FragmentSelectSchema.optional(),
   include: FragmentIncludeSchema.optional(),
   where: FragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.FragmentFindUniqueOrThrowArgs> = z.object({
   select: FragmentSelectSchema.optional(),
   include: FragmentIncludeSchema.optional(),
   where: FragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteFindFirstArgsSchema: z.ZodType<Prisma.NoteFindFirstArgs> = z.object({
   select: NoteSelectSchema.optional(),
@@ -13180,7 +13184,7 @@ export const NoteFindFirstArgsSchema: z.ZodType<Prisma.NoteFindFirstArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NoteFindFirstOrThrowArgs> = z.object({
   select: NoteSelectSchema.optional(),
@@ -13192,7 +13196,7 @@ export const NoteFindFirstOrThrowArgsSchema: z.ZodType<Prisma.NoteFindFirstOrThr
   skip: z.number().optional(),
   distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteFindManyArgsSchema: z.ZodType<Prisma.NoteFindManyArgs> = z.object({
   select: NoteSelectSchema.optional(),
@@ -13204,7 +13208,7 @@ export const NoteFindManyArgsSchema: z.ZodType<Prisma.NoteFindManyArgs> = z.obje
   skip: z.number().optional(),
   distinct: z.union([ NoteScalarFieldEnumSchema,NoteScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteAggregateArgsSchema: z.ZodType<Prisma.NoteAggregateArgs> = z.object({
   where: NoteWhereInputSchema.optional(),
@@ -13212,7 +13216,7 @@ export const NoteAggregateArgsSchema: z.ZodType<Prisma.NoteAggregateArgs> = z.ob
   cursor: NoteWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const NoteGroupByArgsSchema: z.ZodType<Prisma.NoteGroupByArgs> = z.object({
   where: NoteWhereInputSchema.optional(),
@@ -13221,21 +13225,21 @@ export const NoteGroupByArgsSchema: z.ZodType<Prisma.NoteGroupByArgs> = z.object
   having: NoteScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const NoteFindUniqueArgsSchema: z.ZodType<Prisma.NoteFindUniqueArgs> = z.object({
   select: NoteSelectSchema.optional(),
   include: NoteIncludeSchema.optional(),
   where: NoteWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.NoteFindUniqueOrThrowArgs> = z.object({
   select: NoteSelectSchema.optional(),
   include: NoteIncludeSchema.optional(),
   where: NoteWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeFindFirstArgsSchema: z.ZodType<Prisma.GameModeFindFirstArgs> = z.object({
   select: GameModeSelectSchema.optional(),
@@ -13247,7 +13251,7 @@ export const GameModeFindFirstArgsSchema: z.ZodType<Prisma.GameModeFindFirstArgs
   skip: z.number().optional(),
   distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameModeFindFirstOrThrowArgs> = z.object({
   select: GameModeSelectSchema.optional(),
@@ -13259,7 +13263,7 @@ export const GameModeFindFirstOrThrowArgsSchema: z.ZodType<Prisma.GameModeFindFi
   skip: z.number().optional(),
   distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeFindManyArgsSchema: z.ZodType<Prisma.GameModeFindManyArgs> = z.object({
   select: GameModeSelectSchema.optional(),
@@ -13271,7 +13275,7 @@ export const GameModeFindManyArgsSchema: z.ZodType<Prisma.GameModeFindManyArgs> 
   skip: z.number().optional(),
   distinct: z.union([ GameModeScalarFieldEnumSchema,GameModeScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeAggregateArgsSchema: z.ZodType<Prisma.GameModeAggregateArgs> = z.object({
   where: GameModeWhereInputSchema.optional(),
@@ -13279,7 +13283,7 @@ export const GameModeAggregateArgsSchema: z.ZodType<Prisma.GameModeAggregateArgs
   cursor: GameModeWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeGroupByArgsSchema: z.ZodType<Prisma.GameModeGroupByArgs> = z.object({
   where: GameModeWhereInputSchema.optional(),
@@ -13288,21 +13292,21 @@ export const GameModeGroupByArgsSchema: z.ZodType<Prisma.GameModeGroupByArgs> = 
   having: GameModeScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeFindUniqueArgsSchema: z.ZodType<Prisma.GameModeFindUniqueArgs> = z.object({
   select: GameModeSelectSchema.optional(),
   include: GameModeIncludeSchema.optional(),
   where: GameModeWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.GameModeFindUniqueOrThrowArgs> = z.object({
   select: GameModeSelectSchema.optional(),
   include: GameModeIncludeSchema.optional(),
   where: GameModeWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultFindFirstArgsSchema: z.ZodType<Prisma.LevelResultFindFirstArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
@@ -13314,7 +13318,7 @@ export const LevelResultFindFirstArgsSchema: z.ZodType<Prisma.LevelResultFindFir
   skip: z.number().optional(),
   distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelResultFindFirstOrThrowArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
@@ -13326,7 +13330,7 @@ export const LevelResultFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LevelResult
   skip: z.number().optional(),
   distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultFindManyArgsSchema: z.ZodType<Prisma.LevelResultFindManyArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
@@ -13338,7 +13342,7 @@ export const LevelResultFindManyArgsSchema: z.ZodType<Prisma.LevelResultFindMany
   skip: z.number().optional(),
   distinct: z.union([ LevelResultScalarFieldEnumSchema,LevelResultScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultAggregateArgsSchema: z.ZodType<Prisma.LevelResultAggregateArgs> = z.object({
   where: LevelResultWhereInputSchema.optional(),
@@ -13346,7 +13350,7 @@ export const LevelResultAggregateArgsSchema: z.ZodType<Prisma.LevelResultAggrega
   cursor: LevelResultWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultGroupByArgsSchema: z.ZodType<Prisma.LevelResultGroupByArgs> = z.object({
   where: LevelResultWhereInputSchema.optional(),
@@ -13355,21 +13359,21 @@ export const LevelResultGroupByArgsSchema: z.ZodType<Prisma.LevelResultGroupByAr
   having: LevelResultScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultFindUniqueArgsSchema: z.ZodType<Prisma.LevelResultFindUniqueArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
   include: LevelResultIncludeSchema.optional(),
   where: LevelResultWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.LevelResultFindUniqueOrThrowArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
   include: LevelResultIncludeSchema.optional(),
   where: LevelResultWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFindFirstArgsSchema: z.ZodType<Prisma.SceneFindFirstArgs> = z.object({
   select: SceneSelectSchema.optional(),
@@ -13381,7 +13385,7 @@ export const SceneFindFirstArgsSchema: z.ZodType<Prisma.SceneFindFirstArgs> = z.
   skip: z.number().optional(),
   distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFindFirstOrThrowArgs> = z.object({
   select: SceneSelectSchema.optional(),
@@ -13393,7 +13397,7 @@ export const SceneFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFindFirstOrT
   skip: z.number().optional(),
   distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFindManyArgsSchema: z.ZodType<Prisma.SceneFindManyArgs> = z.object({
   select: SceneSelectSchema.optional(),
@@ -13405,7 +13409,7 @@ export const SceneFindManyArgsSchema: z.ZodType<Prisma.SceneFindManyArgs> = z.ob
   skip: z.number().optional(),
   distinct: z.union([ SceneScalarFieldEnumSchema,SceneScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneAggregateArgsSchema: z.ZodType<Prisma.SceneAggregateArgs> = z.object({
   where: SceneWhereInputSchema.optional(),
@@ -13413,7 +13417,7 @@ export const SceneAggregateArgsSchema: z.ZodType<Prisma.SceneAggregateArgs> = z.
   cursor: SceneWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneGroupByArgsSchema: z.ZodType<Prisma.SceneGroupByArgs> = z.object({
   where: SceneWhereInputSchema.optional(),
@@ -13422,21 +13426,21 @@ export const SceneGroupByArgsSchema: z.ZodType<Prisma.SceneGroupByArgs> = z.obje
   having: SceneScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFindUniqueArgsSchema: z.ZodType<Prisma.SceneFindUniqueArgs> = z.object({
   select: SceneSelectSchema.optional(),
   include: SceneIncludeSchema.optional(),
   where: SceneWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.SceneFindUniqueOrThrowArgs> = z.object({
   select: SceneSelectSchema.optional(),
   include: SceneIncludeSchema.optional(),
   where: SceneWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentFindFirstArgsSchema: z.ZodType<Prisma.SceneFragmentFindFirstArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
@@ -13448,7 +13452,7 @@ export const SceneFragmentFindFirstArgsSchema: z.ZodType<Prisma.SceneFragmentFin
   skip: z.number().optional(),
   distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFragmentFindFirstOrThrowArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
@@ -13460,7 +13464,7 @@ export const SceneFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.SceneFrag
   skip: z.number().optional(),
   distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentFindManyArgsSchema: z.ZodType<Prisma.SceneFragmentFindManyArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
@@ -13472,7 +13476,7 @@ export const SceneFragmentFindManyArgsSchema: z.ZodType<Prisma.SceneFragmentFind
   skip: z.number().optional(),
   distinct: z.union([ SceneFragmentScalarFieldEnumSchema,SceneFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentAggregateArgsSchema: z.ZodType<Prisma.SceneFragmentAggregateArgs> = z.object({
   where: SceneFragmentWhereInputSchema.optional(),
@@ -13480,7 +13484,7 @@ export const SceneFragmentAggregateArgsSchema: z.ZodType<Prisma.SceneFragmentAgg
   cursor: SceneFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentGroupByArgsSchema: z.ZodType<Prisma.SceneFragmentGroupByArgs> = z.object({
   where: SceneFragmentWhereInputSchema.optional(),
@@ -13489,21 +13493,21 @@ export const SceneFragmentGroupByArgsSchema: z.ZodType<Prisma.SceneFragmentGroup
   having: SceneFragmentScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentFindUniqueArgsSchema: z.ZodType<Prisma.SceneFragmentFindUniqueArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
   include: SceneFragmentIncludeSchema.optional(),
   where: SceneFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.SceneFragmentFindUniqueOrThrowArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
   include: SceneFragmentIncludeSchema.optional(),
   where: SceneFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentFindFirstArgsSchema: z.ZodType<Prisma.RelistenFragmentFindFirstArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
@@ -13515,7 +13519,7 @@ export const RelistenFragmentFindFirstArgsSchema: z.ZodType<Prisma.RelistenFragm
   skip: z.number().optional(),
   distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.RelistenFragmentFindFirstOrThrowArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
@@ -13527,7 +13531,7 @@ export const RelistenFragmentFindFirstOrThrowArgsSchema: z.ZodType<Prisma.Relist
   skip: z.number().optional(),
   distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentFindManyArgsSchema: z.ZodType<Prisma.RelistenFragmentFindManyArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
@@ -13539,7 +13543,7 @@ export const RelistenFragmentFindManyArgsSchema: z.ZodType<Prisma.RelistenFragme
   skip: z.number().optional(),
   distinct: z.union([ RelistenFragmentScalarFieldEnumSchema,RelistenFragmentScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentAggregateArgsSchema: z.ZodType<Prisma.RelistenFragmentAggregateArgs> = z.object({
   where: RelistenFragmentWhereInputSchema.optional(),
@@ -13547,7 +13551,7 @@ export const RelistenFragmentAggregateArgsSchema: z.ZodType<Prisma.RelistenFragm
   cursor: RelistenFragmentWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentGroupByArgsSchema: z.ZodType<Prisma.RelistenFragmentGroupByArgs> = z.object({
   where: RelistenFragmentWhereInputSchema.optional(),
@@ -13556,21 +13560,21 @@ export const RelistenFragmentGroupByArgsSchema: z.ZodType<Prisma.RelistenFragmen
   having: RelistenFragmentScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentFindUniqueArgsSchema: z.ZodType<Prisma.RelistenFragmentFindUniqueArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
   include: RelistenFragmentIncludeSchema.optional(),
   where: RelistenFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.RelistenFragmentFindUniqueOrThrowArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
   include: RelistenFragmentIncludeSchema.optional(),
   where: RelistenFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsFindFirstArgsSchema: z.ZodType<Prisma.AppSettingsFindFirstArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
@@ -13581,7 +13585,7 @@ export const AppSettingsFindFirstArgsSchema: z.ZodType<Prisma.AppSettingsFindFir
   skip: z.number().optional(),
   distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AppSettingsFindFirstOrThrowArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
@@ -13592,7 +13596,7 @@ export const AppSettingsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.AppSettings
   skip: z.number().optional(),
   distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsFindManyArgsSchema: z.ZodType<Prisma.AppSettingsFindManyArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
@@ -13603,7 +13607,7 @@ export const AppSettingsFindManyArgsSchema: z.ZodType<Prisma.AppSettingsFindMany
   skip: z.number().optional(),
   distinct: z.union([ AppSettingsScalarFieldEnumSchema,AppSettingsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsAggregateArgsSchema: z.ZodType<Prisma.AppSettingsAggregateArgs> = z.object({
   where: AppSettingsWhereInputSchema.optional(),
@@ -13611,7 +13615,7 @@ export const AppSettingsAggregateArgsSchema: z.ZodType<Prisma.AppSettingsAggrega
   cursor: AppSettingsWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsGroupByArgsSchema: z.ZodType<Prisma.AppSettingsGroupByArgs> = z.object({
   where: AppSettingsWhereInputSchema.optional(),
@@ -13620,19 +13624,19 @@ export const AppSettingsGroupByArgsSchema: z.ZodType<Prisma.AppSettingsGroupByAr
   having: AppSettingsScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsFindUniqueArgsSchema: z.ZodType<Prisma.AppSettingsFindUniqueArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
   where: AppSettingsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.AppSettingsFindUniqueOrThrowArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
   where: AppSettingsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerFindFirstArgsSchema: z.ZodType<Prisma.QuestionAnswerFindFirstArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
@@ -13644,7 +13648,7 @@ export const QuestionAnswerFindFirstArgsSchema: z.ZodType<Prisma.QuestionAnswerF
   skip: z.number().optional(),
   distinct: z.union([ QuestionAnswerScalarFieldEnumSchema,QuestionAnswerScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerFindFirstOrThrowArgsSchema: z.ZodType<Prisma.QuestionAnswerFindFirstOrThrowArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
@@ -13656,7 +13660,7 @@ export const QuestionAnswerFindFirstOrThrowArgsSchema: z.ZodType<Prisma.Question
   skip: z.number().optional(),
   distinct: z.union([ QuestionAnswerScalarFieldEnumSchema,QuestionAnswerScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerFindManyArgsSchema: z.ZodType<Prisma.QuestionAnswerFindManyArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
@@ -13668,7 +13672,7 @@ export const QuestionAnswerFindManyArgsSchema: z.ZodType<Prisma.QuestionAnswerFi
   skip: z.number().optional(),
   distinct: z.union([ QuestionAnswerScalarFieldEnumSchema,QuestionAnswerScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerAggregateArgsSchema: z.ZodType<Prisma.QuestionAnswerAggregateArgs> = z.object({
   where: QuestionAnswerWhereInputSchema.optional(),
@@ -13676,7 +13680,7 @@ export const QuestionAnswerAggregateArgsSchema: z.ZodType<Prisma.QuestionAnswerA
   cursor: QuestionAnswerWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerGroupByArgsSchema: z.ZodType<Prisma.QuestionAnswerGroupByArgs> = z.object({
   where: QuestionAnswerWhereInputSchema.optional(),
@@ -13685,21 +13689,21 @@ export const QuestionAnswerGroupByArgsSchema: z.ZodType<Prisma.QuestionAnswerGro
   having: QuestionAnswerScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerFindUniqueArgsSchema: z.ZodType<Prisma.QuestionAnswerFindUniqueArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
   include: QuestionAnswerIncludeSchema.optional(),
   where: QuestionAnswerWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.QuestionAnswerFindUniqueOrThrowArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
   include: QuestionAnswerIncludeSchema.optional(),
   where: QuestionAnswerWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionFindFirstArgsSchema: z.ZodType<Prisma.QuestionFindFirstArgs> = z.object({
   select: QuestionSelectSchema.optional(),
@@ -13710,7 +13714,7 @@ export const QuestionFindFirstArgsSchema: z.ZodType<Prisma.QuestionFindFirstArgs
   skip: z.number().optional(),
   distinct: z.union([ QuestionScalarFieldEnumSchema,QuestionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.QuestionFindFirstOrThrowArgs> = z.object({
   select: QuestionSelectSchema.optional(),
@@ -13721,7 +13725,7 @@ export const QuestionFindFirstOrThrowArgsSchema: z.ZodType<Prisma.QuestionFindFi
   skip: z.number().optional(),
   distinct: z.union([ QuestionScalarFieldEnumSchema,QuestionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionFindManyArgsSchema: z.ZodType<Prisma.QuestionFindManyArgs> = z.object({
   select: QuestionSelectSchema.optional(),
@@ -13732,7 +13736,7 @@ export const QuestionFindManyArgsSchema: z.ZodType<Prisma.QuestionFindManyArgs> 
   skip: z.number().optional(),
   distinct: z.union([ QuestionScalarFieldEnumSchema,QuestionScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAggregateArgsSchema: z.ZodType<Prisma.QuestionAggregateArgs> = z.object({
   where: QuestionWhereInputSchema.optional(),
@@ -13740,7 +13744,7 @@ export const QuestionAggregateArgsSchema: z.ZodType<Prisma.QuestionAggregateArgs
   cursor: QuestionWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionGroupByArgsSchema: z.ZodType<Prisma.QuestionGroupByArgs> = z.object({
   where: QuestionWhereInputSchema.optional(),
@@ -13749,19 +13753,19 @@ export const QuestionGroupByArgsSchema: z.ZodType<Prisma.QuestionGroupByArgs> = 
   having: QuestionScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionFindUniqueArgsSchema: z.ZodType<Prisma.QuestionFindUniqueArgs> = z.object({
   select: QuestionSelectSchema.optional(),
   where: QuestionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.QuestionFindUniqueOrThrowArgs> = z.object({
   select: QuestionSelectSchema.optional(),
   where: QuestionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityFindFirstArgsSchema: z.ZodType<Prisma.ActivityFindFirstArgs> = z.object({
   select: ActivitySelectSchema.optional(),
@@ -13773,7 +13777,7 @@ export const ActivityFindFirstArgsSchema: z.ZodType<Prisma.ActivityFindFirstArgs
   skip: z.number().optional(),
   distinct: z.union([ ActivityScalarFieldEnumSchema,ActivityScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityFindFirstOrThrowArgsSchema: z.ZodType<Prisma.ActivityFindFirstOrThrowArgs> = z.object({
   select: ActivitySelectSchema.optional(),
@@ -13785,7 +13789,7 @@ export const ActivityFindFirstOrThrowArgsSchema: z.ZodType<Prisma.ActivityFindFi
   skip: z.number().optional(),
   distinct: z.union([ ActivityScalarFieldEnumSchema,ActivityScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityFindManyArgsSchema: z.ZodType<Prisma.ActivityFindManyArgs> = z.object({
   select: ActivitySelectSchema.optional(),
@@ -13797,7 +13801,7 @@ export const ActivityFindManyArgsSchema: z.ZodType<Prisma.ActivityFindManyArgs> 
   skip: z.number().optional(),
   distinct: z.union([ ActivityScalarFieldEnumSchema,ActivityScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityAggregateArgsSchema: z.ZodType<Prisma.ActivityAggregateArgs> = z.object({
   where: ActivityWhereInputSchema.optional(),
@@ -13805,7 +13809,7 @@ export const ActivityAggregateArgsSchema: z.ZodType<Prisma.ActivityAggregateArgs
   cursor: ActivityWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityGroupByArgsSchema: z.ZodType<Prisma.ActivityGroupByArgs> = z.object({
   where: ActivityWhereInputSchema.optional(),
@@ -13814,21 +13818,21 @@ export const ActivityGroupByArgsSchema: z.ZodType<Prisma.ActivityGroupByArgs> = 
   having: ActivityScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityFindUniqueArgsSchema: z.ZodType<Prisma.ActivityFindUniqueArgs> = z.object({
   select: ActivitySelectSchema.optional(),
   include: ActivityIncludeSchema.optional(),
   where: ActivityWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.ActivityFindUniqueOrThrowArgs> = z.object({
   select: ActivitySelectSchema.optional(),
   include: ActivityIncludeSchema.optional(),
   where: ActivityWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsFindFirstArgsSchema: z.ZodType<Prisma.PointsFindFirstArgs> = z.object({
   select: PointsSelectSchema.optional(),
@@ -13840,7 +13844,7 @@ export const PointsFindFirstArgsSchema: z.ZodType<Prisma.PointsFindFirstArgs> = 
   skip: z.number().optional(),
   distinct: z.union([ PointsScalarFieldEnumSchema,PointsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.PointsFindFirstOrThrowArgs> = z.object({
   select: PointsSelectSchema.optional(),
@@ -13852,7 +13856,7 @@ export const PointsFindFirstOrThrowArgsSchema: z.ZodType<Prisma.PointsFindFirstO
   skip: z.number().optional(),
   distinct: z.union([ PointsScalarFieldEnumSchema,PointsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsFindManyArgsSchema: z.ZodType<Prisma.PointsFindManyArgs> = z.object({
   select: PointsSelectSchema.optional(),
@@ -13864,7 +13868,7 @@ export const PointsFindManyArgsSchema: z.ZodType<Prisma.PointsFindManyArgs> = z.
   skip: z.number().optional(),
   distinct: z.union([ PointsScalarFieldEnumSchema,PointsScalarFieldEnumSchema.array() ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsAggregateArgsSchema: z.ZodType<Prisma.PointsAggregateArgs> = z.object({
   where: PointsWhereInputSchema.optional(),
@@ -13872,7 +13876,7 @@ export const PointsAggregateArgsSchema: z.ZodType<Prisma.PointsAggregateArgs> = 
   cursor: PointsWhereUniqueInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const PointsGroupByArgsSchema: z.ZodType<Prisma.PointsGroupByArgs> = z.object({
   where: PointsWhereInputSchema.optional(),
@@ -13881,28 +13885,28 @@ export const PointsGroupByArgsSchema: z.ZodType<Prisma.PointsGroupByArgs> = z.ob
   having: PointsScalarWhereWithAggregatesInputSchema.optional(),
   take: z.number().optional(),
   skip: z.number().optional(),
-}).strict()
+}).strict() ;
 
 export const PointsFindUniqueArgsSchema: z.ZodType<Prisma.PointsFindUniqueArgs> = z.object({
   select: PointsSelectSchema.optional(),
   include: PointsIncludeSchema.optional(),
   where: PointsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.PointsFindUniqueOrThrowArgs> = z.object({
   select: PointsSelectSchema.optional(),
   include: PointsIncludeSchema.optional(),
   where: PointsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountCreateArgsSchema: z.ZodType<Prisma.AccountCreateArgs> = z.object({
   select: AccountSelectSchema.optional(),
   include: AccountIncludeSchema.optional(),
   data: z.union([ AccountCreateInputSchema,AccountUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountUpsertArgsSchema: z.ZodType<Prisma.AccountUpsertArgs> = z.object({
   select: AccountSelectSchema.optional(),
@@ -13911,19 +13915,19 @@ export const AccountUpsertArgsSchema: z.ZodType<Prisma.AccountUpsertArgs> = z.ob
   create: z.union([ AccountCreateInputSchema,AccountUncheckedCreateInputSchema ]),
   update: z.union([ AccountUpdateInputSchema,AccountUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountCreateManyArgsSchema: z.ZodType<Prisma.AccountCreateManyArgs> = z.object({
   data: z.union([ AccountCreateManyInputSchema,AccountCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const AccountDeleteArgsSchema: z.ZodType<Prisma.AccountDeleteArgs> = z.object({
   select: AccountSelectSchema.optional(),
   include: AccountIncludeSchema.optional(),
   where: AccountWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountUpdateArgsSchema: z.ZodType<Prisma.AccountUpdateArgs> = z.object({
   select: AccountSelectSchema.optional(),
@@ -13931,23 +13935,23 @@ export const AccountUpdateArgsSchema: z.ZodType<Prisma.AccountUpdateArgs> = z.ob
   data: z.union([ AccountUpdateInputSchema,AccountUncheckedUpdateInputSchema ]),
   where: AccountWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountUpdateManyArgsSchema: z.ZodType<Prisma.AccountUpdateManyArgs> = z.object({
   data: z.union([ AccountUpdateManyMutationInputSchema,AccountUncheckedUpdateManyInputSchema ]),
   where: AccountWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AccountDeleteManyArgsSchema: z.ZodType<Prisma.AccountDeleteManyArgs> = z.object({
   where: AccountWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionCreateArgsSchema: z.ZodType<Prisma.SessionCreateArgs> = z.object({
   select: SessionSelectSchema.optional(),
   include: SessionIncludeSchema.optional(),
   data: z.union([ SessionCreateInputSchema,SessionUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionUpsertArgsSchema: z.ZodType<Prisma.SessionUpsertArgs> = z.object({
   select: SessionSelectSchema.optional(),
@@ -13956,19 +13960,19 @@ export const SessionUpsertArgsSchema: z.ZodType<Prisma.SessionUpsertArgs> = z.ob
   create: z.union([ SessionCreateInputSchema,SessionUncheckedCreateInputSchema ]),
   update: z.union([ SessionUpdateInputSchema,SessionUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionCreateManyArgsSchema: z.ZodType<Prisma.SessionCreateManyArgs> = z.object({
   data: z.union([ SessionCreateManyInputSchema,SessionCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const SessionDeleteArgsSchema: z.ZodType<Prisma.SessionDeleteArgs> = z.object({
   select: SessionSelectSchema.optional(),
   include: SessionIncludeSchema.optional(),
   where: SessionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionUpdateArgsSchema: z.ZodType<Prisma.SessionUpdateArgs> = z.object({
   select: SessionSelectSchema.optional(),
@@ -13976,22 +13980,22 @@ export const SessionUpdateArgsSchema: z.ZodType<Prisma.SessionUpdateArgs> = z.ob
   data: z.union([ SessionUpdateInputSchema,SessionUncheckedUpdateInputSchema ]),
   where: SessionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionUpdateManyArgsSchema: z.ZodType<Prisma.SessionUpdateManyArgs> = z.object({
   data: z.union([ SessionUpdateManyMutationInputSchema,SessionUncheckedUpdateManyInputSchema ]),
   where: SessionWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SessionDeleteManyArgsSchema: z.ZodType<Prisma.SessionDeleteManyArgs> = z.object({
   where: SessionWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenCreateArgsSchema: z.ZodType<Prisma.VerificationTokenCreateArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
   data: z.union([ VerificationTokenCreateInputSchema,VerificationTokenUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenUpsertArgsSchema: z.ZodType<Prisma.VerificationTokenUpsertArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
@@ -13999,41 +14003,41 @@ export const VerificationTokenUpsertArgsSchema: z.ZodType<Prisma.VerificationTok
   create: z.union([ VerificationTokenCreateInputSchema,VerificationTokenUncheckedCreateInputSchema ]),
   update: z.union([ VerificationTokenUpdateInputSchema,VerificationTokenUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenCreateManyArgsSchema: z.ZodType<Prisma.VerificationTokenCreateManyArgs> = z.object({
   data: z.union([ VerificationTokenCreateManyInputSchema,VerificationTokenCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenDeleteArgsSchema: z.ZodType<Prisma.VerificationTokenDeleteArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
   where: VerificationTokenWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenUpdateArgsSchema: z.ZodType<Prisma.VerificationTokenUpdateArgs> = z.object({
   select: VerificationTokenSelectSchema.optional(),
   data: z.union([ VerificationTokenUpdateInputSchema,VerificationTokenUncheckedUpdateInputSchema ]),
   where: VerificationTokenWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenUpdateManyArgsSchema: z.ZodType<Prisma.VerificationTokenUpdateManyArgs> = z.object({
   data: z.union([ VerificationTokenUpdateManyMutationInputSchema,VerificationTokenUncheckedUpdateManyInputSchema ]),
   where: VerificationTokenWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const VerificationTokenDeleteManyArgsSchema: z.ZodType<Prisma.VerificationTokenDeleteManyArgs> = z.object({
   where: VerificationTokenWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z.object({
   select: UserSelectSchema.optional(),
   include: UserIncludeSchema.optional(),
   data: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
   select: UserSelectSchema.optional(),
@@ -14042,19 +14046,19 @@ export const UserUpsertArgsSchema: z.ZodType<Prisma.UserUpsertArgs> = z.object({
   create: z.union([ UserCreateInputSchema,UserUncheckedCreateInputSchema ]),
   update: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserCreateManyArgsSchema: z.ZodType<Prisma.UserCreateManyArgs> = z.object({
   data: z.union([ UserCreateManyInputSchema,UserCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const UserDeleteArgsSchema: z.ZodType<Prisma.UserDeleteArgs> = z.object({
   select: UserSelectSchema.optional(),
   include: UserIncludeSchema.optional(),
   where: UserWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
   select: UserSelectSchema.optional(),
@@ -14062,23 +14066,23 @@ export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
   data: z.union([ UserUpdateInputSchema,UserUncheckedUpdateInputSchema ]),
   where: UserWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserUpdateManyArgsSchema: z.ZodType<Prisma.UserUpdateManyArgs> = z.object({
   data: z.union([ UserUpdateManyMutationInputSchema,UserUncheckedUpdateManyInputSchema ]),
   where: UserWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const UserDeleteManyArgsSchema: z.ZodType<Prisma.UserDeleteManyArgs> = z.object({
   where: UserWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamCreateArgsSchema: z.ZodType<Prisma.TeamCreateArgs> = z.object({
   select: TeamSelectSchema.optional(),
   include: TeamIncludeSchema.optional(),
   data: z.union([ TeamCreateInputSchema,TeamUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamUpsertArgsSchema: z.ZodType<Prisma.TeamUpsertArgs> = z.object({
   select: TeamSelectSchema.optional(),
@@ -14087,19 +14091,19 @@ export const TeamUpsertArgsSchema: z.ZodType<Prisma.TeamUpsertArgs> = z.object({
   create: z.union([ TeamCreateInputSchema,TeamUncheckedCreateInputSchema ]),
   update: z.union([ TeamUpdateInputSchema,TeamUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamCreateManyArgsSchema: z.ZodType<Prisma.TeamCreateManyArgs> = z.object({
   data: z.union([ TeamCreateManyInputSchema,TeamCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const TeamDeleteArgsSchema: z.ZodType<Prisma.TeamDeleteArgs> = z.object({
   select: TeamSelectSchema.optional(),
   include: TeamIncludeSchema.optional(),
   where: TeamWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamUpdateArgsSchema: z.ZodType<Prisma.TeamUpdateArgs> = z.object({
   select: TeamSelectSchema.optional(),
@@ -14107,23 +14111,23 @@ export const TeamUpdateArgsSchema: z.ZodType<Prisma.TeamUpdateArgs> = z.object({
   data: z.union([ TeamUpdateInputSchema,TeamUncheckedUpdateInputSchema ]),
   where: TeamWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamUpdateManyArgsSchema: z.ZodType<Prisma.TeamUpdateManyArgs> = z.object({
   data: z.union([ TeamUpdateManyMutationInputSchema,TeamUncheckedUpdateManyInputSchema ]),
   where: TeamWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const TeamDeleteManyArgsSchema: z.ZodType<Prisma.TeamDeleteManyArgs> = z.object({
   where: TeamWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameCreateArgsSchema: z.ZodType<Prisma.GameCreateArgs> = z.object({
   select: GameSelectSchema.optional(),
   include: GameIncludeSchema.optional(),
   data: z.union([ GameCreateInputSchema,GameUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameUpsertArgsSchema: z.ZodType<Prisma.GameUpsertArgs> = z.object({
   select: GameSelectSchema.optional(),
@@ -14132,19 +14136,19 @@ export const GameUpsertArgsSchema: z.ZodType<Prisma.GameUpsertArgs> = z.object({
   create: z.union([ GameCreateInputSchema,GameUncheckedCreateInputSchema ]),
   update: z.union([ GameUpdateInputSchema,GameUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameCreateManyArgsSchema: z.ZodType<Prisma.GameCreateManyArgs> = z.object({
   data: z.union([ GameCreateManyInputSchema,GameCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const GameDeleteArgsSchema: z.ZodType<Prisma.GameDeleteArgs> = z.object({
   select: GameSelectSchema.optional(),
   include: GameIncludeSchema.optional(),
   where: GameWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameUpdateArgsSchema: z.ZodType<Prisma.GameUpdateArgs> = z.object({
   select: GameSelectSchema.optional(),
@@ -14152,23 +14156,23 @@ export const GameUpdateArgsSchema: z.ZodType<Prisma.GameUpdateArgs> = z.object({
   data: z.union([ GameUpdateInputSchema,GameUncheckedUpdateInputSchema ]),
   where: GameWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameUpdateManyArgsSchema: z.ZodType<Prisma.GameUpdateManyArgs> = z.object({
   data: z.union([ GameUpdateManyMutationInputSchema,GameUncheckedUpdateManyInputSchema ]),
   where: GameWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameDeleteManyArgsSchema: z.ZodType<Prisma.GameDeleteManyArgs> = z.object({
   where: GameWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelCreateArgsSchema: z.ZodType<Prisma.LevelCreateArgs> = z.object({
   select: LevelSelectSchema.optional(),
   include: LevelIncludeSchema.optional(),
   data: z.union([ LevelCreateInputSchema,LevelUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelUpsertArgsSchema: z.ZodType<Prisma.LevelUpsertArgs> = z.object({
   select: LevelSelectSchema.optional(),
@@ -14177,19 +14181,19 @@ export const LevelUpsertArgsSchema: z.ZodType<Prisma.LevelUpsertArgs> = z.object
   create: z.union([ LevelCreateInputSchema,LevelUncheckedCreateInputSchema ]),
   update: z.union([ LevelUpdateInputSchema,LevelUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelCreateManyArgsSchema: z.ZodType<Prisma.LevelCreateManyArgs> = z.object({
   data: z.union([ LevelCreateManyInputSchema,LevelCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelDeleteArgsSchema: z.ZodType<Prisma.LevelDeleteArgs> = z.object({
   select: LevelSelectSchema.optional(),
   include: LevelIncludeSchema.optional(),
   where: LevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelUpdateArgsSchema: z.ZodType<Prisma.LevelUpdateArgs> = z.object({
   select: LevelSelectSchema.optional(),
@@ -14197,23 +14201,23 @@ export const LevelUpdateArgsSchema: z.ZodType<Prisma.LevelUpdateArgs> = z.object
   data: z.union([ LevelUpdateInputSchema,LevelUncheckedUpdateInputSchema ]),
   where: LevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelUpdateManyArgsSchema: z.ZodType<Prisma.LevelUpdateManyArgs> = z.object({
   data: z.union([ LevelUpdateManyMutationInputSchema,LevelUncheckedUpdateManyInputSchema ]),
   where: LevelWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelDeleteManyArgsSchema: z.ZodType<Prisma.LevelDeleteManyArgs> = z.object({
   where: LevelWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelCreateArgsSchema: z.ZodType<Prisma.SubLevelCreateArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
   include: SubLevelIncludeSchema.optional(),
   data: z.union([ SubLevelCreateInputSchema,SubLevelUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelUpsertArgsSchema: z.ZodType<Prisma.SubLevelUpsertArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
@@ -14222,19 +14226,19 @@ export const SubLevelUpsertArgsSchema: z.ZodType<Prisma.SubLevelUpsertArgs> = z.
   create: z.union([ SubLevelCreateInputSchema,SubLevelUncheckedCreateInputSchema ]),
   update: z.union([ SubLevelUpdateInputSchema,SubLevelUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelCreateManyArgsSchema: z.ZodType<Prisma.SubLevelCreateManyArgs> = z.object({
   data: z.union([ SubLevelCreateManyInputSchema,SubLevelCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelDeleteArgsSchema: z.ZodType<Prisma.SubLevelDeleteArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
   include: SubLevelIncludeSchema.optional(),
   where: SubLevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelUpdateArgsSchema: z.ZodType<Prisma.SubLevelUpdateArgs> = z.object({
   select: SubLevelSelectSchema.optional(),
@@ -14242,23 +14246,23 @@ export const SubLevelUpdateArgsSchema: z.ZodType<Prisma.SubLevelUpdateArgs> = z.
   data: z.union([ SubLevelUpdateInputSchema,SubLevelUncheckedUpdateInputSchema ]),
   where: SubLevelWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelUpdateManyArgsSchema: z.ZodType<Prisma.SubLevelUpdateManyArgs> = z.object({
   data: z.union([ SubLevelUpdateManyMutationInputSchema,SubLevelUncheckedUpdateManyInputSchema ]),
   where: SubLevelWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SubLevelDeleteManyArgsSchema: z.ZodType<Prisma.SubLevelDeleteManyArgs> = z.object({
   where: SubLevelWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupCreateArgsSchema: z.ZodType<Prisma.FragmentGroupCreateArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
   include: FragmentGroupIncludeSchema.optional(),
   data: z.union([ FragmentGroupCreateInputSchema,FragmentGroupUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupUpsertArgsSchema: z.ZodType<Prisma.FragmentGroupUpsertArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
@@ -14267,19 +14271,19 @@ export const FragmentGroupUpsertArgsSchema: z.ZodType<Prisma.FragmentGroupUpsert
   create: z.union([ FragmentGroupCreateInputSchema,FragmentGroupUncheckedCreateInputSchema ]),
   update: z.union([ FragmentGroupUpdateInputSchema,FragmentGroupUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupCreateManyArgsSchema: z.ZodType<Prisma.FragmentGroupCreateManyArgs> = z.object({
   data: z.union([ FragmentGroupCreateManyInputSchema,FragmentGroupCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupDeleteArgsSchema: z.ZodType<Prisma.FragmentGroupDeleteArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
   include: FragmentGroupIncludeSchema.optional(),
   where: FragmentGroupWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupUpdateArgsSchema: z.ZodType<Prisma.FragmentGroupUpdateArgs> = z.object({
   select: FragmentGroupSelectSchema.optional(),
@@ -14287,23 +14291,23 @@ export const FragmentGroupUpdateArgsSchema: z.ZodType<Prisma.FragmentGroupUpdate
   data: z.union([ FragmentGroupUpdateInputSchema,FragmentGroupUncheckedUpdateInputSchema ]),
   where: FragmentGroupWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupUpdateManyArgsSchema: z.ZodType<Prisma.FragmentGroupUpdateManyArgs> = z.object({
   data: z.union([ FragmentGroupUpdateManyMutationInputSchema,FragmentGroupUncheckedUpdateManyInputSchema ]),
   where: FragmentGroupWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentGroupDeleteManyArgsSchema: z.ZodType<Prisma.FragmentGroupDeleteManyArgs> = z.object({
   where: FragmentGroupWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentCreateArgsSchema: z.ZodType<Prisma.FragmentCreateArgs> = z.object({
   select: FragmentSelectSchema.optional(),
   include: FragmentIncludeSchema.optional(),
   data: z.union([ FragmentCreateInputSchema,FragmentUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentUpsertArgsSchema: z.ZodType<Prisma.FragmentUpsertArgs> = z.object({
   select: FragmentSelectSchema.optional(),
@@ -14312,19 +14316,19 @@ export const FragmentUpsertArgsSchema: z.ZodType<Prisma.FragmentUpsertArgs> = z.
   create: z.union([ FragmentCreateInputSchema,FragmentUncheckedCreateInputSchema ]),
   update: z.union([ FragmentUpdateInputSchema,FragmentUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentCreateManyArgsSchema: z.ZodType<Prisma.FragmentCreateManyArgs> = z.object({
   data: z.union([ FragmentCreateManyInputSchema,FragmentCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentDeleteArgsSchema: z.ZodType<Prisma.FragmentDeleteArgs> = z.object({
   select: FragmentSelectSchema.optional(),
   include: FragmentIncludeSchema.optional(),
   where: FragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentUpdateArgsSchema: z.ZodType<Prisma.FragmentUpdateArgs> = z.object({
   select: FragmentSelectSchema.optional(),
@@ -14332,23 +14336,23 @@ export const FragmentUpdateArgsSchema: z.ZodType<Prisma.FragmentUpdateArgs> = z.
   data: z.union([ FragmentUpdateInputSchema,FragmentUncheckedUpdateInputSchema ]),
   where: FragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentUpdateManyArgsSchema: z.ZodType<Prisma.FragmentUpdateManyArgs> = z.object({
   data: z.union([ FragmentUpdateManyMutationInputSchema,FragmentUncheckedUpdateManyInputSchema ]),
   where: FragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const FragmentDeleteManyArgsSchema: z.ZodType<Prisma.FragmentDeleteManyArgs> = z.object({
   where: FragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteCreateArgsSchema: z.ZodType<Prisma.NoteCreateArgs> = z.object({
   select: NoteSelectSchema.optional(),
   include: NoteIncludeSchema.optional(),
   data: z.union([ NoteCreateInputSchema,NoteUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteUpsertArgsSchema: z.ZodType<Prisma.NoteUpsertArgs> = z.object({
   select: NoteSelectSchema.optional(),
@@ -14357,19 +14361,19 @@ export const NoteUpsertArgsSchema: z.ZodType<Prisma.NoteUpsertArgs> = z.object({
   create: z.union([ NoteCreateInputSchema,NoteUncheckedCreateInputSchema ]),
   update: z.union([ NoteUpdateInputSchema,NoteUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteCreateManyArgsSchema: z.ZodType<Prisma.NoteCreateManyArgs> = z.object({
   data: z.union([ NoteCreateManyInputSchema,NoteCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const NoteDeleteArgsSchema: z.ZodType<Prisma.NoteDeleteArgs> = z.object({
   select: NoteSelectSchema.optional(),
   include: NoteIncludeSchema.optional(),
   where: NoteWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteUpdateArgsSchema: z.ZodType<Prisma.NoteUpdateArgs> = z.object({
   select: NoteSelectSchema.optional(),
@@ -14377,23 +14381,23 @@ export const NoteUpdateArgsSchema: z.ZodType<Prisma.NoteUpdateArgs> = z.object({
   data: z.union([ NoteUpdateInputSchema,NoteUncheckedUpdateInputSchema ]),
   where: NoteWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteUpdateManyArgsSchema: z.ZodType<Prisma.NoteUpdateManyArgs> = z.object({
   data: z.union([ NoteUpdateManyMutationInputSchema,NoteUncheckedUpdateManyInputSchema ]),
   where: NoteWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const NoteDeleteManyArgsSchema: z.ZodType<Prisma.NoteDeleteManyArgs> = z.object({
   where: NoteWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeCreateArgsSchema: z.ZodType<Prisma.GameModeCreateArgs> = z.object({
   select: GameModeSelectSchema.optional(),
   include: GameModeIncludeSchema.optional(),
   data: z.union([ GameModeCreateInputSchema,GameModeUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeUpsertArgsSchema: z.ZodType<Prisma.GameModeUpsertArgs> = z.object({
   select: GameModeSelectSchema.optional(),
@@ -14402,19 +14406,19 @@ export const GameModeUpsertArgsSchema: z.ZodType<Prisma.GameModeUpsertArgs> = z.
   create: z.union([ GameModeCreateInputSchema,GameModeUncheckedCreateInputSchema ]),
   update: z.union([ GameModeUpdateInputSchema,GameModeUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeCreateManyArgsSchema: z.ZodType<Prisma.GameModeCreateManyArgs> = z.object({
   data: z.union([ GameModeCreateManyInputSchema,GameModeCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeDeleteArgsSchema: z.ZodType<Prisma.GameModeDeleteArgs> = z.object({
   select: GameModeSelectSchema.optional(),
   include: GameModeIncludeSchema.optional(),
   where: GameModeWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeUpdateArgsSchema: z.ZodType<Prisma.GameModeUpdateArgs> = z.object({
   select: GameModeSelectSchema.optional(),
@@ -14422,23 +14426,23 @@ export const GameModeUpdateArgsSchema: z.ZodType<Prisma.GameModeUpdateArgs> = z.
   data: z.union([ GameModeUpdateInputSchema,GameModeUncheckedUpdateInputSchema ]),
   where: GameModeWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeUpdateManyArgsSchema: z.ZodType<Prisma.GameModeUpdateManyArgs> = z.object({
   data: z.union([ GameModeUpdateManyMutationInputSchema,GameModeUncheckedUpdateManyInputSchema ]),
   where: GameModeWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const GameModeDeleteManyArgsSchema: z.ZodType<Prisma.GameModeDeleteManyArgs> = z.object({
   where: GameModeWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultCreateArgsSchema: z.ZodType<Prisma.LevelResultCreateArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
   include: LevelResultIncludeSchema.optional(),
   data: z.union([ LevelResultCreateInputSchema,LevelResultUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultUpsertArgsSchema: z.ZodType<Prisma.LevelResultUpsertArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
@@ -14447,19 +14451,19 @@ export const LevelResultUpsertArgsSchema: z.ZodType<Prisma.LevelResultUpsertArgs
   create: z.union([ LevelResultCreateInputSchema,LevelResultUncheckedCreateInputSchema ]),
   update: z.union([ LevelResultUpdateInputSchema,LevelResultUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultCreateManyArgsSchema: z.ZodType<Prisma.LevelResultCreateManyArgs> = z.object({
   data: z.union([ LevelResultCreateManyInputSchema,LevelResultCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultDeleteArgsSchema: z.ZodType<Prisma.LevelResultDeleteArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
   include: LevelResultIncludeSchema.optional(),
   where: LevelResultWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultUpdateArgsSchema: z.ZodType<Prisma.LevelResultUpdateArgs> = z.object({
   select: LevelResultSelectSchema.optional(),
@@ -14467,23 +14471,23 @@ export const LevelResultUpdateArgsSchema: z.ZodType<Prisma.LevelResultUpdateArgs
   data: z.union([ LevelResultUpdateInputSchema,LevelResultUncheckedUpdateInputSchema ]),
   where: LevelResultWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultUpdateManyArgsSchema: z.ZodType<Prisma.LevelResultUpdateManyArgs> = z.object({
   data: z.union([ LevelResultUpdateManyMutationInputSchema,LevelResultUncheckedUpdateManyInputSchema ]),
   where: LevelResultWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const LevelResultDeleteManyArgsSchema: z.ZodType<Prisma.LevelResultDeleteManyArgs> = z.object({
   where: LevelResultWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneCreateArgsSchema: z.ZodType<Prisma.SceneCreateArgs> = z.object({
   select: SceneSelectSchema.optional(),
   include: SceneIncludeSchema.optional(),
   data: z.union([ SceneCreateInputSchema,SceneUncheckedCreateInputSchema ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneUpsertArgsSchema: z.ZodType<Prisma.SceneUpsertArgs> = z.object({
   select: SceneSelectSchema.optional(),
@@ -14492,19 +14496,19 @@ export const SceneUpsertArgsSchema: z.ZodType<Prisma.SceneUpsertArgs> = z.object
   create: z.union([ SceneCreateInputSchema,SceneUncheckedCreateInputSchema ]),
   update: z.union([ SceneUpdateInputSchema,SceneUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneCreateManyArgsSchema: z.ZodType<Prisma.SceneCreateManyArgs> = z.object({
   data: z.union([ SceneCreateManyInputSchema,SceneCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneDeleteArgsSchema: z.ZodType<Prisma.SceneDeleteArgs> = z.object({
   select: SceneSelectSchema.optional(),
   include: SceneIncludeSchema.optional(),
   where: SceneWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneUpdateArgsSchema: z.ZodType<Prisma.SceneUpdateArgs> = z.object({
   select: SceneSelectSchema.optional(),
@@ -14512,23 +14516,23 @@ export const SceneUpdateArgsSchema: z.ZodType<Prisma.SceneUpdateArgs> = z.object
   data: z.union([ SceneUpdateInputSchema,SceneUncheckedUpdateInputSchema ]),
   where: SceneWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneUpdateManyArgsSchema: z.ZodType<Prisma.SceneUpdateManyArgs> = z.object({
   data: z.union([ SceneUpdateManyMutationInputSchema,SceneUncheckedUpdateManyInputSchema ]),
   where: SceneWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneDeleteManyArgsSchema: z.ZodType<Prisma.SceneDeleteManyArgs> = z.object({
   where: SceneWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentCreateArgsSchema: z.ZodType<Prisma.SceneFragmentCreateArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
   include: SceneFragmentIncludeSchema.optional(),
   data: z.union([ SceneFragmentCreateInputSchema,SceneFragmentUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentUpsertArgsSchema: z.ZodType<Prisma.SceneFragmentUpsertArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
@@ -14537,19 +14541,19 @@ export const SceneFragmentUpsertArgsSchema: z.ZodType<Prisma.SceneFragmentUpsert
   create: z.union([ SceneFragmentCreateInputSchema,SceneFragmentUncheckedCreateInputSchema ]),
   update: z.union([ SceneFragmentUpdateInputSchema,SceneFragmentUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentCreateManyArgsSchema: z.ZodType<Prisma.SceneFragmentCreateManyArgs> = z.object({
   data: z.union([ SceneFragmentCreateManyInputSchema,SceneFragmentCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentDeleteArgsSchema: z.ZodType<Prisma.SceneFragmentDeleteArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
   include: SceneFragmentIncludeSchema.optional(),
   where: SceneFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentUpdateArgsSchema: z.ZodType<Prisma.SceneFragmentUpdateArgs> = z.object({
   select: SceneFragmentSelectSchema.optional(),
@@ -14557,23 +14561,23 @@ export const SceneFragmentUpdateArgsSchema: z.ZodType<Prisma.SceneFragmentUpdate
   data: z.union([ SceneFragmentUpdateInputSchema,SceneFragmentUncheckedUpdateInputSchema ]),
   where: SceneFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentUpdateManyArgsSchema: z.ZodType<Prisma.SceneFragmentUpdateManyArgs> = z.object({
   data: z.union([ SceneFragmentUpdateManyMutationInputSchema,SceneFragmentUncheckedUpdateManyInputSchema ]),
   where: SceneFragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const SceneFragmentDeleteManyArgsSchema: z.ZodType<Prisma.SceneFragmentDeleteManyArgs> = z.object({
   where: SceneFragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentCreateArgsSchema: z.ZodType<Prisma.RelistenFragmentCreateArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
   include: RelistenFragmentIncludeSchema.optional(),
   data: z.union([ RelistenFragmentCreateInputSchema,RelistenFragmentUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentUpsertArgsSchema: z.ZodType<Prisma.RelistenFragmentUpsertArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
@@ -14582,19 +14586,19 @@ export const RelistenFragmentUpsertArgsSchema: z.ZodType<Prisma.RelistenFragment
   create: z.union([ RelistenFragmentCreateInputSchema,RelistenFragmentUncheckedCreateInputSchema ]),
   update: z.union([ RelistenFragmentUpdateInputSchema,RelistenFragmentUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentCreateManyArgsSchema: z.ZodType<Prisma.RelistenFragmentCreateManyArgs> = z.object({
   data: z.union([ RelistenFragmentCreateManyInputSchema,RelistenFragmentCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentDeleteArgsSchema: z.ZodType<Prisma.RelistenFragmentDeleteArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
   include: RelistenFragmentIncludeSchema.optional(),
   where: RelistenFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentUpdateArgsSchema: z.ZodType<Prisma.RelistenFragmentUpdateArgs> = z.object({
   select: RelistenFragmentSelectSchema.optional(),
@@ -14602,22 +14606,22 @@ export const RelistenFragmentUpdateArgsSchema: z.ZodType<Prisma.RelistenFragment
   data: z.union([ RelistenFragmentUpdateInputSchema,RelistenFragmentUncheckedUpdateInputSchema ]),
   where: RelistenFragmentWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentUpdateManyArgsSchema: z.ZodType<Prisma.RelistenFragmentUpdateManyArgs> = z.object({
   data: z.union([ RelistenFragmentUpdateManyMutationInputSchema,RelistenFragmentUncheckedUpdateManyInputSchema ]),
   where: RelistenFragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const RelistenFragmentDeleteManyArgsSchema: z.ZodType<Prisma.RelistenFragmentDeleteManyArgs> = z.object({
   where: RelistenFragmentWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsCreateArgsSchema: z.ZodType<Prisma.AppSettingsCreateArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
   data: z.union([ AppSettingsCreateInputSchema,AppSettingsUncheckedCreateInputSchema ]).optional(),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsUpsertArgsSchema: z.ZodType<Prisma.AppSettingsUpsertArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
@@ -14625,41 +14629,41 @@ export const AppSettingsUpsertArgsSchema: z.ZodType<Prisma.AppSettingsUpsertArgs
   create: z.union([ AppSettingsCreateInputSchema,AppSettingsUncheckedCreateInputSchema ]),
   update: z.union([ AppSettingsUpdateInputSchema,AppSettingsUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsCreateManyArgsSchema: z.ZodType<Prisma.AppSettingsCreateManyArgs> = z.object({
   data: z.union([ AppSettingsCreateManyInputSchema,AppSettingsCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsDeleteArgsSchema: z.ZodType<Prisma.AppSettingsDeleteArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
   where: AppSettingsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsUpdateArgsSchema: z.ZodType<Prisma.AppSettingsUpdateArgs> = z.object({
   select: AppSettingsSelectSchema.optional(),
   data: z.union([ AppSettingsUpdateInputSchema,AppSettingsUncheckedUpdateInputSchema ]),
   where: AppSettingsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsUpdateManyArgsSchema: z.ZodType<Prisma.AppSettingsUpdateManyArgs> = z.object({
   data: z.union([ AppSettingsUpdateManyMutationInputSchema,AppSettingsUncheckedUpdateManyInputSchema ]),
   where: AppSettingsWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const AppSettingsDeleteManyArgsSchema: z.ZodType<Prisma.AppSettingsDeleteManyArgs> = z.object({
   where: AppSettingsWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerCreateArgsSchema: z.ZodType<Prisma.QuestionAnswerCreateArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
   include: QuestionAnswerIncludeSchema.optional(),
   data: z.union([ QuestionAnswerCreateInputSchema,QuestionAnswerUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerUpsertArgsSchema: z.ZodType<Prisma.QuestionAnswerUpsertArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
@@ -14668,19 +14672,19 @@ export const QuestionAnswerUpsertArgsSchema: z.ZodType<Prisma.QuestionAnswerUpse
   create: z.union([ QuestionAnswerCreateInputSchema,QuestionAnswerUncheckedCreateInputSchema ]),
   update: z.union([ QuestionAnswerUpdateInputSchema,QuestionAnswerUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerCreateManyArgsSchema: z.ZodType<Prisma.QuestionAnswerCreateManyArgs> = z.object({
   data: z.union([ QuestionAnswerCreateManyInputSchema,QuestionAnswerCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerDeleteArgsSchema: z.ZodType<Prisma.QuestionAnswerDeleteArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
   include: QuestionAnswerIncludeSchema.optional(),
   where: QuestionAnswerWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerUpdateArgsSchema: z.ZodType<Prisma.QuestionAnswerUpdateArgs> = z.object({
   select: QuestionAnswerSelectSchema.optional(),
@@ -14688,22 +14692,22 @@ export const QuestionAnswerUpdateArgsSchema: z.ZodType<Prisma.QuestionAnswerUpda
   data: z.union([ QuestionAnswerUpdateInputSchema,QuestionAnswerUncheckedUpdateInputSchema ]),
   where: QuestionAnswerWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerUpdateManyArgsSchema: z.ZodType<Prisma.QuestionAnswerUpdateManyArgs> = z.object({
   data: z.union([ QuestionAnswerUpdateManyMutationInputSchema,QuestionAnswerUncheckedUpdateManyInputSchema ]),
   where: QuestionAnswerWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionAnswerDeleteManyArgsSchema: z.ZodType<Prisma.QuestionAnswerDeleteManyArgs> = z.object({
   where: QuestionAnswerWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionCreateArgsSchema: z.ZodType<Prisma.QuestionCreateArgs> = z.object({
   select: QuestionSelectSchema.optional(),
   data: z.union([ QuestionCreateInputSchema,QuestionUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionUpsertArgsSchema: z.ZodType<Prisma.QuestionUpsertArgs> = z.object({
   select: QuestionSelectSchema.optional(),
@@ -14711,41 +14715,41 @@ export const QuestionUpsertArgsSchema: z.ZodType<Prisma.QuestionUpsertArgs> = z.
   create: z.union([ QuestionCreateInputSchema,QuestionUncheckedCreateInputSchema ]),
   update: z.union([ QuestionUpdateInputSchema,QuestionUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionCreateManyArgsSchema: z.ZodType<Prisma.QuestionCreateManyArgs> = z.object({
   data: z.union([ QuestionCreateManyInputSchema,QuestionCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionDeleteArgsSchema: z.ZodType<Prisma.QuestionDeleteArgs> = z.object({
   select: QuestionSelectSchema.optional(),
   where: QuestionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionUpdateArgsSchema: z.ZodType<Prisma.QuestionUpdateArgs> = z.object({
   select: QuestionSelectSchema.optional(),
   data: z.union([ QuestionUpdateInputSchema,QuestionUncheckedUpdateInputSchema ]),
   where: QuestionWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionUpdateManyArgsSchema: z.ZodType<Prisma.QuestionUpdateManyArgs> = z.object({
   data: z.union([ QuestionUpdateManyMutationInputSchema,QuestionUncheckedUpdateManyInputSchema ]),
   where: QuestionWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const QuestionDeleteManyArgsSchema: z.ZodType<Prisma.QuestionDeleteManyArgs> = z.object({
   where: QuestionWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityCreateArgsSchema: z.ZodType<Prisma.ActivityCreateArgs> = z.object({
   select: ActivitySelectSchema.optional(),
   include: ActivityIncludeSchema.optional(),
   data: z.union([ ActivityCreateInputSchema,ActivityUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityUpsertArgsSchema: z.ZodType<Prisma.ActivityUpsertArgs> = z.object({
   select: ActivitySelectSchema.optional(),
@@ -14754,19 +14758,19 @@ export const ActivityUpsertArgsSchema: z.ZodType<Prisma.ActivityUpsertArgs> = z.
   create: z.union([ ActivityCreateInputSchema,ActivityUncheckedCreateInputSchema ]),
   update: z.union([ ActivityUpdateInputSchema,ActivityUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityCreateManyArgsSchema: z.ZodType<Prisma.ActivityCreateManyArgs> = z.object({
   data: z.union([ ActivityCreateManyInputSchema,ActivityCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityDeleteArgsSchema: z.ZodType<Prisma.ActivityDeleteArgs> = z.object({
   select: ActivitySelectSchema.optional(),
   include: ActivityIncludeSchema.optional(),
   where: ActivityWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityUpdateArgsSchema: z.ZodType<Prisma.ActivityUpdateArgs> = z.object({
   select: ActivitySelectSchema.optional(),
@@ -14774,23 +14778,23 @@ export const ActivityUpdateArgsSchema: z.ZodType<Prisma.ActivityUpdateArgs> = z.
   data: z.union([ ActivityUpdateInputSchema,ActivityUncheckedUpdateInputSchema ]),
   where: ActivityWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityUpdateManyArgsSchema: z.ZodType<Prisma.ActivityUpdateManyArgs> = z.object({
   data: z.union([ ActivityUpdateManyMutationInputSchema,ActivityUncheckedUpdateManyInputSchema ]),
   where: ActivityWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const ActivityDeleteManyArgsSchema: z.ZodType<Prisma.ActivityDeleteManyArgs> = z.object({
   where: ActivityWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsCreateArgsSchema: z.ZodType<Prisma.PointsCreateArgs> = z.object({
   select: PointsSelectSchema.optional(),
   include: PointsIncludeSchema.optional(),
   data: z.union([ PointsCreateInputSchema,PointsUncheckedCreateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsUpsertArgsSchema: z.ZodType<Prisma.PointsUpsertArgs> = z.object({
   select: PointsSelectSchema.optional(),
@@ -14799,19 +14803,19 @@ export const PointsUpsertArgsSchema: z.ZodType<Prisma.PointsUpsertArgs> = z.obje
   create: z.union([ PointsCreateInputSchema,PointsUncheckedCreateInputSchema ]),
   update: z.union([ PointsUpdateInputSchema,PointsUncheckedUpdateInputSchema ]),
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsCreateManyArgsSchema: z.ZodType<Prisma.PointsCreateManyArgs> = z.object({
   data: z.union([ PointsCreateManyInputSchema,PointsCreateManyInputSchema.array() ]),
   skipDuplicates: z.boolean().optional(),
-}).strict()
+}).strict() ;
 
 export const PointsDeleteArgsSchema: z.ZodType<Prisma.PointsDeleteArgs> = z.object({
   select: PointsSelectSchema.optional(),
   include: PointsIncludeSchema.optional(),
   where: PointsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsUpdateArgsSchema: z.ZodType<Prisma.PointsUpdateArgs> = z.object({
   select: PointsSelectSchema.optional(),
@@ -14819,13 +14823,13 @@ export const PointsUpdateArgsSchema: z.ZodType<Prisma.PointsUpdateArgs> = z.obje
   data: z.union([ PointsUpdateInputSchema,PointsUncheckedUpdateInputSchema ]),
   where: PointsWhereUniqueInputSchema,
   relationLoadStrategy: RelationLoadStrategySchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsUpdateManyArgsSchema: z.ZodType<Prisma.PointsUpdateManyArgs> = z.object({
   data: z.union([ PointsUpdateManyMutationInputSchema,PointsUncheckedUpdateManyInputSchema ]),
   where: PointsWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
 
 export const PointsDeleteManyArgsSchema: z.ZodType<Prisma.PointsDeleteManyArgs> = z.object({
   where: PointsWhereInputSchema.optional(),
-}).strict()
+}).strict() ;
