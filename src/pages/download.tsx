@@ -116,15 +116,9 @@ export default function DownloadPage() {
     }
   }, [shouldDownload])
 
-  const usersQuery = api.download.getAllUsers.useQuery(undefined, {
-    enabled: true,
-  })
-  const sublevelsQuery = api.download.getAllSublevels.useQuery(undefined, {
-    enabled: true,
-  })
-  const gameModesQuery = api.download.getAllGameModes.useQuery(undefined, {
-    enabled: true,
-  })
+  const usersQuery = api.download.getAllUsers.useQuery()
+  const sublevelsQuery = api.download.getAllSublevels.useQuery()
+  const gameModesQuery = api.download.getAllGameModes.useQuery()
 
   const { isLoading: isLoadingExceldata, isFetching } = api.download.getFilteredExcelData.useQuery(
     {
@@ -335,16 +329,16 @@ export default function DownloadPage() {
     setDate(range)
   }
 
-  if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
-    return <LoadingPage />
+  // if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
+  //   return <LoadingPage />
 
-  if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
-    return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
-  }
+  // if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
+  //   return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
+  // }
 
-  if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
-    return <h1>Er is geen data gevonden</h1>
-  }
+  // if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
+  //   return <h1>Er is geen data gevonden</h1>
+  // }
 
   return (
     <>
