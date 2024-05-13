@@ -103,3 +103,9 @@ A gamemode in its folder consists out of multiple components. The XState machine
 
 - In Spelen mode, if you spam click when hearing the fragment you can get the fragment be double played...
  Potential fix is something with the isAnimating prop in the animationPlayer, but you need to test against the testmode, cause there you can cause a side effect for the disabled prop of the animationPlayer button tag
+
+ ## Dependencies
+
+ - Do not upgrade to react query V5, cause trpc v10 wont support that
+ - Theres a bug in the current code with radix ui dialog. You need to look into the Command component to fix the hydration issue if you ugrade
+ - 
