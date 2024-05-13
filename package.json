@@ -58,7 +58,6 @@
     "@trpc/next": "10.45.2",
     "@trpc/react-query": "10.45.2",
     "@trpc/server": "10.45.2",
-    "@vercel/speed-insights": "^1.0.9",
     "@xstate/inspect": "0.8.0",
     "@xstate/react": "3.2.2",
     "bcrypt": "^5.1.1",
