@@ -53,18 +53,7 @@ const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   return result
 }
 
-const DateRangeSchema = z.object({
-  from: z.optional(z.date()),
-  to: z.optional(z.date()),
-})
 
-export const DownloadSettingsSchema = z.object({
-  selectedUsers: z.array(z.string()),
-  selectedSublevels: z.array(z.string()),
-  worksheets: z.array(z.string()),
-  selectedGameModes: z.array(z.string()),
-  date: z.optional(DateRangeSchema),
-})
 
 const headers = [
   'deelnemer nummer',
@@ -329,16 +318,16 @@ export default function DownloadPage() {
     setDate(range)
   }
 
-  // if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
-  //   return <LoadingPage />
+  if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
+    return <LoadingPage />
 
-  // if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
-  //   return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
-  // }
+  if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
+    return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
+  }
 
-  // if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
-  //   return <h1>Er is geen data gevonden</h1>
-  // }
+  if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
+    return <h1>Er is geen data gevonden</h1>
+  }
 
   return (
     <>
@@ -347,6 +336,8 @@ export default function DownloadPage() {
         <meta name="description" content="Download data" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+
 
       <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">

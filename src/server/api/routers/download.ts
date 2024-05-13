@@ -1,4 +1,4 @@
-import { DownloadSettingsSchema } from '~/pages/download'
+import { DownloadSettingsSchema } from '~/utils/excelSchema';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 
