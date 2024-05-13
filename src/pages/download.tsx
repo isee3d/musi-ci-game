@@ -8,7 +8,7 @@ import { DateRange } from 'react-day-picker'
 import { MultiSelect } from '~/components/ui/multi-select'
 import { RouterOutputs, api } from '~/utils/api'
 import { z } from 'zod'
-import { LoadingSpinner } from '~/components/loading'
+import { LoadingPage, LoadingSpinner } from '~/components/loading'
 import { Button } from '~/components/ui/button'
 import { Calendar } from '~/components/ui/calendar'
 import { Label } from '~/components/ui/label'
@@ -335,7 +335,15 @@ export default function DownloadPage() {
   }
 
   if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
-    return <LoadingSpinner />
+    return <LoadingPage />
+
+  if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
+    return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
+  }
+
+  if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
+    return <h1>Er is geen data gevonden</h1>
+  }
 
   return (
     <>
