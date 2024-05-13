@@ -343,9 +343,9 @@ export default function DownloadPage() {
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">Download CSV</h1>
           <h2>Selecteer spelers</h2>
-          <MultiSelect
+          { usersQuery.data && <MultiSelect
             options={
-              usersQuery.data?.map((user) => ({
+              usersQuery.data.map((user) => ({
                 value: user.id ?? '-1',
                 label: user.participantId ?? '-1',
               })) ?? []
@@ -353,7 +353,8 @@ export default function DownloadPage() {
             selected={selectedUsers}
             onChange={setSelectedUsers}
             className="w-[560px]"
-          />
+          />}
+
 
           <Label className="mb-1">Selecteer hieronder de begin- en einddatum</Label>
           <div className={cn('grid gap-2')}>
@@ -395,9 +396,9 @@ export default function DownloadPage() {
           </div>
 
           <Label className="mb-1">Selecteer hieronder de sublevels</Label>
-          <MultiSelect
+          {sublevelsQuery.data && <MultiSelect
             options={
-              sublevelsQuery.data?.map((sublevel) => ({
+              sublevelsQuery.data.map((sublevel) => ({
                 value: sublevel.id.toString(),
                 label: sublevel.name,
               })) ?? []
@@ -405,12 +406,13 @@ export default function DownloadPage() {
             selected={selectedSublevels}
             onChange={setSelectedSublevels}
             className="w-[560px]"
-          />
+          />}
+
 
           <Label className="mb-1">Selecteer hieronder de game modussen</Label>
-          <MultiSelect
+          { gameModesQuery.data &&  <MultiSelect
             options={
-              gameModesQuery.data?.map((gameMode) => ({
+              gameModesQuery.data.map((gameMode) => ({
                 value: gameMode.id.toString(),
                 label: gameMode.name,
               })) ?? []
@@ -418,7 +420,8 @@ export default function DownloadPage() {
             selected={selectedGameModes}
             onChange={setSelectedGameModes}
             className="w-[560px]"
-          />
+          />}
+
 
           <Label className="mb-1">Selecteer de gegevens worksheets</Label>
           <MultiSelect

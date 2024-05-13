@@ -26,6 +26,7 @@ interface MultiSelectProps {
 }
 
 function MultiSelect({ options, selected, onChange, className, ...props }: MultiSelectProps) {
+  console.log('options', options, 'selected', selected, 'onChange', onChange, 'className', className, 'props', props)
   const [open, setOpen] = React.useState(false)
   const [selectAllText, setSelectAllText] = React.useState('Selecteer alles')
 
@@ -56,7 +57,7 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           onClick={() => setOpen(!open)}
         >
           <div className="flex flex-wrap gap-1">
-            {selected.map((item, index) => (
+            {selected.length > 0 && selected.map((item, index) => (
               <Badge
                 variant="secondary"
                 key={index}
@@ -97,7 +98,7 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           <CommandGroup className="max-h-64 overflow-auto">
             {options.map((option, index) => (
               <CommandItem
-                key={index}
+                 key={`${option.value}-${index}`}
                 onSelect={() => {
                   onChange(
                     selected.includes(option.value)
