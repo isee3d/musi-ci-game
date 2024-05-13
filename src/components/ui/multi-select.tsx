@@ -27,6 +27,7 @@ interface MultiSelectProps {
 
 function MultiSelect({ options, selected, onChange, className, ...props }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false)
+  const [selectAllText, setSelectAllText] = React.useState('Selecteer alles')
 
   const handleUnselect = (item: string) => {
     onChange(selected.filter((i) => i !== item))
@@ -36,9 +37,11 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
     if (selected.length === options.length) {
       // If all options are selected, unselect all
       onChange([])
+      setSelectAllText('Selecteer alles')
     } else {
       // Otherwise, select all options
       onChange(options.map((option) => option.value))
+      if (selected.length > 0) setSelectAllText('Deselecteer alles')
     }
   }
 
@@ -62,8 +65,9 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
               >
                 {item}
                 <Button
-                  className={cn( buttonVariants({ variant: 'secondary' }),
-                    'ml-1 h-4 w-4 p-0 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  className={cn(
+                    buttonVariants({ variant: 'secondary' }),
+                    'ml-1 h-4 w-4 rounded-full p-0 outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
                   )}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
@@ -86,7 +90,7 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command className={className}>
-          <Button onClick={handleSelectAll}>Selecteer alles</Button>
+          <Button onClick={handleSelectAll}>{selectAllText}</Button>
 
           <CommandInput placeholder="Search ..." />
           <CommandEmpty>No item found.</CommandEmpty>

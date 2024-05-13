@@ -334,6 +334,9 @@ export default function DownloadPage() {
     setDate(range)
   }
 
+  if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
+    return <LoadingSpinner />
+
   return (
     <>
       <Head>
