@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover
 import { cn } from '~/lib/utils'
 import { getSSRAuthRedirectOnResearcherRole } from '~/utils/authUtils'
 import { toast } from 'sonner'
+import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 
 const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   const result: SplitDataByUser = {}
@@ -463,9 +464,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return { redirect: auth.redirect }
   }
 
+  const helpers = generateServerSideHelper(auth.props.session)
+  helpers.download.getAllUsers.prefetch()
+  helpers.download.getAllSublevels.prefetch()
+  helpers.download.getAllGameModes.prefetch()
+
   return {
     props: {
       session: auth.props.session,
+      trpcState: helpers.dehydrate(),
     },
   }
 }
