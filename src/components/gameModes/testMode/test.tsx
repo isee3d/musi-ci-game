@@ -8,6 +8,7 @@ import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
 import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import TestProgressBar from '~/components/gameModes/testMode/testProgressbar'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
@@ -228,6 +229,7 @@ const Test: React.FC<TestModeProps> = ({
     <>
       {idleState && <StartTestUI startTest={startTest} />}
       {countdownState && <TestCountdownPlayer />}
+      {playingState && <TestProgressBar sublevelId={sublevelId} />}
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
         <Button
