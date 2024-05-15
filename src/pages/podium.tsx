@@ -40,6 +40,7 @@ interface MuteState {
 const PodiumPage = () => {
   useUserActivity()
   const { audioContext } = useAudioServiceStore()
+  const didFirstClickInstrument = useRef(false)
 
   const { data: levelPoints } = api.level.getPointsPerLevel.useQuery(undefined, {
     onSuccess: (levelPoints) => {
@@ -89,9 +90,17 @@ const PodiumPage = () => {
     dwarsfluit: false,
   })
 
-  const audioRefs = useRef<{ [key in keyof MuteState]?: HTMLAudioElement }>({})
+  const audioRefs = useRef<{ [key in keyof MuteState]: HTMLAudioElement }>({})
 
   const toggleMute = (instrument: keyof MuteState) => {
+    if(!didFirstClickInstrument.current) {
+      Object.values(audioRefs.current).forEach((sound) =>
+        sound.play().catch((e) => console.error('Error playing sound:', e)),
+      )
+
+      didFirstClickInstrument.current = true
+    }
+
     setIsMuted((prevMute) => {
       const newMuteState = !prevMute[instrument]
       const audio = audioRefs.current[instrument]
@@ -118,6 +127,11 @@ const PodiumPage = () => {
         dwarsfluit: new Audio('/media/podium/sound-fluit.mp3'),
       }
 
+      audioRefs.current.piano.volume = 0.6
+      audioRefs.current.bass.volume = 0.6
+      audioRefs.current.gitaar.volume = 0.6
+      audioRefs.current.sax.volume = 0.7
+
       console.log('Playing audio')
       const sounds = audioRefs.current
 
@@ -133,9 +147,9 @@ const PodiumPage = () => {
           })
         }),
       ).then(() => {
-        Object.values(sounds).forEach((sound) =>
-          sound.play().catch((e) => console.error('Error playing sound:', e)),
-        )
+        // Object.values(sounds).forEach((sound) =>
+        //   sound.play().catch((e) => console.error('Error playing sound:', e)),
+        // )
       })
 
       return () => {
