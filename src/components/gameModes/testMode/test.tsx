@@ -229,7 +229,7 @@ const Test: React.FC<TestModeProps> = ({
     <>
       {idleState && <StartTestUI startTest={startTest} />}
       {countdownState && <TestCountdownPlayer />}
-      {playingState && <TestProgressBar sublevelId={sublevelId} />}
+      {(playingState || isPausedState) && <TestProgressBar sublevelId={sublevelId} />}
       {playingState && <TestFragmentPlayerRenderer mode={mode} />}
       {(playingState || isPausedState) && (
         <Button
