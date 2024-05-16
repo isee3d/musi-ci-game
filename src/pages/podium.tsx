@@ -93,7 +93,7 @@ const PodiumPage = () => {
   const audioRefs = useRef<{ [key in keyof MuteState]: HTMLAudioElement }>({})
 
   const toggleMute = (instrument: keyof MuteState) => {
-    if(!didFirstClickInstrument.current) {
+    if (!didFirstClickInstrument.current) {
       Object.values(audioRefs.current).forEach((sound) =>
         sound.play().catch((e) => console.error('Error playing sound:', e)),
       )
@@ -179,15 +179,15 @@ const PodiumPage = () => {
                 {!unlocked.drums ? (
                   <DrumsOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.drums && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2 hover:cursor-pointer"
                       onClick={() => toggleMute('drums')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.drums && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <DrumsOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -195,15 +195,15 @@ const PodiumPage = () => {
                 {!unlocked.piano ? (
                   <PianoOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.piano && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer "
                       onClick={() => toggleMute('piano')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.piano && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <PianoOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -211,15 +211,15 @@ const PodiumPage = () => {
                 {!unlocked.bass ? (
                   <BassOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.bass && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5  w-1/2 hover:cursor-pointer "
                       onClick={() => toggleMute('bass')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.bass && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <BassOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -227,15 +227,15 @@ const PodiumPage = () => {
                 {!unlocked.gitaar ? (
                   <GitaarOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.gitaar && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('gitaar')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.gitaar && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <GitaarOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -245,15 +245,15 @@ const PodiumPage = () => {
                 {!unlocked.sax ? (
                   <SaxOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.sax && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4  z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('sax')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.sax && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <SaxOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -261,15 +261,16 @@ const PodiumPage = () => {
                 {!unlocked.zangeres ? (
                   <ZangeresOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.zangeres && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer"
                       onClick={() => toggleMute('zangeres')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.zangeres &&
+                          'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <ZangeresOnSVG width={'auto'} height={'auto'} />
                   </div>
@@ -277,15 +278,16 @@ const PodiumPage = () => {
                 {!unlocked.dwarsfluit ? (
                   <DwarsfluitOffSVG width={'auto'} height={'auto'} />
                 ) : (
-                  <div
-                    className={cn(
-                      !isMuted.dwarsfluit && 'border-b-2 border-primary',
-                      'relative h-full w-full',
-                    )}
-                  >
+                  <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
                       className="absolute left-1/4 top-1/4 z-50 mx-auto h-4/5 w-1/2  hover:cursor-pointer "
                       onClick={() => toggleMute('dwarsfluit')}
+                    ></div>
+                    <div
+                      className={cn(
+                        !isMuted.dwarsfluit &&
+                          'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                      )}
                     ></div>
                     <DwarsfluitOnSVG width={'auto'} height={'auto'} />
                   </div>
