@@ -118,7 +118,6 @@ export const testModeMachine = createMachine(
                   start(context.activeFragment, {
                     onFinishedPlaying: resolve,
                     onSecondNotePlaying: () => {
-                      console.log('second note played')
                       callback('SECOND_NOTE_PLAYED')
                     },
                   })
@@ -145,7 +144,6 @@ export const testModeMachine = createMachine(
             entry: assign({
               isClickable: true,
               isAnimating: false,
-              // latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
             }),
             description: 'In this state the user can guess the heard fragment',
             on: {
