@@ -152,10 +152,16 @@ export const uitdagingMachine = createMachine(
             after: {
               SOUNDTIME: 'playSound',
             },
-            exit: assign({ isClickable: false, isAnimating: true }),
+            exit: assign({ isAnimating: true }),
           },
           playSound: {
-            // entry: (context) => context.countdownActions?.resume(),
+            entry: assign({ isClickable: true }),
+            on: {
+              GUESSEDFRAGMENT: {
+                target: 'restAfterAnswering',
+                actions: ['setGuessedFragment', 'saveLatency'],
+              },
+            },
             invoke: {
               src: async (context) => await start(context.activeFragment),
               onDone: [

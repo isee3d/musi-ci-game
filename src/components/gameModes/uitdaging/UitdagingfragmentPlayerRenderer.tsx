@@ -35,6 +35,10 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     (state) => state.context.guessedFragment,
     shallowEqual,
   )
+  const playingSound = UitdagingMachineContext.useSelector((state) =>
+    state.matches('playing.playSound'),
+  )
+
   const shownFragments = UitdagingMachineContext.useSelector(
     (state) => state.context.shownFragments,
     shallowEqual,
@@ -69,11 +73,11 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
-     const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
-       onSuccess: () => {
-         send('FINISHEDPLAYING')
-       },
-     })
+  const { mutate: saveScore } = api.levelResult.saveScore.useMutation({
+    onSuccess: () => {
+      send('FINISHEDPLAYING')
+    },
+  })
 
   useEffect(() => {
     const sceneData: FragmentSceneData[] = []
@@ -112,7 +116,11 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
       )
       saveToDB(getFormattedStoreData(session?.user.id ?? '1'))
       const { score } = useLuisterenStore.getState()
-      saveScore({ id_User: session?.user.id ?? '-1', score: score, id_sublevel: parseInt(sublevelId) })
+      saveScore({
+        id_User: session?.user.id ?? '-1',
+        score: score,
+        id_sublevel: parseInt(sublevelId),
+      })
     }
   }, [shownFragments])
 
@@ -154,7 +162,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
   function onFragmentPlayerClicked(fragment: FragmentWithNotes) {
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
     if (!fragmentToPlay) return
-    if (guessHeardFragmentState) {
+    if (guessHeardFragmentState || playingSound) {
       if (activeFragmentPlayerIndex !== undefined) {
         setactiveFragmentPlayerIndex(undefined)
       }
