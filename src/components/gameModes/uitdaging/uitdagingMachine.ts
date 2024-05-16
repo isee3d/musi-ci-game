@@ -155,7 +155,12 @@ export const uitdagingMachine = createMachine(
             exit: assign({ isAnimating: true }),
           },
           playSound: {
-            entry: assign({ isClickable: true }),
+            entry: [
+              assign({ isClickable: true }),
+              assign({
+                latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
+              }),
+            ],
             on: {
               GUESSEDFRAGMENT: {
                 target: 'restAfterAnswering',
@@ -174,9 +179,6 @@ export const uitdagingMachine = createMachine(
             exit: assign({ isClickable: true, isAnimating: false }),
           },
           guessHeardFragment: {
-            entry: assign({
-              latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
-            }),
             description: 'In this state the user can guess the heard fragment',
             on: {
               GUESSEDFRAGMENT: {
