@@ -1,4 +1,3 @@
-
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 
 interface SampleLoadData {
@@ -27,6 +26,7 @@ export interface NotePlayOptions {
   volume: number
   /** in milliseconds */
   delay?: number
+  onNoteDurationComplete?: () => void
 }
 
 interface NamedAudioBuffer extends AudioBuffer {
@@ -165,7 +165,7 @@ export default class Sampler {
         await audioContext.resume()
       }
 
-      const { note, attackMs, sustain, releaseMs, volume, delay } = options
+      const { note, attackMs, sustain, releaseMs, volume, delay, onNoteDurationComplete } = options
 
       if (!audioContext) return
 
@@ -194,6 +194,10 @@ export default class Sampler {
       sampleSource.onended = () => {
         resolve()
       }
+
+       setTimeout(() => {
+        if (onNoteDurationComplete) onNoteDurationComplete()
+      }, releaseMs)
     })
   }
 

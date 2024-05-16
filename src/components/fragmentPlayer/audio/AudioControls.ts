@@ -7,9 +7,13 @@ export async function start(
   {
     onStartPlaying,
     onFinishedPlaying,
-  }: { onStartPlaying?: () => void; onFinishedPlaying?: () => void } = {}
+    onSecondNotePlaying,
+  }: {
+    onStartPlaying?: () => void
+    onFinishedPlaying?: (value: unknown) => void
+    onSecondNotePlaying?: () => void
+  } = {},
 ) {
-  // console.log('start fragment', fragment)
   if (!fragment) return
 
   const { piano, ticksToMS } = useAudioServiceStore.getState()
@@ -17,18 +21,32 @@ export async function start(
 
   if (onStartPlaying) onStartPlaying()
 
-  const playPromises = fragment.notes.map((note: Note) => {
-    return piano.play({
+  function triggerSecondNotePlaying() {
+    if (onSecondNotePlaying) onSecondNotePlaying()
+  }
+
+  const playPromises = fragment.notes.map((note: Note, index: number) => {
+    const playPromise = piano.play({
       note: note.name,
       sustain: 500,
       releaseMs: ticksToMS(note.duration),
       volume: note.speed,
       delay: ticksToMS(note.time),
+      onNoteDurationComplete: index === 1 ? triggerSecondNotePlaying : undefined,
     })
+
+    return playPromise
   })
 
+  // await playPromises[0]
+
+  // // Trigger the onSecondNotePlaying callback when the second note starts playing
+  // if (onSecondNotePlaying) {
+  //   onSecondNotePlaying()
+  // }
+
   await Promise.all(playPromises)
-  if (onFinishedPlaying) onFinishedPlaying()
+  if (onFinishedPlaying) onFinishedPlaying(-1)
 }
 
 export async function stopAll(onAllStopped?: () => void) {

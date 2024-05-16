@@ -46,6 +46,7 @@ export const testModeMachine = createMachine(
         | { type: 'FINISHEDPLAYING' }
         | { type: 'RESUMEGAME' }
         | { type: 'PAUSEGAME' }
+        | { type: 'SECOND_NOTE_PLAYED' }
         | { type: 'GUESSEDFRAGMENT'; guessedFragment: FragmentWithNotes | undefined }
         | {
             type: 'STARTROUND'
@@ -108,16 +109,34 @@ export const testModeMachine = createMachine(
             after: {
               SOUNDTIME: 'playSound',
             },
-            exit: assign({ isClickable: false, isAnimating: true }),
+            exit: assign({ isAnimating: true }),
           },
           playSound: {
             invoke: {
-              src: async (context) => await start(context.activeFragment),
+              src: (context) => (callback, onReceive) => {
+                const promise = new Promise((resolve, reject) => {
+                  start(context.activeFragment, {
+                    onFinishedPlaying: resolve,
+                    onSecondNotePlaying: () => {
+                      console.log('second note played')
+                      callback('SECOND_NOTE_PLAYED')
+                    },
+                  })
+                })
+
+                return promise
+              },
               onDone: [
                 {
                   target: 'guessHeardFragment',
                 },
               ],
+            },
+            on: {
+              GUESSEDFRAGMENT: {
+                target: 'restAfterAnswering',
+                actions: ['setGuessedFragment', 'saveLatency', 'saveScene'],
+              },
             },
             description: 'In this state the active fragment is played',
             exit: assign({ isClickable: true, isAnimating: false }),
@@ -126,7 +145,7 @@ export const testModeMachine = createMachine(
             entry: assign({
               isClickable: true,
               isAnimating: false,
-              latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
+              // latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
             }),
             description: 'In this state the user can guess the heard fragment',
             on: {
@@ -158,17 +177,18 @@ export const testModeMachine = createMachine(
     on: {
       FINISHEDPLAYING: 'FinishedPlayingTestMode',
       PAUSEGAME: '#testMode.pausedGame',
+      SECOND_NOTE_PLAYED: {
+        actions: assign({
+          isClickable: true,
+          latency: () => ({ startTime: Date.now(), endTime: 0, latency: 0 }),
+        }),
+      },
     },
   },
   {
     actions: {
       setupData: assign((_, event) => {
-        const {
-          amountOfScenes,
-          originalFragments,
-          sublevelName,
-          countdownTimings,
-        } = event
+        const { amountOfScenes, originalFragments, sublevelName, countdownTimings } = event
 
         const { resetUsedFragments, setTestOneArray, setTestTwoArray } =
           useLuisterenStore.getState()

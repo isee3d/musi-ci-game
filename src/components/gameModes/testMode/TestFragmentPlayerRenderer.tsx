@@ -8,10 +8,7 @@ import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWit
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
-import {
-  getOriginalFragments,
-  getShownFragmentByFragmentId
-} from '~/utils/fragmentUtils'
+import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 
 interface TestFragmentPlayerRendererProps {
   mode: GameMode | null | undefined
@@ -35,6 +32,9 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const shownFragments = TestModeMachineContext.useSelector(
     (state) => state.context.shownFragments,
     shallowEqual,
+  )
+  const playingSound = TestModeMachineContext.useSelector((state) =>
+    state.matches('playing.playSound'),
   )
   const allOriginalFragments = TestModeMachineContext.useSelector(
     (state) => state.context.originalFragments,
@@ -66,20 +66,20 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   const { mutate: saveToDB } = api.levelResult.saveLevelResult.useMutation()
 
   useEffect(() => {
-    if(initialPlayingState) {
-    const sceneData: FragmentSceneData[] = []
-    shownFragments.forEach((fragment, index) => {
-      sceneData.push({
-        id_fragment: fragment.id,
-        fragmentIndex: index,
-        groundTone: fragment.transpose ?? '',
-        octave: fragment.octave ?? -1,
+    if (initialPlayingState) {
+      const sceneData: FragmentSceneData[] = []
+      shownFragments.forEach((fragment, index) => {
+        sceneData.push({
+          id_fragment: fragment.id,
+          fragmentIndex: index,
+          groundTone: fragment.transpose ?? '',
+          octave: fragment.octave ?? -1,
+        })
       })
-    })
-    AddSceneData(sceneData)
-    setSceneStartTime(new Date())
-    setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
-  }
+      AddSceneData(sceneData)
+      setSceneStartTime(new Date())
+      setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
+    }
   }, [shownFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
@@ -109,15 +109,14 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     const fragmentToPlay = getShownFragmentByFragmentId(shownFragments, fragment.id)
     if (!fragmentToPlay) return
 
-    if (guessHeardFragmentState) {
+    if (guessHeardFragmentState || playingSound) {
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
     }
   }
 
-  function onFragmentPlayingComplete() {
-  }
+  function onFragmentPlayingComplete() {}
 
   useEffect(() => {
     if (restAfterPlayingState) {
