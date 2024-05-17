@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Fragment, FragmentGroup, GameMode, SubLevel } from '@prisma/client'
+import { Fragment, FragmentGroup, GameMode, Prisma, SubLevel } from '@prisma/client'
+import Decimal from 'decimal.js'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -109,14 +110,12 @@ const UpdateSublevelModal: React.FC<{
       fragmentToShowSpelen:
         data.fragmentToShowSpelen === undefined ? null : parseInt(data.fragmentToShowSpelen),
       fragmentToShowUitdaging:
-        data.fragmentToShowUitdaging === undefined
-          ? null
-          : parseInt(data.fragmentToShowUitdaging),
-      mFactor: data.mFactor === undefined ? null : parseFloat(data.mFactor),
-      pFactor: data.pFactor === undefined ? null : parseFloat(data.pFactor),
-      sFactor: data.sFactor === undefined ? null : parseFloat(data.sFactor),
-      tFactor: data.tFactor === undefined ? null : parseFloat(data.tFactor),
-      kFactor: data.kFactor === undefined ? null : parseFloat(data.kFactor),
+        data.fragmentToShowUitdaging === undefined ? null : parseInt(data.fragmentToShowUitdaging),
+      mFactor: data.mFactor === undefined ? null : new Prisma.Decimal(data.mFactor),
+      pFactor: data.pFactor === undefined ? null : new Prisma.Decimal(data.pFactor),
+      sFactor: data.sFactor === undefined ? null : new Prisma.Decimal(data.sFactor),
+      tFactor: data.tFactor === undefined ? null : new Prisma.Decimal(data.tFactor),
+      kFactor: data.kFactor === undefined ? null : new Prisma.Decimal(data.kFactor),
       id: sublevel.id,
       fragments: addedFragments.map((f) => f.id),
       gameModes: addedGameModes.map((g) => g.id),

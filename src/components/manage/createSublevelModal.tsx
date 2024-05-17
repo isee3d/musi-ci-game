@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Fragment, FragmentGroup, GameMode } from '@prisma/client'
+import { Fragment, FragmentGroup, GameMode, Prisma } from '@prisma/client'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -84,11 +84,11 @@ const CreateSublevelModal: React.FC<{
         data.fragmentToShowSpelen === undefined ? null : parseInt(data.fragmentToShowSpelen),
       fragmentToShowUitdaging:
         data.fragmentToShowUitdaging === undefined ? null : parseInt(data.fragmentToShowUitdaging),
-      mFactor: data.mFactor === undefined ? null : parseFloat(data.mFactor),
-      pFactor: data.pFactor === undefined ? null : parseFloat(data.pFactor),
-      sFactor: data.sFactor === undefined ? null : parseFloat(data.sFactor),
-      tFactor: data.tFactor === undefined ? null : parseFloat(data.tFactor),
-      kFactor: data.kFactor === undefined ? null : parseFloat(data.kFactor),
+      mFactor: data.mFactor === undefined ? null : new Prisma.Decimal(data.mFactor),
+      pFactor: data.pFactor === undefined ? null : new Prisma.Decimal(data.pFactor),
+      sFactor: data.sFactor === undefined ? null : new Prisma.Decimal(data.sFactor),
+      tFactor: data.tFactor === undefined ? null : new Prisma.Decimal(data.tFactor),
+      kFactor: data.kFactor === undefined ? null : new Prisma.Decimal(data.kFactor),
       fragments: addedFragments.map((f) => f.id),
       gameModes: addedGameModes.map((g) => g.id),
       fragmentGroups: addedFragmentGroups.map((fg) => fg.id),
