@@ -66,7 +66,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
       {score > 0 && (
         <>
           <h3 className="text-center text-4xl font-extrabold tracking-tight">
-            Je hebt {Number(score).toFixed(2)} punten verdiend
+            Je hebt {Number(score).toFixed(0)} punten verdiend
           </h3>
           <div className=" w-1/2 px-12">
             <Progress
