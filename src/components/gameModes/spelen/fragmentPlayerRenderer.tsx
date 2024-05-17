@@ -134,7 +134,6 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
       }
       addNewUserSceneAnswer(checkIsGuessedCorrect(fragmentToPlay))
       setChosenFragment(fragmentToPlay.id)
-      addLuisterenClick()
       send({ type: 'GUESSEDFRAGMENT', guessedFragment: fragmentToPlay })
       return
     }
