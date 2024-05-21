@@ -127,8 +127,8 @@ const PodiumPage = () => {
         dwarsfluit: new Audio('/media/podium/sound-fluit.mp3'),
       }
 
-      audioRefs.current.piano.volume = 0.6
-      audioRefs.current.bass.volume = 0.6
+      audioRefs.current.piano.volume = 0.5
+      audioRefs.current.bass.volume = 0.5
       audioRefs.current.gitaar.volume = 0.6
       audioRefs.current.sax.volume = 0.7
 

@@ -40,6 +40,7 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
      const level = levelPoints.find((level) => level.id === parseInt(levelId))
      if (!level?.points) return 0
      console.log(levelPoints, level?.points, level?.score)
+     if(level.score >= level.points) return 100
      const progress = (level.score / level.points) * 100
      return Math.min(progress, 100)
    }

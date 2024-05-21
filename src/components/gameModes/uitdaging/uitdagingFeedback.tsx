@@ -27,14 +27,15 @@ const UitdagingFeedback: React.FC<UitdagingFeedbackProps> = ({
   const { data: levelPoints } = api.level.getPointsPerLevel.useQuery()
   const level = levelPoints?.find((level) => level.id === parseInt(levelId))
 
-    const progressValue = () => {
-      if (!levelPoints) return 0
-      const level = levelPoints.find((level) => level.id === parseInt(levelId))
-      if (!level?.points) return 0
-      console.log(levelPoints, level?.points, level?.score)
-      const progress = (level.score / level.points) * 100
-      return Math.min(progress, 100)
-    }
+  const progressValue = () => {
+    if (!levelPoints) return 0
+    const level = levelPoints.find((level) => level.id === parseInt(levelId))
+    if (!level?.points) return 0
+    if (level.score >= level.points) return 100
+    console.log(levelPoints, level?.points, level?.score)
+    const progress = (level.score / level.points) * 100
+    return Math.min(progress, 100)
+  }
 
   useEffect(() => {
     setShouldRenderCinieInContentContainer(false)
