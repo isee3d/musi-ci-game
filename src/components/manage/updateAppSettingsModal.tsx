@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
+import { Input } from '~/components/ui/input'
 import { api } from '~/utils/api'
 
 interface BaseStaticModalProps {
@@ -61,7 +62,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
             <FormItem>
               <FormLabel>Fragment speler bolletje kleur</FormLabel>
               <FormControl>
-                <input
+                <Input
                   type="color"
                   className="w-full"
                   value={appSettings?.fragmentDotColor || 'red'}
@@ -79,7 +80,7 @@ const UpdateAppSettingsModal: React.FC<BaseStaticModalProps> = ({ setmodal, appS
             <FormItem>
               <FormLabel>Fragment speler lijn kleur</FormLabel>
               <FormControl>
-                <input
+                <Input
                   type="color"
                   className="w-full"
                   value={appSettings?.fragmentDotLineColor || 'red'}

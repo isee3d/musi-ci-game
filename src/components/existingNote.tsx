@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { NoteCreate } from 'types/Note'
+import { Input } from '~/components/ui/input'
 
 export const ExistingNote: React.FC<{
   props: NoteCreate
@@ -94,7 +95,7 @@ export const ExistingNote: React.FC<{
     <div className="m-2 flex w-full items-center justify-center space-x-4 rounded-lg shadow-md">
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Noot</label>
-        <input
+        <Input
           type="text"
           placeholder="C4"
           value={noteValue}

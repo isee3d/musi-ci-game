@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { Input } from '~/components/ui/input'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
@@ -53,7 +54,7 @@ const ManageGame = () => {
                 <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                   Naam
                 </label>
-                <input
+                <Input
                   {...register('name', validationRules.name)}
                   type="text"
                   id="name"
