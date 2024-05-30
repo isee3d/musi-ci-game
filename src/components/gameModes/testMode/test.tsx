@@ -225,6 +225,8 @@ const Test: React.FC<TestModeProps> = ({
     })
   }
 
+  console.log(playingState, isPausedState)
+
   return (
     <>
       {idleState && <StartTestUI startTest={startTest} />}

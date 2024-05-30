@@ -14,9 +14,6 @@ const TestProgressBar: React.FC<TestProgressBarProps> = ({ sublevelId }) => {
   const TestOneArrayLengthRef = useRef(TestOneArray?.length ?? 0)
   const TestTwoArrayLengthRef = useRef(TestTwoArray?.length ?? 0)
 
-  if (TestOneArray?.length === 0 && sublevel?.name === 'TEST, level 1') return null
-  if (TestTwoArray?.length === 0 && sublevel?.name === 'TEST, level 2') return null
-
   const progressValue = () => {
     if (sublevel?.name === 'TEST, level 1') {
       if (TestOneArray?.length! === 0) {
@@ -29,7 +26,7 @@ const TestProgressBar: React.FC<TestProgressBarProps> = ({ sublevelId }) => {
       if (TestTwoArray?.length! === 0) {
         return 100
       }
-      
+
       return (1 - TestTwoArray?.length! / TestTwoArrayLengthRef.current) * 100
     }
   }
