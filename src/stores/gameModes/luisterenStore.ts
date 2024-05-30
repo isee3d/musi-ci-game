@@ -49,6 +49,7 @@ type LuisterenActions = {
   setChosenFragment: (fragmentId: number | undefined) => void
   setSceneStartTime: (date: Date) => void
   getPercentageCorrectlyAnswered: () => number
+  getAmountOfCorrectAnswers: () => number
   setStartTime: (time: number) => void
   setEndTime: (time: number) => void
   resetSceneRelatedData: () => void
@@ -216,6 +217,13 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     const percentage = (amountCorrect / allPlayedScenes.length) * 100
 
     return parseFloat(percentage.toFixed(2))
+  },
+  getAmountOfCorrectAnswers: () => {
+    const { allPlayedScenes } = get()
+
+    return allPlayedScenes.reduce((total, scene) => {
+      return scene.answeredCorrectly ? total + 1 : total
+    }, 0)
   },
   getRelistenCounts: (): { [key: number]: number } => {
     const { sceneData } = get()

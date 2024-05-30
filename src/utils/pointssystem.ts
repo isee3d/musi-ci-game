@@ -41,16 +41,18 @@ export const calculatePoints = ({
   const penaltyRate = new Decimal(0.1)
   const rewardRate = new Decimal(0.5)
 
-  // Dynamically adjust tFactor based on the deviation from optimalSpeed
-  if (safeSpeed.gt(optimalSpeed)) {
-    // Subtract penalty
-    safeTFactor = Decimal.max(
-      new Decimal(0),
-      safeTFactor.sub(safeSpeed.sub(optimalSpeed).mul(penaltyRate)),
-    )
-  } else {
-    // Add reward
-    safeTFactor = safeTFactor.add(optimalSpeed.sub(safeSpeed).mul(rewardRate))
+  if(tFactor !== null && !tFactor?.eq(0)) {
+    // Dynamically adjust tFactor based on the deviation from optimalSpeed
+    if (safeSpeed.gt(optimalSpeed)) {
+      // Subtract penalty
+      safeTFactor = Decimal.max(
+        new Decimal(0),
+        safeTFactor.sub(safeSpeed.sub(optimalSpeed).mul(penaltyRate)),
+      )
+    } else {
+      // Add reward
+      safeTFactor = safeTFactor.add(optimalSpeed.sub(safeSpeed).mul(rewardRate))
+    }
   }
 
   console.log(

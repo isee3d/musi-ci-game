@@ -65,6 +65,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
     allPlayedScenes,
     startTime,
     getPercentageCorrectlyAnswered,
+    getAmountOfCorrectAnswers,
   } = useLuisterenStore()
 
   const [activeFragmentPlayerIndex, setactiveFragmentPlayerIndex] = useState<number | undefined>(
@@ -109,7 +110,7 @@ const UitdagingFragmentPlayerRenderer: React.FC<UitdagingFragmentPlayerRendererP
           sFactor: sublevel?.sFactor,
           tFactor: sublevel?.tFactor,
           minutes: (endTime - startTime) / 60000,
-          percentCorrect: getPercentageCorrectlyAnswered(),
+          percentCorrect: getAmountOfCorrectAnswers(),
           scenes: amountPlayed,
           speed: averageChooseSpeed(),
         }),
