@@ -1,4 +1,4 @@
-import Decimal from "decimal.js"
+import Decimal from 'decimal.js'
 
 interface PointsCalculatorParams {
   minutes?: number | null
@@ -25,7 +25,6 @@ export const calculatePoints = ({
   tFactor,
   kFactor,
 }: PointsCalculatorParams): number => {
-  // Default to 0 if the value is null or undefined
   const safeMinutes = new Decimal(minutes ?? 0)
   const safePercentCorrect = new Decimal(percentCorrect ?? 0)
   const safeScenes = new Decimal(scenes ?? 0)
@@ -34,37 +33,58 @@ export const calculatePoints = ({
   const safeMFactor = mFactor ?? new Decimal(0)
   const safePFactor = pFactor ?? new Decimal(0)
   const safeSFactor = sFactor ?? new Decimal(0)
-  let safeTFactor = tFactor ?? new Decimal(0) // Let, because it might be modified
+  let safeTFactor = tFactor ?? new Decimal(0)
   const safeKFactor = kFactor ?? new Decimal(0)
 
   // Define an optimal speed value
-    const optimalSpeed = new Decimal(1500)
-    const penaltyRate = new Decimal(0.1)
-    const rewardRate = new Decimal(0.5)
+  const optimalSpeed = new Decimal(1500)
+  const penaltyRate = new Decimal(0.1)
+  const rewardRate = new Decimal(0.5)
 
   // Dynamically adjust tFactor based on the deviation from optimalSpeed
-   if (safeSpeed.gt(optimalSpeed)) {
-     // Subtract penalty
-     safeTFactor = Decimal.max(
-       new Decimal(0),
-       safeTFactor.sub(safeSpeed.sub(optimalSpeed).mul(penaltyRate)),
-     )
-   } else {
-     // Add reward
-     safeTFactor = safeTFactor.add(optimalSpeed.sub(safeSpeed).mul(rewardRate))
-   }
+  if (safeSpeed.gt(optimalSpeed)) {
+    // Subtract penalty
+    safeTFactor = Decimal.max(
+      new Decimal(0),
+      safeTFactor.sub(safeSpeed.sub(optimalSpeed).mul(penaltyRate)),
+    )
+  } else {
+    // Add reward
+    safeTFactor = safeTFactor.add(optimalSpeed.sub(safeSpeed).mul(rewardRate))
+  }
 
-  console.log('safeMinutes', safeMinutes, 'safeMFacotr', safeMFactor, 'safePercentCorrect', safePercentCorrect, 'safePFactor', safePFactor, 'safeScenes', safeScenes, 'safeSFactor', safeSFactor, 'safeSpeed', safeSpeed, 'safeTFactor', safeTFactor, 'safeClicks', safeClicks, 'safeKFactor', safeKFactor
+  console.log(
+    'safeMinutes',
+    safeMinutes,
+    'safeMFacotr',
+    safeMFactor,
+    'safePercentCorrect',
+    safePercentCorrect,
+    'safePFactor',
+    safePFactor,
+    'safeScenes',
+    safeScenes,
+    'safeSFactor',
+    safeSFactor,
+    'safeSpeed',
+    safeSpeed,
+    'safeTFactor',
+    safeTFactor,
+    'safeClicks',
+    safeClicks,
+    'safeKFactor',
+    safeKFactor,
   )
 
-  // Calculate points with dynamically adjusted tFactor
-   return Decimal.sum(
-     safeMinutes.mul(safeMFactor),
-     safePercentCorrect.mul(safePFactor),
-     safeScenes.mul(safeSFactor),
-     safeSpeed.mul(safeTFactor), // Use dynamically adjusted tFactor
-     safeClicks.mul(safeKFactor),
-   ).toNumber()
+  const totalPoints = Decimal.sum(
+    safeMinutes.mul(safeMFactor),
+    safePercentCorrect.mul(safePFactor),
+    safeScenes.mul(safeSFactor),
+    safeSpeed.mul(safeTFactor),
+    safeClicks.mul(safeKFactor),
+  )
+
+  return totalPoints.isNegative() ? 0 : totalPoints.toNumber()
 }
 
 /*
