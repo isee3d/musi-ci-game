@@ -186,7 +186,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.drums && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.drums && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <DrumsOnSVG width={'auto'} height={'auto'} />
@@ -202,7 +202,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.piano && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.piano && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <PianoOnSVG width={'auto'} height={'auto'} />
@@ -218,7 +218,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.bass && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.bass && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <BassOnSVG width={'auto'} height={'auto'} />
@@ -234,7 +234,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.gitaar && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.gitaar && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <GitaarOnSVG width={'auto'} height={'auto'} />
@@ -252,7 +252,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.sax && 'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.sax && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <SaxOnSVG width={'auto'} height={'auto'} />
@@ -268,8 +268,7 @@ const PodiumPage = () => {
                     ></div>
                     <div
                       className={cn(
-                        !isMuted.zangeres &&
-                          'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                        !isMuted.zangeres && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <ZangeresOnSVG width={'auto'} height={'auto'} />
@@ -286,7 +285,7 @@ const PodiumPage = () => {
                     <div
                       className={cn(
                         !isMuted.dwarsfluit &&
-                          'absolute bottom-0 h-1/2 w-1/4 border-b border-primary',
+                          'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
                     <DwarsfluitOnSVG width={'auto'} height={'auto'} />
