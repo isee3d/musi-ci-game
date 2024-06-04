@@ -169,7 +169,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
       addScene(sceneData)
     }
     setEndTime(Date.now())
-    const { endTime } = useLuisterenStore.getState()
+    const { endTime, allPlayedScenes } = useLuisterenStore.getState()
     resetSceneRelatedData()
     if (allPlayedScenes.length > 0) {
       setScore(
