@@ -146,7 +146,7 @@ export const usersRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { name, participantId, password, isAllowedToPlay } = input
 
-      if(!participantId) {
+      if (!participantId) {
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Deelnemer nummer is verplicht' })
       }
 
@@ -160,85 +160,100 @@ export const usersRouter = createTRPCRouter({
         if (participantIdExists) {
           throw new TRPCError({
             code: 'FORBIDDEN',
-            message: 'Er is is iets misgegaan, Deelnemer nummer is al in gebruik, kies een uniek nummer',
+            message:
+              'Er is is iets misgegaan, Deelnemer nummer is al in gebruik, kies een uniek nummer',
           })
         }
       }
 
-      if(password === undefined) {
+      if (password === undefined) {
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'wachtwoord is verplicht' })
       }
 
-      if(password.length < 6) {
+      if (password.length < 6) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Wachtwoord moet minstens 6 tekens hebben',
         })
       }
 
-     return await ctx.prisma.user.create({
+      return await ctx.prisma.user.create({
         data: {
           name: name,
           participantId: participantId,
           isAllowedToPlay: isAllowedToPlay,
           hashedPassword: await bcrypt.hash(password, 10),
-          id_Team: 1
+          id_Team: 1,
         },
       })
     }),
 
-    updateUserData: protectedProcedure
-    .input(userFormSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { userId, participantId, password, isAllowedToPlay, role, name } = input
+  updateUserData: protectedProcedure.input(userFormSchema).mutation(async ({ ctx, input }) => {
+    const { userId, participantId, password, isAllowedToPlay, role, name } = input
 
-      if(!userId) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Id voor speler verplicht' })
-      }
+    if (!userId) {
+      throw new TRPCError({ code: 'BAD_REQUEST', message: 'Id voor speler verplicht' })
+    }
 
-      const existingUser = await ctx.prisma.user.findUnique({
+    const existingUser = await ctx.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+
+    if (!existingUser) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Speler bestaat niet' })
+    }
+
+    if (password && password.length < 6) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Wachtwoord moet minstens 6 tekens hebben',
+      })
+    }
+
+    if (participantId) {
+      const participantIdExists = await ctx.prisma.user.findUnique({
         where: {
-          id: userId,
+          participantId: participantId,
         },
       })
 
-      if (!existingUser) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Speler bestaat niet' })
-      }
-
-      if(password && password.length < 6) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Wachtwoord moet minstens 6 tekens hebben' })
-      }
-
-      if(participantId) {
-        const participantIdExists = await ctx.prisma.user.findUnique({
-          where: {
-            participantId: participantId,
-          },
+      if (participantIdExists && participantIdExists.id !== userId) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Deelnemer nummer is al in gebruik, kies een uniek nummer',
         })
-
-        if(participantIdExists && participantIdExists.id !== userId) {
-          throw new TRPCError({ code: 'FORBIDDEN', message: 'Deelnemer nummer is al in gebruik, kies een uniek nummer' })
-        }
       }
+    }
 
-       let updateData = {
-         name: name,
-         participantId: participantId,
-         isAllowedToPlay: isAllowedToPlay,
-         role: role,
-       }
+    let updateData = {
+      name: name,
+      participantId: participantId,
+      isAllowedToPlay: isAllowedToPlay,
+      role: role,
+    }
 
-       if (password) {
-        // @ts-ignore
-         updateData.hashedPassword = await bcrypt.hash(password, 10)
-       }
+    if (password) {
+      // @ts-ignore
+      updateData.hashedPassword = await bcrypt.hash(password, 10)
+    }
 
-      return await ctx.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: updateData
-      })
-    }),
+    return await ctx.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: updateData,
+    })
+  }),
+
+  deleteAllUserPoints: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.prisma.points.deleteMany({
+      where: {
+        id_User: ctx.session.user.id,
+      },
+    })
+
+    return ctx.session.user
+  }),
 })

@@ -37,9 +37,18 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
   const ctx = api.useUtils()
 
   const { mutate: updateUser } = api.user.updateUserData.useMutation({
-    onSuccess: () => {
-      toast.success('Speler updated!')
+    onSuccess: (data) => {
+      toast.success(`De waardes van: ${data.name} zijn geupdatet!`)
       ctx.user.getAllUsers.invalidate()
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
+  const { mutate: deleteUserPoints } = api.user.deleteAllUserPoints.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Alle punten voor ${data.name} zijn verwijderd!`)
     },
     onError: (error) => {
       toast.error(error.message)
@@ -121,7 +130,9 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
                     <SelectGroup>
                       <SelectLabel>selecteer de rol van de speler</SelectLabel>
                       {userRoles.map((role, index) => (
-                        <SelectItem key={index} value={role}>{role}</SelectItem>
+                        <SelectItem key={index} value={role}>
+                          {role}
+                        </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
@@ -171,6 +182,9 @@ const UpdateUsersModal: React.FC<BaseStaticModalProps> = ({ setmodal, user }) =>
           className="mx-3"
         >
           Annuleren
+        </Button>
+        <Button variant={'destructive'} onClick={() => deleteUserPoints()}>
+          Verwijder all punten voor deze speler
         </Button>
       </form>
     </Form>
