@@ -30,7 +30,7 @@ const Signin = () => {
     const signinResponse = await signIn('credentials', {
       ...data,
       redirect: true,
-      callbackUrl: '/progress/1',
+      callbackUrl: '/podium',
     })
     if (signinResponse?.error) {
       toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })
