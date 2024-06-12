@@ -47,7 +47,7 @@ export function MobileNav({ items, setShowMobileNav, children }: MobileNavProps)
           className="flex items-center space-x-2"
         >
           <Icons.logo />
-          <span className="font-bold">Musi Ci</span>
+          <span className="font-bold">Musi CI</span>
         </Link>
         <nav className="grid grid-flow-row auto-rows-max text-sm">
           {items.map((item, index) => (
