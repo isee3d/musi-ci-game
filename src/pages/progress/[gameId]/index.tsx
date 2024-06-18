@@ -18,7 +18,7 @@ const UserLevelsPage = ({ gameId }: InferGetServerSidePropsType<typeof getServer
   return (
     <ContentContainer
       classNameParent="border-x-4 border-b-4 border-primary rounded-b-3xl"
-      backPath={routePaths.home}
+      backPath={routePaths.podium}
       title={titlesAndTexts.levelTitle}
     >
       {levelsOfGame?.map((level, index) => (

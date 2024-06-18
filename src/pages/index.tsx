@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
-import Image from "next/legacy/image"
+import Image from 'next/legacy/image'
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
@@ -31,9 +31,9 @@ const WelcomePage = () => {
           quality={30}
           priority
         />
-        <div className="container mx-auto my-28 md:my-0 flex flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 md:p-48 backdrop-blur-md w-4/5">
+        <div className="container mx-auto my-28 flex w-4/5 flex-col items-center justify-center gap-y-10 rounded-xl bg-background/50 p-8 backdrop-blur-md md:my-0 md:p-48">
           <div className="flex flex-col gap-4">
-            <h1 className="text-center text-3xl md:text-5xl font-extrabold">
+            <h1 className="text-center text-3xl font-extrabold md:text-5xl">
               WELKOM bij de Musi-CI Melody Game
             </h1>
             <h2 className="text-center text-xl font-bold">
@@ -43,12 +43,12 @@ const WelcomePage = () => {
           <div className="flex gap-x-4">
             <Button className={cn('px-2 sm:px-8')} size={'lg'} asChild>
               <Link href={getNextPageRoute()}>
-                <h2 className="text-center text-xs md:text-base">Neem een kijkje</h2>
+                <h2 className="text-center text-xs md:min-w-20 md:text-base">Log in</h2>
               </Link>
             </Button>
             <Button className={cn('px-2 sm:px-8')} asChild variant="outline" size={'lg'}>
               <Link href={routePaths.tutorial}>
-                <h2 className="text-center text-xs md:text-base">Bekijk uitleg</h2>
+                <h2 className="text-center text-xs md:min-w-20 md:text-base">Bekijk uitleg</h2>
               </Link>
             </Button>
           </div>

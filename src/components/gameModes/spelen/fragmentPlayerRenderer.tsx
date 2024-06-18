@@ -97,6 +97,7 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
         octave: fragment.octave ?? -1,
       })
     })
+    console.log('fragments:', shownFragments)
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
