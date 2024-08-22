@@ -1,9 +1,10 @@
 import { GetServerSidePropsContext } from 'next'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
-import Image from "next/legacy/image"
+import Image from 'next/legacy/image'
 import Link from 'next/link'
 import { Button } from '~/components/ui/button'
+import { Video } from '~/components/video'
 import { routePaths } from '~/config/routing'
 import { getSSRAuth } from '~/utils/authUtils'
 
@@ -27,6 +28,7 @@ const TutorialPage = () => {
               Cinie is een dirigent zonder band. Help haar! Speel het spel en verdien de
               instrumenten!
             </h2>
+            <Video />
             <Button size={'lg'} asChild>
               <Link href={getNextPageRoute()}>
                 <h3 className="text-xl">Ga door</h3>
