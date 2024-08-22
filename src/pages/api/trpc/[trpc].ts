@@ -15,3 +15,13 @@ export default createNextApiHandler({
         }
       : undefined,
 })
+
+export const config = {
+  runtime: 'edge',
+  api: {
+    bodyParser: {
+      sizeLimit: '1000mb',
+    },
+    responseLimit: '1000mb',
+  },
+}
