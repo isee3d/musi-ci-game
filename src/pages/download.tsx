@@ -53,8 +53,6 @@ const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
   return result
 }
 
-
-
 const headers = [
   'deelnemer nummer',
   'datum van spelen',
@@ -90,6 +88,8 @@ interface WorksheetInfo {
 
 export default function DownloadPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [currentUserIndex, setCurrentUserIndex] = useState(0)
+  const [isProcessing, setIsProcessing] = useState(false)
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
   const [workSheets, setWorkSheets] = useState<string[]>(worksheetNames)
@@ -99,19 +99,18 @@ export default function DownloadPage() {
     to: addDays(getYesterdayDate(), 2),
   })
 
-  useEffect(() => {
-    if (shouldDownload) {
-      setShouldDownload(false)
-    }
-  }, [shouldDownload])
-
   const usersQuery = api.download.getAllUsers.useQuery()
   const sublevelsQuery = api.download.getAllSublevels.useQuery()
   const gameModesQuery = api.download.getAllGameModes.useQuery()
 
-  const { isLoading: isLoadingExceldata, isFetching } = api.download.getFilteredExcelData.useQuery(
+  const {
+    isLoading: isLoadingExceldata,
+    isFetching,
+    refetch,
+  } = api.download.getFilteredExcelData.useQuery(
     {
-      selectedUsers: selectedUsers,
+      selectedUsers:
+        currentUserIndex !== null ? ([selectedUsers[currentUserIndex]] as string[]) : [],
       selectedSublevels: selectedSublevels,
       selectedGameModes: selectedGameModes,
       worksheets: workSheets,
@@ -119,37 +118,74 @@ export default function DownloadPage() {
     },
     {
       onSuccess(data: ExcelRoute) {
-        console.log('Date:', date)
-        console.log('Data:', data)
-        console.log('Selected sublevels:', selectedSublevels)
-        console.log('Selected game modes:', selectedGameModes)
-        console.log('Selected users:', selectedUsers)
+        // console.log('Date:', date)
+        // console.log('Data:', data)
+        // console.log('Selected sublevels:', selectedSublevels)
+        // console.log('Selected game modes:', selectedGameModes)
+        // console.log('Selected users:', selectedUsers)
         if (data.activities && data.activities.length === 0) {
-          toast.info('Geen activities gevonden voor de geselecteerde filters')
+          // toast.info('Geen activities gevonden voor de geselecteerde filters')
         }
         if (data.levelResults && data.levelResults.length === 0) {
-          toast.info('Geen speelresultaten gevonden voor de geselecteerde filters')
+          // toast.info('Geen speelresultaten gevonden voor de geselecteerde filters')
         }
         if (data.questionAnswers && data.questionAnswers.length === 0) {
-          toast.info('Geen vragen en antwoorden gevonden voor de geselecteerde filters')
+          // toast.info('Geen vragen en antwoorden gevonden voor de geselecteerde filters')
         }
         const splitData = splitDataByUser(data)
         // console.log(JSON.stringify(splitData))
         createExcelFilesPerUser(splitData)
+        processNextUser()
       },
-      enabled: shouldDownload === true,
+      onError() {
+        toast.error('Er is iets fout gegaan bij het ophalen van de data')
+        processNextUser()
+      },
+      enabled: false,
     },
   )
 
+  function processNextUser() {
+    if (currentUserIndex < selectedUsers.length - 1) {
+      setCurrentUserIndex((prevIndex) => prevIndex + 1)
+    } else {
+      setIsProcessing(false)
+    }
+  }
+
+  useEffect(() => {
+    if (
+      isProcessing &&
+      currentUserIndex !== null &&
+      currentUserIndex < selectedUsers.length &&
+      selectedUsers.length > 0
+    ) {
+      refetch()
+    }
+  }, [isProcessing, currentUserIndex, selectedUsers])
+
   function getLoadingExcelDataState() {
-    if (isLoadingExceldata && !isFetching) {
-      return <h3>Klik hier om de download te starten, dit kan even duren</h3>
+    if (!isProcessing) {
+      return (
+        <h3>
+          Klik hier om de download te starten
+          {selectedUsers.length === 0 ? ', selecteer eerst de spelers' : ''}
+        </h3>
+      )
     }
     if (isLoadingExceldata && isFetching) {
-      return <h2>De download is bezig...</h2>
+      return (
+        <h2>
+          Bezig met verwerken van gebruiker {currentUserIndex! + 1} van {selectedUsers.length}...
+        </h2>
+      )
     }
-    if (!isLoadingExceldata && !isFetching) {
-      return <h2>De download is gelukt, bekijk deze in de rechterbovenhoek</h2>
+    if (selectedUsers.length - 1 > currentUserIndex) {
+      return (
+        <h2>
+          Verwerking voltooid voor gebruiker {currentUserIndex! + 1} van {selectedUsers.length}
+        </h2>
+      )
     }
   }
 
@@ -318,14 +354,19 @@ export default function DownloadPage() {
     setDate(range)
   }
 
+  const handleStartDownload = () => {
+    setCurrentUserIndex(0)
+    setIsProcessing(true)
+  }
+
   if (usersQuery.isLoading || sublevelsQuery.isLoading || gameModesQuery.isLoading)
     return <LoadingPage />
 
-  if(usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
+  if (usersQuery.isError || sublevelsQuery.isError || gameModesQuery.isError) {
     return <h1>Er is iets fout gegaan bij het ophalen van de data</h1>
   }
 
-  if(!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
+  if (!usersQuery.data || !sublevelsQuery.data || !gameModesQuery.data) {
     return <h1>Er is geen data gevonden</h1>
   }
 
@@ -337,24 +378,23 @@ export default function DownloadPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-
-
       <section className=" relative flex grow flex-col items-center justify-center bg-cover bg-no-repeat">
         <div className="container mx-auto flex flex-col items-center justify-center space-y-8">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">Download CSV</h1>
           <h2>Selecteer spelers</h2>
-          { usersQuery.data && <MultiSelect
-            options={
-              usersQuery.data.map((user) => ({
-                value: user.id ?? '-1',
-                label: user.participantId ?? '-1',
-              })) ?? []
-            }
-            selected={selectedUsers}
-            onChange={setSelectedUsers}
-            className="w-[560px]"
-          />}
-
+          {usersQuery.data && (
+            <MultiSelect
+              options={
+                usersQuery.data.map((user) => ({
+                  value: user.id ?? '-1',
+                  label: user.participantId ?? '-1',
+                })) ?? []
+              }
+              selected={selectedUsers}
+              onChange={setSelectedUsers}
+              className="w-[560px]"
+            />
+          )}
 
           <Label className="mb-1">Selecteer hieronder de begin- en einddatum</Label>
           <div className={cn('grid gap-2')}>
@@ -396,32 +436,34 @@ export default function DownloadPage() {
           </div>
 
           <Label className="mb-1">Selecteer hieronder de sublevels</Label>
-          {sublevelsQuery.data && <MultiSelect
-            options={
-              sublevelsQuery.data.map((sublevel) => ({
-                value: sublevel.id.toString(),
-                label: sublevel.name,
-              })) ?? []
-            }
-            selected={selectedSublevels}
-            onChange={setSelectedSublevels}
-            className="w-[560px]"
-          />}
-
+          {sublevelsQuery.data && (
+            <MultiSelect
+              options={
+                sublevelsQuery.data.map((sublevel) => ({
+                  value: sublevel.id.toString(),
+                  label: sublevel.name,
+                })) ?? []
+              }
+              selected={selectedSublevels}
+              onChange={setSelectedSublevels}
+              className="w-[560px]"
+            />
+          )}
 
           <Label className="mb-1">Selecteer hieronder de game modussen</Label>
-          { gameModesQuery.data &&  <MultiSelect
-            options={
-              gameModesQuery.data.map((gameMode) => ({
-                value: gameMode.id.toString(),
-                label: gameMode.name,
-              })) ?? []
-            }
-            selected={selectedGameModes}
-            onChange={setSelectedGameModes}
-            className="w-[560px]"
-          />}
-
+          {gameModesQuery.data && (
+            <MultiSelect
+              options={
+                gameModesQuery.data.map((gameMode) => ({
+                  value: gameMode.id.toString(),
+                  label: gameMode.name,
+                })) ?? []
+              }
+              selected={selectedGameModes}
+              onChange={setSelectedGameModes}
+              className="w-[560px]"
+            />
+          )}
 
           <Label className="mb-1">Selecteer de gegevens worksheets</Label>
           <MultiSelect
@@ -434,11 +476,12 @@ export default function DownloadPage() {
             className="w-[560px]"
           />
 
-          <Button onClick={() => setShouldDownload(true)} size={'lg'}>
-            {getLoadingExcelDataState()}
+          <Button onClick={handleStartDownload} size={'lg'}>
+            <div className="flex justify-center items-center gap-4">
+              {isProcessing && currentUserIndex !== null && <LoadingSpinner size={25} />}
+              {getLoadingExcelDataState()}
+            </div>
           </Button>
-
-          {isLoadingExceldata && isFetching && <LoadingSpinner />}
         </div>
       </section>
     </>
