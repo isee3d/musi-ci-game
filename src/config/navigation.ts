@@ -76,7 +76,7 @@ export const navItemsPlayer: PlayerNavItem[] = [
   {
     title: 'Download pdf',
     action: downloadPdf,
-    enableAfterLogin: false,
+    enableAfterLogin: true,
   },
   {
     title: 'Download data',
