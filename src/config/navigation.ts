@@ -47,6 +47,15 @@ async function runTestSound() {
   await testSound()
 }
 
+function downloadPdf() {
+    const link = document.createElement('a');
+    link.href = '/media/sample.pdf';
+    link.download = 'uitleg.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 export const navItemsPlayer: PlayerNavItem[] = [
   {
     title: 'Ga naar podium',
@@ -62,6 +71,11 @@ export const navItemsPlayer: PlayerNavItem[] = [
   {
     title: 'Test geluid',
     action: runTestSound,
+    enableAfterLogin: false,
+  },
+  {
+    title: 'Download pdf',
+    action: downloadPdf,
     enableAfterLogin: false,
   },
   {
