@@ -93,7 +93,7 @@ export default function DownloadPage() {
   const [selectedSublevels, setSelectedSublevels] = useState<string[]>([])
   const [selectedGameModes, setSelectedGameModes] = useState<string[]>([])
   const [workSheets, setWorkSheets] = useState<string[]>(worksheetNames)
-  const [shouldDownload, setShouldDownload] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
   const [date, setDate] = useState<DateRange | undefined>({
     from: getYesterdayDate(),
     to: addDays(getYesterdayDate(), 2),
@@ -118,26 +118,22 @@ export default function DownloadPage() {
     },
     {
       onSuccess(data: ExcelRoute) {
-        // console.log('Date:', date)
-        // console.log('Data:', data)
-        // console.log('Selected sublevels:', selectedSublevels)
-        // console.log('Selected game modes:', selectedGameModes)
-        // console.log('Selected users:', selectedUsers)
         if (data.activities && data.activities.length === 0) {
-          // toast.info('Geen activities gevonden voor de geselecteerde filters')
+          // toast.info('Geen activities gevonden voor deze speler')
         }
         if (data.levelResults && data.levelResults.length === 0) {
-          // toast.info('Geen speelresultaten gevonden voor de geselecteerde filters')
+          // toast.info('Geen speelresultaten gevonden voor deze speler')
         }
         if (data.questionAnswers && data.questionAnswers.length === 0) {
-          // toast.info('Geen vragen en antwoorden gevonden voor de geselecteerde filters')
+          // toast.info('Geen vragen en antwoorden gevonden voor deze speler')
         }
         const splitData = splitDataByUser(data)
-        // console.log(JSON.stringify(splitData))
         createExcelFilesPerUser(splitData)
         processNextUser()
+        setDownloadError(null)
       },
-      onError() {
+      onError(err) {
+        setDownloadError(err.message)
         toast.error('Er is iets fout gegaan bij het ophalen van de data')
         processNextUser()
       },
@@ -477,11 +473,16 @@ export default function DownloadPage() {
           />
 
           <Button className="min-w-[600px]" onClick={handleStartDownload} size={'lg'}>
-            <div className="flex justify-center items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               {isProcessing && currentUserIndex !== null && <LoadingSpinner size={25} />}
               {getLoadingExcelDataState()}
             </div>
           </Button>
+          {downloadError && (
+            <p className="text-red-500 p-4 text-xl border border-gray-500 rounded-lg text-center">
+              Er is iets fout gegaan bij het ophalen van de data, Probeer een kleiner filterbereik
+            </p>
+          )}
         </div>
       </section>
     </>

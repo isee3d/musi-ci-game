@@ -84,7 +84,12 @@ In _app.tsx you see some config for for example XState debugging which can be re
 
 How does a gameMode work?
 
-A gamemode in its folder consists out of multiple components. The XState machine is the deciding flow of the mode. ased on the state of the machine is decided which component is rendered. Events can be send to this machine based on specific actions. State is decided either in the machine of mostly in the component where the animationPlayers are rendered.
+A gamemode in its folder consists out of multiple components. The XState machine is the deciding flow of the mode. Based on the state of the machine is decided which component is rendered. Events can be send to this machine based on specific actions. State is decided either in the machine of mostly in the component where the animationPlayers are rendered. Some logic is saved in the zustand store cause it is reused per gamemode.
+
+Theres a launch.json file in the .vscode folder for debugging the application.
+
+The testmode is based on the given json file of the customer and the testmode logic is found in the testutils file.
+The testmode page also has a button to run the testmode through code.
 
 ## Some gotchas
 
@@ -97,7 +102,9 @@ A gamemode in its folder consists out of multiple components. The XState machine
 - The TRPC query's for for example the manage part could be combined into a single query for cleanness
 - Migrate to Drizzle ORM for way better query performance
 - Migrate to App router for even better loading/error states and overall performance
-- Migrate fully to turbopack for building and using this product faster
+- Migrate fully to turbopack for building and using this product faster.
+- Converting to Nextjs App router for better loading/error states and overall performance
+
 
 ## Known bugs
 
@@ -108,4 +115,5 @@ A gamemode in its folder consists out of multiple components. The XState machine
 
  - Do not upgrade to react query V5, cause trpc v10 wont support that
  - Theres a bug in the current code with radix ui dialog. You need to look into the Command component to fix the hydration issue if you ugrade
- - 
+ - Upgrading threejs or mesline will cause the fragment line visuals to not render correctly
+-
