@@ -17,7 +17,6 @@ export default createNextApiHandler({
 })
 
 export const config = {
-  runtime: 'edge',
   api: {
     bodyParser: {
       sizeLimit: '1000mb',
