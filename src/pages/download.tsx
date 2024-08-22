@@ -476,7 +476,7 @@ export default function DownloadPage() {
             className="w-[560px]"
           />
 
-          <Button onClick={handleStartDownload} size={'lg'}>
+          <Button className="min-w-[600px]" onClick={handleStartDownload} size={'lg'}>
             <div className="flex justify-center items-center gap-4">
               {isProcessing && currentUserIndex !== null && <LoadingSpinner size={25} />}
               {getLoadingExcelDataState()}

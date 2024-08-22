@@ -26,7 +26,6 @@ interface MultiSelectProps {
 }
 
 function MultiSelect({ options, selected, onChange, className, ...props }: MultiSelectProps) {
-  console.log('options', options, 'selected', selected, 'onChange', onChange, 'className', className, 'props', props)
   const [open, setOpen] = React.useState(false)
   const [selectAllText, setSelectAllText] = React.useState('Selecteer alles')
 
@@ -42,9 +41,18 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
     } else {
       // Otherwise, select all options
       onChange(options.map((option) => option.value))
-      if (selected.length > 0) setSelectAllText('Deselecteer alles')
+      setSelectAllText('Deselecteer alles')
     }
   }
+
+  React.useEffect(() => {
+    if (selected.length === options.length) {
+      setSelectAllText('Deselecteer alles')
+    } else {
+      setSelectAllText('Selecteer alles')
+    }
+  }, [selected, options])
+
 
   return (
     <Popover open={open} onOpenChange={setOpen} {...props}>
@@ -57,34 +65,35 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           onClick={() => setOpen(!open)}
         >
           <div className="flex flex-wrap gap-1">
-            {selected.length > 0 && selected.map((item, index) => (
-              <Badge
-                variant="secondary"
-                key={index}
-                className="mb-1 mr-1"
-                onClick={() => handleUnselect(item)}
-              >
-                {item}
-                <Button
-                  className={cn(
-                    buttonVariants({ variant: 'secondary' }),
-                    'ml-1 h-4 w-4 rounded-full p-0 outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                  )}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleUnselect(item)
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                  }}
+            {selected.length > 0 &&
+              selected.map((item, index) => (
+                <Badge
+                  variant="secondary"
+                  key={index}
+                  className="mb-1 mr-1"
                   onClick={() => handleUnselect(item)}
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                </Button>
-              </Badge>
-            ))}
+                  {item}
+                  <Button
+                    className={cn(
+                      buttonVariants({ variant: 'secondary' }),
+                      'ml-1 h-4 w-4 rounded-full p-0 outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                    )}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleUnselect(item)
+                      }
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                    }}
+                    onClick={() => handleUnselect(item)}
+                  >
+                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  </Button>
+                </Badge>
+              ))}
           </div>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -98,7 +107,7 @@ function MultiSelect({ options, selected, onChange, className, ...props }: Multi
           <CommandGroup className="max-h-64 overflow-auto">
             {options.map((option, index) => (
               <CommandItem
-                 key={`${option.value}-${index}`}
+                key={`${option.value}-${index}`}
                 onSelect={() => {
                   onChange(
                     selected.includes(option.value)
