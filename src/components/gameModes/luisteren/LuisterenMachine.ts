@@ -20,7 +20,17 @@ const transpose = (
 
   const amountToSelect = fragmentsToShow - alwaysUsedFragments.length
 
-  const selectedOtherFragments = otherFragments.slice(0, amountToSelect)
+  const selectedOtherFragments: FragmentWithNotesAndWeight[] = []
+  for (let i = 0; i < amountToSelect; i++) {
+    if (otherFragments.length > 0) {
+      const randomIndex = Math.floor(Math.random() * otherFragments.length)
+      const selectedFragment = otherFragments[randomIndex]
+      if (selectedFragment) {
+        selectedOtherFragments.push(selectedFragment)
+        otherFragments.splice(randomIndex, 1)
+      }
+    }
+  }
   const selectedFragments = [...alwaysUsedFragments, ...selectedOtherFragments]
 
   if (!shouldTranspose) {

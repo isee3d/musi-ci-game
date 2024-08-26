@@ -5,6 +5,8 @@
   "prettier.semi": false,
   "prettier.singleQuote": true,
   // ========== Visuals ==========
+  "workbench.activityBar.location": "default",
+  "workbench.activityBar.orientation": "vertical",
   "editor.guides.bracketPairs": "active",
   "editor.lineNumbers": "on",
   "window.autoDetectColorScheme": true,

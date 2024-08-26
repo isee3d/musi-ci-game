@@ -97,11 +97,14 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
         octave: fragment.octave ?? -1,
       })
     })
-    console.log('fragments:', shownFragments)
     setOriginalFragments(getOriginalFragments(shownFragments, allOriginalFragments))
     AddSceneData(sceneData)
     setSceneStartTime(new Date())
   }, [shownFragments])
+
+  useEffect(() => {
+     console.log('fragments:', shownFragments, originalFragments, activeFragment?.id)
+  }, [originalFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
     return isAnimating === undefined ? activeFragmentPlayerIndex === fragment.id : isAnimating
