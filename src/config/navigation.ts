@@ -50,7 +50,7 @@ async function runTestSound() {
 function downloadPdf() {
     const link = document.createElement('a');
     link.href = '/media/sample.pdf';
-    link.download = 'uitleg.pdf';
+    link.download = 'uitleg-musi-ci-2024.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
