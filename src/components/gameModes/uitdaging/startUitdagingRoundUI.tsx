@@ -6,9 +6,10 @@ import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface StartUitdagingUIProps {
   startUitdaging: () => void
+  sublevelName: string | undefined
 }
 
-const StartUitdagingUI: React.FC<StartUitdagingUIProps> = ({ startUitdaging }) => {
+const StartUitdagingUI: React.FC<StartUitdagingUIProps> = ({ startUitdaging, sublevelName }) => {
   const { send } = UitdagingMachineContext.useActorRef()
   const { setStartTime } = useLuisterenStore()
   const router = useRouter()
@@ -22,7 +23,11 @@ const StartUitdagingUI: React.FC<StartUitdagingUIProps> = ({ startUitdaging }) =
   return (
     <div className="flex flex-col justify-center gap-y-5">
       <Button size={'lg'} onClick={startUitdagingAndCountdown}>
-        <h3>Start met uitdaging</h3>
+        {sublevelName === 'TEST introductie' ? (
+          <h3>Start</h3>
+        ) : (
+          <h3>Start met uitdaging</h3>
+        )}
       </Button>
       <Button size={'lg'} onClick={router.back}>
         <h3>Terug</h3>

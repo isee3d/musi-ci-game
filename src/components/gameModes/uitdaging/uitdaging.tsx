@@ -10,6 +10,7 @@ import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedbac
 import useStopwatch from '~/hooks/useStopwatch'
 import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { api } from '~/utils/api'
 
 interface UitdagingProps {
   fragments: FragmentWithNotes[]
@@ -38,6 +39,8 @@ const Uitdaging: React.FC<UitdagingProps> = ({
     state.matches('FinishedPlayingUitdagingMode'),
   )
   const stopwatch = useStopwatch(1000)
+
+  const { data: sublevelData } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
   const { setLevelSublevelMode, reset, setIsPlaying } = useLuisterenStore()
 
@@ -77,26 +80,37 @@ const Uitdaging: React.FC<UitdagingProps> = ({
     })
   }
 
+  const isTestIntroductie = sublevelData?.name === 'TEST introductie'
+
   return (
     <>
-      {idleState && (
+      {idleState && isTestIntroductie && (
+        <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+          {mode?.amountOfScenes} opdrachten om te oefenen
+        </h3>
+      )}
+      {idleState && !isTestIntroductie && (
         <>
-          <h3 className=" text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+          <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
             Speel tegen de klok
           </h3>
-          <h3 className=" text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+          <h3 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
             Doe {mode?.amountOfScenes} opdrachten zo snel mogelijk
           </h3>
         </>
       )}
-      {idleState && <StartUitdagingUI startUitdaging={startUitdaging} />}
+      {idleState && (
+        <StartUitdagingUI startUitdaging={startUitdaging} sublevelName={sublevelData?.name} />
+      )}
       {playingState && (
         <h3 className="text-center text-4xl font-extrabold tracking-tight">
           {hours}:{minutes}:{seconds}
         </h3>
       )}
       {countdownState && <UitdagingCountdownPlayer />}
-      {(playingState || countdownState) && <UitdagingFragmentPlayerRenderer mode={mode} sublevelId={sublevelId} />}
+      {(playingState || countdownState) && (
+        <UitdagingFragmentPlayerRenderer mode={mode} sublevelId={sublevelId} />
+      )}
       {isFinishedState && <UitdagingFeedback options={{ gameId, levelId, restartUitdaging }} />}
     </>
   )

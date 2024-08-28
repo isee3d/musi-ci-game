@@ -155,7 +155,10 @@ const ModePage = ({
     >
       <div className="flex w-full">
         {gameModesOfSublevelQuery?.data
-          ?.filter((gameMode) => gameMode.name !== 'Test')
+          ?.filter(
+            (gameMode) =>
+              gameMode.name !== 'Test' && sublevelQuery?.data?.name !== 'TEST introductie',
+          )
           .map((gameMode) => (
             <Button
               key={gameMode.id}
