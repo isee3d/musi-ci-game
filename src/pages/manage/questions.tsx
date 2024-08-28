@@ -27,6 +27,13 @@ const ManageQuestionsPage = () => {
       },
     })
 
+  const handleDeleteQuestionClick = (questionId: number) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je deze vraag wilt verwijderen?')
+    if (isConfirmed) {
+      deleteQuestion({ id: questionId })
+    }
+  }
+
   const [createModal, setCreateModal] = useState(false)
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null)
 
@@ -69,7 +76,7 @@ const ManageQuestionsPage = () => {
                       </div>
                     )}
                     <Button
-                      onClick={() => deleteQuestion({ id: question.id })}
+                      onClick={() => handleDeleteQuestionClick(question.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen

@@ -31,6 +31,13 @@ const ManageTeamPage: NextPage = () => {
   const [createModal, setCreateModal] = useState(false)
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
 
+  const handleDeleteTeamClick = (teamId: number) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je dit team wilt verwijderen?')
+    if (isConfirmed) {
+      deleteTeam({ id: teamId })
+    }
+  }
+
   const usersWithoutTeamList = getUsersWithoutTeamQuery.data?.map((user: User) => {
     return (
       <li key={user.id} className="flex items-center justify-between">
@@ -98,7 +105,7 @@ const ManageTeamPage: NextPage = () => {
                   <h2 className="text-xl">{team.description}</h2>
                   <div className="flex flex-col gap-3 md:flex-row">
                     <Button
-                      onClick={() => deleteTeam({ id: team.id })}
+                      onClick={() => handleDeleteTeamClick(team.id)}
                       className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'px-4')}
                     >
                       verwijderen
