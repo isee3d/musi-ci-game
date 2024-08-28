@@ -48,7 +48,7 @@ const WelcomePage = () => {
             </Button>
             <Button className={cn('px-2 sm:px-8')} asChild variant="outline" size={'lg'}>
               <Link href={routePaths.tutorial}>
-                <h2 className="text-center text-xs md:min-w-20 md:text-base">Bekijk uitleg</h2>
+                <h2 className="text-center text-xs md:min-w-20 md:text-base">Introductie</h2>
               </Link>
             </Button>
           </div>

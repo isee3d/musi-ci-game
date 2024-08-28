@@ -22,7 +22,7 @@ const StartTestUI: React.FC<StartTestProps> = ({ startTest }) => {
   return (
     <>
       <h3 className=" text-center text-3xl font-extrabold tracking-tight md:text-4xl">
-        Veel success met de Test
+        Veel succes met de Test
       </h3>
       <div className="flex justify-center space-x-5">
         <Button size={'lg'} onClick={startTestAndCountdown}>

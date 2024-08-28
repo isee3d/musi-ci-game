@@ -64,19 +64,14 @@ export const navItemsPlayer: PlayerNavItem[] = [
     role: ['USER'],
   },
   {
-    title: 'Ga naar uitleg',
-    href: '/tutorial',
-    enableAfterLogin: false,
+    title: 'Bekijk uitleg',
+    action: downloadPdf,
+    enableAfterLogin: true,
   },
   {
     title: 'Test geluid',
     action: runTestSound,
     enableAfterLogin: false,
-  },
-  {
-    title: 'Download pdf',
-    action: downloadPdf,
-    enableAfterLogin: true,
   },
   {
     title: 'Download data',
