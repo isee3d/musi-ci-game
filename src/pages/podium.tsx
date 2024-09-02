@@ -90,6 +90,7 @@ const PodiumPage = () => {
     dwarsfluit: false,
   })
 
+  // @ts-ignore
   const audioRefs = useRef<{ [key in keyof MuteState]: HTMLAudioElement }>({})
 
   const toggleMute = (instrument: keyof MuteState) => {
@@ -171,13 +172,16 @@ const PodiumPage = () => {
 
       <section className="relative min-h-fit items-center justify-center pt-24">
         <div className="relative  flex flex-col items-center justify-center gap-12">
-          <div className="relative flex  h-fit w-full justify-center overflow-hidden rounded-t-[5%] bg-gradient-to-t from-[#55474b] from-5% to-[#746465] pt-24 ">
+          <div className="relative flex  h-fit w-full justify-center overflow-hidden rounded-t-[5%] bg-gradient-to-t from-[#55474b] from-5%  to-[#746465] pt-24">
             <PodiumSVG className="absolute top-0 h-full w-full translate-y-[15%]" />
-            <CiniSVG className="pointer-events-none absolute bottom-0 left-0  h-1/3 w-fit sm:h-1/2 " />
+            <CiniSVG
+              className="pointer-events-none absolute bottom-0 left-0 h-1/2 w-1/4  md:w-auto translate-y-5 md:translate-y-0"
+
+            />
             <div className="relative flex w-full flex-col px-[10%]">
               <div className="flex items-center justify-center">
                 {!unlocked.drums ? (
-                  <DrumsOffSVG width={'auto'} height={'auto'} />
+                  <DrumsOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -189,11 +193,15 @@ const PodiumPage = () => {
                         !isMuted.drums && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <DrumsOnSVG width={'auto'} height={'auto'} />
+                    <DrumsOnSVG
+                      width={'100%'}
+                      height={'100%'}
+                    
+                    />
                   </div>
                 )}
                 {!unlocked.piano ? (
-                  <PianoOffSVG width={'auto'} height={'auto'} />
+                  <PianoOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -205,11 +213,11 @@ const PodiumPage = () => {
                         !isMuted.piano && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <PianoOnSVG width={'auto'} height={'auto'} />
+                    <PianoOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
                 {!unlocked.bass ? (
-                  <BassOffSVG width={'auto'} height={'auto'} />
+                  <BassOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -221,11 +229,11 @@ const PodiumPage = () => {
                         !isMuted.bass && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <BassOnSVG width={'auto'} height={'auto'} />
+                    <BassOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
                 {!unlocked.gitaar ? (
-                  <GitaarOffSVG width={'auto'} height={'auto'} />
+                  <GitaarOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -237,13 +245,13 @@ const PodiumPage = () => {
                         !isMuted.gitaar && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <GitaarOnSVG width={'auto'} height={'auto'} />
+                    <GitaarOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
               </div>
               <div className="flex -translate-y-[50%] px-[12.5%]">
                 {!unlocked.sax ? (
-                  <SaxOffSVG width={'auto'} height={'auto'} />
+                  <SaxOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -255,11 +263,11 @@ const PodiumPage = () => {
                         !isMuted.sax && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <SaxOnSVG width={'auto'} height={'auto'} />
+                    <SaxOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
                 {!unlocked.zangeres ? (
-                  <ZangeresOffSVG width={'auto'} height={'auto'} />
+                  <ZangeresOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -271,11 +279,11 @@ const PodiumPage = () => {
                         !isMuted.zangeres && 'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <ZangeresOnSVG width={'auto'} height={'auto'} />
+                    <ZangeresOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
                 {!unlocked.dwarsfluit ? (
-                  <DwarsfluitOffSVG width={'auto'} height={'auto'} />
+                  <DwarsfluitOffSVG width={'100%'} height={'100%'} />
                 ) : (
                   <div className={cn('relative flex h-full w-full items-center justify-center')}>
                     <div
@@ -288,7 +296,7 @@ const PodiumPage = () => {
                           'absolute bottom-0 h-1/2 w-1/4 border-b border-white',
                       )}
                     ></div>
-                    <DwarsfluitOnSVG width={'auto'} height={'auto'} />
+                    <DwarsfluitOnSVG width={'100%'} height={'100%'} />
                   </div>
                 )}
               </div>
