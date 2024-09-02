@@ -2,6 +2,7 @@
 
 import { Note } from '@prisma/client'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
+import { IAudioContext } from 'standardized-audio-context'
 import { create } from 'zustand'
 import { baseNotes } from '~/components/fragmentPlayer/audio/Keyboard'
 import Sampler from '~/components/fragmentPlayer/audio/Sampler'
@@ -17,7 +18,7 @@ import {
 } from '~/utils/fragmentUtils'
 
 type AudioServiceState = {
-  audioContext: AudioContext | undefined
+  audioContext: IAudioContext | undefined
   activeFragment: FragmentWithNotes | undefined
   piano: Sampler | undefined
   soundBoard: Sampler | undefined
@@ -30,7 +31,7 @@ type AudioServiceState = {
 
 type AudioserviceAction = {
   init: () => void
-  setAudioContext: (audioContext: AudioContext) => void
+  setAudioContext: (audioContext: IAudioContext) => void
   setActiveFragment: (fragment: FragmentWithNotes | undefined) => void
   getCurrentTime: () => number
   setAudioTime: (audioTime: number) => void
@@ -76,7 +77,7 @@ export const useAudioServiceStore = create<AudioServiceState & AudioserviceActio
   soundBoard: undefined,
   activeFragment: undefined,
   isInitialized: false,
-  setAudioContext: (audioContext: AudioContext) => set({ audioContext }),
+  setAudioContext: (audioContext: IAudioContext) => set({ audioContext }),
   setActiveFragment: (fragment: FragmentWithNotes | undefined) => set({ activeFragment: fragment }),
   setAudioTime: (audioTime: number) => set({ audioTime }),
   setPiano: (piano: Sampler) => set({ piano }),
