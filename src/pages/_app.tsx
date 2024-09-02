@@ -67,6 +67,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       '%c Made with ❤️ by ISee3D',
       'background: #3b82f6; color: #fff; padding: 0.5rem; border-radius: 0.5rem; font-size: 1rem;',
     )
+
+    window.open('/media/sample.pdf', '_blank')
   }, [])
 
   return (
