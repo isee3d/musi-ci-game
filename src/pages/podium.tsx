@@ -94,10 +94,12 @@ const PodiumPage = () => {
   const audioRefs = useRef<{ [key in keyof MuteState]: HTMLAudioElement }>({})
 
   const toggleMute = (instrument: keyof MuteState) => {
+    audioRefs.current[instrument].play()
     if (!didFirstClickInstrument.current) {
-      Object.values(audioRefs.current).forEach((sound) =>
-        sound.play().catch((e) => console.error('Error playing sound:', e)),
-      )
+      audioContext?.resume().then(() => {
+        // Ensure the audio context is active
+        Object.values(audioRefs.current).forEach((sound) => sound.play())
+      })
 
       didFirstClickInstrument.current = true
     }
@@ -117,7 +119,6 @@ const PodiumPage = () => {
 
   useEffect(() => {
     // This effect plays the audio after user interaction, as indicated by a change in audioContext
-    if (audioContext !== undefined) {
       audioRefs.current = {
         drums: new Audio('/media/podium/sound-drums.mp3'),
         piano: new Audio('/media/podium/sound-piano.mp3'),
@@ -159,8 +160,7 @@ const PodiumPage = () => {
           sound.currentTime = 0
         })
       }
-    }
-  }, [audioContext?.state])
+  }, [])
 
   return (
     <>
@@ -196,7 +196,7 @@ const PodiumPage = () => {
                     <DrumsOnSVG
                       width={'100%'}
                       height={'100%'}
-                    
+
                     />
                   </div>
                 )}
