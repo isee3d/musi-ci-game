@@ -54,7 +54,7 @@ function downloadPdf() {
     // ) {
       // For mobile devices, just try to open in a new tab
       setTimeout(() => {
-        window.open('/media/sample.pdf', '_top')
+        window.open('/media/sample.pdf', '_blank')
       });
       // return
     // }
