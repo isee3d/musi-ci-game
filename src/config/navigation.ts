@@ -87,7 +87,8 @@ export const navItemsPlayer: PlayerNavItem[] = [
   },
   {
     title: 'Bekijk uitleg',
-    action: downloadPdf,
+    // action: downloadPdf,
+    href: '/media/sample.pdf',
     enableAfterLogin: true,
   },
   {
