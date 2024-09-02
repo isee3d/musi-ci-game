@@ -64,12 +64,12 @@ export function MainNav({ items, children }: MainNavProps) {
                 asChild={item.href !== undefined}
               >
                 {item.href ? (
-                  <Link
+                  <a
                     className="flex items-center text-lg font-medium text-foreground transition-colors hover:text-foreground/80 sm:text-sm"
                     href={item.href}
                   >
                     {item.title}
-                  </Link>
+                  </a>
                 ) : (
                   <div>{item.title}</div>
                 )}
