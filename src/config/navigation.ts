@@ -47,25 +47,34 @@ async function runTestSound() {
   await testSound()
 }
 
-async function downloadPdf() {
-   try {
-     const response = await fetch('/media/sample.pdf')
-     const blob = await response.blob()
-     const url = URL.createObjectURL(blob)
+async function downloadPdf(): Promise<void> {
+  try {
+    const response = await fetch('/media/sample.pdf')
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
 
-     const link = document.createElement('a')
-     link.href = url
-     link.target = '_blank'
-     link.download = 'uitleg-musi-ci-2024.pdf'
-     document.body.appendChild(link)
+    const link = document.createElement('a')
+    link.href = url
+    link.target = '_blank'
+    // Check if user is on a mobile device and adjust accordingly
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      // For mobile devices, just try to open in a new tab
+      link.setAttribute('onclick', "window.open(this.href, '_blank');return false;")
+    } else {
+      // For non-mobile devices, attempt to download
+      link.download = 'uitleg-musi-ci-2024.pdf'
+    }
 
-     link.click()
-
-     document.body.removeChild(link)
-     URL.revokeObjectURL(url)
-   } catch (error) {
-     console.error('Error downloading the PDF:', error)
-   }
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error downloading the PDF:', error)
+  }
 }
 
 export const navItemsPlayer: PlayerNavItem[] = [
