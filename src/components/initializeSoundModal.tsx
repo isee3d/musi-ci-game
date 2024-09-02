@@ -4,7 +4,6 @@ import { initializeSound, start } from '~/components/fragmentPlayer/audio/AudioC
 import { Icons } from '~/components/icons'
 import { Button } from '~/components/ui/button'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
-import { AudioContext } from 'standardized-audio-context'
 
 interface BaseStaticModalProps {
   setmodal: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,7 +21,7 @@ const InitializeSoundModal: React.FC<BaseStaticModalProps> = ({ setmodal }) => {
     init()
 
     if (!audioContext) {
-      // const AudioContext = window.AudioContext || window.webkitAudioContext
+      const AudioContext = window.AudioContext || window.webkitAudioContext
       const context = new AudioContext()
       context.resume()
       setAudioContext(context)
