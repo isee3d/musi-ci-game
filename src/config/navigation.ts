@@ -55,6 +55,7 @@ async function downloadPdf() {
 
      const link = document.createElement('a')
      link.href = url
+     link.target = '_blank'
      link.download = 'uitleg-musi-ci-2024.pdf'
      document.body.appendChild(link)
 
