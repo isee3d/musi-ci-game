@@ -49,6 +49,14 @@ async function runTestSound() {
 
 async function downloadPdf(): Promise<void> {
   try {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      // For mobile devices, just try to open in a new tab
+      window.open('/media/sample.pdf', '_blank')
+      return
+    }
+
     const response = await fetch('/media/sample.pdf')
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
     const blob = await response.blob()
@@ -57,16 +65,7 @@ async function downloadPdf(): Promise<void> {
     const link = document.createElement('a')
     link.href = url
     link.target = '_blank'
-    // Check if user is on a mobile device and adjust accordingly
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    ) {
-      // For mobile devices, just try to open in a new tab
-      link.setAttribute('onclick', "window.open(this.href, '_blank');return false;")
-    } else {
-      // For non-mobile devices, attempt to download
-      link.download = 'uitleg-musi-ci-2024.pdf'
-    }
+    link.download = 'uitleg-musi-ci-2024.pdf'
 
     document.body.appendChild(link)
     link.click()
