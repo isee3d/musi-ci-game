@@ -47,7 +47,7 @@ async function runTestSound() {
   await testSound()
 }
 
-async function downloadPdf(): Promise<void> {
+function downloadPdf() {
   // try {
     // if (
     //   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
