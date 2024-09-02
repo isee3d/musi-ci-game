@@ -53,7 +53,9 @@ function downloadPdf() {
     //   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     // ) {
       // For mobile devices, just try to open in a new tab
-      window.open('/media/sample.pdf', '_blank')
+      setTimeout(() => {
+        window.open('/media/sample.pdf', '_top')
+      });
       // return
     // }
 
