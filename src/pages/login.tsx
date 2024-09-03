@@ -9,11 +9,12 @@ import { routePaths } from '~/config/routing'
 import { useUserActivity } from '~/hooks/useUserActivity'
 import { getSSRAuth } from '~/utils/authUtils'
 import Signin from './auth/signin'
-import { redirect } from 'next/dist/server/api-utils'
+import { useRouter } from 'next/navigation'
 
 const LoginPage = () => {
   const { data: session } = useSession()
   const { logSignOutActivity } = useUserActivity()
+  const router = useRouter()
 
   function getLoginText() {
     if (!session?.user.id) {
@@ -29,13 +30,14 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    if(!session){
+    if (!session) {
       signIn('credentials', { redirect: true, callbackUrl: '/progress/1' })
+    }else {
+      router.push(routePaths.podium)
     }
   }, [session])
 
-  if(!session) return <LoadingPage />
-
+  if (!session) return <LoadingPage />
   return (
     <>
       <Head>
@@ -80,5 +82,5 @@ const LoginPage = () => {
 export default LoginPage
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
- return getSSRAuth(ctx)
+  return getSSRAuth(ctx)
 }
