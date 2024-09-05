@@ -2,7 +2,7 @@ export const routePaths = {
   home: '/',
   tutorial: '/tutorial',
   podium: '/podium',
-  login: '/login',
+  login: '/auth/signin',
   levelsPage: 'progress/1',
   levelSelectPage: (gameId: string) => `/progress/${gameId}`,
   sublevelSelectPage: (gameId: string, levelId: number) => `/progress/${gameId}/${levelId}`,
@@ -11,5 +11,5 @@ export const routePaths = {
 } as const
 
 export const routeSoundIgnorePaths = [
-  '/', '/login', '/download', '/tutorial',
-] 
+  '/', '/download', '/tutorial', '/auth/signin'
+]

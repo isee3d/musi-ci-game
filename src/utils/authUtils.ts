@@ -7,7 +7,7 @@ export const getSSRAuthRedirectLogin = async (ctx: GetServerSidePropsContext) =>
   if (!session?.user.id || !session?.user.isAllowedToPlay) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/auth/signin',
         permanent: true,
       },
     }
@@ -36,7 +36,7 @@ export const getSSRAuthRedirectOnAdminRole = async (ctx: GetServerSidePropsConte
   if (!session?.user.id || !session?.user.isAllowedToPlay) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/auth/signin',
         permanent: true,
       }
     }
@@ -66,7 +66,7 @@ export const getSSRAuthRedirectOnResearcherRole = async (ctx: GetServerSideProps
   if (!session?.user.id) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/auth/signin',
         permanent: true,
       },
     }

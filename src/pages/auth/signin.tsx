@@ -29,26 +29,27 @@ const Signin = () => {
   async function onSubmit(data: z.infer<typeof signInFormSchema>) {
     const signinResponse = await signIn('credentials', {
       ...data,
-      redirect: true,
+      redirect: false,
       callbackUrl: '/podium',
     })
+    console.log(signinResponse)
     if (signinResponse?.error) {
       toast.error(`Het wachtwoord of Deelnemer nummer is incorrect`, { duration: 2500 })
-    } else if (signinResponse?.url) {
-      router.push(signinResponse.url)
+    } else if (signinResponse?.ok) {
+      router.push(routePaths.podium)
       form.reset()
     }
   }
 
   return (
-    <div className='w-full flex justify-center'>
+    <div className="flex w-full justify-center">
       <Form {...form}>
         <form
           autoComplete="off"
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex h-screen w-full md:w-1/2 flex-col justify-center gap-8 md:p-24"
+          className="flex h-screen w-full flex-col justify-center gap-8 md:w-1/2 md:p-24"
         >
-          <h2 className="text-balance text-center py-4 text-xl lg:text-4xl font-bold">
+          <h2 className="text-balance py-4 text-center text-xl font-bold lg:text-4xl">
             Musi-CI Melody Game Oefen met toonhoogtes en korte melodietjes
           </h2>
           <div className="flex flex-col gap-2">
@@ -89,9 +90,7 @@ const Signin = () => {
               Inloggen
             </Button>
             <Button className="w-1/2" asChild>
-              <Link href={routePaths.home}>
-              Annuleren
-              </Link>
+              <Link href={routePaths.home}>Annuleren</Link>
             </Button>
           </div>
         </form>
