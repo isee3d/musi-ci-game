@@ -28,8 +28,8 @@ function getAnimationClass(
       : 'bg-zinc-200'
 
   const cursorClass = options?.isClickable
-    ? 'cursor-pointer hover:opacity-60'
-    : 'cursor-not-allowed bg-gray-400'
+    ? 'cursor-pointer active:opacity-60'
+    : 'cursor-not-allowed touch-none'
 
   return cn(
     'rounded-2xl border-4 border-transparant shadow-md w-5/6 md:w-1/2',
