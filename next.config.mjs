@@ -19,9 +19,9 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  }
+  // compiler: {
+  //   removeConsole: process.env.NODE_ENV === 'production',
+  // }
   /**
   If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
    * out.
@@ -33,5 +33,10 @@ const config = {
   //   defaultLocale: 'en',
   // },
 }
+
+if(process.env.NODE_ENV === 'production') {
+  config.compiler = { removeConsole: true }
+}
+
 
 export default config

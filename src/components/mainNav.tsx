@@ -18,6 +18,18 @@ export function MainNav({ items, children }: MainNavProps) {
   const { data: session } = useSession()
   const { isPlaying } = useLuisterenStore()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
+
+  const itemProps = (item: PlayerNavItem) => {
+
+    if(item.href?.startsWith('https://')) {
+      return {
+        target:'_blank',
+        rel:"noopener"
+      }
+    }
+    return {}
+  }
+
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
@@ -67,6 +79,7 @@ export function MainNav({ items, children }: MainNavProps) {
                   <a
                     className="flex items-center text-lg font-medium text-foreground transition-colors hover:text-foreground/80 sm:text-sm"
                     href={item.href}
+                    {...itemProps(item)}
                   >
                     {item.title}
                   </a>

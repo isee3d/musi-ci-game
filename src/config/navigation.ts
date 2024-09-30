@@ -88,7 +88,7 @@ export const navItemsPlayer: PlayerNavItem[] = [
   {
     title: 'Bekijk uitleg',
     // action: downloadPdf,
-    href: '/media/sample.pdf',
+    href: 'https://musi-ci.com/media/sample.pdf',
     enableAfterLogin: true,
   },
   {
