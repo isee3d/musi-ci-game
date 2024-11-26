@@ -103,7 +103,15 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
   }, [shownFragments])
 
   useEffect(() => {
-     console.log('fragments:', shownFragments, originalFragments, activeFragment?.id)
+     console.log(
+       'fragments:',
+       shownFragments[0]?.notes[0]?.name,
+       shownFragments[0]?.notes[1]?.name,
+       '---',
+       shownFragments[1]?.notes[0]?.name,
+       shownFragments[1]?.notes[1]?.name,
+       activeFragment?.id,
+     )
   }, [originalFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {
