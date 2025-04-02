@@ -1,5 +1,6 @@
 import { createActorContext } from '@xstate/react'
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { SessionProvider } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo } from 'react'
@@ -153,39 +154,41 @@ const ModePage = ({
       shouldRenderBackButton={false}
       instrumentURL={mode !== 'Test' ? level?.instrument : undefined}
     >
-      <div className="flex w-full">
-        {gameModesOfSublevelQuery?.data
-          ?.filter(
-            (gameMode) =>
-              gameMode.name !== 'Test' && sublevelQuery?.data?.name !== 'TEST introductie',
-          )
-          .map((gameMode) => (
-            <Button
-              key={gameMode.id}
-              className={cn(
-                'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
-                mode !== gameMode.name
-                  ? 'bg-background text-accent-foreground hover:bg-primary/20'
-                  : '',
-              )}
-              disabled={isPlaying}
-              style={{
-                pointerEvents: isPlaying ? 'none' : 'auto',
-                opacity: isPlaying ? 0.5 : 1,
-              }}
-              asChild
-            >
-              <Link
-                href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
+      <SessionProvider>
+        <div className="flex w-full">
+          {gameModesOfSublevelQuery?.data
+            ?.filter(
+              (gameMode) =>
+                gameMode.name !== 'Test' && sublevelQuery?.data?.name !== 'TEST introductie',
+            )
+            .map((gameMode) => (
+              <Button
+                key={gameMode.id}
+                className={cn(
+                  'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
+                  mode !== gameMode.name
+                    ? 'bg-background text-accent-foreground hover:bg-primary/20'
+                    : '',
+                )}
+                disabled={isPlaying}
+                style={{
+                  pointerEvents: isPlaying ? 'none' : 'auto',
+                  opacity: isPlaying ? 0.5 : 1,
+                }}
+                asChild
               >
-                <h2 className="text-base md:text-xl">{gameMode.name}</h2>
-              </Link>
-            </Button>
-          ))}
-      </div>
-      <div className="relative flex w-full flex-col items-center justify-center gap-y-4 py-8 md:gap-y-8">
-        {renderGameMode(mode)}
-      </div>
+                <Link
+                  href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
+                >
+                  <h2 className="text-base md:text-xl">{gameMode.name}</h2>
+                </Link>
+              </Button>
+            ))}
+        </div>
+        <div className="relative flex w-full flex-col items-center justify-center gap-y-4 py-8 md:gap-y-8">
+          {renderGameMode(mode)}
+        </div>
+      </SessionProvider>
     </ContentContainer>
   )
 }
