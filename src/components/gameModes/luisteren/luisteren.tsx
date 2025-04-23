@@ -33,7 +33,8 @@ const Luisteren: React.FC<LuisterenProps> = ({
   const isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
     state.matches('finishedListening'),
   )
-  const { setStartTime, setLevelSublevelMode, reset, resetSceneRelatedData, setIsPlaying } = useLuisterenStore()
+  const { setStartTime, setLevelSublevelMode, reset, resetSceneRelatedData, setIsPlaying } =
+    useLuisterenStore()
 
   useEffect(() => {
     return () => setIsPlaying(false)
@@ -84,7 +85,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
       {isfinishedPlayingState && (
         <Button
           className={cn(buttonVariants({ size: 'lg', variant: 'highlight' }))}
-          onClick={restartLuisteren}
+          onClick={() => restartLuisteren}
         >
           Speel opnieuw
         </Button>
