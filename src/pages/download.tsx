@@ -54,20 +54,20 @@ const splitDataByUser = (data: ExcelRoute): SplitDataByUser => {
 }
 
 const headers = [
-  'deelnemer nummer',
-  'datum van spelen',
-  'sublevel',
+  'Deelnemer', // 1
+  'Datum', // 2
+  'Sublevel',
   'Game modus',
-  'Startijd sublevel scene',
-  'Eindtijd sublevel scene',
+  'Starttijd scene sublevel', // 3
+  'Eindtijd scene sublevel', // 4
   'Latency (ms)',
-  'Gespeelde fragment',
-  'grondtoon',
+  'Gespeeld fragment', // 5
+  'Grondtoon', // 6
   'Gekozen fragment',
-  'Goed beantwoord?',
-  'Positie gespeeld fragment',
-  'Positie gekozen fragment',
-  'Teruggeluisterde fragmenten',
+  'Goed antwoord?', // 7
+  'Positie gespeeld', // 8
+  'Positie gekozen',
+  'Teruggeluisterd',
 ]
 const questionsHeaders = ['Vraag', 'Antwoord', 'Datum']
 const activitiesHeaders = ['Activiteit type', 'Datum']
@@ -233,6 +233,30 @@ export default function DownloadPage() {
 
         return new Date(date).toLocaleString('nl-NL', options)
       }
+      const formatDateOnly = (date: Date | null) => {
+        if (!date) return ''
+
+        const options: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour12: false,
+        }
+
+        return new Date(date).toLocaleString('nl-NL', options)
+      }
+      const formatTimeOnly = (date: Date | null) => {
+        if (!date) return ''
+
+        const options: Intl.DateTimeFormatOptions = {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }
+
+        return new Date(date).toLocaleString('nl-NL', options)
+      }
 
       const addRowToWorksheet = (worksheetName: string, rowData: any[]) => {
         workbook.getWorksheet(worksheetName)?.addRow(rowData)
@@ -259,11 +283,11 @@ export default function DownloadPage() {
           data.Scenes.forEach((scene) => {
             const commonData = [
               participantId,
-              formatDate(data.startTime),
+              formatDateOnly(data.startTime),
               data.subLevel?.name,
               data.gameMode?.name,
-              formatDate(scene.startTime),
-              formatDate(
+              formatTimeOnly(scene.startTime),
+              formatTimeOnly(
                 new Date((scene.startTime?.getTime() || 0) + (scene.chosenFragmentLatency || 0)),
               ),
               scene.chosenFragmentLatency,
