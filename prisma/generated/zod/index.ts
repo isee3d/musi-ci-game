@@ -81,6 +81,44 @@ export const PointsScalarFieldEnumSchema = z.enum(['id','id_User','id_sublevel',
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullsOrderSchema = z.enum(['first','last']);
+
+export const AccountOrderByRelevanceFieldEnumSchema = z.enum(['id','userId','type','provider','providerAccountId','refresh_token','access_token','token_type','scope','id_token','session_state']);
+
+export const SessionOrderByRelevanceFieldEnumSchema = z.enum(['id','sessionToken','userId']);
+
+export const VerificationTokenOrderByRelevanceFieldEnumSchema = z.enum(['identifier','token']);
+
+export const UserOrderByRelevanceFieldEnumSchema = z.enum(['id','participantId','hashedPassword','name','email','image','role','processor','entreeVragenLijst']);
+
+export const TeamOrderByRelevanceFieldEnumSchema = z.enum(['name','description']);
+
+export const GameOrderByRelevanceFieldEnumSchema = z.enum(['name','description','color']);
+
+export const LevelOrderByRelevanceFieldEnumSchema = z.enum(['name','description','color','instrument']);
+
+export const SubLevelOrderByRelevanceFieldEnumSchema = z.enum(['name','description','color']);
+
+export const FragmentGroupOrderByRelevanceFieldEnumSchema = z.enum(['name','description']);
+
+export const FragmentOrderByRelevanceFieldEnumSchema = z.enum(['name','description']);
+
+export const NoteOrderByRelevanceFieldEnumSchema = z.enum(['name']);
+
+export const GameModeOrderByRelevanceFieldEnumSchema = z.enum(['name']);
+
+export const LevelResultOrderByRelevanceFieldEnumSchema = z.enum(['id_User']);
+
+export const SceneFragmentOrderByRelevanceFieldEnumSchema = z.enum(['groundTone']);
+
+export const AppSettingsOrderByRelevanceFieldEnumSchema = z.enum(['fragmentDotColor','fragmentDotLineColor']);
+
+export const QuestionAnswerOrderByRelevanceFieldEnumSchema = z.enum(['id_User','question','answer']);
+
+export const QuestionOrderByRelevanceFieldEnumSchema = z.enum(['question','answerType']);
+
+export const ActivityOrderByRelevanceFieldEnumSchema = z.enum(['id_User','activity']);
+
+export const PointsOrderByRelevanceFieldEnumSchema = z.enum(['id_User']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -1862,7 +1900,7 @@ export const AccountWhereInputSchema: z.ZodType<Prisma.AccountWhereInput> = z.ob
   scope: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_token: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   session_state: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict();
 
 export const AccountOrderByWithRelationInputSchema: z.ZodType<Prisma.AccountOrderByWithRelationInput> = z.object({
@@ -1878,7 +1916,8 @@ export const AccountOrderByWithRelationInputSchema: z.ZodType<Prisma.AccountOrde
   scope: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   id_token: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   session_state: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => AccountOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const AccountWhereUniqueInputSchema: z.ZodType<Prisma.AccountWhereUniqueInput> = z.union([
@@ -1910,7 +1949,7 @@ export const AccountWhereUniqueInputSchema: z.ZodType<Prisma.AccountWhereUniqueI
   scope: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   id_token: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   session_state: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict());
 
 export const AccountOrderByWithAggregationInputSchema: z.ZodType<Prisma.AccountOrderByWithAggregationInput> = z.object({
@@ -1959,7 +1998,7 @@ export const SessionWhereInputSchema: z.ZodType<Prisma.SessionWhereInput> = z.ob
   sessionToken: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   expires: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict();
 
 export const SessionOrderByWithRelationInputSchema: z.ZodType<Prisma.SessionOrderByWithRelationInput> = z.object({
@@ -1967,7 +2006,8 @@ export const SessionOrderByWithRelationInputSchema: z.ZodType<Prisma.SessionOrde
   sessionToken: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   expires: z.lazy(() => SortOrderSchema).optional(),
-  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => SessionOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const SessionWhereUniqueInputSchema: z.ZodType<Prisma.SessionWhereUniqueInput> = z.union([
@@ -1990,7 +2030,7 @@ export const SessionWhereUniqueInputSchema: z.ZodType<Prisma.SessionWhereUniqueI
   NOT: z.union([ z.lazy(() => SessionWhereInputSchema),z.lazy(() => SessionWhereInputSchema).array() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   expires: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  user: z.union([ z.lazy(() => UserScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict());
 
 export const SessionOrderByWithAggregationInputSchema: z.ZodType<Prisma.SessionOrderByWithAggregationInput> = z.object({
@@ -2025,7 +2065,8 @@ export const VerificationTokenWhereInputSchema: z.ZodType<Prisma.VerificationTok
 export const VerificationTokenOrderByWithRelationInputSchema: z.ZodType<Prisma.VerificationTokenOrderByWithRelationInput> = z.object({
   identifier: z.lazy(() => SortOrderSchema).optional(),
   token: z.lazy(() => SortOrderSchema).optional(),
-  expires: z.lazy(() => SortOrderSchema).optional()
+  expires: z.lazy(() => SortOrderSchema).optional(),
+  _relevance: z.lazy(() => VerificationTokenOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const VerificationTokenWhereUniqueInputSchema: z.ZodType<Prisma.VerificationTokenWhereUniqueInput> = z.union([
@@ -2090,7 +2131,7 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   accounts: z.lazy(() => AccountListRelationFilterSchema).optional(),
   sessions: z.lazy(() => SessionListRelationFilterSchema).optional(),
-  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableScalarRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   levelResults: z.lazy(() => LevelResultListRelationFilterSchema).optional(),
   questionAnswers: z.lazy(() => QuestionAnswerListRelationFilterSchema).optional(),
   activities: z.lazy(() => ActivityListRelationFilterSchema).optional(),
@@ -2120,7 +2161,8 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   levelResults: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional(),
   questionAnswers: z.lazy(() => QuestionAnswerOrderByRelationAggregateInputSchema).optional(),
   activities: z.lazy(() => ActivityOrderByRelationAggregateInputSchema).optional(),
-  points: z.lazy(() => PointsOrderByRelationAggregateInputSchema).optional()
+  points: z.lazy(() => PointsOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => UserOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> = z.union([
@@ -2173,7 +2215,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   accounts: z.lazy(() => AccountListRelationFilterSchema).optional(),
   sessions: z.lazy(() => SessionListRelationFilterSchema).optional(),
-  team: z.union([ z.lazy(() => TeamNullableRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
+  team: z.union([ z.lazy(() => TeamNullableScalarRelationFilterSchema),z.lazy(() => TeamWhereInputSchema) ]).optional().nullable(),
   levelResults: z.lazy(() => LevelResultListRelationFilterSchema).optional(),
   questionAnswers: z.lazy(() => QuestionAnswerListRelationFilterSchema).optional(),
   activities: z.lazy(() => ActivityListRelationFilterSchema).optional(),
@@ -2242,7 +2284,8 @@ export const TeamOrderByWithRelationInputSchema: z.ZodType<Prisma.TeamOrderByWit
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   users: z.lazy(() => UserOrderByRelationAggregateInputSchema).optional(),
-  game: z.lazy(() => GameOrderByRelationAggregateInputSchema).optional()
+  game: z.lazy(() => GameOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => TeamOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const TeamWhereUniqueInputSchema: z.ZodType<Prisma.TeamWhereUniqueInput> = z.object({
@@ -2297,7 +2340,8 @@ export const GameOrderByWithRelationInputSchema: z.ZodType<Prisma.GameOrderByWit
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   color: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   teams: z.lazy(() => TeamOrderByRelationAggregateInputSchema).optional(),
-  levels: z.lazy(() => LevelOrderByRelationAggregateInputSchema).optional()
+  levels: z.lazy(() => LevelOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => GameOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const GameWhereUniqueInputSchema: z.ZodType<Prisma.GameWhereUniqueInput> = z.union([
@@ -2357,7 +2401,7 @@ export const LevelWhereInputSchema: z.ZodType<Prisma.LevelWhereInput> = z.object
   color: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   instrument: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
-  game: z.union([ z.lazy(() => GameNullableRelationFilterSchema),z.lazy(() => GameWhereInputSchema) ]).optional().nullable(),
+  game: z.union([ z.lazy(() => GameNullableScalarRelationFilterSchema),z.lazy(() => GameWhereInputSchema) ]).optional().nullable(),
   subLevels: z.lazy(() => SubLevelListRelationFilterSchema).optional(),
   levelResult: z.lazy(() => LevelResultListRelationFilterSchema).optional()
 }).strict();
@@ -2372,7 +2416,8 @@ export const LevelOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelOrderByW
   points: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   game: z.lazy(() => GameOrderByWithRelationInputSchema).optional(),
   subLevels: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
-  levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional()
+  levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => LevelOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const LevelWhereUniqueInputSchema: z.ZodType<Prisma.LevelWhereUniqueInput> = z.union([
@@ -2398,7 +2443,7 @@ export const LevelWhereUniqueInputSchema: z.ZodType<Prisma.LevelWhereUniqueInput
   color: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   instrument: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   points: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
-  game: z.union([ z.lazy(() => GameNullableRelationFilterSchema),z.lazy(() => GameWhereInputSchema) ]).optional().nullable(),
+  game: z.union([ z.lazy(() => GameNullableScalarRelationFilterSchema),z.lazy(() => GameWhereInputSchema) ]).optional().nullable(),
   subLevels: z.lazy(() => SubLevelListRelationFilterSchema).optional(),
   levelResult: z.lazy(() => LevelResultListRelationFilterSchema).optional()
 }).strict());
@@ -2481,7 +2526,8 @@ export const SubLevelOrderByWithRelationInputSchema: z.ZodType<Prisma.SubLevelOr
   gameModes: z.lazy(() => GameModeOrderByRelationAggregateInputSchema).optional(),
   levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional(),
   fragmentGroups: z.lazy(() => FragmentGroupOrderByRelationAggregateInputSchema).optional(),
-  points: z.lazy(() => PointsOrderByRelationAggregateInputSchema).optional()
+  points: z.lazy(() => PointsOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => SubLevelOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const SubLevelWhereUniqueInputSchema: z.ZodType<Prisma.SubLevelWhereUniqueInput> = z.union([
@@ -2586,7 +2632,8 @@ export const FragmentGroupOrderByWithRelationInputSchema: z.ZodType<Prisma.Fragm
   name: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   fragments: z.lazy(() => FragmentOrderByRelationAggregateInputSchema).optional(),
-  subLevels: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional()
+  subLevels: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => FragmentGroupOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const FragmentGroupWhereUniqueInputSchema: z.ZodType<Prisma.FragmentGroupWhereUniqueInput> = z.object({
@@ -2653,7 +2700,8 @@ export const FragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.FragmentOr
   playedScene: z.lazy(() => SceneOrderByRelationAggregateInputSchema).optional(),
   relistenfragment: z.lazy(() => RelistenFragmentOrderByRelationAggregateInputSchema).optional(),
   sceneFragment: z.lazy(() => SceneFragmentOrderByRelationAggregateInputSchema).optional(),
-  fragmentgroup: z.lazy(() => FragmentGroupOrderByRelationAggregateInputSchema).optional()
+  fragmentgroup: z.lazy(() => FragmentGroupOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => FragmentOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const FragmentWhereUniqueInputSchema: z.ZodType<Prisma.FragmentWhereUniqueInput> = z.object({
@@ -2711,7 +2759,7 @@ export const NoteWhereInputSchema: z.ZodType<Prisma.NoteWhereInput> = z.object({
   time: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   duration: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   speed: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  fragment: z.union([ z.lazy(() => FragmentRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional(),
+  fragment: z.union([ z.lazy(() => FragmentScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional(),
 }).strict();
 
 export const NoteOrderByWithRelationInputSchema: z.ZodType<Prisma.NoteOrderByWithRelationInput> = z.object({
@@ -2721,7 +2769,8 @@ export const NoteOrderByWithRelationInputSchema: z.ZodType<Prisma.NoteOrderByWit
   time: z.lazy(() => SortOrderSchema).optional(),
   duration: z.lazy(() => SortOrderSchema).optional(),
   speed: z.lazy(() => SortOrderSchema).optional(),
-  fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional()
+  fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => NoteOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const NoteWhereUniqueInputSchema: z.ZodType<Prisma.NoteWhereUniqueInput> = z.object({
@@ -2737,7 +2786,7 @@ export const NoteWhereUniqueInputSchema: z.ZodType<Prisma.NoteWhereUniqueInput> 
   time: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   duration: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   speed: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
-  fragment: z.union([ z.lazy(() => FragmentRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional(),
+  fragment: z.union([ z.lazy(() => FragmentScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional(),
 }).strict());
 
 export const NoteOrderByWithAggregationInputSchema: z.ZodType<Prisma.NoteOrderByWithAggregationInput> = z.object({
@@ -2790,7 +2839,8 @@ export const GameModeOrderByWithRelationInputSchema: z.ZodType<Prisma.GameModeOr
   three: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   go: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   levels: z.lazy(() => SubLevelOrderByRelationAggregateInputSchema).optional(),
-  levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional()
+  levelResult: z.lazy(() => LevelResultOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => GameModeOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const GameModeWhereUniqueInputSchema: z.ZodType<Prisma.GameModeWhereUniqueInput> = z.union([
@@ -2859,10 +2909,10 @@ export const LevelResultWhereInputSchema: z.ZodType<Prisma.LevelResultWhereInput
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  Level: z.union([ z.lazy(() => LevelNullableRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
-  subLevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
-  gameMode: z.union([ z.lazy(() => GameModeNullableRelationFilterSchema),z.lazy(() => GameModeWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  Level: z.union([ z.lazy(() => LevelNullableScalarRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
+  subLevel: z.union([ z.lazy(() => SubLevelNullableScalarRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
+  gameMode: z.union([ z.lazy(() => GameModeNullableScalarRelationFilterSchema),z.lazy(() => GameModeWhereInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneListRelationFilterSchema).optional()
 }).strict();
 
@@ -2878,7 +2928,8 @@ export const LevelResultOrderByWithRelationInputSchema: z.ZodType<Prisma.LevelRe
   Level: z.lazy(() => LevelOrderByWithRelationInputSchema).optional(),
   subLevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional(),
   gameMode: z.lazy(() => GameModeOrderByWithRelationInputSchema).optional(),
-  Scenes: z.lazy(() => SceneOrderByRelationAggregateInputSchema).optional()
+  Scenes: z.lazy(() => SceneOrderByRelationAggregateInputSchema).optional(),
+  _relevance: z.lazy(() => LevelResultOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const LevelResultWhereUniqueInputSchema: z.ZodType<Prisma.LevelResultWhereUniqueInput> = z.object({
@@ -2895,10 +2946,10 @@ export const LevelResultWhereUniqueInputSchema: z.ZodType<Prisma.LevelResultWher
   id_gameMode: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   startTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   endTime: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  Level: z.union([ z.lazy(() => LevelNullableRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
-  subLevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
-  gameMode: z.union([ z.lazy(() => GameModeNullableRelationFilterSchema),z.lazy(() => GameModeWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  Level: z.union([ z.lazy(() => LevelNullableScalarRelationFilterSchema),z.lazy(() => LevelWhereInputSchema) ]).optional().nullable(),
+  subLevel: z.union([ z.lazy(() => SubLevelNullableScalarRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
+  gameMode: z.union([ z.lazy(() => GameModeNullableScalarRelationFilterSchema),z.lazy(() => GameModeWhereInputSchema) ]).optional().nullable(),
   Scenes: z.lazy(() => SceneListRelationFilterSchema).optional()
 }).strict());
 
@@ -2941,11 +2992,11 @@ export const SceneWhereInputSchema: z.ZodType<Prisma.SceneWhereInput> = z.object
   chosenFragmentLatency: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   answeredCorrectly: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
   startTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  chosenFragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  chosenFragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentListRelationFilterSchema).optional(),
-  levelResult: z.union([ z.lazy(() => LevelResultNullableRelationFilterSchema),z.lazy(() => LevelResultWhereInputSchema) ]).optional().nullable(),
+  levelResult: z.union([ z.lazy(() => LevelResultNullableScalarRelationFilterSchema),z.lazy(() => LevelResultWhereInputSchema) ]).optional().nullable(),
   relistenFragments: z.lazy(() => RelistenFragmentListRelationFilterSchema).optional(),
-  playedFragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  playedFragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneOrderByWithRelationInputSchema: z.ZodType<Prisma.SceneOrderByWithRelationInput> = z.object({
@@ -2977,11 +3028,11 @@ export const SceneWhereUniqueInputSchema: z.ZodType<Prisma.SceneWhereUniqueInput
   chosenFragmentLatency: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
   answeredCorrectly: z.union([ z.lazy(() => BoolNullableFilterSchema),z.boolean() ]).optional().nullable(),
   startTime: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  chosenFragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  chosenFragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
   sceneFragments: z.lazy(() => SceneFragmentListRelationFilterSchema).optional(),
-  levelResult: z.union([ z.lazy(() => LevelResultNullableRelationFilterSchema),z.lazy(() => LevelResultWhereInputSchema) ]).optional().nullable(),
+  levelResult: z.union([ z.lazy(() => LevelResultNullableScalarRelationFilterSchema),z.lazy(() => LevelResultWhereInputSchema) ]).optional().nullable(),
   relistenFragments: z.lazy(() => RelistenFragmentListRelationFilterSchema).optional(),
-  playedFragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  playedFragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const SceneOrderByWithAggregationInputSchema: z.ZodType<Prisma.SceneOrderByWithAggregationInput> = z.object({
@@ -3022,8 +3073,8 @@ export const SceneFragmentWhereInputSchema: z.ZodType<Prisma.SceneFragmentWhereI
   fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   groundTone: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   octave: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
-  fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  scene: z.union([ z.lazy(() => SceneNullableScalarRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
+  fragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SceneFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithRelationInput> = z.object({
@@ -3034,7 +3085,8 @@ export const SceneFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.Scene
   groundTone: z.lazy(() => SortOrderSchema).optional(),
   octave: z.lazy(() => SortOrderSchema).optional(),
   scene: z.lazy(() => SceneOrderByWithRelationInputSchema).optional(),
-  fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional()
+  fragment: z.lazy(() => FragmentOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => SceneFragmentOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragmentWhereUniqueInput> = z.object({
@@ -3050,8 +3102,8 @@ export const SceneFragmentWhereUniqueInputSchema: z.ZodType<Prisma.SceneFragment
   fragmentIndex: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   groundTone: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   octave: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
-  scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
-  fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  scene: z.union([ z.lazy(() => SceneNullableScalarRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
+  fragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const SceneFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.SceneFragmentOrderByWithAggregationInput> = z.object({
@@ -3088,8 +3140,8 @@ export const RelistenFragmentWhereInputSchema: z.ZodType<Prisma.RelistenFragment
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   id_scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   relistenCount: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
-  scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
+  fragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  scene: z.union([ z.lazy(() => SceneNullableScalarRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const RelistenFragmentOrderByWithRelationInputSchema: z.ZodType<Prisma.RelistenFragmentOrderByWithRelationInput> = z.object({
@@ -3112,8 +3164,8 @@ export const RelistenFragmentWhereUniqueInputSchema: z.ZodType<Prisma.RelistenFr
   id_fragment: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   id_scene: z.union([ z.lazy(() => IntNullableFilterSchema),z.number().int() ]).optional().nullable(),
   relistenCount: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
-  fragment: z.union([ z.lazy(() => FragmentNullableRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
-  scene: z.union([ z.lazy(() => SceneNullableRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
+  fragment: z.union([ z.lazy(() => FragmentNullableScalarRelationFilterSchema),z.lazy(() => FragmentWhereInputSchema) ]).optional().nullable(),
+  scene: z.union([ z.lazy(() => SceneNullableScalarRelationFilterSchema),z.lazy(() => SceneWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const RelistenFragmentOrderByWithAggregationInputSchema: z.ZodType<Prisma.RelistenFragmentOrderByWithAggregationInput> = z.object({
@@ -3151,6 +3203,7 @@ export const AppSettingsOrderByWithRelationInputSchema: z.ZodType<Prisma.AppSett
   id: z.lazy(() => SortOrderSchema).optional(),
   fragmentDotColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   fragmentDotLineColor: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  _relevance: z.lazy(() => AppSettingsOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const AppSettingsWhereUniqueInputSchema: z.ZodType<Prisma.AppSettingsWhereUniqueInput> = z.object({
@@ -3194,7 +3247,7 @@ export const QuestionAnswerWhereInputSchema: z.ZodType<Prisma.QuestionAnswerWher
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answer: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answeredDate: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QuestionAnswerOrderByWithRelationInputSchema: z.ZodType<Prisma.QuestionAnswerOrderByWithRelationInput> = z.object({
@@ -3203,7 +3256,8 @@ export const QuestionAnswerOrderByWithRelationInputSchema: z.ZodType<Prisma.Ques
   question: z.lazy(() => SortOrderSchema).optional(),
   answer: z.lazy(() => SortOrderSchema).optional(),
   answeredDate: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => QuestionAnswerOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const QuestionAnswerWhereUniqueInputSchema: z.ZodType<Prisma.QuestionAnswerWhereUniqueInput> = z.object({
@@ -3218,7 +3272,7 @@ export const QuestionAnswerWhereUniqueInputSchema: z.ZodType<Prisma.QuestionAnsw
   question: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answer: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   answeredDate: z.union([ z.lazy(() => DateTimeNullableFilterSchema),z.coerce.date() ]).optional().nullable(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const QuestionAnswerOrderByWithAggregationInputSchema: z.ZodType<Prisma.QuestionAnswerOrderByWithAggregationInput> = z.object({
@@ -3257,7 +3311,8 @@ export const QuestionWhereInputSchema: z.ZodType<Prisma.QuestionWhereInput> = z.
 export const QuestionOrderByWithRelationInputSchema: z.ZodType<Prisma.QuestionOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
-  answerType: z.lazy(() => SortOrderSchema).optional()
+  answerType: z.lazy(() => SortOrderSchema).optional(),
+  _relevance: z.lazy(() => QuestionOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const QuestionWhereUniqueInputSchema: z.ZodType<Prisma.QuestionWhereUniqueInput> = z.object({
@@ -3300,7 +3355,7 @@ export const ActivityWhereInputSchema: z.ZodType<Prisma.ActivityWhereInput> = z.
   id_User: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   activity: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   activity_Date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const ActivityOrderByWithRelationInputSchema: z.ZodType<Prisma.ActivityOrderByWithRelationInput> = z.object({
@@ -3308,7 +3363,8 @@ export const ActivityOrderByWithRelationInputSchema: z.ZodType<Prisma.ActivityOr
   id_User: z.lazy(() => SortOrderSchema).optional(),
   activity: z.lazy(() => SortOrderSchema).optional(),
   activity_Date: z.lazy(() => SortOrderSchema).optional(),
-  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
+  user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => ActivityOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const ActivityWhereUniqueInputSchema: z.ZodType<Prisma.ActivityWhereUniqueInput> = z.object({
@@ -3322,7 +3378,7 @@ export const ActivityWhereUniqueInputSchema: z.ZodType<Prisma.ActivityWhereUniqu
   id_User: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   activity: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   activity_Date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const ActivityOrderByWithAggregationInputSchema: z.ZodType<Prisma.ActivityOrderByWithAggregationInput> = z.object({
@@ -3356,8 +3412,8 @@ export const PointsWhereInputSchema: z.ZodType<Prisma.PointsWhereInput> = z.obje
   id_sublevel: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   points: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   points_Date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  sublevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  sublevel: z.union([ z.lazy(() => SubLevelNullableScalarRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const PointsOrderByWithRelationInputSchema: z.ZodType<Prisma.PointsOrderByWithRelationInput> = z.object({
@@ -3367,7 +3423,8 @@ export const PointsOrderByWithRelationInputSchema: z.ZodType<Prisma.PointsOrderB
   points: z.lazy(() => SortOrderSchema).optional(),
   points_Date: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
-  sublevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional()
+  sublevel: z.lazy(() => SubLevelOrderByWithRelationInputSchema).optional(),
+  _relevance: z.lazy(() => PointsOrderByRelevanceInputSchema).optional()
 }).strict();
 
 export const PointsWhereUniqueInputSchema: z.ZodType<Prisma.PointsWhereUniqueInput> = z.object({
@@ -3382,8 +3439,8 @@ export const PointsWhereUniqueInputSchema: z.ZodType<Prisma.PointsWhereUniqueInp
   id_sublevel: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   points: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   points_Date: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  user: z.union([ z.lazy(() => UserNullableRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
-  sublevel: z.union([ z.lazy(() => SubLevelNullableRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
+  user: z.union([ z.lazy(() => UserNullableScalarRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
+  sublevel: z.union([ z.lazy(() => SubLevelNullableScalarRelationFilterSchema),z.lazy(() => SubLevelWhereInputSchema) ]).optional().nullable(),
 }).strict());
 
 export const PointsOrderByWithAggregationInputSchema: z.ZodType<Prisma.PointsOrderByWithAggregationInput> = z.object({
@@ -4829,6 +4886,7 @@ export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
 }).strict();
 
@@ -4843,6 +4901,7 @@ export const StringNullableFilterSchema: z.ZodType<Prisma.StringNullableFilter> 
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableFilterSchema) ]).optional().nullable(),
 }).strict();
 
@@ -4857,7 +4916,7 @@ export const IntNullableFilterSchema: z.ZodType<Prisma.IntNullableFilter> = z.ob
   not: z.union([ z.number(),z.lazy(() => NestedIntNullableFilterSchema) ]).optional().nullable(),
 }).strict();
 
-export const UserRelationFilterSchema: z.ZodType<Prisma.UserRelationFilter> = z.object({
+export const UserScalarRelationFilterSchema: z.ZodType<Prisma.UserScalarRelationFilter> = z.object({
   is: z.lazy(() => UserWhereInputSchema).optional(),
   isNot: z.lazy(() => UserWhereInputSchema).optional()
 }).strict();
@@ -4865,6 +4924,12 @@ export const UserRelationFilterSchema: z.ZodType<Prisma.UserRelationFilter> = z.
 export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z.object({
   sort: z.lazy(() => SortOrderSchema),
   nulls: z.lazy(() => NullsOrderSchema).optional()
+}).strict();
+
+export const AccountOrderByRelevanceInputSchema: z.ZodType<Prisma.AccountOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => AccountOrderByRelevanceFieldEnumSchema),z.lazy(() => AccountOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const AccountProviderProviderAccountIdCompoundUniqueInputSchema: z.ZodType<Prisma.AccountProviderProviderAccountIdCompoundUniqueInput> = z.object({
@@ -4936,6 +5001,7 @@ export const StringWithAggregatesFilterSchema: z.ZodType<Prisma.StringWithAggreg
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringWithAggregatesFilterSchema) ]).optional(),
   _count: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedStringFilterSchema).optional(),
@@ -4953,6 +5019,7 @@ export const StringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.StringNu
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
@@ -4984,6 +5051,12 @@ export const DateTimeFilterSchema: z.ZodType<Prisma.DateTimeFilter> = z.object({
   gt: z.coerce.date().optional(),
   gte: z.coerce.date().optional(),
   not: z.union([ z.coerce.date(),z.lazy(() => NestedDateTimeFilterSchema) ]).optional(),
+}).strict();
+
+export const SessionOrderByRelevanceInputSchema: z.ZodType<Prisma.SessionOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => SessionOrderByRelevanceFieldEnumSchema),z.lazy(() => SessionOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const SessionCountOrderByAggregateInputSchema: z.ZodType<Prisma.SessionCountOrderByAggregateInput> = z.object({
@@ -5019,6 +5092,12 @@ export const DateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.DateTimeWithAg
   _count: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedDateTimeFilterSchema).optional(),
   _max: z.lazy(() => NestedDateTimeFilterSchema).optional()
+}).strict();
+
+export const VerificationTokenOrderByRelevanceInputSchema: z.ZodType<Prisma.VerificationTokenOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => VerificationTokenOrderByRelevanceFieldEnumSchema),z.lazy(() => VerificationTokenOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const VerificationTokenIdentifierTokenCompoundUniqueInputSchema: z.ZodType<Prisma.VerificationTokenIdentifierTokenCompoundUniqueInput> = z.object({
@@ -5072,7 +5151,7 @@ export const SessionListRelationFilterSchema: z.ZodType<Prisma.SessionListRelati
   none: z.lazy(() => SessionWhereInputSchema).optional()
 }).strict();
 
-export const TeamNullableRelationFilterSchema: z.ZodType<Prisma.TeamNullableRelationFilter> = z.object({
+export const TeamNullableScalarRelationFilterSchema: z.ZodType<Prisma.TeamNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => TeamWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => TeamWhereInputSchema).optional().nullable()
 }).strict();
@@ -5123,6 +5202,12 @@ export const ActivityOrderByRelationAggregateInputSchema: z.ZodType<Prisma.Activ
 
 export const PointsOrderByRelationAggregateInputSchema: z.ZodType<Prisma.PointsOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const UserOrderByRelevanceInputSchema: z.ZodType<Prisma.UserOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => UserOrderByRelevanceFieldEnumSchema),z.lazy(() => UserOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrderByAggregateInput> = z.object({
@@ -5245,6 +5330,12 @@ export const GameOrderByRelationAggregateInputSchema: z.ZodType<Prisma.GameOrder
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const TeamOrderByRelevanceInputSchema: z.ZodType<Prisma.TeamOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => TeamOrderByRelevanceFieldEnumSchema),z.lazy(() => TeamOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const TeamCountOrderByAggregateInputSchema: z.ZodType<Prisma.TeamCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
@@ -5307,6 +5398,12 @@ export const LevelOrderByRelationAggregateInputSchema: z.ZodType<Prisma.LevelOrd
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const GameOrderByRelevanceInputSchema: z.ZodType<Prisma.GameOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => GameOrderByRelevanceFieldEnumSchema),z.lazy(() => GameOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const GameCountOrderByAggregateInputSchema: z.ZodType<Prisma.GameCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
@@ -5336,7 +5433,7 @@ export const GameSumOrderByAggregateInputSchema: z.ZodType<Prisma.GameSumOrderBy
   id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const GameNullableRelationFilterSchema: z.ZodType<Prisma.GameNullableRelationFilter> = z.object({
+export const GameNullableScalarRelationFilterSchema: z.ZodType<Prisma.GameNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => GameWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => GameWhereInputSchema).optional().nullable()
 }).strict();
@@ -5349,6 +5446,12 @@ export const SubLevelListRelationFilterSchema: z.ZodType<Prisma.SubLevelListRela
 
 export const SubLevelOrderByRelationAggregateInputSchema: z.ZodType<Prisma.SubLevelOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const LevelOrderByRelevanceInputSchema: z.ZodType<Prisma.LevelOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => LevelOrderByRelevanceFieldEnumSchema),z.lazy(() => LevelOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const LevelCountOrderByAggregateInputSchema: z.ZodType<Prisma.LevelCountOrderByAggregateInput> = z.object({
@@ -5432,6 +5535,12 @@ export const GameModeOrderByRelationAggregateInputSchema: z.ZodType<Prisma.GameM
 
 export const FragmentGroupOrderByRelationAggregateInputSchema: z.ZodType<Prisma.FragmentGroupOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const SubLevelOrderByRelevanceInputSchema: z.ZodType<Prisma.SubLevelOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => SubLevelOrderByRelevanceFieldEnumSchema),z.lazy(() => SubLevelOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const SubLevelCountOrderByAggregateInputSchema: z.ZodType<Prisma.SubLevelCountOrderByAggregateInput> = z.object({
@@ -5539,6 +5648,12 @@ export const DecimalNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Decimal
   _max: z.lazy(() => NestedDecimalNullableFilterSchema).optional()
 }).strict();
 
+export const FragmentGroupOrderByRelevanceInputSchema: z.ZodType<Prisma.FragmentGroupOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => FragmentGroupOrderByRelevanceFieldEnumSchema),z.lazy(() => FragmentGroupOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const FragmentGroupCountOrderByAggregateInputSchema: z.ZodType<Prisma.FragmentGroupCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
@@ -5610,6 +5725,12 @@ export const SceneFragmentOrderByRelationAggregateInputSchema: z.ZodType<Prisma.
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const FragmentOrderByRelevanceInputSchema: z.ZodType<Prisma.FragmentOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => FragmentOrderByRelevanceFieldEnumSchema),z.lazy(() => FragmentOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const FragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.FragmentCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
@@ -5652,9 +5773,15 @@ export const BoolWithAggregatesFilterSchema: z.ZodType<Prisma.BoolWithAggregates
   _max: z.lazy(() => NestedBoolFilterSchema).optional()
 }).strict();
 
-export const FragmentRelationFilterSchema: z.ZodType<Prisma.FragmentRelationFilter> = z.object({
+export const FragmentScalarRelationFilterSchema: z.ZodType<Prisma.FragmentScalarRelationFilter> = z.object({
   is: z.lazy(() => FragmentWhereInputSchema).optional(),
   isNot: z.lazy(() => FragmentWhereInputSchema).optional()
+}).strict();
+
+export const NoteOrderByRelevanceInputSchema: z.ZodType<Prisma.NoteOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => NoteOrderByRelevanceFieldEnumSchema),z.lazy(() => NoteOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const NoteCountOrderByAggregateInputSchema: z.ZodType<Prisma.NoteCountOrderByAggregateInput> = z.object({
@@ -5698,6 +5825,12 @@ export const NoteSumOrderByAggregateInputSchema: z.ZodType<Prisma.NoteSumOrderBy
   time: z.lazy(() => SortOrderSchema).optional(),
   duration: z.lazy(() => SortOrderSchema).optional(),
   speed: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const GameModeOrderByRelevanceInputSchema: z.ZodType<Prisma.GameModeOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => GameModeOrderByRelevanceFieldEnumSchema),z.lazy(() => GameModeOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const GameModeCountOrderByAggregateInputSchema: z.ZodType<Prisma.GameModeCountOrderByAggregateInput> = z.object({
@@ -5748,24 +5881,30 @@ export const GameModeSumOrderByAggregateInputSchema: z.ZodType<Prisma.GameModeSu
   go: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const UserNullableRelationFilterSchema: z.ZodType<Prisma.UserNullableRelationFilter> = z.object({
+export const UserNullableScalarRelationFilterSchema: z.ZodType<Prisma.UserNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => UserWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => UserWhereInputSchema).optional().nullable()
 }).strict();
 
-export const LevelNullableRelationFilterSchema: z.ZodType<Prisma.LevelNullableRelationFilter> = z.object({
+export const LevelNullableScalarRelationFilterSchema: z.ZodType<Prisma.LevelNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => LevelWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => LevelWhereInputSchema).optional().nullable()
 }).strict();
 
-export const SubLevelNullableRelationFilterSchema: z.ZodType<Prisma.SubLevelNullableRelationFilter> = z.object({
+export const SubLevelNullableScalarRelationFilterSchema: z.ZodType<Prisma.SubLevelNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => SubLevelWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => SubLevelWhereInputSchema).optional().nullable()
 }).strict();
 
-export const GameModeNullableRelationFilterSchema: z.ZodType<Prisma.GameModeNullableRelationFilter> = z.object({
+export const GameModeNullableScalarRelationFilterSchema: z.ZodType<Prisma.GameModeNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => GameModeWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => GameModeWhereInputSchema).optional().nullable()
+}).strict();
+
+export const LevelResultOrderByRelevanceInputSchema: z.ZodType<Prisma.LevelResultOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => LevelResultOrderByRelevanceFieldEnumSchema),z.lazy(() => LevelResultOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const LevelResultCountOrderByAggregateInputSchema: z.ZodType<Prisma.LevelResultCountOrderByAggregateInput> = z.object({
@@ -5812,12 +5951,12 @@ export const LevelResultSumOrderByAggregateInputSchema: z.ZodType<Prisma.LevelRe
   id_gameMode: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const FragmentNullableRelationFilterSchema: z.ZodType<Prisma.FragmentNullableRelationFilter> = z.object({
+export const FragmentNullableScalarRelationFilterSchema: z.ZodType<Prisma.FragmentNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => FragmentWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => FragmentWhereInputSchema).optional().nullable()
 }).strict();
 
-export const LevelResultNullableRelationFilterSchema: z.ZodType<Prisma.LevelResultNullableRelationFilter> = z.object({
+export const LevelResultNullableScalarRelationFilterSchema: z.ZodType<Prisma.LevelResultNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => LevelResultWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => LevelResultWhereInputSchema).optional().nullable()
 }).strict();
@@ -5868,9 +6007,15 @@ export const SceneSumOrderByAggregateInputSchema: z.ZodType<Prisma.SceneSumOrder
   chosenFragmentLatency: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const SceneNullableRelationFilterSchema: z.ZodType<Prisma.SceneNullableRelationFilter> = z.object({
+export const SceneNullableScalarRelationFilterSchema: z.ZodType<Prisma.SceneNullableScalarRelationFilter> = z.object({
   is: z.lazy(() => SceneWhereInputSchema).optional().nullable(),
   isNot: z.lazy(() => SceneWhereInputSchema).optional().nullable()
+}).strict();
+
+export const SceneFragmentOrderByRelevanceInputSchema: z.ZodType<Prisma.SceneFragmentOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => SceneFragmentOrderByRelevanceFieldEnumSchema),z.lazy(() => SceneFragmentOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const SceneFragmentCountOrderByAggregateInputSchema: z.ZodType<Prisma.SceneFragmentCountOrderByAggregateInput> = z.object({
@@ -5951,6 +6096,12 @@ export const RelistenFragmentSumOrderByAggregateInputSchema: z.ZodType<Prisma.Re
   relistenCount: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const AppSettingsOrderByRelevanceInputSchema: z.ZodType<Prisma.AppSettingsOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => AppSettingsOrderByRelevanceFieldEnumSchema),z.lazy(() => AppSettingsOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const AppSettingsCountOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   fragmentDotColor: z.lazy(() => SortOrderSchema).optional(),
@@ -5975,6 +6126,12 @@ export const AppSettingsMinOrderByAggregateInputSchema: z.ZodType<Prisma.AppSett
 
 export const AppSettingsSumOrderByAggregateInputSchema: z.ZodType<Prisma.AppSettingsSumOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const QuestionAnswerOrderByRelevanceInputSchema: z.ZodType<Prisma.QuestionAnswerOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => QuestionAnswerOrderByRelevanceFieldEnumSchema),z.lazy(() => QuestionAnswerOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const QuestionAnswerCountOrderByAggregateInputSchema: z.ZodType<Prisma.QuestionAnswerCountOrderByAggregateInput> = z.object({
@@ -6009,6 +6166,12 @@ export const QuestionAnswerSumOrderByAggregateInputSchema: z.ZodType<Prisma.Ques
   id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const QuestionOrderByRelevanceInputSchema: z.ZodType<Prisma.QuestionOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => QuestionOrderByRelevanceFieldEnumSchema),z.lazy(() => QuestionOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
+}).strict();
+
 export const QuestionCountOrderByAggregateInputSchema: z.ZodType<Prisma.QuestionCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   question: z.lazy(() => SortOrderSchema).optional(),
@@ -6033,6 +6196,12 @@ export const QuestionMinOrderByAggregateInputSchema: z.ZodType<Prisma.QuestionMi
 
 export const QuestionSumOrderByAggregateInputSchema: z.ZodType<Prisma.QuestionSumOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const ActivityOrderByRelevanceInputSchema: z.ZodType<Prisma.ActivityOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => ActivityOrderByRelevanceFieldEnumSchema),z.lazy(() => ActivityOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const ActivityCountOrderByAggregateInputSchema: z.ZodType<Prisma.ActivityCountOrderByAggregateInput> = z.object({
@@ -6062,6 +6231,12 @@ export const ActivityMinOrderByAggregateInputSchema: z.ZodType<Prisma.ActivityMi
 
 export const ActivitySumOrderByAggregateInputSchema: z.ZodType<Prisma.ActivitySumOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const PointsOrderByRelevanceInputSchema: z.ZodType<Prisma.PointsOrderByRelevanceInput> = z.object({
+  fields: z.union([ z.lazy(() => PointsOrderByRelevanceFieldEnumSchema),z.lazy(() => PointsOrderByRelevanceFieldEnumSchema).array() ]),
+  sort: z.lazy(() => SortOrderSchema),
+  search: z.string()
 }).strict();
 
 export const PointsCountOrderByAggregateInputSchema: z.ZodType<Prisma.PointsCountOrderByAggregateInput> = z.object({
@@ -7769,6 +7944,7 @@ export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z.
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
 }).strict();
 
@@ -7783,6 +7959,7 @@ export const NestedStringNullableFilterSchema: z.ZodType<Prisma.NestedStringNull
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableFilterSchema) ]).optional().nullable(),
 }).strict();
 
@@ -7808,6 +7985,7 @@ export const NestedStringWithAggregatesFilterSchema: z.ZodType<Prisma.NestedStri
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringWithAggregatesFilterSchema) ]).optional(),
   _count: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedStringFilterSchema).optional(),
@@ -7836,6 +8014,7 @@ export const NestedStringNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Ne
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
+  search: z.string().optional(),
   not: z.union([ z.string(),z.lazy(() => NestedStringNullableWithAggregatesFilterSchema) ]).optional().nullable(),
   _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
   _min: z.lazy(() => NestedStringNullableFilterSchema).optional(),
@@ -13940,10 +14119,12 @@ export const AccountUpdateArgsSchema: z.ZodType<Prisma.AccountUpdateArgs> = z.ob
 export const AccountUpdateManyArgsSchema: z.ZodType<Prisma.AccountUpdateManyArgs> = z.object({
   data: z.union([ AccountUpdateManyMutationInputSchema,AccountUncheckedUpdateManyInputSchema ]),
   where: AccountWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const AccountDeleteManyArgsSchema: z.ZodType<Prisma.AccountDeleteManyArgs> = z.object({
   where: AccountWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SessionCreateArgsSchema: z.ZodType<Prisma.SessionCreateArgs> = z.object({
@@ -13985,10 +14166,12 @@ export const SessionUpdateArgsSchema: z.ZodType<Prisma.SessionUpdateArgs> = z.ob
 export const SessionUpdateManyArgsSchema: z.ZodType<Prisma.SessionUpdateManyArgs> = z.object({
   data: z.union([ SessionUpdateManyMutationInputSchema,SessionUncheckedUpdateManyInputSchema ]),
   where: SessionWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SessionDeleteManyArgsSchema: z.ZodType<Prisma.SessionDeleteManyArgs> = z.object({
   where: SessionWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const VerificationTokenCreateArgsSchema: z.ZodType<Prisma.VerificationTokenCreateArgs> = z.object({
@@ -14026,10 +14209,12 @@ export const VerificationTokenUpdateArgsSchema: z.ZodType<Prisma.VerificationTok
 export const VerificationTokenUpdateManyArgsSchema: z.ZodType<Prisma.VerificationTokenUpdateManyArgs> = z.object({
   data: z.union([ VerificationTokenUpdateManyMutationInputSchema,VerificationTokenUncheckedUpdateManyInputSchema ]),
   where: VerificationTokenWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const VerificationTokenDeleteManyArgsSchema: z.ZodType<Prisma.VerificationTokenDeleteManyArgs> = z.object({
   where: VerificationTokenWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const UserCreateArgsSchema: z.ZodType<Prisma.UserCreateArgs> = z.object({
@@ -14071,10 +14256,12 @@ export const UserUpdateArgsSchema: z.ZodType<Prisma.UserUpdateArgs> = z.object({
 export const UserUpdateManyArgsSchema: z.ZodType<Prisma.UserUpdateManyArgs> = z.object({
   data: z.union([ UserUpdateManyMutationInputSchema,UserUncheckedUpdateManyInputSchema ]),
   where: UserWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const UserDeleteManyArgsSchema: z.ZodType<Prisma.UserDeleteManyArgs> = z.object({
   where: UserWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const TeamCreateArgsSchema: z.ZodType<Prisma.TeamCreateArgs> = z.object({
@@ -14116,10 +14303,12 @@ export const TeamUpdateArgsSchema: z.ZodType<Prisma.TeamUpdateArgs> = z.object({
 export const TeamUpdateManyArgsSchema: z.ZodType<Prisma.TeamUpdateManyArgs> = z.object({
   data: z.union([ TeamUpdateManyMutationInputSchema,TeamUncheckedUpdateManyInputSchema ]),
   where: TeamWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const TeamDeleteManyArgsSchema: z.ZodType<Prisma.TeamDeleteManyArgs> = z.object({
   where: TeamWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const GameCreateArgsSchema: z.ZodType<Prisma.GameCreateArgs> = z.object({
@@ -14161,10 +14350,12 @@ export const GameUpdateArgsSchema: z.ZodType<Prisma.GameUpdateArgs> = z.object({
 export const GameUpdateManyArgsSchema: z.ZodType<Prisma.GameUpdateManyArgs> = z.object({
   data: z.union([ GameUpdateManyMutationInputSchema,GameUncheckedUpdateManyInputSchema ]),
   where: GameWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const GameDeleteManyArgsSchema: z.ZodType<Prisma.GameDeleteManyArgs> = z.object({
   where: GameWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const LevelCreateArgsSchema: z.ZodType<Prisma.LevelCreateArgs> = z.object({
@@ -14206,10 +14397,12 @@ export const LevelUpdateArgsSchema: z.ZodType<Prisma.LevelUpdateArgs> = z.object
 export const LevelUpdateManyArgsSchema: z.ZodType<Prisma.LevelUpdateManyArgs> = z.object({
   data: z.union([ LevelUpdateManyMutationInputSchema,LevelUncheckedUpdateManyInputSchema ]),
   where: LevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const LevelDeleteManyArgsSchema: z.ZodType<Prisma.LevelDeleteManyArgs> = z.object({
   where: LevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SubLevelCreateArgsSchema: z.ZodType<Prisma.SubLevelCreateArgs> = z.object({
@@ -14251,10 +14444,12 @@ export const SubLevelUpdateArgsSchema: z.ZodType<Prisma.SubLevelUpdateArgs> = z.
 export const SubLevelUpdateManyArgsSchema: z.ZodType<Prisma.SubLevelUpdateManyArgs> = z.object({
   data: z.union([ SubLevelUpdateManyMutationInputSchema,SubLevelUncheckedUpdateManyInputSchema ]),
   where: SubLevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SubLevelDeleteManyArgsSchema: z.ZodType<Prisma.SubLevelDeleteManyArgs> = z.object({
   where: SubLevelWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const FragmentGroupCreateArgsSchema: z.ZodType<Prisma.FragmentGroupCreateArgs> = z.object({
@@ -14296,10 +14491,12 @@ export const FragmentGroupUpdateArgsSchema: z.ZodType<Prisma.FragmentGroupUpdate
 export const FragmentGroupUpdateManyArgsSchema: z.ZodType<Prisma.FragmentGroupUpdateManyArgs> = z.object({
   data: z.union([ FragmentGroupUpdateManyMutationInputSchema,FragmentGroupUncheckedUpdateManyInputSchema ]),
   where: FragmentGroupWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const FragmentGroupDeleteManyArgsSchema: z.ZodType<Prisma.FragmentGroupDeleteManyArgs> = z.object({
   where: FragmentGroupWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const FragmentCreateArgsSchema: z.ZodType<Prisma.FragmentCreateArgs> = z.object({
@@ -14341,10 +14538,12 @@ export const FragmentUpdateArgsSchema: z.ZodType<Prisma.FragmentUpdateArgs> = z.
 export const FragmentUpdateManyArgsSchema: z.ZodType<Prisma.FragmentUpdateManyArgs> = z.object({
   data: z.union([ FragmentUpdateManyMutationInputSchema,FragmentUncheckedUpdateManyInputSchema ]),
   where: FragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const FragmentDeleteManyArgsSchema: z.ZodType<Prisma.FragmentDeleteManyArgs> = z.object({
   where: FragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const NoteCreateArgsSchema: z.ZodType<Prisma.NoteCreateArgs> = z.object({
@@ -14386,10 +14585,12 @@ export const NoteUpdateArgsSchema: z.ZodType<Prisma.NoteUpdateArgs> = z.object({
 export const NoteUpdateManyArgsSchema: z.ZodType<Prisma.NoteUpdateManyArgs> = z.object({
   data: z.union([ NoteUpdateManyMutationInputSchema,NoteUncheckedUpdateManyInputSchema ]),
   where: NoteWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const NoteDeleteManyArgsSchema: z.ZodType<Prisma.NoteDeleteManyArgs> = z.object({
   where: NoteWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const GameModeCreateArgsSchema: z.ZodType<Prisma.GameModeCreateArgs> = z.object({
@@ -14431,10 +14632,12 @@ export const GameModeUpdateArgsSchema: z.ZodType<Prisma.GameModeUpdateArgs> = z.
 export const GameModeUpdateManyArgsSchema: z.ZodType<Prisma.GameModeUpdateManyArgs> = z.object({
   data: z.union([ GameModeUpdateManyMutationInputSchema,GameModeUncheckedUpdateManyInputSchema ]),
   where: GameModeWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const GameModeDeleteManyArgsSchema: z.ZodType<Prisma.GameModeDeleteManyArgs> = z.object({
   where: GameModeWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const LevelResultCreateArgsSchema: z.ZodType<Prisma.LevelResultCreateArgs> = z.object({
@@ -14476,10 +14679,12 @@ export const LevelResultUpdateArgsSchema: z.ZodType<Prisma.LevelResultUpdateArgs
 export const LevelResultUpdateManyArgsSchema: z.ZodType<Prisma.LevelResultUpdateManyArgs> = z.object({
   data: z.union([ LevelResultUpdateManyMutationInputSchema,LevelResultUncheckedUpdateManyInputSchema ]),
   where: LevelResultWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const LevelResultDeleteManyArgsSchema: z.ZodType<Prisma.LevelResultDeleteManyArgs> = z.object({
   where: LevelResultWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SceneCreateArgsSchema: z.ZodType<Prisma.SceneCreateArgs> = z.object({
@@ -14521,10 +14726,12 @@ export const SceneUpdateArgsSchema: z.ZodType<Prisma.SceneUpdateArgs> = z.object
 export const SceneUpdateManyArgsSchema: z.ZodType<Prisma.SceneUpdateManyArgs> = z.object({
   data: z.union([ SceneUpdateManyMutationInputSchema,SceneUncheckedUpdateManyInputSchema ]),
   where: SceneWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SceneDeleteManyArgsSchema: z.ZodType<Prisma.SceneDeleteManyArgs> = z.object({
   where: SceneWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SceneFragmentCreateArgsSchema: z.ZodType<Prisma.SceneFragmentCreateArgs> = z.object({
@@ -14566,10 +14773,12 @@ export const SceneFragmentUpdateArgsSchema: z.ZodType<Prisma.SceneFragmentUpdate
 export const SceneFragmentUpdateManyArgsSchema: z.ZodType<Prisma.SceneFragmentUpdateManyArgs> = z.object({
   data: z.union([ SceneFragmentUpdateManyMutationInputSchema,SceneFragmentUncheckedUpdateManyInputSchema ]),
   where: SceneFragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const SceneFragmentDeleteManyArgsSchema: z.ZodType<Prisma.SceneFragmentDeleteManyArgs> = z.object({
   where: SceneFragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const RelistenFragmentCreateArgsSchema: z.ZodType<Prisma.RelistenFragmentCreateArgs> = z.object({
@@ -14611,10 +14820,12 @@ export const RelistenFragmentUpdateArgsSchema: z.ZodType<Prisma.RelistenFragment
 export const RelistenFragmentUpdateManyArgsSchema: z.ZodType<Prisma.RelistenFragmentUpdateManyArgs> = z.object({
   data: z.union([ RelistenFragmentUpdateManyMutationInputSchema,RelistenFragmentUncheckedUpdateManyInputSchema ]),
   where: RelistenFragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const RelistenFragmentDeleteManyArgsSchema: z.ZodType<Prisma.RelistenFragmentDeleteManyArgs> = z.object({
   where: RelistenFragmentWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const AppSettingsCreateArgsSchema: z.ZodType<Prisma.AppSettingsCreateArgs> = z.object({
@@ -14652,10 +14863,12 @@ export const AppSettingsUpdateArgsSchema: z.ZodType<Prisma.AppSettingsUpdateArgs
 export const AppSettingsUpdateManyArgsSchema: z.ZodType<Prisma.AppSettingsUpdateManyArgs> = z.object({
   data: z.union([ AppSettingsUpdateManyMutationInputSchema,AppSettingsUncheckedUpdateManyInputSchema ]),
   where: AppSettingsWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const AppSettingsDeleteManyArgsSchema: z.ZodType<Prisma.AppSettingsDeleteManyArgs> = z.object({
   where: AppSettingsWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const QuestionAnswerCreateArgsSchema: z.ZodType<Prisma.QuestionAnswerCreateArgs> = z.object({
@@ -14697,10 +14910,12 @@ export const QuestionAnswerUpdateArgsSchema: z.ZodType<Prisma.QuestionAnswerUpda
 export const QuestionAnswerUpdateManyArgsSchema: z.ZodType<Prisma.QuestionAnswerUpdateManyArgs> = z.object({
   data: z.union([ QuestionAnswerUpdateManyMutationInputSchema,QuestionAnswerUncheckedUpdateManyInputSchema ]),
   where: QuestionAnswerWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const QuestionAnswerDeleteManyArgsSchema: z.ZodType<Prisma.QuestionAnswerDeleteManyArgs> = z.object({
   where: QuestionAnswerWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const QuestionCreateArgsSchema: z.ZodType<Prisma.QuestionCreateArgs> = z.object({
@@ -14738,10 +14953,12 @@ export const QuestionUpdateArgsSchema: z.ZodType<Prisma.QuestionUpdateArgs> = z.
 export const QuestionUpdateManyArgsSchema: z.ZodType<Prisma.QuestionUpdateManyArgs> = z.object({
   data: z.union([ QuestionUpdateManyMutationInputSchema,QuestionUncheckedUpdateManyInputSchema ]),
   where: QuestionWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const QuestionDeleteManyArgsSchema: z.ZodType<Prisma.QuestionDeleteManyArgs> = z.object({
   where: QuestionWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const ActivityCreateArgsSchema: z.ZodType<Prisma.ActivityCreateArgs> = z.object({
@@ -14783,10 +15000,12 @@ export const ActivityUpdateArgsSchema: z.ZodType<Prisma.ActivityUpdateArgs> = z.
 export const ActivityUpdateManyArgsSchema: z.ZodType<Prisma.ActivityUpdateManyArgs> = z.object({
   data: z.union([ ActivityUpdateManyMutationInputSchema,ActivityUncheckedUpdateManyInputSchema ]),
   where: ActivityWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const ActivityDeleteManyArgsSchema: z.ZodType<Prisma.ActivityDeleteManyArgs> = z.object({
   where: ActivityWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const PointsCreateArgsSchema: z.ZodType<Prisma.PointsCreateArgs> = z.object({
@@ -14828,8 +15047,10 @@ export const PointsUpdateArgsSchema: z.ZodType<Prisma.PointsUpdateArgs> = z.obje
 export const PointsUpdateManyArgsSchema: z.ZodType<Prisma.PointsUpdateManyArgs> = z.object({
   data: z.union([ PointsUpdateManyMutationInputSchema,PointsUncheckedUpdateManyInputSchema ]),
   where: PointsWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
 
 export const PointsDeleteManyArgsSchema: z.ZodType<Prisma.PointsDeleteManyArgs> = z.object({
   where: PointsWhereInputSchema.optional(),
+  limit: z.number().optional(),
 }).strict() ;
