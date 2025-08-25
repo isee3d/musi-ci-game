@@ -300,7 +300,10 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       return { TestTwoArray: newTestTwoArray }
     }),
 
-  reset: () => set(initialState),
+  reset: () => {
+    console.trace('reset()')
+    set(initialState)
+  },
   resetSceneRelatedData: () => set(initialRoundState),
 }))
 

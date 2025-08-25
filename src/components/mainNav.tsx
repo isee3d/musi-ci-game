@@ -16,7 +16,7 @@ interface MainNavProps {
 
 export function MainNav({ items, children }: MainNavProps) {
   const { data: session } = useSession()
-  const { isPlaying } = useLuisterenStore()
+  // const { isPlaying } = useLuisterenStore()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   const itemProps = (item: PlayerNavItem) => {

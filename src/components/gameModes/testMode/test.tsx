@@ -97,6 +97,7 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
     if (match) {
       return {
         note: match[1],
+        //@ts-ignore always 4 matches
         octave: parseInt(match[2], 10),
       }
     } else {
@@ -104,7 +105,7 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
     }
   }
 
-  const compareArrays = (a, b) => {
+  const compareArrays = (a: any[], b: any[]) => {
     return a.toString() === b.toString()
   }
 
@@ -114,14 +115,18 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
       const temp: any = {}
       // console.log('scene: ', log[index])
       temp.scene = log[index]
+      if (!scene.sceneFragments) return console.error('no scene.sceneFragments found')
+
       const result = splitNoteAndOctave(scene?.sceneFragments[0]?.groundTone)
       temp.octaaf = result?.octave
       temp.grondtoon = result?.note
       const playedFragment = fragments.find((fragment) => fragment.id === scene?.id_playedFragment)
       const fragmentOne = fragments.find(
+        //@ts-ignore not possibly undefined
         (fragment) => fragment.id === scene?.sceneFragments[0]?.id_fragment,
       )
       const fragmentTwo = fragments.find(
+        //@ts-ignore not possibly undefined
         (fragment) => fragment.id === scene?.sceneFragments[1]?.id_fragment,
       )
       temp.afspelen = playedFragment?.name
@@ -138,6 +143,8 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
   } else if (subLevelName === 'TEST, level 2') {
     const generatedTest_2: TestTwo = []
     useLuisterenStore.getState().allPlayedScenes.forEach((scene, index) => {
+      if (!scene.sceneFragments) return console.error('no scene.sceneFragments found')
+
       const temp: any = {}
       temp.scene = log[index]
       const result = splitNoteAndOctave(scene?.sceneFragments[0]?.groundTone)
@@ -145,12 +152,15 @@ function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
       temp.grondtoon = result?.note
       const playedFragment = fragments.find((fragment) => fragment.id === scene?.id_playedFragment)
       const fragmentOne = fragments.find(
+        //@ts-ignore not possibly undefined
         (fragment) => fragment.id === scene?.sceneFragments[0]?.id_fragment,
       )
       const fragmentTwo = fragments.find(
+        //@ts-ignore not possibly undefined
         (fragment) => fragment.id === scene?.sceneFragments[1]?.id_fragment,
       )
       const fragmentThree = fragments.find(
+        //@ts-ignore not possibly undefined
         (fragment) => fragment.id === scene?.sceneFragments[2]?.id_fragment,
       )
       temp.afspelen = playedFragment?.name
@@ -185,8 +195,7 @@ const Test: React.FC<TestModeProps> = ({
   mode,
 }) => {
   const { send } = TestModeMachineContext.useActorRef()
-  const { setLevelSublevelMode, reset, setStartTime, setIsPlaying } =
-    useLuisterenStore()
+  const { setLevelSublevelMode, reset, setStartTime, setIsPlaying } = useLuisterenStore()
   const idleState = TestModeMachineContext.useSelector((state) => state.matches('idle'))
   const restAfterAnsweringState = TestModeMachineContext.useSelector((state) =>
     state.matches('playing.restAfterAnswering'),

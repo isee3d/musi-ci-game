@@ -86,47 +86,48 @@ async function main() {
     },
   })
 
-  // create restgehoor
-  const restgehoor1 = await prisma.restGehoor.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      user: { connect: { id: 'ckry3pjp70001lnokee5le6hs' } },
-      restGehoor: 60,
-    },
-  })
 
-  const restgehoor2 = await prisma.restGehoor.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      id: 2,
-      user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
-      restGehoor: 40,
-    },
-  })
+  // // create restgehoor
+  // const restgehoor1 = await prisma.restGehoor.upsert({
+  //   where: { id: 1 },
+  //   update: {},
+  //   create: {
+  //     id: 1,
+  //     user: { connect: { id: 'ckry3pjp70001lnokee5le6hs' } },
+  //     restGehoor: 60,
+  //   },
+  // })
 
-  const typeCi1 = await prisma.typeCI.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
-      name: 'Type CI 1',
-      merk: 'Merk 1',
-    },
-  })
+  // const restgehoor2 = await prisma.restGehoor.upsert({
+  //   where: { id: 2 },
+  //   update: {},
+  //   create: {
+  //     id: 2,
+  //     user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
+  //     restGehoor: 40,
+  //   },
+  // })
 
-  const kliniek1 = await prisma.kliniek.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      id: 1,
-      team: { connect: { id: 1 } },
-      name: 'Kliniek 1',
-    },
-  })
+  // const typeCi1 = await prisma.typeCI.upsert({
+  //   where: { id: 1 },
+  //   update: {},
+  //   create: {
+  //     id: 1,
+  //     user: { connect: { id: 'ckry3i9q20000rnokcau72egt' } },
+  //     name: 'Type CI 1',
+  //     merk: 'Merk 1',
+  //   },
+  // })
+
+  // const kliniek1 = await prisma.kliniek.upsert({
+  //   where: { id: 1 },
+  //   update: {},
+  //   create: {
+  //     id: 1,
+  //     team: { connect: { id: 1 } },
+  //     name: 'Kliniek 1',
+  //   },
+  // })
 
   const luisterenGameMode = await prisma.gameMode.upsert({
     where: { id: 1 },
@@ -224,7 +225,7 @@ async function main() {
       cooldownTime: 0,
       fragmentToShow: 2,
       gameModes: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] },
-      questions: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+      // questions: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
     },
   })
 
@@ -602,7 +603,7 @@ async function main() {
               fragmentIndex: 1,
               // isCorrectFragment: true,
               // isPlayedFragment: true,
-              groundTone: 1,
+              groundTone: "1",
             },
           },
         },

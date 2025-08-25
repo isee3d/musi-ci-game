@@ -106,10 +106,6 @@ const useCountDown = (
         }
     }, []);
 
-    const actions = useMemo(
-        () => ({ init, start, pause, resume, reset }),
-        [init, start, pause, resume, reset],
-    ) as CountdownActions;
 
     useEffect(() => {
         return () => window.cancelAnimationFrame(timer.current.requestId || 0);
@@ -119,7 +115,7 @@ const useCountDown = (
 
     return {
         convertedTime,
-        actions,
+        actions: [init, start, pause, resume, reset],
         isRunning,
     };
 };

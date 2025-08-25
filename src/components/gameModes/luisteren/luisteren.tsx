@@ -37,11 +37,8 @@ const Luisteren: React.FC<LuisterenProps> = ({
     useLuisterenStore()
 
   useEffect(() => {
-    return () => setIsPlaying(false)
-  }, [])
-
-  useEffect(() => {
     return () => {
+      setIsPlaying(false)
       send({ type: 'EXITGAME' })
     }
   }, [])
@@ -71,10 +68,10 @@ const Luisteren: React.FC<LuisterenProps> = ({
       </h2>
       {isIdleState && (
         <div className="flex flex-col gap-y-5">
-          <Button size={'lg'} onClick={startLuisteren}>
+          <Button size={'lg'} onClick={() => startLuisteren()}>
             Start met luisteren
           </Button>
-          <Button size={'lg'} onClick={router.back}>
+          <Button size={'lg'} onClick={() => router.back()}>
             Terug
           </Button>
         </div>
@@ -85,7 +82,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
       {isfinishedPlayingState && (
         <Button
           className={cn(buttonVariants({ size: 'lg', variant: 'highlight' }))}
-          onClick={() => restartLuisteren}
+          onClick={() => restartLuisteren()}
         >
           Speel opnieuw
         </Button>

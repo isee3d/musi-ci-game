@@ -28,6 +28,88 @@ export const UitdagingMachineContext = createActorContext(uitdagingMachine, { de
 export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })
 export const TestModeMachineContext = createActorContext(testModeMachine, { devTools: true })
 
+type ModeProps = {
+  mode: string
+  sublevelQuery: { data: any }
+  fragmentsToShow: number
+  fragments: any[]
+  levelId: string
+  sublevelId: string
+  modeQuery: { data: any }
+  gameId: string
+  playTime?: number | null
+  fragmentGroupsQuery: { data: any }
+}
+
+const Modes: React.FC<ModeProps> = ({
+  mode,
+  levelId,
+  fragmentsToShow,
+  fragments,
+  sublevelId,
+  modeQuery,
+  gameId,
+  playTime,
+  fragmentGroupsQuery,
+  sublevelQuery,
+}) => {
+  return (
+    <>
+      {mode === 'Luisteren' && (
+        <LuisterenMachineContext.Provider>
+          <Luisteren
+            fragmentsToShow={sublevelQuery.data?.fragmentToShowLuisteren ?? fragmentsToShow}
+            fragments={fragments}
+            levelId={levelId}
+            sublevelId={sublevelId}
+            mode={modeQuery?.data}
+          />
+        </LuisterenMachineContext.Provider>
+      )}
+      {mode === 'Spelen' && (
+        <SpelenMachineContext.Provider>
+          <Spelen
+            fragmentsToShow={sublevelQuery.data?.fragmentToShowSpelen ?? fragmentsToShow}
+            fragments={fragments}
+            levelId={levelId}
+            sublevelId={sublevelId}
+            gameId={gameId}
+            mode={modeQuery?.data}
+          />
+        </SpelenMachineContext.Provider>
+      )}
+      {mode === 'Uitdaging' && (
+        <UitdagingMachineContext.Provider>
+          <Uitdaging
+            gameId={gameId}
+            fragmentsToShow={sublevelQuery.data?.fragmentToShowUitdaging ?? fragmentsToShow}
+            fragments={fragments}
+            levelId={levelId}
+            playTime={playTime}
+            sublevelId={sublevelId}
+            mode={modeQuery?.data}
+          />
+        </UitdagingMachineContext.Provider>
+      )}
+      {mode === 'Test' && (
+        <TestModeMachineContext.Provider>
+          <Test
+            gameId={gameId}
+            levelId={levelId}
+            sublevelId={sublevelId}
+            fragments={fragments}
+            mode={modeQuery?.data}
+            sublevelName={sublevelQuery?.data?.name}
+            // fragmentsToShow={fragmentsToShow}
+            // playTime={playTime}
+            // fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
+          />
+        </TestModeMachineContext.Provider>
+      )}
+    </>
+  )
+}
+
 const ModePage = ({
   gameId,
   levelId,
@@ -62,90 +144,23 @@ const ModePage = ({
   const fragments = fragmentLevelQuery?.data?.fragments ?? []
   const playTime = fragmentLevelQuery?.data?.playTime
 
-  const renderGameMode = useCallback(
-    (mode: string) => {
-      switch (mode) {
-        case 'Luisteren':
-          return (
-            <LuisterenMachineContext.Provider>
-              <Luisteren
-                fragmentsToShow={sublevelQuery.data?.fragmentToShowLuisteren ?? fragmentsToShow}
-                fragments={fragments}
-                levelId={levelId}
-                sublevelId={sublevelId}
-                mode={modeQuery?.data}
-              />
-            </LuisterenMachineContext.Provider>
-          )
-        case 'Spelen':
-          return (
-            <SpelenMachineContext.Provider>
-              <Spelen
-                fragmentsToShow={sublevelQuery.data?.fragmentToShowSpelen ?? fragmentsToShow}
-                fragments={fragments}
-                levelId={levelId}
-                sublevelId={sublevelId}
-                gameId={gameId}
-                mode={modeQuery?.data}
-              />
-            </SpelenMachineContext.Provider>
-          )
-        case 'Uitdaging':
-          return (
-            <UitdagingMachineContext.Provider>
-              <Uitdaging
-                gameId={gameId}
-                fragmentsToShow={sublevelQuery.data?.fragmentToShowUitdaging ?? fragmentsToShow}
-                fragments={fragments}
-                levelId={levelId}
-                playTime={playTime}
-                sublevelId={sublevelId}
-                mode={modeQuery?.data}
-              />
-            </UitdagingMachineContext.Provider>
-          )
-        case 'Test':
-          return (
-            <TestModeMachineContext.Provider>
-              <Test
-                gameId={gameId}
-                levelId={levelId}
-                sublevelId={sublevelId}
-                fragments={fragments}
-                mode={modeQuery?.data}
-                sublevelName={sublevelQuery?.data?.name}
-                // fragmentsToShow={fragmentsToShow}
-                // playTime={playTime}
-                // fragmentGroups={fragmentGroupsQuery?.data?.fragmentGroups ?? []}
-              />
-            </TestModeMachineContext.Provider>
-          )
-        default:
-          return null
-      }
-    },
-    [
-      sublevelQuery.data,
-      fragmentsToShow,
-      fragments,
-      levelId,
-      sublevelId,
-      modeQuery.data,
-      gameId,
-      playTime,
-      fragmentGroupsQuery.data,
-    ],
-  )
-
-  // useEffect(() => {
-  //   if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
-  //     router.push(routePaths.sublevelSelectPage(gameId, parseInt(levelId)))
-  //   }
-
-  //   setIsPlaying(false)
-
-  //   return () => setIsPlaying(false)
-  // }, [])
+  useEffect(() => {
+    // if (!audioContext && env.NEXT_PUBLIC_ENABLE_AUDIO) {
+    //   router.push(routePaths.sublevelSelectPage(gameId, parseInt(levelId)))
+    // }
+    // setIsPlaying(false)
+    // return () => setIsPlaying(false)
+  }, [
+    sublevelQuery.data,
+    fragmentsToShow,
+    fragments,
+    levelId,
+    sublevelId,
+    modeQuery.data,
+    gameId,
+    playTime,
+    fragmentGroupsQuery.data,
+  ])
 
   return (
     <ContentContainer
@@ -186,7 +201,18 @@ const ModePage = ({
             ))}
         </div>
         <div className="relative flex w-full flex-col items-center justify-center gap-y-4 py-8 md:gap-y-8">
-          {renderGameMode(mode)}
+          <Modes
+            mode={mode}
+            levelId={levelId}
+            fragmentGroupsQuery={fragmentGroupsQuery}
+            fragments={fragments}
+            fragmentsToShow={fragmentsToShow}
+            gameId={gameId}
+            sublevelQuery={sublevelQuery}
+            sublevelId={sublevelId}
+            modeQuery={modeQuery}
+          />
+          {/* {renderGameMode(mode)} */}
         </div>
       </SessionProvider>
     </ContentContainer>

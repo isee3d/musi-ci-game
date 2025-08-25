@@ -193,6 +193,7 @@ export const levelRouter = createTRPCRouter({
         if (!acc[scoreResult.id_sublevel]) {
           acc[scoreResult.id_sublevel] = 0
         }
+        //@ts-ignore not possibly undefined
         acc[scoreResult.id_sublevel] += scoreResult.points
         return acc
       },
