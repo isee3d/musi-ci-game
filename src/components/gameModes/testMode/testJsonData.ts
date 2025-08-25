@@ -1,3 +1,11 @@
+export type TestScene = {
+  scene: number
+  grondtoon: string
+  octaaf: number
+  afspelen: string
+  fragment_1: string
+  fragment_2: string
+}
 export const test_1 = [
   {
     scene: 1,
@@ -4898,7 +4906,14 @@ export const test_2 = [
     fragment_2: 'gelijk',
     fragment_3: 'kl.sec.dalend',
   },
-] 
+]
+
+const test_3 = [...test_1]
+test_3.splice(96, test_3.length - 96)
+const test_4 = [...test_2]
+test_4.splice(96, test_4.length - 96)
+
+export { test_3, test_4 }
 
 export type TestOne = typeof test_1
 export type TestTwo = typeof test_2

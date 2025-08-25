@@ -7,7 +7,14 @@ import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFrag
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import {
+  TestOne,
+  TestTwo,
+  test_1,
+  test_2,
+  test_3,
+  test_4,
+} from '~/components/gameModes/testMode/testJsonData'
 import TestProgressBar from '~/components/gameModes/testMode/testProgressbar'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'

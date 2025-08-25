@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { Button } from '~/components/ui/button'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { formatTime } from '~/utils/time'
-import Image from "next/legacy/image"
+import Image from 'next/legacy/image'
 import { cn } from '~/lib/utils'
 import { routePaths } from '~/config/routing'
 import { imagesConfig } from '~/config/site'
@@ -35,26 +35,24 @@ const SpelenFeedback: React.FC<SpelenFeedbackProps> = ({ path }) => {
     return () => setShouldRenderCinieInContentContainer(true)
   }, [])
 
-   const progressValue = () => {
-     if (!levelPoints) return 0
-     const level = levelPoints.find((level) => level.id === parseInt(levelId))
-     if (!level?.points) return 0
-     console.log(levelPoints, level?.points, level?.score)
-     if(level.score >= level.points) return 100
-     const progress = (level.score / level.points) * 100
-     return Math.min(progress, 100)
-   }
+  const progressValue = () => {
+    if (!levelPoints) return 0
+    const level = levelPoints.find((level) => level.id === parseInt(levelId))
+    if (!level?.points) return 0
+    console.log(levelPoints, level?.points, level?.score)
+    if (level.score >= level.points) return 100
+    const progress = (level.score / level.points) * 100
+    return Math.min(progress, 100)
+  }
 
   return (
     <>
       <Image
         width={200}
         height={200}
-        layout="fixed"
         src={imagesConfig.cinie}
         alt="cinie"
         className=""
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         objectFit="fill"
       />
       <h3 className="pb-10 text-center text-3xl font-extrabold md:text-4xl">Spelen afgerond</h3>

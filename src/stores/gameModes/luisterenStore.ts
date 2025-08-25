@@ -1,7 +1,15 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import { FormattedData, FragmentSceneData, Scene } from './../../../types/SceneData'
 import { create } from 'zustand'
-import { TestOne, TestTwo, test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import {
+  TestOne,
+  TestScene,
+  TestTwo,
+  test_1,
+  test_2,
+  test_3,
+  test_4,
+} from '~/components/gameModes/testMode/testJsonData'
 
 type LuisterenState = {
   startTime: number
@@ -24,6 +32,7 @@ type LuisterenState = {
   }
   TestOneArray: TestOne | undefined
   TestTwoArray: TestTwo | undefined
+  testLevel?: TestScene[]
 }
 
 type LuisterenActions = {
@@ -103,6 +112,8 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   newUsedFragmentsMap: [],
   TestOneArray: test_1,
   TestTwoArray: test_2,
+  TestThreeArray: test_3,
+  TestFourArray: test_4,
   addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
     set((state) => {
       const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}
@@ -287,6 +298,16 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   },
   setTestOneArray: (testOneArray: TestOne) => set(() => ({ TestOneArray: testOneArray })),
   setTestTwoArray: (testTwoArray: TestTwo) => set(() => ({ TestTwoArray: testTwoArray })),
+  setTestLevel: (testLevel: TestScene[]) => set(() => ({ testLevel })),
+  // setTestThreeArray: (testThreeArray: TestOne) => set(() => ({ TestThreeArray: testThreeArray })),
+  // setTestFourArray: (testFourArray: TestTwo) => set(() => ({ TestFourArray: testFourArray })),
+  removeItemFromTestLevel: (itemIndex: number) =>
+    //@ts-ignore
+    set((state) => {
+      const newArray = state.testLevel?.filter((_, i) => i !== itemIndex)
+      return { testLevel: newArray }
+    }),
+
   removeItemFromTestOneArray: (index: number) =>
     //@ts-ignore
     set((state) => {
@@ -301,7 +322,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     }),
 
   reset: () => {
-    console.trace('reset()')
+    // console.trace('reset()')
     set(initialState)
   },
   resetSceneRelatedData: () => set(initialRoundState),
