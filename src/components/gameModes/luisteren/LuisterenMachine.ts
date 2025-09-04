@@ -115,8 +115,8 @@ export const luisterenMachine = createMachine(
   {
     actions: {
       setupData: assign((_, event) => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(true)
+        // const { setIsPlaying } = useLuisterenStore.getState()
+        // setIsPlaying(true)
         const fragmentsWithWeight = event.levelFragments.map((fragment) => {
           return { ...fragment, weight: 100 }
         }) as FragmentWithNotesAndWeight[]
@@ -140,8 +140,8 @@ export const luisterenMachine = createMachine(
         }
       }),
       finishedPlayingAction: assign((_, event) => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(false)
+        // const { setIsPlaying } = useLuisterenStore.getState()
+        // setIsPlaying(false)
         return {}
       }),
       resetPlaying: assign((_, event) => {

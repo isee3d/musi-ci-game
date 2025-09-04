@@ -52,6 +52,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }
 
   function startLuisteren() {
+    setIsPlaying(true)
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
     send({
