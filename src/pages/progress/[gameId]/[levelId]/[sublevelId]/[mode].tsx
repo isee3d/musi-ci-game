@@ -162,6 +162,15 @@ const ModePage = ({
     fragmentGroupsQuery.data,
   ])
 
+  const availableGameModes = useMemo(() => {
+    if (!gameModesOfSublevelQuery?.data) return []
+
+    const filteredModes = gameModesOfSublevelQuery?.data?.filter(
+      (gameMode) => gameMode.name !== 'Test' && sublevelQuery?.data?.name !== 'TEST introductie',
+    )
+    return filteredModes
+  }, [gameModesOfSublevelQuery])
+
   return (
     <ContentContainer
       title={sublevelQuery?.data?.name ?? 'Naam ophalen...'}
@@ -171,34 +180,29 @@ const ModePage = ({
     >
       <SessionProvider>
         <div className="flex w-full">
-          {gameModesOfSublevelQuery?.data
-            ?.filter(
-              (gameMode) =>
-                gameMode.name !== 'Test' && sublevelQuery?.data?.name !== 'TEST introductie',
-            )
-            .map((gameMode) => (
-              <Button
-                key={gameMode.id}
-                className={cn(
-                  'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
-                  mode !== gameMode.name
-                    ? 'bg-background text-accent-foreground hover:bg-primary/20'
-                    : '',
-                )}
-                disabled={isPlaying}
-                style={{
-                  pointerEvents: isPlaying ? 'none' : 'auto',
-                  opacity: isPlaying ? 0.5 : 1,
-                }}
-                asChild
+          {availableGameModes.map((gameMode) => (
+            <Button
+              key={gameMode.id}
+              className={cn(
+                'h-12 min-w-0 flex-auto overflow-hidden rounded-none text-xl',
+                mode !== gameMode.name
+                  ? 'bg-background text-accent-foreground hover:bg-primary/20'
+                  : '',
+              )}
+              disabled={isPlaying}
+              style={{
+                pointerEvents: isPlaying ? 'none' : 'auto',
+                opacity: isPlaying ? 0.5 : 1,
+              }}
+              asChild
+            >
+              <Link
+                href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
               >
-                <Link
-                  href={routePaths.gamePage(gameId, levelId, parseInt(sublevelId), gameMode.name)}
-                >
-                  <h2 className="text-base md:text-xl">{gameMode.name}</h2>
-                </Link>
-              </Button>
-            ))}
+                <h2 className="text-base md:text-xl">{gameMode.name}</h2>
+              </Link>
+            </Button>
+          ))}
         </div>
         <div className="relative flex w-full flex-col items-center justify-center gap-y-4 py-8 md:gap-y-8">
           <Modes
