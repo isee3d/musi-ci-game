@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Fragment, FragmentGroup, GameMode, Prisma, SubLevel } from '@prisma/client'
-import Decimal from 'decimal.js'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

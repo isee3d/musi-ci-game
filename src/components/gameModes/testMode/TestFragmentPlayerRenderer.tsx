@@ -5,6 +5,12 @@ import React, { useEffect, useState } from 'react'
 import { FragmentSceneData } from 'types/SceneData'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import {
+  TEST_LEVEL_1,
+  TEST_LEVEL_2,
+  TEST_LEVEL_3,
+  TEST_LEVEL_4,
+} from '~/components/gameModes/testMode/test'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
@@ -57,8 +63,10 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     setChosenFragment,
     getFormattedStoreData,
     setSceneStartTime,
-    TestOneArray,
-    TestTwoArray,
+    Test1Array,
+    Test2Array,
+    Test3Array,
+    Test4Array,
   } = useLuisterenStore()
 
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
@@ -120,14 +128,26 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
 
   useEffect(() => {
     if (restAfterPlayingState) {
-      if (sublevelName === 'TEST, level 1') {
-        if (TestOneArray?.length === 0) {
+      if (sublevelName === TEST_LEVEL_1) {
+        if (Test1Array?.length === 0) {
           setEndTime(Date.now())
           saveToDB(getFormattedStoreData(session?.user.id))
           send('FINISHEDPLAYING')
         }
-      } else if (sublevelName === 'TEST, level 2') {
-        if (TestTwoArray?.length === 0) {
+      } else if (sublevelName === TEST_LEVEL_2) {
+        if (Test2Array?.length === 0) {
+          setEndTime(Date.now())
+          saveToDB(getFormattedStoreData(session?.user.id))
+          send('FINISHEDPLAYING')
+        }
+      } else if (sublevelName === TEST_LEVEL_3) {
+        if (Test3Array?.length === 0) {
+          setEndTime(Date.now())
+          saveToDB(getFormattedStoreData(session?.user.id))
+          send('FINISHEDPLAYING')
+        }
+      } else if (sublevelName === TEST_LEVEL_4) {
+        if (Test4Array?.length === 0) {
           setEndTime(Date.now())
           saveToDB(getFormattedStoreData(session?.user.id))
           send('FINISHEDPLAYING')

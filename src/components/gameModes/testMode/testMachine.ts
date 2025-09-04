@@ -3,13 +3,12 @@ import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
-import {
-  FragmentWithNotes
-} from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { test_1, test_2 } from '~/components/gameModes/testMode/testJsonData'
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+import { TestLevelCorrespondingIndex } from '~/components/gameModes/testMode/test'
+import { test_1, test_2, test_3, test_4 } from '~/components/gameModes/testMode/testJsonData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
+import { transposeTestN, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export const testModeMachine = createMachine(
   {
@@ -188,12 +187,13 @@ export const testModeMachine = createMachine(
       setupData: assign((_, event) => {
         const { amountOfScenes, originalFragments, sublevelName, countdownTimings } = event
 
-        const { resetUsedFragments, setTestOneArray, setTestTwoArray } =
-          useLuisterenStore.getState()
+        const { resetUsedFragments, setTestArray } = useLuisterenStore.getState()
 
         resetUsedFragments()
-        setTestOneArray(test_1)
-        setTestTwoArray(test_2)
+        setTestArray(1, test_1)
+        setTestArray(2, test_2)
+        setTestArray(3, test_3)
+        setTestArray(4, test_4)
 
         return {
           amountOfScenes,
@@ -251,15 +251,19 @@ export const testModeMachine = createMachine(
         let activeFragment: FragmentWithNotes | undefined = undefined
         let newTransposedFragments: FragmentWithNotes[] = []
 
-        if (context.sublevelName === 'TEST, level 1') {
-          const { transposedFragments, newActiveFragment } = transposeTestOne(originalFragments)
-          activeFragment = newActiveFragment
-          newTransposedFragments = transposedFragments
-        } else if (context.sublevelName === 'TEST, level 2') {
-          const { transposedFragments, newActiveFragment } = transposeTestTwo(originalFragments)
+        if (context.sublevelName && context.sublevelName.includes('TEST')) {
+          const indexString = TestLevelCorrespondingIndex[context.sublevelName]
+
+          if (indexString === undefined) throw new Error(`${context.sublevelName} returns no index`)
+
+          const { transposedFragments, newActiveFragment } = transposeTestN(
+            indexString,
+            originalFragments,
+          )
           activeFragment = newActiveFragment
           newTransposedFragments = transposedFragments
         }
+
         setPlayedFragmentId(activeFragment?.id ?? 0)
         return {
           amountPlayed: context.amountPlayed + 1,

@@ -5,6 +5,7 @@ export type TestScene = {
   afspelen: string
   fragment_1: string
   fragment_2: string
+  fragment_3?: string
 }
 export const test_1 = [
   {

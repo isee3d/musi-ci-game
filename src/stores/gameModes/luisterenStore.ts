@@ -30,9 +30,10 @@ type LuisterenState = {
       [octaveNumber: number]: number
     }
   }
-  TestOneArray: TestOne | undefined
-  TestTwoArray: TestTwo | undefined
-  testLevel?: TestScene[]
+  Test1Array: TestOne | undefined
+  Test2Array: TestTwo | undefined
+  Test3Array: TestScene[] | undefined
+  Test4Array: TestScene[] | undefined
 }
 
 type LuisterenActions = {
@@ -66,8 +67,8 @@ type LuisterenActions = {
   reset: () => void
   setIsPlaying: (isPlaying: boolean) => void
   setShouldRenderCinieInContentContainer: (shouldRender: boolean) => void
-  setTestOneArray: (testOneArray: TestOne) => void
-  setTestTwoArray: (testTwoArray: TestTwo) => void
+  setTestArray: (testN: number, array: TestScene[]) => void
+  removeItemFromTestLevel: (testN: number, indexToRemove: number) => void
   removeItemFromTestOneArray: (index: number) => void
   removeItemFromTestTwoArray: (index: number) => void
 }
@@ -87,12 +88,30 @@ const initialState: LuisterenState = {
   isPlaying: false,
   usedFragmentsMap: {},
   newUsedFragmentsMap: {},
-  TestOneArray: test_1,
-  TestTwoArray: test_2,
+  Test1Array: test_1,
+  Test2Array: test_2,
+  Test3Array: test_3,
+  Test4Array: test_4,
 }
 
 const initialRoundState: Partial<LuisterenState> = {
   sceneData: {},
+}
+
+type Setter = (
+  partial:
+    | (LuisterenState & LuisterenActions)
+    | Partial<LuisterenState & LuisterenActions>
+    | ((
+        state: LuisterenState & LuisterenActions,
+      ) => (LuisterenState & LuisterenActions) | Partial<LuisterenState & LuisterenActions>),
+  replace?: boolean | undefined,
+) => any
+
+const gameloopStore = (set: Setter, get: () => LuisterenState & LuisterenActions) => {
+  return {
+    setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
+  }
 }
 
 export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set, get) => ({
@@ -110,10 +129,10 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   allPlayedScenes: [],
   usedFragmentsMap: [],
   newUsedFragmentsMap: [],
-  TestOneArray: test_1,
-  TestTwoArray: test_2,
-  TestThreeArray: test_3,
-  TestFourArray: test_4,
+  Test1Array: test_1,
+  Test2Array: test_2,
+  Test3Array: test_3,
+  Test4Array: test_4,
   addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
     set((state) => {
       const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}
@@ -210,7 +229,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     }),
   setShouldRenderCinieInContentContainer: (shouldRender: boolean) =>
     set(() => ({ shouldRenderCinieInContentContainer: shouldRender })),
-  setIsPlaying: (isPlaying: boolean) => set((state) => ({ isPlaying })),
+
   setScore: (score: number) => set((state) => ({ score })),
   addLuisterenClick: () => set((state) => ({ luisterenClicks: state.luisterenClicks + 1 })),
   setStartTime: (time: number) => set((state) => ({ startTime: time })),
@@ -296,29 +315,35 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       Scenes: Scenes,
     }
   },
-  setTestOneArray: (testOneArray: TestOne) => set(() => ({ TestOneArray: testOneArray })),
-  setTestTwoArray: (testTwoArray: TestTwo) => set(() => ({ TestTwoArray: testTwoArray })),
-  setTestLevel: (testLevel: TestScene[]) => set(() => ({ testLevel })),
-  // setTestThreeArray: (testThreeArray: TestOne) => set(() => ({ TestThreeArray: testThreeArray })),
-  // setTestFourArray: (testFourArray: TestTwo) => set(() => ({ TestFourArray: testFourArray })),
-  removeItemFromTestLevel: (itemIndex: number) =>
+
+  setTestArray: (testNumber, testScenes) => {
+    const key = `Test${testNumber}Array` as any
+
+    set(() => ({ [key]: testScenes }))
+  },
+
+  removeItemFromTestLevel: (testNumber, itemIndex) =>
     //@ts-ignore
     set((state) => {
-      const newArray = state.testLevel?.filter((_, i) => i !== itemIndex)
+      const testLevel = (state as any)[`Test${testNumber}Array`]
+
+      if (!testLevel) throw new Error(`No Testlevel loaded @${testNumber}`)
+
+      const newArray = [...testLevel].filter((_, i) => i !== itemIndex)
       return { testLevel: newArray }
     }),
 
   removeItemFromTestOneArray: (index: number) =>
     //@ts-ignore
     set((state) => {
-      const newTestOneArray = state.TestOneArray?.filter((_, i) => i !== index)
-      return { TestOneArray: newTestOneArray }
+      const newTestOneArray = state.Test1Array?.filter((_, i) => i !== index)
+      return { Test1Array: newTestOneArray }
     }),
   removeItemFromTestTwoArray: (index: number) =>
     // @ts-ignore
     set((state) => {
-      const newTestTwoArray = state.TestTwoArray?.filter((_, i) => i !== index)
-      return { TestTwoArray: newTestTwoArray }
+      const newTestTwoArray = state.Test2Array?.filter((_, i) => i !== index)
+      return { Test2Array: newTestTwoArray }
     }),
 
   reset: () => {
@@ -326,6 +351,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
     set(initialState)
   },
   resetSceneRelatedData: () => set(initialRoundState),
+  ...gameloopStore(set, get),
 }))
 
 if (process.env.NODE_ENV === 'development') {

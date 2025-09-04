@@ -1,4 +1,5 @@
 import { GameMode } from '@prisma/client'
+import { useSession } from 'next-auth/react'
 import React, { useEffect, useMemo } from 'react'
 import { FragmentSceneData } from 'types/SceneData'
 import { CountdownTimings } from 'types/Timings'
@@ -16,13 +17,31 @@ import {
   test_4,
 } from '~/components/gameModes/testMode/testJsonData'
 import TestProgressBar from '~/components/gameModes/testMode/testProgressbar'
-import { Button } from '~/components/ui/button'
+import { Button, buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
 export let log: number[] = []
+
+export const TEST_LEVEL_1 = 'TEST, level 1'
+export const TEST_LEVEL_2 = 'TEST, level 2'
+export const TEST_LEVEL_3 = 'TEST, level 1 (kort)'
+export const TEST_LEVEL_4 = 'TEST, level 2 (kort)'
+
+export const TestLevelCorrespondingArrayName = {
+  [TEST_LEVEL_1]: 'Test1Array',
+  [TEST_LEVEL_2]: 'Test2Array',
+  [TEST_LEVEL_3]: 'Test3Array',
+  [TEST_LEVEL_4]: 'Test4Array',
+}
+export const TestLevelCorrespondingIndex: Record<string, number> = {
+  [TEST_LEVEL_1]: 1,
+  [TEST_LEVEL_2]: 2,
+  [TEST_LEVEL_3]: 3,
+  [TEST_LEVEL_4]: 4,
+}
 
 function testAlgorithm(fragments: FragmentWithNotes[], subLevelName: string) {
   log = []
@@ -213,16 +232,7 @@ const Test: React.FC<TestModeProps> = ({
   const isFinishedState = TestModeMachineContext.useSelector((state) =>
     state.matches('FinishedPlayingTestMode'),
   )
-
-  const countdownTimings: CountdownTimings = useMemo(
-    () => ({
-      one: mode?.one ?? 1000,
-      two: mode?.two ?? 1000,
-      three: mode?.three ?? 1000,
-      go: mode?.go ?? 1000,
-    }),
-    [mode],
-  )
+  const { data: session } = useSession()
 
   useEffect(() => {
     return () => setIsPlaying(false)
@@ -236,12 +246,10 @@ const Test: React.FC<TestModeProps> = ({
       type: 'STARTROUND',
       sublevelName: sublevelName,
       originalFragments: fragments,
-      countdownTimings: countdownTimings,
+      countdownTimings: { one: 1000, two: 1000, three: 1000, go: 1000 },
       amountOfScenes: mode?.amountOfScenes ?? 0,
     })
   }
-
-  console.log(playingState, isPausedState)
 
   return (
     <>
@@ -267,14 +275,14 @@ const Test: React.FC<TestModeProps> = ({
       )}
       {isFinishedState && <TestFeedback gameId={gameId} levelId={levelId} />}
 
-      {/* {session?.user.role === 'ADMIN' && (
+      {session?.user.role === 'ADMIN' && (
         <Button
           className={cn(buttonVariants({ size: 'lg' }))}
           onClick={() => testAlgorithm(fragments, sublevelName ?? '')}
         >
           Print Test algoritme validatie
         </Button>
-      )} */}
+      )}
     </>
   )
 }
