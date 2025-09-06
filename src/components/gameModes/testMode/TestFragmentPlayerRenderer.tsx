@@ -10,7 +10,9 @@ import {
   TEST_LEVEL_2,
   TEST_LEVEL_3,
   TEST_LEVEL_4,
+  testLevelCorrespondingArrayName,
 } from '~/components/gameModes/testMode/test'
+import { TestScene } from '~/components/gameModes/testMode/testJsonData'
 import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
@@ -56,6 +58,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     state.matches('playing.initializePlaying'),
   )
 
+  const luisterenStore = useLuisterenStore()
   const {
     addNewUserSceneAnswer,
     AddSceneData,
@@ -63,11 +66,7 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
     setChosenFragment,
     getFormattedStoreData,
     setSceneStartTime,
-    Test1Array,
-    Test2Array,
-    Test3Array,
-    Test4Array,
-  } = useLuisterenStore()
+  } = luisterenStore
 
   const [originalFragments, setOriginalFragments] = useState<FragmentWithNotes[]>([])
 
@@ -127,31 +126,42 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
   function onFragmentPlayingComplete() {}
 
   useEffect(() => {
-    if (restAfterPlayingState) {
-      if (sublevelName === TEST_LEVEL_1) {
-        if (Test1Array?.length === 0) {
+    if (restAfterPlayingState && typeof sublevelName === 'string') {
+      const key = testLevelCorrespondingArrayName[sublevelName]
+      if (key) {
+        const sublevelArray = (luisterenStore as unknown as Record<string, TestScene[]>)[key]
+        if (sublevelArray?.length === 0) {
           setEndTime(Date.now())
           saveToDB(getFormattedStoreData(session?.user.id))
           send('FINISHEDPLAYING')
         }
-      } else if (sublevelName === TEST_LEVEL_2) {
-        if (Test2Array?.length === 0) {
-          setEndTime(Date.now())
-          saveToDB(getFormattedStoreData(session?.user.id))
-          send('FINISHEDPLAYING')
-        }
-      } else if (sublevelName === TEST_LEVEL_3) {
-        if (Test3Array?.length === 0) {
-          setEndTime(Date.now())
-          saveToDB(getFormattedStoreData(session?.user.id))
-          send('FINISHEDPLAYING')
-        }
-      } else if (sublevelName === TEST_LEVEL_4) {
-        if (Test4Array?.length === 0) {
-          setEndTime(Date.now())
-          saveToDB(getFormattedStoreData(session?.user.id))
-          send('FINISHEDPLAYING')
-        }
+        // }
+        // if (sublevelName === TEST_LEVEL_1) {
+
+        //   if (Test1Array?.length === 0) {
+        //     setEndTime(Date.now())
+        //     saveToDB(getFormattedStoreData(session?.user.id))
+        //     send('FINISHEDPLAYING')
+        //   }
+        // } else if (sublevelName === TEST_LEVEL_2) {
+        //   if (Test2Array?.length === 0) {
+        //     setEndTime(Date.now())
+        //     saveToDB(getFormattedStoreData(session?.user.id))
+        //     send('FINISHEDPLAYING')
+        //   }
+        // } else if (sublevelName === TEST_LEVEL_3) {
+        //   if (Test3Array?.length === 0) {
+        //     setEndTime(Date.now())
+        //     saveToDB(getFormattedStoreData(session?.user.id))
+        //     send('FINISHEDPLAYING')
+        //   }
+        // } else if (sublevelName === TEST_LEVEL_4) {
+        //   if (Test4Array?.length === 0) {
+        //     setEndTime(Date.now())
+        //     saveToDB(getFormattedStoreData(session?.user.id))
+        //     send('FINISHEDPLAYING')
+        //   }
+        // }
       }
     }
   }, [restAfterPlayingState])
@@ -161,22 +171,24 @@ const TestFragmentPlayerRenderer: React.FC<TestFragmentPlayerRendererProps> = ({
       <h3 className="pb-4 text-xl font-bold tracking-tight lg:text-4xl">
         Klik op het gehoorde fragment
       </h3>
-      {originalFragments.map((fragment) => (
-        <AnimationPlayer
-          key={fragment.id}
-          animationFragment={fragment}
-          options={{
-            useBlueBorderCLick: true,
-            isClickable: checkIsClickable(),
-            isAnimating: checkIsAnimating(fragment),
-            showCorrectOutline: false,
-            isCorrect: checkIsGuessedCorrect(fragment),
-            // isLooping: true,
-            onAnimationClicked: onFragmentPlayerClicked,
-            onAnimationComplete: onFragmentPlayingComplete,
-          }}
-        />
-      ))}
+      {originalFragments.map((fragment) => {
+        return (
+          <AnimationPlayer
+            key={fragment.id}
+            animationFragment={fragment}
+            options={{
+              useBlueBorderCLick: true,
+              isClickable: checkIsClickable(),
+              isAnimating: checkIsAnimating(fragment),
+              showCorrectOutline: false,
+              isCorrect: checkIsGuessedCorrect(fragment),
+              // isLooping: true,
+              onAnimationClicked: onFragmentPlayerClicked,
+              onAnimationComplete: onFragmentPlayingComplete,
+            }}
+          />
+        )
+      })}
     </>
   )
 }

@@ -330,7 +330,7 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
       if (!testLevel) throw new Error(`No Testlevel loaded @${testNumber}`)
 
       const newArray = [...testLevel].filter((_, i) => i !== itemIndex)
-      return { testLevel: newArray }
+      return { [`Test${testNumber}Array`]: newArray }
     }),
 
   removeItemFromTestOneArray: (index: number) =>

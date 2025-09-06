@@ -30,13 +30,13 @@ export const TEST_LEVEL_2 = 'TEST, level 2'
 export const TEST_LEVEL_3 = 'TEST, level 1 (kort)'
 export const TEST_LEVEL_4 = 'TEST, level 2 (kort)'
 
-export const TestLevelCorrespondingArrayName = {
+export const testLevelCorrespondingArrayName: Record<string, string> = {
   [TEST_LEVEL_1]: 'Test1Array',
   [TEST_LEVEL_2]: 'Test2Array',
   [TEST_LEVEL_3]: 'Test3Array',
   [TEST_LEVEL_4]: 'Test4Array',
 }
-export const TestLevelCorrespondingIndex: Record<string, number> = {
+export const testLevelCorrespondingIndex: Record<string, number> = {
   [TEST_LEVEL_1]: 1,
   [TEST_LEVEL_2]: 2,
   [TEST_LEVEL_3]: 3,

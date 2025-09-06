@@ -4,7 +4,7 @@ import { assign, createMachine } from 'xstate'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { TestLevelCorrespondingIndex } from '~/components/gameModes/testMode/test'
+import { testLevelCorrespondingIndex } from '~/components/gameModes/testMode/test'
 import { test_1, test_2, test_3, test_4 } from '~/components/gameModes/testMode/testJsonData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
@@ -252,7 +252,7 @@ export const testModeMachine = createMachine(
         let newTransposedFragments: FragmentWithNotes[] = []
 
         if (context.sublevelName && context.sublevelName.includes('TEST')) {
-          const indexString = TestLevelCorrespondingIndex[context.sublevelName]
+          const indexString = testLevelCorrespondingIndex[context.sublevelName]
 
           if (indexString === undefined) throw new Error(`${context.sublevelName} returns no index`)
 
