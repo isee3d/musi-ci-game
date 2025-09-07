@@ -1,11 +1,23 @@
+import { test4data } from '~/components/gameModes/testMode/test4Data'
+
+export type FragmentType =
+  | 'kl.sec.stijgend'
+  | 'gr.sec.stijgend'
+  | 'kl.sec.dalend'
+  | 'gr.sec.dalend'
+  | 'sextstijgend'
+  | 'sextdalend'
+  | 'tertsstijgend'
+  | 'tertsdalend'
+  | 'gelijk'
 export type TestScene = {
   scene: number
   grondtoon: string
   octaaf: number
-  afspelen: string
-  fragment_1: string
-  fragment_2: string
-  fragment_3?: string
+  afspelen: FragmentType
+  fragment_1: FragmentType
+  fragment_2: FragmentType
+  fragment_3?: FragmentType
 }
 export const test_1 = [
   {
@@ -6460,10 +6472,9 @@ const test_3: TestScene[] = [
   },
 ]
 
-const test_4 = [...test_2]
-test_4.splice(96, test_4.length - 96)
+const test_4 = test4data
 
 export { test_3, test_4 }
 
-export type TestOne = typeof test_1
-export type TestTwo = typeof test_2
+export type TestOne = TestScene[]
+export type TestTwo = TestScene[]
