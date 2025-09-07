@@ -289,8 +289,8 @@ export const uitdagingMachine = createMachine(
         }
       }),
       onFinishedPlaying: () => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(false)
+        // const { setIsPlaying } = useLuisterenStore.getState()
+        // setIsPlaying(false)
       },
       resetPlaying: assign((_, event) => {
         const { reset } = useLuisterenStore.getState()

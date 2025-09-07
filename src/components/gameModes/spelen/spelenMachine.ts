@@ -294,8 +294,8 @@ export const spelenMachine = createMachine(
         }
       }),
       onFinishedPlaying: assign(() => {
-        const { setIsPlaying } = useLuisterenStore.getState()
-        setIsPlaying(false)
+        // const { setIsPlaying } = useLuisterenStore.getState()
+        // setIsPlaying(false)
         return {}
       }),
       resetPlaying: assign((_, event) => {
