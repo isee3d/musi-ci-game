@@ -1548,7 +1548,7 @@ const test3DataGrondtonen: TestScene[] = [
   },
   {
     scene: 191,
-    grondtoon: 'C6',
+    grondtoon: 'C',
     octaaf: 6,
     afspelen: 'sextdalend',
     fragment_1: 'sextdalend',
@@ -1556,7 +1556,7 @@ const test3DataGrondtonen: TestScene[] = [
   },
   {
     scene: 192,
-    grondtoon: 'C6',
+    grondtoon: 'C',
     octaaf: 6,
     afspelen: 'gelijk',
     fragment_1: 'sextdalend',
