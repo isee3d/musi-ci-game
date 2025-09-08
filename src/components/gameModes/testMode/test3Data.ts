@@ -1564,21 +1564,22 @@ const test3DataGrondtonen: TestScene[] = [
   },
 ]
 
-const test3data = test3DataGrondtonen.map((scene) => {
-  if (scene.afspelen.includes('dalend')) {
-    // opnieuw berekenen noot
-    const noteIndex = notes.findIndex((x) => x === scene.grondtoon)
+const test3data = test3DataGrondtonen
+// .map((scene) => {
+//   if (scene.afspelen.includes('dalend')) {
+//     // opnieuw berekenen noot
+//     const noteIndex = notes.findIndex((x) => x === scene.grondtoon)
 
-    const index = (noteIndex + distances[scene.afspelen]) % notes.length
-    const octaafIncrement = (noteIndex + distances[scene.afspelen]) / notes.length > 1 ? 1 : 0
-    const newScene = {
-      ...scene,
-      octaaf: scene.octaaf + octaafIncrement,
-      grondtoon: notes[index]!,
-    }
-    return newScene
-  }
+//     const index = (noteIndex + distances[scene.afspelen]) % notes.length
+//     const octaafIncrement = (noteIndex + distances[scene.afspelen]) / notes.length > 1 ? 1 : 0
+//     const newScene = {
+//       ...scene,
+//       octaaf: scene.octaaf + octaafIncrement,
+//       grondtoon: notes[index]!,
+//     }
+//     return newScene
+//   }
 
-  return scene
-})
+//   return scene
+// })
 export { test3data }
