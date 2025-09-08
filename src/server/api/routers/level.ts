@@ -1,6 +1,6 @@
-import { LevelOptionalDefaultsSchema, LevelSchema } from './../../../../prisma/generated/zod/index'
+import { LevelOptionalDefaultsSchema, LevelSchema } from '@zod-prisma'
 import { TRPCError } from '@trpc/server'
-import { SubLevelSchema } from 'prisma/generated/zod'
+import { SubLevelSchema } from '@zod-prisma'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'

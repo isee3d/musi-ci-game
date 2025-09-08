@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react'
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
@@ -339,3 +340,5 @@ export const uitdagingMachine = createMachine(
     },
   },
 )
+
+export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })

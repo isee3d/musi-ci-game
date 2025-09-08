@@ -5,15 +5,10 @@ import React, { useEffect, useState } from 'react'
 import { FragmentSceneData } from 'types/SceneData'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import {
-  TEST_LEVEL_1,
-  TEST_LEVEL_2,
-  TEST_LEVEL_3,
-  TEST_LEVEL_4,
-  testLevelCorrespondingArrayName,
-} from '~/components/gameModes/testMode/test'
+import { testLevelCorrespondingArrayName } from '~/components/gameModes/testMode/test'
 import { TestScene } from '~/components/gameModes/testMode/testJsonData'
-import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+import { TestModeMachineContext } from '~/components/gameModes/testMode/testMachine'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'

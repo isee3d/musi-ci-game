@@ -1,32 +1,25 @@
-import { createActorContext } from '@xstate/react'
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { SessionProvider } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import ContentContainer from '~/components/contentContainer'
-import { luisterenMachine } from '~/components/gameModes/luisteren/LuisterenMachine'
+import { LuisterenMachineContext } from '~/components/gameModes/luisteren/LuisterenMachine'
 import Luisteren from '~/components/gameModes/luisteren/luisteren'
 import Spelen from '~/components/gameModes/spelen/spelen'
-import { spelenMachine } from '~/components/gameModes/spelen/spelenMachine'
+import { SpelenMachineContext } from '~/components/gameModes/spelen/spelenMachine'
 import Test from '~/components/gameModes/testMode/test'
-import { testModeMachine } from '~/components/gameModes/testMode/testMachine'
+import { TestModeMachineContext } from '~/components/gameModes/testMode/testMachine'
 import Uitdaging from '~/components/gameModes/uitdaging/uitdaging'
-import { uitdagingMachine } from '~/components/gameModes/uitdaging/uitdagingMachine'
+import { UitdagingMachineContext } from '~/components/gameModes/uitdaging/uitdagingMachine'
 import { Button } from '~/components/ui/button'
 import { routePaths } from '~/config/routing'
-import { env } from '~/env.mjs'
 import { cn } from '~/lib/utils'
 import { generateServerSideHelper } from '~/server/helpers/serverSideHelper'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { useAudioServiceStore } from '~/stores/useAudioServiceStore'
 import { api } from '~/utils/api'
 import { getSSRAuthRedirectLogin } from '~/utils/authUtils'
-
-export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })
-export const UitdagingMachineContext = createActorContext(uitdagingMachine, { devTools: true })
-export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })
-export const TestModeMachineContext = createActorContext(testModeMachine, { devTools: true })
 
 type ModeProps = {
   mode: string

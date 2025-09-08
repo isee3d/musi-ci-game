@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react'
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
@@ -8,7 +9,7 @@ import { testLevelCorrespondingIndex } from '~/components/gameModes/testMode/tes
 import { test_1, test_2, test_3, test_4 } from '~/components/gameModes/testMode/testJsonData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { deepCopy } from '~/utils/deepCopy'
-import { transposeTestN, transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
+import { transposeTestN } from '~/utils/testUtils'
 
 export const testModeMachine = createMachine(
   {
@@ -283,3 +284,5 @@ export const testModeMachine = createMachine(
     },
   },
 )
+
+export const TestModeMachineContext = createActorContext(testModeMachine, { devTools: true })

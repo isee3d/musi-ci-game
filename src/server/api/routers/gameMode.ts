@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server'
-import { GameModeOptionalDefaultsSchema, GameModeSchema } from 'prisma/generated/zod'
+import { GameModeOptionalDefaultsSchema, GameModeSchema } from '@zod-prisma'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
@@ -9,7 +9,7 @@ export const gameModeRouter = createTRPCRouter({
     .input(GameModeOptionalDefaultsSchema)
     .mutation(async ({ ctx, input }) => {
       const existingGameMode = await ctx.prisma.gameMode.findUnique({ where: { name: input.name } })
-      if(existingGameMode) {
+      if (existingGameMode) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Game mode bestaat al',
@@ -49,7 +49,7 @@ export const gameModeRouter = createTRPCRouter({
         two: z.number().min(100),
         three: z.number().min(100),
         go: z.number().min(100),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id } = input

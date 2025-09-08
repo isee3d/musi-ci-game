@@ -3,7 +3,8 @@ import { FragmentSceneData } from 'types/SceneData'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+import { LuisterenMachineContext } from '~/components/gameModes/luisteren/LuisterenMachine'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 

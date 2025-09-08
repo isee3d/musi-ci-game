@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
-import { Fragment } from 'prisma/generated/zod'
+import { Fragment } from '@zod-prisma'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '~/components/loading'
@@ -17,25 +17,26 @@ import { getSSRAuthRedirectOnAdminRole } from '~/utils/authUtils'
 const ManageFragments = () => {
   const ctx = api.useUtils()
   const fragmentQuery = api.fragmentNote.getAllFragments.useQuery()
-  const { mutate: deleteFragment, isLoading: isDeletingFragment } = api.fragmentNote.deleteFragment.useMutation({
-    onSuccess: () => {
-      toast.success('Fragment verwijderd!')
-      ctx.fragmentNote.getAllFragments.invalidate()
-      ctx.fragmentNote.getAllFragmentGroups.invalidate()
-      ctx.level.getAllLevels.invalidate()
-    },
-  })
+  const { mutate: deleteFragment, isLoading: isDeletingFragment } =
+    api.fragmentNote.deleteFragment.useMutation({
+      onSuccess: () => {
+        toast.success('Fragment verwijderd!')
+        ctx.fragmentNote.getAllFragments.invalidate()
+        ctx.fragmentNote.getAllFragmentGroups.invalidate()
+        ctx.level.getAllLevels.invalidate()
+      },
+    })
 
   const [createModal, setCreateModal] = useState(false)
   const [selectedFragment, setSelectedFragment] = useState<Fragment | null>(null)
   const [showModal, setShowModal] = useState(false)
 
-    const handleDeleteFragmentClick = (fragmentId: number) => {
-      const isConfirmed = window.confirm('Weet je zeker dat je deze speler wilt verwijderen?')
-      if (isConfirmed) {
-        deleteFragment({ id: fragmentId })
-      }
+  const handleDeleteFragmentClick = (fragmentId: number) => {
+    const isConfirmed = window.confirm('Weet je zeker dat je deze speler wilt verwijderen?')
+    if (isConfirmed) {
+      deleteFragment({ id: fragmentId })
     }
+  }
 
   return (
     <>

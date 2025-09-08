@@ -129,10 +129,11 @@ export const useLuisterenStore = create<LuisterenState & LuisterenActions>((set,
   allPlayedScenes: [],
   usedFragmentsMap: [],
   newUsedFragmentsMap: [],
-  Test1Array: test_1,
-  Test2Array: test_2,
+  Test1Array: test_1 as TestScene[],
+  Test2Array: test_2 as TestScene[],
   Test3Array: test_3,
   Test4Array: test_4,
+
   addNewUsedFragment: (fragmentId: number, octaveNumber: number) =>
     set((state) => {
       const fragmentMap = state.newUsedFragmentsMap[fragmentId] || {}

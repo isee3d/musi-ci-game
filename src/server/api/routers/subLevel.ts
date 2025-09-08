@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server'
-import { SubLevelOptionalDefaultsSchema, SubLevelSchema } from 'prisma/generated/zod'
+import { SubLevelOptionalDefaultsSchema, SubLevelSchema } from '@zod-prisma'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'

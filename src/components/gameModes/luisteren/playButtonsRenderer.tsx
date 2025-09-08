@@ -1,8 +1,8 @@
 import { useSession } from 'next-auth/react'
 import React from 'react'
-import { toast } from 'sonner'
+import { LuisterenMachineContext } from '~/components/gameModes/luisteren/LuisterenMachine'
 import { Button } from '~/components/ui/button'
-import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
 import { calculatePoints } from '~/utils/pointssystem'
@@ -35,9 +35,8 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
 
   const { data: sublevel } = api.sublevel.getSublevelById.useQuery({ id: sublevelId })
 
-  if (!session?.user) return null
-
   const onFinishedPlaying = () => {
+    if (!session?.user) return
     setEndTime(Date.now())
     const { endTime } = useLuisterenStore.getState()
     if (allPlayedScenes.length > 0) {
@@ -56,6 +55,8 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
       send('FINISHEDLISTENING')
     }
   }
+
+  if (!session?.user) return null
 
   return (
     <div className="flex justify-center gap-4">

@@ -1,10 +1,6 @@
-import { TeamSchema, TeamOptionalDefaultsSchema } from "prisma/generated/zod";
+import { TeamSchema, TeamOptionalDefaultsSchema } from '@zod-prisma'
 
-import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const teamRouter = createTRPCRouter({
   createTeam: protectedProcedure

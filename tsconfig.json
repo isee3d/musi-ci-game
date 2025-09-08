@@ -1,15 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "typeRoots": [
-      "./types",
-      "./node_modules/@types"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
@@ -26,9 +19,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "./src/*"
-      ]
+      "~/*": ["./src/*"],
+      "@zod-prisma": ["./prisma/generated/zod"]
     }
   },
   "include": [
@@ -41,7 +33,5 @@
     "tailwind.config.cjs",
     "next.config.mjs"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

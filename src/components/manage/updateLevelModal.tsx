@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Level } from '@prisma/client'
 import { Label } from '@radix-ui/react-label'
-import { SubLevel } from 'prisma/generated/zod'
+import { SubLevel } from '@zod-prisma'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -195,11 +195,7 @@ const UpdateLevelModal: React.FC<{
             <FormItem>
               <FormLabel>Aantal punten om instrument te verdienen</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Vul punten in"
-                  {...field}
-                />
+                <Input type="number" placeholder="Vul punten in" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

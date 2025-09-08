@@ -1,14 +1,14 @@
 import { GameMode } from '@prisma/client'
 import React, { useEffect, useMemo } from 'react'
 import { CountdownTimings } from 'types/Timings'
-import { isNullish } from 'types/nullish'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import UitdagingFragmentPlayerRenderer from '~/components/gameModes/uitdaging/UitdagingfragmentPlayerRenderer'
 import StartUitdagingUI from '~/components/gameModes/uitdaging/startUitdagingRoundUI'
 import UitdagingCountdownPlayer from '~/components/gameModes/uitdaging/uitdagingCountdownPlayer'
 import UitdagingFeedback from '~/components/gameModes/uitdaging/uitdagingFeedback'
+import { UitdagingMachineContext } from '~/components/gameModes/uitdaging/uitdagingMachine'
 import useStopwatch from '~/hooks/useStopwatch'
-import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { api } from '~/utils/api'
 

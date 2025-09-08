@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Label } from '@radix-ui/react-label'
-import { SubLevel } from 'prisma/generated/zod'
+import { SubLevel } from '@zod-prisma'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

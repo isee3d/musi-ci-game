@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
-import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import { start } from '~/components/fragmentPlayer/audio/AudioControls'
-import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
+
 import { shallowEqual } from '@xstate/react'
-import { FragmentSceneData } from 'types/SceneData'
-import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import { api } from '~/utils/api'
-import { toast } from 'sonner'
 import { useSession } from 'next-auth/react'
+import { FragmentSceneData } from 'types/SceneData'
+import { SpelenMachineContext } from '~/components/gameModes/spelen/spelenMachine'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
+import { api } from '~/utils/api'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 import { calculatePoints } from '~/utils/pointssystem'
 
@@ -103,15 +103,15 @@ const FragmentPlayerRenderer: React.FC<FragmentPlayerRendererProps> = ({ subleve
   }, [shownFragments])
 
   useEffect(() => {
-     console.log(
-       'fragments:',
-       shownFragments[0]?.notes[0]?.name,
-       shownFragments[0]?.notes[1]?.name,
-       '---',
-       shownFragments[1]?.notes[0]?.name,
-       shownFragments[1]?.notes[1]?.name,
-       activeFragment?.id,
-     )
+    console.log(
+      'fragments:',
+      shownFragments[0]?.notes[0]?.name,
+      shownFragments[0]?.notes[1]?.name,
+      '---',
+      shownFragments[1]?.notes[0]?.name,
+      shownFragments[1]?.notes[1]?.name,
+      activeFragment?.id,
+    )
   }, [originalFragments])
 
   function checkIsAnimating(fragment: FragmentWithNotes) {

@@ -1,25 +1,18 @@
 import { GameMode } from '@prisma/client'
 import { useSession } from 'next-auth/react'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { FragmentSceneData } from 'types/SceneData'
-import { CountdownTimings } from 'types/Timings'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
 import TestFragmentPlayerRenderer from '~/components/gameModes/testMode/TestFragmentPlayerRenderer'
 import StartTestUI from '~/components/gameModes/testMode/startTestRoundUI'
 import TestCountdownPlayer from '~/components/gameModes/testMode/testCountdownPlayer'
 import TestFeedback from '~/components/gameModes/testMode/testFeedback'
-import {
-  TestOne,
-  TestTwo,
-  test_1,
-  test_2,
-  test_3,
-  test_4,
-} from '~/components/gameModes/testMode/testJsonData'
+import { test_1, test_2, TestOne, TestTwo } from '~/components/gameModes/testMode/testJsonData'
+import { TestModeMachineContext } from '~/components/gameModes/testMode/testMachine'
 import TestProgressBar from '~/components/gameModes/testMode/testProgressbar'
-import { Button, buttonVariants } from '~/components/ui/button'
+import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
-import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { transposeTestOne, transposeTestTwo } from '~/utils/testUtils'
 
@@ -235,6 +228,7 @@ const Test: React.FC<TestModeProps> = ({
   const { data: session } = useSession()
 
   useEffect(() => {
+    reset()
     return () => setIsPlaying(false)
   }, [])
 

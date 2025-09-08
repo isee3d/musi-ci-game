@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react'
 import { assign, createMachine } from 'xstate'
 import { pianoNotesMap } from '~/components/fragmentPlayer/audio/Keyboard'
 import {
@@ -146,7 +147,7 @@ export const luisterenMachine = createMachine(
       }),
       resetPlaying: assign((_, event) => {
         const { reset } = useLuisterenStore.getState()
-        reset()
+        // reset()
         return {}
       }),
       shuffleFragments: assign((context) => {
@@ -163,3 +164,5 @@ export const luisterenMachine = createMachine(
     },
   },
 )
+
+export const LuisterenMachineContext = createActorContext(luisterenMachine, { devTools: true })

@@ -4,7 +4,7 @@ import {
   NoteOptionalDefaultsSchema,
   FragmentOptionalDefaultsSchema,
   FragmentGroupOptionalDefaultsSchema,
-} from 'prisma/generated/zod'
+} from '@zod-prisma'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
@@ -59,11 +59,11 @@ export const fragmentNoteRouter = createTRPCRouter({
         data: {
           isActive: 0,
           fragmentgroup: {
-           set: [],
+            set: [],
           },
           level: {
             set: [],
-          }
+          },
         },
       })
     }),
@@ -100,7 +100,7 @@ export const fragmentNoteRouter = createTRPCRouter({
       FragmentGroupOptionalDefaultsSchema.extend({
         fragments: z.array(z.number()),
         sublevel: z.array(z.number()).optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { fragments, sublevel, ...newInput } = input
@@ -132,7 +132,7 @@ export const fragmentNoteRouter = createTRPCRouter({
             isActive: true,
           },
         },
-      }
+      },
     })
   }),
 
@@ -172,7 +172,7 @@ export const fragmentNoteRouter = createTRPCRouter({
       FragmentGroupOptionalDefaultsSchema.extend({
         fragments: z.array(z.number().int()),
         sublevel: z.array(z.number().int()).optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const { id, name, description, fragments, sublevel } = input

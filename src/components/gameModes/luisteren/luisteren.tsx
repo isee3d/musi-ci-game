@@ -4,12 +4,14 @@ import BackToOverView from '~/components/gameModes/luisteren/backToOverView'
 import PlayButtonsRenderer from '~/components/gameModes/luisteren/playButtonsRenderer'
 import LuisterenFeedback from '~/components/gameModes/luisteren/luisterenFeedback'
 import LuisterenfragmentPlayerRenderer from '~/components/gameModes/luisteren/luisterenfragmentPlayerRenderer'
-import { LuisterenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 import { GameMode } from '@prisma/client'
 import { Button, buttonVariants } from '~/components/ui/button'
 import { useRouter } from 'next/router'
 import { cn } from '~/lib/utils'
+import { createActorContext } from '@xstate/react'
+import { LuisterenMachineContext } from '~/components/gameModes/luisteren/LuisterenMachine'
 
 interface LuisterenProps {
   fragmentsToShow: number
@@ -27,12 +29,27 @@ const Luisteren: React.FC<LuisterenProps> = ({
   mode,
 }) => {
   const router = useRouter()
-  const { send } = LuisterenMachineContext.useActorRef()
-  const isIdleState = LuisterenMachineContext.useSelector((state) => state.matches('idle'))
-  const isPlayingState = LuisterenMachineContext.useSelector((state) => state.matches('playing'))
-  const isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
-    state.matches('finishedListening'),
-  )
+  console.log('[Luisteren] Luisteren FC before send')
+  const actorRef = LuisterenMachineContext.useActorRef()
+  const { send } = actorRef
+  console.log('[Luisteren] Luisteren FC before selectors')
+  let isIdleState = false
+  let isPlayingState = false
+  let isfinishedPlayingState = false
+
+  try {
+    if (!actorRef) {
+      console.warn('[Luisteren] actorRef is not ready yet')
+      return null
+    } else {
+      isIdleState = LuisterenMachineContext.useSelector((state) => state.matches('idle'))
+      isPlayingState = LuisterenMachineContext.useSelector((state) => state.matches('playing'))
+      isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
+        state.matches('finishedListening'),
+      )
+    }
+  } catch (error) {}
+
   const { setStartTime, setLevelSublevelMode, reset, resetSceneRelatedData, setIsPlaying } =
     useLuisterenStore()
 
@@ -52,6 +69,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }
 
   function startLuisteren() {
+    console.log('[Luisteren] startLuisteren called')
     setIsPlaying(true)
     setStartTime(Date.now())
     setLevelSublevelMode(parseInt(levelId), parseInt(sublevelId), mode?.id ?? 0)
@@ -62,6 +80,7 @@ const Luisteren: React.FC<LuisterenProps> = ({
     })
   }
 
+  console.log('[Luisteren] render complete')
   return (
     <>
       <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">

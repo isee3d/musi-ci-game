@@ -1,7 +1,7 @@
 import {
   LevelResultOptionalDefaultsWithRelationsSchema,
   PointsOptionalDefaultsSchema,
-} from 'prisma/generated/zod'
+} from '@zod-prisma'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'

@@ -10,17 +10,17 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 import { z } from 'zod'
-import { NoteOptionalDefaultsSchema, NoteSchema } from 'prisma/generated/zod'
+import { NoteOptionalDefaultsSchema, NoteSchema } from '@zod-prisma'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { NoteCreate } from 'types/Note'
 import { nanoid } from 'nanoid'
 
-const NoteCreator: React.FC<{ newNotes: NoteCreate[], setNewNotes: Dispatch<SetStateAction<NoteCreate[]>> }> = ({
-  setNewNotes, newNotes
-}) => {
-
+const NoteCreator: React.FC<{
+  newNotes: NoteCreate[]
+  setNewNotes: Dispatch<SetStateAction<NoteCreate[]>>
+}> = ({ setNewNotes, newNotes }) => {
   const formSchema = z.object({
     name: z.string().min(2).max(50),
     time: z.number().min(0),

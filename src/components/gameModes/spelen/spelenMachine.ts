@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react'
 import { CountdownTimings } from 'types/Timings'
 import { Latency } from 'types/latency'
 import { assign, createMachine } from 'xstate'
@@ -330,3 +331,5 @@ export const spelenMachine = createMachine(
     },
   },
 )
+
+export const SpelenMachineContext = createActorContext(spelenMachine, { devTools: true })

@@ -2,7 +2,7 @@ import {
   QuestionAnswerOptionalDefaultsSchema,
   QuestionOptionalDefaultsSchema,
   QuestionSchema,
-} from 'prisma/generated/zod'
+} from '@zod-prisma'
 import { z } from 'zod'
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc'
 
@@ -36,7 +36,7 @@ export const questionsRouter = createTRPCRouter({
   //   }),
 
   createQuestionAnswers: protectedProcedure
-    .input(z.array(QuestionAnswerOptionalDefaultsSchema.omit({ id: true, answeredDate: true})))
+    .input(z.array(QuestionAnswerOptionalDefaultsSchema.omit({ id: true, answeredDate: true })))
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.questionAnswer.createMany({
         data: input,

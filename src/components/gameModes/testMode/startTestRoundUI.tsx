@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router'
 import React from 'react'
+import { TestModeMachineContext } from '~/components/gameModes/testMode/testMachine'
 import { Button } from '~/components/ui/button'
-import { TestModeMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface StartTestProps {

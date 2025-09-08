@@ -1,5 +1,5 @@
 import React from 'react'
-import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+import { SpelenMachineContext } from '~/components/gameModes/spelen/spelenMachine'
 
 const CountdownPlayer: React.FC = () => {
   const spelenStates = SpelenMachineContext.useSelector((state) => state.toStrings())

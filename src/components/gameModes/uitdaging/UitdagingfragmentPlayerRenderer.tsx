@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AnimationPlayer from '~/components/fragmentPlayer/animationPlayer'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import { UitdagingMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
+
 import { shallowEqual } from '@xstate/react'
 import { FragmentSceneData } from 'types/SceneData'
 import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react'
 import { GameMode } from '@prisma/client'
 import { getOriginalFragments, getShownFragmentByFragmentId } from '~/utils/fragmentUtils'
 import { calculatePoints } from '~/utils/pointssystem'
+import { UitdagingMachineContext } from '~/components/gameModes/uitdaging/uitdagingMachine'
 
 interface UitdagingFragmentPlayerRendererProps {
   mode: GameMode | null | undefined

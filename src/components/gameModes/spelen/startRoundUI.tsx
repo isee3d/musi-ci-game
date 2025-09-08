@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import React from 'react'
+import { SpelenMachineContext } from '~/components/gameModes/spelen/spelenMachine'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
-import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
 
 interface StartUIProps {
   startSpelen: () => void

@@ -1,12 +1,8 @@
-import { TRPCError } from "@trpc/server";
-import { GameSchema, GameModeOptionalDefaultsSchema } from "prisma/generated/zod";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server'
+import { GameSchema, GameModeOptionalDefaultsSchema } from '@zod-prisma'
+import { z } from 'zod'
 
-import {
-    createTRPCRouter,
-    publicProcedure,
-    protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from '~/server/api/trpc'
 
 export const gameRouter = createTRPCRouter({
   createGame: protectedProcedure

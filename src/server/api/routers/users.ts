@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server'
-import { UserSchema } from 'prisma/generated/zod'
+import { UserSchema } from '@zod-prisma'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
 

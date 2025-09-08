@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo } from 'react'
 import { FragmentWithNotes } from '~/components/fragmentPlayer/audio/fragmentWithNotes'
-import StartRoundUI from '~/components/gameModes/spelen/startRoundUI'
 import CountdownPlayer from '~/components/gameModes/spelen/countdownPlayer'
 import FragmentPlayerRenderer from '~/components/gameModes/spelen/fragmentPlayerRenderer'
-import { SpelenMachineContext } from '~/pages/progress/[gameId]/[levelId]/[sublevelId]/[mode]'
-import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback'
-import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
-import { CountdownTimings } from 'types/Timings'
+import StartRoundUI from '~/components/gameModes/spelen/startRoundUI'
+
 import { GameMode } from '@prisma/client'
+import { CountdownTimings } from 'types/Timings'
+import SpelenFeedback from '~/components/gameModes/spelen/spelenFeedback'
+import { SpelenMachineContext } from '~/components/gameModes/spelen/spelenMachine'
+import { useLuisterenStore } from '~/stores/gameModes/luisterenStore'
 
 interface SpelenProps {
   fragments: FragmentWithNotes[]
