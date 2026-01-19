@@ -31,24 +31,20 @@ const Luisteren: React.FC<LuisterenProps> = ({
   const router = useRouter()
   console.log('[Luisteren] Luisteren FC before send')
   const actorRef = LuisterenMachineContext.useActorRef()
-  const { send } = actorRef
+  const { send } = actorRef ?? { send: () => {} }
   console.log('[Luisteren] Luisteren FC before selectors')
   let isIdleState = false
   let isPlayingState = false
   let isfinishedPlayingState = false
 
-  try {
-    if (!actorRef) {
-      console.warn('[Luisteren] actorRef is not ready yet')
-      return null
-    } else {
-      isIdleState = LuisterenMachineContext.useSelector((state) => state.matches('idle'))
-      isPlayingState = LuisterenMachineContext.useSelector((state) => state.matches('playing'))
-      isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
-        state.matches('finishedListening'),
-      )
-    }
-  } catch (error) {}
+  isIdleState = LuisterenMachineContext.useSelector((state) => state.matches('idle'))
+  isPlayingState = LuisterenMachineContext.useSelector((state) => {
+    const res = state.matches('playing')
+    return res
+  })
+  isfinishedPlayingState = LuisterenMachineContext.useSelector((state) =>
+    state.matches('finishedListening'),
+  )
 
   const { setStartTime, setLevelSublevelMode, reset, resetSceneRelatedData, setIsPlaying } =
     useLuisterenStore()
@@ -81,6 +77,13 @@ const Luisteren: React.FC<LuisterenProps> = ({
   }
 
   console.log('[Luisteren] render complete')
+  console.log({ isIdleState }, `showing Start / Terug ${isIdleState}`)
+  console.log({ isPlayingState }, `showing PlayButtonsRenderer ${isPlayingState}`)
+
+  if (!actorRef) {
+    console.warn('[Luisteren] actorRef is not ready yet')
+    return null
+  }
   return (
     <>
       <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">

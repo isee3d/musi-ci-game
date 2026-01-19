@@ -56,7 +56,10 @@ const PlayButtonsRenderer: React.FC<PlayButtonsRendererProps> = ({ sublevelId })
     }
   }
 
-  if (!session?.user) return null
+  if (!session?.user) {
+    console.log(`no user in session!!`, { session }) // Hier gaat het mis, ondanks dat er wel een SessionProvider boven zit
+    return null
+  }
 
   return (
     <div className="flex justify-center gap-4">

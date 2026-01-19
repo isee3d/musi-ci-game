@@ -34,9 +34,8 @@ const config = {
   // },
 }
 
-if(process.env.NODE_ENV === 'production') {
-  config.compiler = { removeConsole: true }
+if (process.env.NODE_ENV === 'production') {
+  // config.compiler = { removeConsole: true }
 }
-
 
 export default config

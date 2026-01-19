@@ -171,7 +171,7 @@ const ModePage = ({
       shouldRenderBackButton={false}
       instrumentURL={mode !== 'Test' ? level?.instrument : undefined}
     >
-      <SessionProvider>
+      <>
         <div className="flex w-full">
           {availableGameModes.map((gameMode) => (
             <Button
@@ -211,7 +211,7 @@ const ModePage = ({
           />
           {/* {renderGameMode(mode)} */}
         </div>
-      </SessionProvider>
+      </>
     </ContentContainer>
   )
 }
